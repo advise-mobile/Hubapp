@@ -1,0 +1,233 @@
+import React, { forwardRef, useState } from 'react';
+import { StyleSheet } from 'react-native';
+
+import { useForm, Controller } from "react-hook-form";
+import RNPickerSelect from 'react-native-picker-select';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+
+import Modal from 'components/Modal';
+import Datepicker from 'components/DatePicker';
+
+import { FormatFullDateEN, FormatDateBR } from 'helpers/DateFunctions';
+
+import { colors, fonts } from 'assets/styles';
+import {
+  Title,
+  Label,
+  Row,
+  Column,
+  Submit,
+  SubmitText,
+  RBRow,
+  RBLabel
+} from "./styles";
+
+export default Filters = forwardRef((props, ref) => {
+  const { control, handleSubmit } = useForm();
+  const [situation, setSituation] = useState(props.filters.Lido || 0);
+  const [customField, setCustomFields] = useState(props.customField);
+  const [minDate, setMinDate] = useState(props.filters.DataMovimentoInicio ? FormatDateBR(props.filters.DataMovimentoInicio) : null);
+  const [maxDate, setMaxDate] = useState(props.filters.DataMovimentoFim ? FormatDateBR(props.filters.DataMovimentoFim) : null);
+  const [selectedCustom, setSelectedCustom] = useState(props.filters[customField?.name] || 0);
+
+  const onSubmit = data => {
+    ref.current?.close();
+
+    setTimeout(() => props.submit(data), 500);
+  };
+  const radio_props = [
+    { label: 'Todas as situações', value: null },
+    { label: 'Lidas', value: true },
+    { label: 'Não lidas', value: false },
+  ];
+
+  const renderCustomFields = () => {
+    const defaultField = {
+      label: `Todos os ${customField.title.toLowerCase()}`,
+      value: null
+    };
+
+    const data = customField.data.map(item => {
+      return {
+        label: item.nome,
+        value: item.id
+      }
+    });
+
+    return (
+      <>
+        <Row>
+          <Title>{customField.title}</Title>
+        </Row>
+        <Row>
+          <Controller
+            name={customField.name}
+            control={control}
+            defaultValue={null}
+            rules={{ required: customField.required || false }}
+            render={({ onChange }) => (
+              <Column>
+                <RNPickerSelect
+                  style={pickerSelectStyles}
+                  onValueChange={value => { setSelectedCustom(value); onChange(value); }}
+                  placeholder={{}}
+                  doneText="Selecionar"
+                  value={selectedCustom}
+                  items={[defaultField, ...data]}
+                  Icon={() => <MaterialIcons name="arrow-drop-down" size={18} color="gray" />}
+                />
+              </Column>
+              // <RadioForm animation={true} style={{ flex: 1 }}>
+              //   {data.map((obj, i) => {
+              //     return (
+              //       <RBRow as={RadioButton} key={i}>
+              //         <RadioButtonInput
+              //           obj={obj}
+              //           isSelected={selectedCustom == i}
+              //           onPress={value => {
+              //             setSelectedCustom(i);
+              //             onChange(value);
+              //           }}
+              //           borderWidth={1}
+              //           buttonInnerColor={colors.primary}
+              //           buttonOuterColor={colors.primary}
+              //           buttonSize={12}
+              //           buttonOuterSize={18}
+              //         />
+              //         <RadioButtonLabel
+              //           obj={obj}
+              //           labelStyle={RBLabel.label}
+              //           onPress={value => {
+              //             setSelectedCustom(i);
+              //             onChange(value);
+              //           }}
+              //         />
+              //       </RBRow>
+              //     )
+              //   })
+              //   }
+              // </RadioForm>
+            )}>
+          </Controller>
+        </Row>
+      </>
+    );
+  };
+
+  const footer = () => (
+    <Submit onPress={handleSubmit(onSubmit)}>
+      <SubmitText>Ver resultados</SubmitText>
+    </Submit>
+  );
+
+  return (
+    <Modal ref={ref} footer={footer()} title="Filtros">
+      <Row>
+        <Title>Período</Title>
+      </Row>
+      <Row>
+        <Column>
+          <Label>De</Label>
+          <Controller
+            name="DataMovimentoInicio"
+            control={control}
+            defaultValue={null}
+            render={({ onChange }) => (
+              <Datepicker
+                date={minDate}
+                enabled={true}
+                title="dd/mm/yyyy"
+                style={{ maxWidth: 100 }}
+                maxDate={maxDate}
+                onDateChange={date => { setMinDate(date), onChange(FormatFullDateEN(date)) }}
+              />
+            )}>
+          </Controller>
+        </Column>
+        <Column>
+          <Label>Até</Label>
+          <Controller
+            name="DataMovimentoFim"
+            control={control}
+            defaultValue={null}
+            render={({ onChange }) => (
+              <Datepicker
+                date={maxDate}
+                enabled={true}
+                title="dd/mm/yyyy"
+                style={{ maxWidth: 100 }}
+                minDate={minDate}
+                onDateChange={date => { setMaxDate(date), onChange(FormatFullDateEN(date)) }}
+              />
+            )}>
+          </Controller>
+        </Column>
+      </Row>
+      <Row>
+        <Title>Situação</Title>
+      </Row>
+      <Row>
+        <Controller
+          name="Lido"
+          control={control}
+          defaultValue={null}
+          render={({ onChange }) => (
+            <RadioForm animation={true} style={{ flex: 1 }}>
+              {
+                radio_props.map((obj, i) => (
+                  <RBRow as={RadioButton} key={i}>
+                    <RadioButtonInput
+                      obj={obj}
+                      isSelected={situation == i}
+                      onPress={value => {
+                        setSituation(i);
+                        onChange(value);
+                      }}
+                      borderWidth={1}
+                      buttonInnerColor={colors.primary}
+                      buttonOuterColor={colors.primary}
+                      buttonSize={12}
+                      buttonOuterSize={18}
+                    />
+                    <RadioButtonLabel
+                      obj={obj}
+                      labelStyle={RBLabel.label}
+                      onPress={value => {
+                        setSituation(i);
+                        onChange(value);
+                      }}
+                    />
+                  </RBRow>
+                ))
+              }
+            </RadioForm>
+          )}>
+        </Controller>
+      </Row>
+      {renderCustomFields()}
+    </Modal>
+  );
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    // minWidth: 350,
+    flex: 1,
+    color: colors.fadedBlack,
+    fontFamily: fonts.circularStdBook,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grayLighter,
+  },
+  inputAndroid: {
+    height: 20,
+    fontSize: 16,
+    color: colors.fadedBlack,
+    fontFamily: fonts.circularStdBook,
+    // minWidth: 350,
+    flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grayLighter,
+  },
+});
