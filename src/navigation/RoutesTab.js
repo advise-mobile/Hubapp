@@ -13,7 +13,7 @@ import Blank from '../pages/Blank';
 import Folders from '../pages/Folders';
 import Login from '../pages/Login';
 import People from '../pages/People';
-// import Jurisprudence from '../pages/Jurisprudence';
+import Jurisprudence from '../pages/Jurisprudence';
 // import Process from '../pages/Process';
 import Account from '../pages/Account';
 
@@ -63,8 +63,8 @@ const RoutesTab = createBottomTabNavigator(
         ),
       }),
     },
-    Main4: {
-      screen: Blank,
+    Jurisprudence: {
+      screen: Jurisprudence,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
           <MaterialIcons name="gavel" size={25} color={tintColor} />
@@ -136,7 +136,7 @@ const RoutesTab = createBottomTabNavigator(
         marginBottom: -2,
       },
     },
-    initialRouteName: 'Account',
+    initialRouteName: 'Jurisprudence',
     tabBarPosition: 'top',
     swipeEnabled: false,
     animationEnabled: false,

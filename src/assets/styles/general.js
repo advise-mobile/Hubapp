@@ -56,6 +56,7 @@ const HeaderTitle = styled.Text`
   color: ${colors.primary};
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.bigger};
+  text-transform: capitalize;
   flex: 1;
 `;
 

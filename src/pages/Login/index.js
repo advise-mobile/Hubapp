@@ -12,16 +12,18 @@ import {
 import jwtDecode from 'jwt-decode';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import OneSignal from 'react-native-onesignal';
+
 import AuthAction from 'store/ducks/Auth';
 
-import { colors } from 'assets/styles';
 
 import Spinner from 'components/Spinner';
 
-import { changeAmbient } from '../../services/Api';
+import { changeAmbient } from 'services/Api';
+import env from 'services/env';
 
+import { colors } from 'assets/styles';
 import {
   Container,
   Warp,
@@ -91,6 +93,7 @@ export default function Login(props) {
       const token = await AsyncStorage.getItem('@AdviseStart:token');
       if (token !== null) {
         const user = jwtDecode(token);
+        OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
         props.navigation.navigate('Folders', { user });
       }
     }
@@ -118,6 +121,8 @@ export default function Login(props) {
         if (nlogin.foto !== undefined) {
           await AsyncStorage.setItem('@AdviseStart:avatar', nlogin.foto);
         }
+
+        OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
 
         navigation.navigate('Folders', { user: jwtDecode(nlogin.access_token) });
       }

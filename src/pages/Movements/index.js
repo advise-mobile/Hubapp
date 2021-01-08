@@ -12,7 +12,7 @@ import Spinner from 'components/Spinner';
 import { Share } from 'components/Share';
 import Filters from './Filters';
 
-import { FormatDateInFull } from 'helpers/DateFunctions';
+import { FormatDateInFull, FormatDateBR } from 'helpers/DateFunctions';
 
 import { colors } from 'assets/styles';
 import { Container, Warp, Actions, ActionButton } from 'assets/styles/general';
@@ -35,7 +35,6 @@ import {
   TagText,
 } from './styles';
 
-import { FormatDateBR } from 'helpers/DateFunctions';
 import { MaskCnj } from 'helpers/Mask';
 
 export default Movements = props => {
@@ -257,8 +256,6 @@ export default Movements = props => {
   const closeOpenedRow = useCallback(key => listRef.current._rows[key].closeRow());
 
   const handleSubmit = useCallback(data => {
-    console.log(data);
-
     setCurrentPage(1);
     setFilters(data);
   }, []);

@@ -128,7 +128,6 @@ export default Infos = props => {
 
           dispatch(UserActions.updateProfile({ ...data }));
         }
-        console.log(response);
       },
     )
   }, []);

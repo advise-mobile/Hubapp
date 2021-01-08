@@ -3,9 +3,9 @@ import { colors } from 'assets/styles';
 
 const Container = styled.View`
   alignItems: center;
-  backgroundColor: ${colors.white};
-  height: 100%;
-  marginTop: 20;
+  backgroundColor: ${props => props.transparent ? 'transparent' : colors.white};
+  height: ${props => props.height || '100%'};
+  marginTop: ${props => props.height ? 0 : '20%'};
 `;
 
 export { Container };

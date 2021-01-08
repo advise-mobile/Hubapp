@@ -1,11 +1,12 @@
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
+import tron from 'config/ReactotronConfig';
 
 import sagas from './sagas';
 import reducers from './ducks';
 
 /* Saga */
-const sagaMonitor = __DEV__ ? console.tron.createSagaMonitor() : null;
+const sagaMonitor = __DEV__ ? tron.createSagaMonitor() : null;
 const sagaMiddleware = createSagaMiddleware({ sagaMonitor });
 
 const middlewares = [sagaMiddleware];

@@ -40,9 +40,9 @@ import MovementDetail from '../pages/Movements/Details';
 // import SituationFilter from '../pages/Movements/Filters/Situation';
 
 // // Jurisprudences
-// import JurisprudenceList from '../pages/Jurisprudence/List';
-// import JurisprudenceDetails from '../pages/Jurisprudence/Details';
-// import JurisFilterPage from '../pages/Jurisprudence/Filters';
+import Jurisprudence from '../pages/Jurisprudence';
+import JurisprudenceList from '../pages/Jurisprudence/List';
+import JurisprudenceDetail from '../pages/Jurisprudence/Details';
 // import FilterSelect from '../pages/Jurisprudence/Filters/FilterSelect';
 
 // Menu Main
@@ -79,8 +79,9 @@ const AppStack = createStackNavigator(
     // FilterTribunal,
     // FilterDateOfAvailability,
     // SituationFilter,
-    // JurisprudenceList,
-    // JurisprudenceDetails,
+    Jurisprudence,
+    JurisprudenceList,
+    JurisprudenceDetail,
   },
   {
     header: null,
@@ -97,7 +98,7 @@ const Routes = createAppContainer(
       App: AppStack,
     },
     {
-      initialRouteName: 'Intro',
+      initialRouteName: 'App',
     }
   )
 );

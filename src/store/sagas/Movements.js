@@ -67,7 +67,6 @@ export function* getDiaries({ params }) {
     yield put(MovementsTypes.diariesSuccess(diaries));
     return;
   } catch (err) {
-    console.log(err);
     yield put(
       ToastNotifyActions.toastNotifyShow(
         'Não foi possível carregar as Publicações',

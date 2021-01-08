@@ -18,6 +18,7 @@ import { DeadlineAddTypes } from 'store/ducks/DeadlineAdd';
 import { SelectTypes } from 'store/ducks/Select';
 import { PeopleTypes } from 'store/ducks/People';
 import { CustomerTypes } from 'store/ducks/Customer';
+import { JurisprudenceTypes } from 'store/ducks/Jurisprudence';
 
 /* Saga */
 import { login, logout, forgot } from './Auth';
@@ -41,6 +42,8 @@ import { getKeywords } from './Keywords';
 import { getFonts } from './Fonts';
 import { getTribunal } from './Tribunal';
 import { fetchSelectOptions } from './Select';
+
+import { getJurisprudences, sendJurisprudenceEmail } from './Jurisprudence';
 
 export default function* rootSaga() {
   return yield all([
@@ -94,5 +97,9 @@ export default function* rootSaga() {
 
     // Select
     takeLatest(SelectTypes.FETCH_SELECT_OPTIONS, fetchSelectOptions),
+
+    takeLatest(JurisprudenceTypes.JURISPRUDENCE_REQUEST, getJurisprudences),
+    takeLatest(JurisprudenceTypes.JURISPRUDENCE_REFRESH, getJurisprudences),
+    takeLatest(JurisprudenceTypes.JURISPRUDENCE_EMAIL_REQUEST, sendJurisprudenceEmail),
   ]);
 }

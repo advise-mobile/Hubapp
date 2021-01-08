@@ -18,6 +18,7 @@ import { reducer as tribunal } from './Tribunal';
 import { reducer as toastNotify } from './ToastNotify';
 import { reducer as people } from './People';
 import { reducer as customer } from './Customer';
+import { reducer as jurisprudence } from './Jurisprudence';
 
 export default combineReducers({
   auth,
@@ -37,5 +38,6 @@ export default combineReducers({
   tribunal,
   toastNotify,
   people,
-  customer
+  customer,
+  jurisprudence,
 });

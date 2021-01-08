@@ -6,7 +6,7 @@ const HOMOLOG_URL = 'https://homologacao-api.advise.com.br';
 const PROD_URL = 'https://api.advise.com.br';
 
 // let BASE_URL = getUrl();
-let BASE_URL = HOMOLOG_URL;
+export const BASE_URL = HOMOLOG_URL;
 const TOKEN = '@AdviseStart:token';
 const REFRESH_TOKEN = '@AdviseStart:refreshToken';
 const AVATAR = '@AdviseStart:avatar';
