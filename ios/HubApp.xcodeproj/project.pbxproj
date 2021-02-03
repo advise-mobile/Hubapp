@@ -22,6 +22,7 @@
 		17962E14256D400900928E90 /* CircularStd-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 17A16943256839DD001096EC /* CircularStd-MediumItalic.otf */; };
 		17B362352590C08200EB8399 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B362342590C08200EB8399 /* NotificationService.swift */; };
 		17B362392590C08200EB8399 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 17B362322590C08200EB8399 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		17F87FEB25CB2BF8000F6AC5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17F87FEA25CB2BF8000F6AC5 /* Launch Screen.storyboard */; };
 		2AE28073CD187341B0FC9A88 /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 65EF8432A7DD4995FD3670E8 /* libPods-OneSignalNotificationServiceExtension.a */; };
 		7539BE8B3CF7A8EAF6252298 /* libPods-HubApp-HubAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2688C63789A50F32F9CDB809 /* libPods-HubApp-HubAppTests.a */; };
 /* End PBXBuildFile section */
@@ -93,6 +94,7 @@
 		17B362342590C08200EB8399 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		17B362362590C08200EB8399 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		17B3627C2590C2FF00EB8399 /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
+		17F87FEA25CB2BF8000F6AC5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		25CB28C6549F6D874F03D688 /* Pods-HubApp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HubApp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-HubApp-tvOS/Pods-HubApp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		2688C63789A50F32F9CDB809 /* libPods-HubApp-HubAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HubApp-HubAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2869AFFE63E04014850D68C1 /* CircularStd-BoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CircularStd-BoldItalic.otf"; path = "../src/assets/fonts/CircularStd-BoldItalic.otf"; sourceTree = "<group>"; };
@@ -106,7 +108,6 @@
 		75A9D883FD954FA585F5D42B /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		7818A6DE9CA129D1D58D5770 /* libPods-HubApp-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HubApp-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CB1FD82BF904F8DA15744E0 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = HubApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8583EC1F12384D85AEFFB08B /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		92674B979771DC53671C5642 /* Pods-HubApp-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HubApp-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-HubApp-tvOS/Pods-HubApp-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		9CF5482034A84A248E5BF2DE /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
@@ -206,7 +207,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				17A1693925683918001096EC /* Resources */,
-				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
+				17F87FEA25CB2BF8000F6AC5 /* Launch Screen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = HubApp;
@@ -485,6 +486,7 @@
 				17962E13256D400900928E90 /* CircularStd-Medium.otf in Resources */,
 				17962E14256D400900928E90 /* CircularStd-MediumItalic.otf in Resources */,
 				17962E0B256D3FA300928E90 /* CircularStd-Bold.otf in Resources */,
+				17F87FEB25CB2BF8000F6AC5 /* Launch Screen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

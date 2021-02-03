@@ -22,7 +22,6 @@ export const getUserPermissions = (userId) => {
   );
 };
 
-
 export const PermissionsMap = {
   publications: {
     createDiary: -1, // Cadastrar diários

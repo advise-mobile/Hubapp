@@ -5,7 +5,7 @@ import DatePicker from 'react-native-datepicker';
 import { colors, fonts } from 'assets/styles';
 import styles from './styles';
 
-const Datepicker = ({ date, onDateChange, title, enabled, style, minDate, maxDate }) => (
+const Datepicker = ({ date, onDateChange, title, enabled, style, minDate, maxDate, customStyles }) => (
   <DatePicker
     style={{ ...styles.input, ...style }}
     date={date || null}
@@ -19,7 +19,7 @@ const Datepicker = ({ date, onDateChange, title, enabled, style, minDate, maxDat
     disabled={!enabled}
     minDate={minDate}
     maxDate={maxDate}
-    customStyles={{
+    customStyles={customStyles || {
       dateInput: {
         height: 20,
         marginBottom: -3,

@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useState, useCallback, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { useForm, Controller } from "react-hook-form";
@@ -31,11 +31,31 @@ export default Filters = forwardRef((props, ref) => {
   const [maxDate, setMaxDate] = useState(props.filters.DataMovimentoFim ? FormatDateBR(props.filters.DataMovimentoFim) : null);
   const [selectedCustom, setSelectedCustom] = useState(props.filters[customField?.name] || 0);
 
+  const countFilters = useCallback(() => checkNull([situation, minDate, maxDate, selectedCustom]), [situation, minDate, maxDate, selectedCustom]);
+
+  const checkNull = useCallback(states => states.filter(state => (state != null && state != 0)).length);
+
+  useEffect(() => {
+    setSituation(props.filters.Lido || 0);
+    setCustomFields(props.customField);
+    setMinDate(props.filters.DataMovimentoInicio ? FormatDateBR(props.filters.DataMovimentoInicio) : null);
+    setMaxDate(props.filters.DataMovimentoFim ? FormatDateBR(props.filters.DataMovimentoFim) : null);
+    setSelectedCustom(props.filters[customField?.name] || 0);
+  }, [props]);
+
+  const clearFilters = useCallback(() => {
+    setSituation(0);
+    setSelectedCustom(0);
+    setMinDate(null);
+    setMaxDate(null);
+  }, []);
+
   const onSubmit = data => {
     ref.current?.close();
 
     setTimeout(() => props.submit(data), 500);
   };
+
   const radio_props = [
     { label: 'Todas as situações', value: null },
     { label: 'Lidas', value: true },
@@ -43,6 +63,8 @@ export default Filters = forwardRef((props, ref) => {
   ];
 
   const renderCustomFields = () => {
+    if (Object.keys(customField).length < 1) return;
+
     const defaultField = {
       label: `Todos os ${customField.title.toLowerCase()}`,
       value: null
@@ -78,36 +100,6 @@ export default Filters = forwardRef((props, ref) => {
                   Icon={() => <MaterialIcons name="arrow-drop-down" size={18} color="gray" />}
                 />
               </Column>
-              // <RadioForm animation={true} style={{ flex: 1 }}>
-              //   {data.map((obj, i) => {
-              //     return (
-              //       <RBRow as={RadioButton} key={i}>
-              //         <RadioButtonInput
-              //           obj={obj}
-              //           isSelected={selectedCustom == i}
-              //           onPress={value => {
-              //             setSelectedCustom(i);
-              //             onChange(value);
-              //           }}
-              //           borderWidth={1}
-              //           buttonInnerColor={colors.primary}
-              //           buttonOuterColor={colors.primary}
-              //           buttonSize={12}
-              //           buttonOuterSize={18}
-              //         />
-              //         <RadioButtonLabel
-              //           obj={obj}
-              //           labelStyle={RBLabel.label}
-              //           onPress={value => {
-              //             setSelectedCustom(i);
-              //             onChange(value);
-              //           }}
-              //         />
-              //       </RBRow>
-              //     )
-              //   })
-              //   }
-              // </RadioForm>
             )}>
           </Controller>
         </Row>
@@ -122,7 +114,7 @@ export default Filters = forwardRef((props, ref) => {
   );
 
   return (
-    <Modal ref={ref} footer={footer()} title="Filtros">
+    <Modal ref={ref} footer={footer()} title="Filtros" filters={countFilters()} clear={clearFilters}>
       <Row>
         <Title>Período</Title>
       </Row>
@@ -139,7 +131,7 @@ export default Filters = forwardRef((props, ref) => {
                 enabled={true}
                 title="dd/mm/yyyy"
                 style={{ maxWidth: 100 }}
-                maxDate={maxDate}
+                maxDate={maxDate || undefined}
                 onDateChange={date => { setMinDate(date), onChange(FormatFullDateEN(date)) }}
               />
             )}>
@@ -157,7 +149,7 @@ export default Filters = forwardRef((props, ref) => {
                 enabled={true}
                 title="dd/mm/yyyy"
                 style={{ maxWidth: 100 }}
-                minDate={minDate}
+                minDate={minDate || undefined}
                 onDateChange={date => { setMaxDate(date), onChange(FormatFullDateEN(date)) }}
               />
             )}>

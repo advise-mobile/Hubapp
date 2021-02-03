@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Platform } from 'react-native';
 import { colors } from 'assets/styles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -13,7 +13,7 @@ import {
 } from 'assets/styles/general';
 
 const Header = props => (
-  <HeaderContainer style={{ minHeight: 0 }}>
+  <HeaderContainer style={{ minHeight: 0, paddingTop: Platform.OS == 'ios' ? 0 : 8 }}>
     <HeaderActionsLeft>
       {props.filter && (
         <HeaderAction>

@@ -58,7 +58,6 @@ export default MovementDetail = props => {
     }
 
     if (movement.movimento.idTipoMovProcesso == -1) {
-      console.log(movement);
       dispatch(
         ProcessActions.processRequest({
           movementId: movement.movimento.id
@@ -67,37 +66,35 @@ export default MovementDetail = props => {
     }
   }, []);
 
-  const renderProcesses = useCallback(() => {
-    return (
-      <Movement key={3}>
-        <MovementTags>
-          {details.dataDisponibilizacaoSemHora && (
-            <Tag background={colors.gray}>
-              <TagText>Andamento realizado em: {details.dataDisponibilizacaoSemHora}</TagText>
-            </Tag>
-          )}
-          {details.fonte && (
-            <Tag background={colors.gray}>
-              <TagText>{details.fonte}</TagText>
-            </Tag>
-          )}
-          {details.identificador && (
-            <Tag background={colors.gray}>
-              <TagText>{details.identificador}</TagText>
-            </Tag>
-          )}
-
-        </MovementTags>
-        {details.pasta && (
-          <ProcessNumber>
-            <ProcessNumberText>Proc.: {details.pasta}</ProcessNumberText>
-          </ProcessNumber>
+  const renderProcesses = useCallback(() => (
+    <Movement key={3}>
+      <MovementTags>
+        {details.dataDisponibilizacaoSemHora && (
+          <Tag background={colors.gray}>
+            <TagText>Andamento realizado em: {details.dataDisponibilizacaoSemHora}</TagText>
+          </Tag>
         )}
-        <MovementContent>{details.descricaoAndamento}</MovementContent>
+        {details.fonte && (
+          <Tag background={colors.gray}>
+            <TagText>{details.fonte}</TagText>
+          </Tag>
+        )}
+        {details.identificador && (
+          <Tag background={colors.gray}>
+            <TagText>{details.identificador}</TagText>
+          </Tag>
+        )}
 
-      </Movement>
-    )
-  });
+      </MovementTags>
+      {details.pasta && (
+        <ProcessNumber>
+          <ProcessNumberText>Proc.: {details.pasta}</ProcessNumberText>
+        </ProcessNumber>
+      )}
+      <MovementContent>{details.descricaoAndamento}</MovementContent>
+
+    </Movement>
+  ));
 
   const renderPublication = useCallback(() => {
     const { publicacao } = movement.movimento;
@@ -149,29 +146,35 @@ export default MovementDetail = props => {
 
         </MovementTags>
 
-        {publicacao.processosPublicacoes && (
-          <ProcessNumber>
-            <ProcessNumberText>Proc.: {MaskCnj(publicacao.processosPublicacoes[0].numeroProcesso)}</ProcessNumberText>
-          </ProcessNumber>
-        )}
-
-        {!publicacao.processosPublicacoes && (
+        {publicacao.processosPublicacoes ?
+          <>
+            {(publicacao.processosPublicacoes.length > 0) ?
+              <ProcessNumber>
+                <ProcessNumberText>Proc.: {MaskCnj(publicacao.processosPublicacoes[0].numeroProcesso)}</ProcessNumberText>
+              </ProcessNumber>
+              : <ProcessNumber>
+                <ProcessNumberText color={colors.red}>Proc.: Não identificado</ProcessNumberText>
+                <MaterialIcons name="add-circle-outline" size={20} color={colors.red} onPress={() => console.log('teste')} />
+              </ProcessNumber>}
+          </> :
           <ProcessNumber>
             <ProcessNumberText color={colors.red}>Proc.: Não identificado</ProcessNumberText>
             <MaterialIcons name="add-circle-outline" size={20} color={colors.red} onPress={() => console.log('teste')} />
           </ProcessNumber>
-        )}
+        }
+
         <MovementContent>{publicacao.conteudo}</MovementContent>
         <MovementDispatch>{publicacao.despacho}</MovementDispatch>
       </Movement>
     )
   });
 
-  const customActions = useCallback(() => (
-    <HeaderAction key={1}>
-      <MaterialIcons name="event" size={20} color={colors.fadedBlack} onPress={() => console.log('custom')} />
-    </HeaderAction>
-  ));
+  const customActions = useCallback(() => null, []);
+  // (
+  //   <HeaderAction key={1}>
+  //     <MaterialIcons name="event" size={20} color={colors.fadedBlack} onPress={() => console.log('custom')} />
+  //   </HeaderAction>
+  // ));
 
   return (
     <Container>

@@ -4,9 +4,31 @@ import { call, put, delay } from 'redux-saga/effects';
 import MovementActions from 'store/ducks/Movement';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 
-export function* movementRead(action) {
+export function* getMovement({ param }) {
   try {
-    const { id, idMovProcessoCliente, movementType } = action.params;
+    const response = yield call(
+      Api.get,
+      `/core/v1/detalhes-movimentacoes/${param.movementType}?campos=*&Ids=${param.movementId}`
+    );
+    yield delay(3000);
+    yield put(MovementActions.movementSuccess(response.data));
+  } catch (err) {
+    const { status } = err.response;
+
+    if (status !== 401) {
+      yield put(
+        ToastNotifyActions.toastNotifyShow(
+          'Não foi possível carregar os dados da movimentação',
+          true
+        )
+      );
+    }
+  }
+}
+
+export function* movementRead({ params }) {
+  try {
+    const { id, idMovProcessoCliente, movementType } = params;
 
     const data = {
       itens: [{

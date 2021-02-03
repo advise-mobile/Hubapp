@@ -11,6 +11,8 @@ import { setTopLevelNavigator } from './navigation/NavigationService';
 import StatusBar from './components/StatusBar';
 import ToastNotify from './components/ToastNotify';
 
+import { getLoggedUser } from 'helpers/Permissions';
+
 LogBox.ignoreLogs([
   "Can't perform a React state update on an unmounted component",
 ]);
@@ -21,34 +23,41 @@ const App = () => {
   const colorScheme = Appearance.getColorScheme();
   const barStyle = colorScheme === 'dark' ? 'light-content' : 'dark-content';
 
-  // const onReceived = useCallback(notification => {
-  //   console.log("Notification received: ", notification);
-  // }, []);
+  const onReceived = useCallback(notification => {
+    console.log("Notification received: ", notification);
+  }, []);
 
-  // const onOpened = useCallback(openResult => {
-  //   console.log('Message: ', openResult.notification.payload.body);
-  //   console.log('Data: ', openResult.notification.payload.additionalData);
-  //   console.log('isActive: ', openResult.notification.isAppInFocus);
-  //   console.log('openResult: ', openResult);
-  // }, []);
+  const onOpened = useCallback(openResult => {
+    console.log('Message: ', openResult.notification.payload.body);
+    console.log('Data: ', openResult.notification.payload.additionalData);
+    console.log('isActive: ', openResult.notification.isAppInFocus);
+    console.log('openResult: ', openResult);
+  }, []);
 
-  // const onIds = useCallback(async device => {
-  //   const user = await getLoggedUser();
-  //   console.log({
-  //     'idUsuarioCliente': user.idUsuarioCliente,
-  //     'dispositivo': device.userId,
-  //     'os': Platform.OS
-  //   });
-  // }, []);
+  const onIds = useCallback(async device => {
+    const user = await getLoggedUser();
 
-  // const myiOSPromptCallback = () => {}
+    OneSignal.sendTags({
+      'idUsuarioCliente': user.idUsuarioCliente,
+      'dispositivo': device.userId,
+      'os': Platform.OS,
+      'name': user.nome
+    });
+
+    console.log({
+      'idUsuarioCliente': user.idUsuarioCliente,
+      'dispositivo': device.userId,
+      'os': Platform.OS
+    });
+  }, []);
+
+  // const myiOSPromptCallback = () => { }
 
   // The promptForPushNotifications function code will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step below)
   // OneSignal.promptForPushNotificationsWithUserResponse(myiOSPromptCallback);
 
-  OneSignal.inFocusDisplaying(0);
+  // OneSignal.inFocusDisplaying(0);
   // OneSignal.addEventListener('received', onReceived);
-  // OneSignal.addEventListener('opened', onOpened);
   // OneSignal.addEventListener('ids', onIds);
 
   return (

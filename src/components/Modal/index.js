@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import { colors } from 'assets/styles';
@@ -6,15 +6,23 @@ import {
   Container,
   Title,
   Header,
-  Footer
+  Footer,
+  ClearFilters,
+  ClearText,
 } from './styles';
 
 export default Modal = forwardRef((props, ref) => {
-  const renderHeader = () => (
+  const renderHeader = useCallback(() => (
     <Header>
       <Title>{props.title && props.title}</Title>
+
+      {props.filters > 0 &&
+        <ClearFilters onPress={() => props.clear()}>
+          <ClearText>Limpar ({props.filters})</ClearText>
+        </ClearFilters>
+      }
     </Header>
-  );
+  ), [props]);
 
   const renderFooter = () => (
     <Footer>
@@ -30,6 +38,8 @@ export default Modal = forwardRef((props, ref) => {
       HeaderComponent={renderHeader}
       FooterComponent={renderFooter}
       handlePosition="inside"
+      avoidKeyboardLikeIOS
+      keyboardAvoidingBehavior='height'
     >
       <Container>
         {props.children}

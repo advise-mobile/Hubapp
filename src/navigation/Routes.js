@@ -24,26 +24,16 @@ import Login from '../pages/Login';
 import Folders from '../pages/Folders';
 import Movements from '../pages/Movements';
 import MovementDetail from '../pages/Movements/Details';
-// import Add from '../pages/Process/Add';
-// import PublicationDetail from '../pages/Movements/Details/Publication';
-// import Process from '../pages/Process';
-// import Advogados from '../pages/Movements/ProcessDetailTabs/Advogados';
-// import Partes from '../pages/Movements/ProcessDetailTabs/Partes';
-
-// // Movements Filters
-// import Filters from '../pages/Movements/Filters';
-// import FilterFonts from '../pages/Movements/Filters/Fonts';
-// import FilterKeywords from '../pages/Movements/Filters/Keywords';
-// import FilterJournal from '../pages/Movements/Filters/Journal';
-// import FilterTribunal from '../pages/Movements/Filters/Tribunal';
-// import FilterDateOfAvailability from '../pages/Movements/Filters/DateOfAvailability';
-// import SituationFilter from '../pages/Movements/Filters/Situation';
 
 // // Jurisprudences
 import Jurisprudence from '../pages/Jurisprudence';
 import JurisprudenceList from '../pages/Jurisprudence/List';
 import JurisprudenceDetail from '../pages/Jurisprudence/Details';
 // import FilterSelect from '../pages/Jurisprudence/Filters/FilterSelect';
+
+import Deadlines from 'pages/Deadlines';
+import DeadlinesDetails from 'pages/Deadlines/Details';
+
 
 // Menu Main
 import MenuMain from './RoutesTab';
@@ -58,6 +48,8 @@ const AppStack = createStackNavigator(
     Folders,
     Movements,
     MovementDetail,
+    Deadlines,
+    DeadlinesDetails,
     // Account,
     // AccountUser,
     // AccountProfile,
@@ -98,7 +90,7 @@ const Routes = createAppContainer(
       App: AppStack,
     },
     {
-      initialRouteName: 'App',
+      initialRouteName: 'Intro',
     }
   )
 );

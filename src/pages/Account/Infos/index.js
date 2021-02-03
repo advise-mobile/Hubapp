@@ -146,164 +146,170 @@ export default Infos = props => {
             Icon={() => <MaterialIcons name="arrow-drop-down" size={18} color="gray" />}
           />
         </PickerContainer>
-        {loading ? <Spinner /> :
-          <ProfileContainer>
-            {scene === 'user' ?
-              <>
-                <ProfileImageContainer>
-                  <ProfileImageButton onPress={() => choosePicture()} active={userData.data.foto ? true : false}>
-                    <ProfileImage source={{ uri: `data:image/png;charset=utf-8;base64,${userData.data.foto}` }} />
-                  </ProfileImageButton>
-                </ProfileImageContainer>
-                <InfoContainer>
-                  <InfoTitle>Nome</InfoTitle>
-                  <InfoValue
-                    editable={editMode}
-                    onChangeText={value => setUserData({ data: { ...userData.data, nome: value } })}
-                    value={userData.data.nome || 'Não informado'}
-                  />
-                </InfoContainer>
-                <InfoContainer>
-                  <InfoTitle>Gênero</InfoTitle>
-                  <InfoCustomValue editable={editMode}>
-                    <RNPickerSelect
-                      placeholder={{}}
-                      disabled={!editMode}
-                      doneText="Selecionar"
-                      style={pickerSelectStyles}
-                      value={userData.data.idSexo}
-                      onValueChange={value => setUserData({ data: { ...userData.data, idSexo: value } })}
-                      items={[
-                        {
-                          label: "Masculino",
-                          value: -1,
-                        },
-                        {
-                          label: "Feminino",
-                          value: -2,
-                        },
-                        {
-                          label: "Não informar",
-                          value: -3,
-                        }
-                      ]}
-                    />
-                  </InfoCustomValue>
-                </InfoContainer>
-                <InfoContainer>
-                  <InfoTitle>Telefone</InfoTitle>
-                  <InfoValue
-                    editable={editMode}
-                    keyboardType="phone-pad"
-                    value={userData.data.fone1 || 'Não informado'}
-                    onChangeText={value => setUserData({ data: { ...userData.data, fone1: value } })}
-                  />
-                </InfoContainer>
-                <InfoContainer>
-                  <InfoTitle>Data de nascimento</InfoTitle>
-                  <Datepicker
-                    enabled={editMode}
-                    date={FormatDateBR(userData.data.dataNascimentoAbertura)}
-                    onDateChange={date => setUserData({ data: { ...userData.data, dataNascimentoAbertura: FormatFullDateEN(date) } })}
-                  />
-                </InfoContainer>
-                {userData.oab && [
-                  (<InfoContainer key={1}>
-                    <InfoTitle>N° da OAB</InfoTitle>
+        <ProfileContainer>
+          {scene === 'user' ?
+            <>
+              {loading ? <Spinner height={50} /> :
+                <>
+                  <ProfileImageContainer>
+                    <ProfileImageButton onPress={() => choosePicture()} active={userData.data.foto ? true : false}>
+                      <ProfileImage source={{ uri: `data:image/png;charset=utf-8;base64,${userData.data.foto}` }} />
+                    </ProfileImageButton>
+                  </ProfileImageContainer>
+                  <InfoContainer>
+                    <InfoTitle>Nome</InfoTitle>
                     <InfoValue
                       editable={editMode}
-                      keyboardType="numeric"
-                      value={userData.oab.numero || 'Não informado'}
-                      onChangeText={value => setUserData({ oab: { ...userData.oab, numero: value } })}
+                      onChangeText={value => setUserData({ data: { ...userData.data, nome: value } })}
+                      value={userData.data.nome || 'Não informado'}
                     />
-                  </InfoContainer>),
-                  (<InfoContainer key={2}>
-                    <InfoTitle>UF da OAB</InfoTitle>
+                  </InfoContainer>
+                  <InfoContainer>
+                    <InfoTitle>Gênero</InfoTitle>
                     <InfoCustomValue editable={editMode}>
                       <RNPickerSelect
-                        style={pickerSelectStyles}
-                        onValueChange={value => setUserData({ oab: { ...userData.oab, idUF: value } })}
                         placeholder={{}}
-                        doneText="Selecionar"
-                        value={userData.oab.idUF}
                         disabled={!editMode}
-                        items={ufs}
+                        doneText="Selecionar"
+                        style={pickerSelectStyles}
+                        value={userData.data.idSexo}
+                        onValueChange={value => setUserData({ data: { ...userData.data, idSexo: value } })}
+                        items={[
+                          {
+                            label: "Masculino",
+                            value: -1,
+                          },
+                          {
+                            label: "Feminino",
+                            value: -2,
+                          },
+                          {
+                            label: "Não informar",
+                            value: -3,
+                          }
+                        ]}
                       />
                     </InfoCustomValue>
-                  </InfoContainer>),
-                  (<InfoContainer key={3}>
-                    <InfoTitle>Tipo da OAB</InfoTitle>
-                    <InfoCustomValue editable={editMode}>
-                      <RNPickerSelect
-                        style={pickerSelectStyles}
-                        onValueChange={value => setUserData({ oab: { ...userData.oab, idTipoOAB: value } })}
-                        placeholder={{}}
-                        doneText="Selecionar"
-                        value={userData.oab.idTipoOAB}
-                        disabled={!editMode}
-                        items={oabTypes}
+                  </InfoContainer>
+                  <InfoContainer>
+                    <InfoTitle>Telefone</InfoTitle>
+                    <InfoValue
+                      editable={editMode}
+                      keyboardType="phone-pad"
+                      value={userData.data.fone1 || 'Não informado'}
+                      onChangeText={value => setUserData({ data: { ...userData.data, fone1: value } })}
+                    />
+                  </InfoContainer>
+                  <InfoContainer>
+                    <InfoTitle>Data de nascimento</InfoTitle>
+                    <Datepicker
+                      enabled={editMode}
+                      date={FormatDateBR(userData.data.dataNascimentoAbertura)}
+                      onDateChange={date => setUserData({ data: { ...userData.data, dataNascimentoAbertura: FormatFullDateEN(date) } })}
+                    />
+                  </InfoContainer>
+                  {userData.oab && [
+                    (<InfoContainer key={1}>
+                      <InfoTitle>N° da OAB</InfoTitle>
+                      <InfoValue
+                        editable={editMode}
+                        keyboardType="numeric"
+                        value={userData.oab.numero || 'Não informado'}
+                        onChangeText={value => setUserData({ oab: { ...userData.oab, numero: value } })}
                       />
-                    </InfoCustomValue>
-                  </InfoContainer>)
-                ]}
-                <InfoContainer>
-                  <InfoTitle>Email</InfoTitle>
-                  <InfoValue
-                    editable={editMode}
-                    keyboardType="email-address"
-                    value={userData.data.email || 'Não informado'}
-                    onChangeText={value => setUserData({ data: { ...userData.data, email: value } })}
-                  />
-                </InfoContainer>
-                <InfoContainer>
-                  <InfoTitle>Legal</InfoTitle>
-                  <InfoLink onPress={() => openLink("termos")}>
-                    <InfoLinkText>Termos de uso</InfoLinkText>
-                  </InfoLink>
-                  <InfoText> e </InfoText>
-                  <InfoLink onPress={() => openLink("politica")}>
-                    <InfoLinkText>Política de Privacidade</InfoLinkText>
-                  </InfoLink>
-                </InfoContainer>
-                <InfoContainer>
-                  <InfoTitle>Cancelar contrato</InfoTitle>
-                  <InfoText>Entre em contato para realizar o pedido de cancelamento do contrato em vigência.</InfoText>
-                </InfoContainer>
+                    </InfoContainer>),
+                    (<InfoContainer key={2}>
+                      <InfoTitle>UF da OAB</InfoTitle>
+                      <InfoCustomValue editable={editMode}>
+                        <RNPickerSelect
+                          style={pickerSelectStyles}
+                          onValueChange={value => setUserData({ oab: { ...userData.oab, idUF: value } })}
+                          placeholder={{}}
+                          doneText="Selecionar"
+                          value={userData.oab.idUF}
+                          disabled={!editMode}
+                          items={ufs}
+                        />
+                      </InfoCustomValue>
+                    </InfoContainer>),
+                    (<InfoContainer key={3}>
+                      <InfoTitle>Tipo da OAB</InfoTitle>
+                      <InfoCustomValue editable={editMode}>
+                        <RNPickerSelect
+                          style={pickerSelectStyles}
+                          onValueChange={value => setUserData({ oab: { ...userData.oab, idTipoOAB: value } })}
+                          placeholder={{}}
+                          doneText="Selecionar"
+                          value={userData.oab.idTipoOAB}
+                          disabled={!editMode}
+                          items={oabTypes}
+                        />
+                      </InfoCustomValue>
+                    </InfoContainer>)
+                  ]}
+                  <InfoContainer>
+                    <InfoTitle>Email</InfoTitle>
+                    <InfoValue
+                      editable={editMode}
+                      keyboardType="email-address"
+                      value={userData.data.email || 'Não informado'}
+                      onChangeText={value => setUserData({ data: { ...userData.data, email: value } })}
+                    />
+                  </InfoContainer>
+                </>
+              }
+              <InfoContainer>
+                <InfoTitle>Legal</InfoTitle>
+                <InfoLink onPress={() => openLink("termos")}>
+                  <InfoLinkText>Termos de uso</InfoLinkText>
+                </InfoLink>
+                <InfoText> e </InfoText>
+                <InfoLink onPress={() => openLink("politica")}>
+                  <InfoLinkText>Política de Privacidade</InfoLinkText>
+                </InfoLink>
+              </InfoContainer>
+              <InfoContainer>
+                <InfoTitle>Cancelar contrato</InfoTitle>
+                <InfoText>Entre em contato para realizar o pedido de cancelamento do contrato em vigência.</InfoText>
+              </InfoContainer>
 
-                <ButtonLogout onPress={() => logout()}>
-                  <LogoutText>Sair do aplicativo</LogoutText>
-                </ButtonLogout>
-              </>
-              :
-              <>
-                <InfoContainer>
-                  <InfoTitle>Nome</InfoTitle>
-                  <InfoText>{customerData.pessoaCliente?.nome || 'Não informado'}</InfoText>
-                </InfoContainer>
-                <InfoContainer>
-                  <InfoTitle>Documento</InfoTitle>
-                  <InfoText>{customerData.pessoaCliente?.cpfcnpj || 'Não informado'}</InfoText>
-                </InfoContainer>
-                <InfoContainer>
-                  <InfoTitle>CEP</InfoTitle>
-                  <InfoText>{customerData.pessoaCliente?.cep || 'Não informado'}</InfoText>
-                </InfoContainer>
-                <InfoContainer>
-                  <InfoTitle>Endereco</InfoTitle>
-                  <InfoText>{customerData.pessoaCliente?.logradouro || 'Não informado'}</InfoText>
-                </InfoContainer>
-                <InfoContainer>
-                  <InfoTitle>Telefone</InfoTitle>
-                  <InfoText>{customerData.pessoaCliente?.fone1 || 'Não informado'}</InfoText>
-                </InfoContainer>
-                <InfoContainer>
-                  <InfoTitle>Complemento</InfoTitle>
-                  <InfoText>{customerData.pessoaCliente?.complementoEndereco || 'Não informado'}</InfoText>
-                </InfoContainer>
-              </>
-            }
-          </ProfileContainer>
-        }
+              <ButtonLogout onPress={() => logout()}>
+                <LogoutText>Sair do aplicativo</LogoutText>
+              </ButtonLogout>
+            </>
+            :
+            <>
+              {loading ? <Spinner /> :
+                <>
+                  <InfoContainer>
+                    <InfoTitle>Nome</InfoTitle>
+                    <InfoText>{customerData.pessoaCliente?.nome || 'Não informado'}</InfoText>
+                  </InfoContainer>
+                  <InfoContainer>
+                    <InfoTitle>Documento</InfoTitle>
+                    <InfoText>{customerData.pessoaCliente?.cpfcnpj || 'Não informado'}</InfoText>
+                  </InfoContainer>
+                  <InfoContainer>
+                    <InfoTitle>CEP</InfoTitle>
+                    <InfoText>{customerData.pessoaCliente?.cep || 'Não informado'}</InfoText>
+                  </InfoContainer>
+                  <InfoContainer>
+                    <InfoTitle>Endereco</InfoTitle>
+                    <InfoText>{customerData.pessoaCliente?.logradouro || 'Não informado'}</InfoText>
+                  </InfoContainer>
+                  <InfoContainer>
+                    <InfoTitle>Telefone</InfoTitle>
+                    <InfoText>{customerData.pessoaCliente?.fone1 || 'Não informado'}</InfoText>
+                  </InfoContainer>
+                  <InfoContainer>
+                    <InfoTitle>Complemento</InfoTitle>
+                    <InfoText>{customerData.pessoaCliente?.complementoEndereco || 'Não informado'}</InfoText>
+                  </InfoContainer>
+                </>
+              }
+            </>
+          }
+        </ProfileContainer>
       </Warp>
     </Container>
   );

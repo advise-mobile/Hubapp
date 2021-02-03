@@ -71,11 +71,11 @@ export default function jurisprudenceDetails(props) {
               <TagText>{jurisprudence.orgaoJulgador}</TagText>
             </Tag> : null}
 
-          {jurisprudence.grupo.map((group, i) =>
+          {jurisprudence.grupo ? jurisprudence.grupo.map((group, i) =>
             <Tag key={6 + i}>
               <TagText>{group}</TagText>
             </Tag>
-          )}
+          ) : null}
         </Tags>
         <Content>
           <HTML source={{ html: `<title>${jurisprudence.tituloMarcado || jurisprudence.titulo}</title><description>${jurisprudence.ementaMarcada}</description>` }} renderers={renderers} ignoredTags={['strong']} />

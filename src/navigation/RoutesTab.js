@@ -14,8 +14,8 @@ import Folders from '../pages/Folders';
 import Login from '../pages/Login';
 import People from '../pages/People';
 import Jurisprudence from '../pages/Jurisprudence';
-// import Process from '../pages/Process';
 import Account from '../pages/Account';
+import Deadlines from '../pages/Deadlines';
 
 //Custom Icons
 import UserIcon from 'components/UserIcon';
@@ -28,25 +28,25 @@ const avatar = AsyncStorage.getItem('@AdviseStart:avatar');
 
 const RoutesTab = createBottomTabNavigator(
   {
-    Dashboard: {
-      screen: Blank,
-      navigationOptions: () => ({
-        tabBarIcon: ({ tintColor }) => (
-          <Image
-            source={IconLogo}
-            style={{ width: 24, height: 24, tintColor: tintColor }}
-          />
-        ),
-      }),
-    },
-    Main2: {
-      screen: People,
-      navigationOptions: () => ({
-        tabBarIcon: ({ tintColor }) => (
-          <MaterialIcons name="person" size={25} color={tintColor} />
-        ),
-      }),
-    },
+    // Dashboard: {
+    //   screen: Blank,
+    //   navigationOptions: () => ({
+    //     tabBarIcon: ({ tintColor }) => (
+    //       <Image
+    //         source={IconLogo}
+    //         style={{ width: 24, height: 24, tintColor: tintColor }}
+    //       />
+    //     ),
+    //   }),
+    // },
+    // Main2: {
+    //   screen: People,
+    //   navigationOptions: () => ({
+    //     tabBarIcon: ({ tintColor }) => (
+    //       <MaterialIcons name="person" size={25} color={tintColor} />
+    //     ),
+    //   }),
+    // },
     Folders: {
       screen: Folders,
       navigationOptions: () => ({
@@ -55,14 +55,14 @@ const RoutesTab = createBottomTabNavigator(
         ),
       }),
     },
-    Main3: {
-      screen: Blank,
-      navigationOptions: () => ({
-        tabBarIcon: ({ tintColor }) => (
-          <MaterialIcons name="attach-money" size={25} color={tintColor} />
-        ),
-      }),
-    },
+    // Main3: {
+    //   screen: Blank,
+    //   navigationOptions: () => ({
+    //     tabBarIcon: ({ tintColor }) => (
+    //       <MaterialIcons name="attach-money" size={25} color={tintColor} />
+    //     ),
+    //   }),
+    // },
     Jurisprudence: {
       screen: Jurisprudence,
       navigationOptions: () => ({
@@ -71,8 +71,8 @@ const RoutesTab = createBottomTabNavigator(
         ),
       }),
     },
-    Process: {
-      screen: Login,
+    Deadlines: {
+      screen: Deadlines,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
           <MaterialIcons name="event" size={25} color={tintColor} />
@@ -88,33 +88,6 @@ const RoutesTab = createBottomTabNavigator(
       }),
     },
 
-    // Process: {
-    //   screen: Process,
-    //   navigationOptions: () => ({
-    //     tabBarLabel: 'Processos',
-    //     tabBarIcon: ({ tintColor }) => (
-    //       <FontAwesome name="book" size={25} color={tintColor} />
-    //     ),
-    //   }),
-    // },
-    // Jurisprudence: {
-    //   screen: Jurisprudence,
-    //   navigationOptions: () => ({
-    //     tabBarLabel: 'Jurisprudência',
-    //     tabBarIcon: ({ tintColor }) => (
-    //       <MaterialIcons name="gavel" size={25} color={tintColor} />
-    //     ),
-    //   }),
-    // },
-    // Account: {
-    //   screen: Account,
-    //   navigationOptions: () => ({
-    //     tabBarLabel: 'Meus Dados',
-    //     tabBarIcon: ({ tintColor }) => (
-    //       <MaterialIcons name="account-circle" size={25} color={tintColor} />
-    //     ),
-    //   }),
-    // },
   },
   {
     tabBarOptions: {
@@ -136,7 +109,7 @@ const RoutesTab = createBottomTabNavigator(
         marginBottom: -2,
       },
     },
-    initialRouteName: 'Jurisprudence',
+    initialRouteName: 'Folders',
     tabBarPosition: 'top',
     swipeEnabled: false,
     animationEnabled: false,

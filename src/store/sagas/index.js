@@ -27,16 +27,20 @@ import { getCustomer } from './Customer';
 import { getFolderKeywords } from './FolderKeywords';
 import { getFolderProcesses } from './FolderProcesses';
 import { getMovement, movementRead } from './Movement';
-import { getMovements, getDiaries } from './Movements';
+import { getMovements, getDiaries, getTribunals } from './Movements';
 import { getProcess } from './Process';
 import { getPeople } from './People';
 import {
   getDeadlines,
-  putDeadlineConcluded,
-  putDeadlineImportant,
-  putDeadlineInnactive,
+  markAsImportant,
+  markAsConcluded,
+  sendDeadlineEmail,
+  markAsInactive,
+  getTypes,
+  addDeadline,
+  editDeadline,
 } from './Deadlines';
-import { getScheduleId, postDeadline, putDeadline } from './DeadlineAdd';
+// import { getScheduleId, postDeadline, putDeadline } from './DeadlineAdd';
 import { getJournal } from './Journal';
 import { getKeywords } from './Keywords';
 import { getFonts } from './Fonts';
@@ -66,37 +70,42 @@ export default function* rootSaga() {
     takeLatest(FolderProcessesTypes.FOLDER_PROCESSES_REQUEST, getFolderProcesses),
 
     // Movement
+    takeLatest(MovementTypes.MOVEMENT_REQUEST, getMovement),
     takeLatest(MovementTypes.MOVEMENT_READ_REQUEST, movementRead),
 
     // Movements
     takeLatest(MovementsTypes.MOVEMENTS_REQUEST, getMovements),
+    takeLatest(MovementsTypes.MOVEMENTS_REFRESH, getMovements),
     takeLatest(MovementsTypes.DIARIES_REQUEST, getDiaries),
+    takeLatest(MovementsTypes.TRIBUNALS_REQUEST, getTribunals),
     takeLatest(ProcessTypes.PROCESS_REQUEST, getProcess),
 
     //PEOPLE
     takeLatest(PeopleTypes.PEOPLE_REQUEST, getPeople),
 
     // Add Deadline
-    takeLatest(DeadlineAddTypes.POST_DEADLINE, postDeadline),
-    takeLatest(DeadlineAddTypes.PUT_DEADLINE, putDeadline),
-    takeLatest(DeadlineAddTypes.GET_SCHEDULE_ID, getScheduleId),
+    takeLatest(DeadlinesTypes.DEADLINES_ADD, addDeadline),
+    takeLatest(DeadlinesTypes.DEADLINES_EDIT, editDeadline),
+    // takeLatest(DeadlineAddTypes.GET_SCHEDULE_ID, getScheduleId),
 
     // Deadlines
     takeLatest(DeadlinesTypes.DEADLINES_REQUEST, getDeadlines),
+    takeLatest(DeadlinesTypes.DEADLINES_EMAIL_REQUEST, sendDeadlineEmail),
 
     // Deadline
-    takeLatest(DeadlinesTypes.PUT_DEADLINE_IMPORTANT, putDeadlineImportant),
-    takeLatest(DeadlinesTypes.PUT_DEADLINE_CONCLUDED, putDeadlineConcluded),
-    takeLatest(DeadlinesTypes.PUT_DEADLINE_INNACTIVE, putDeadlineInnactive),
+    takeLatest(DeadlinesTypes.DEADLINES_MARK_AS_IMPORTANT, markAsImportant),
+    takeLatest(DeadlinesTypes.DEADLINES_MARK_AS_CONCLUDED, markAsConcluded),
+    takeLatest(DeadlinesTypes.DEADLINES_MARK_AS_INACTIVE, markAsInactive),
+    takeLatest(DeadlinesTypes.DEADLINES_TYPES_REQUEST, getTypes),
 
-    // Filters
-    takeLatest(JournalTypes.JOURNAL_REQUEST, getJournal),
-    takeLatest(KeywordsTypes.KEYWORDS_REQUEST, getKeywords),
-    takeLatest(FontsTypes.FONTS_REQUEST, getFonts),
-    takeLatest(TribunalTypes.TRIBUNAL_REQUEST, getTribunal),
+    // // Filters
+    // takeLatest(JournalTypes.JOURNAL_REQUEST, getJournal),
+    // takeLatest(KeywordsTypes.KEYWORDS_REQUEST, getKeywords),
+    // takeLatest(FontsTypes.FONTS_REQUEST, getFonts),
+    // takeLatest(TribunalTypes.TRIBUNAL_REQUEST, getTribunal),
 
-    // Select
-    takeLatest(SelectTypes.FETCH_SELECT_OPTIONS, fetchSelectOptions),
+    // // Select
+    // takeLatest(SelectTypes.FETCH_SELECT_OPTIONS, fetchSelectOptions),
 
     takeLatest(JurisprudenceTypes.JURISPRUDENCE_REQUEST, getJurisprudences),
     takeLatest(JurisprudenceTypes.JURISPRUDENCE_REFRESH, getJurisprudences),

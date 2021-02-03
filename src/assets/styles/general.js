@@ -34,6 +34,7 @@ const HeaderActionsLeft = styled.View`
   flex-direction: row;
   justify-content: flex-start;
   width: 65px;
+  height: 20;
 `;
 
 const HeaderActionsRight = styled.View`
@@ -155,19 +156,19 @@ const TabsActive = styled.View`
 
 const Actions = styled.View`
   top: 0;
-  flex: 1;
   right: 0;
   bottom: 0;
-  padding: 0px 20px;
   position: absolute;
   align-items: center;
   flex-direction: row;
-  justify-content: space-between;
   background: ${colors.white};
+  border-bottom-width: 1px;
+  border-bottom-color: #e5e5e5;
 `;
 
 const ActionButton = styled.TouchableOpacity`
-  padding: 0 12px;
+  padding: 0 14px;
+  background: ${colors.white}
 `;
 
 export {

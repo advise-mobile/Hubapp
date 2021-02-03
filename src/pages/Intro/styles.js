@@ -27,8 +27,16 @@ const Slide = styled.View`
     justify-content: center;
 `;
 
+const Icon = styled.Image`
+    padding: 18px;
+    flex: 1;
+    width: 24px;
+    height: 24px;
+`;
+
 const Image = styled.Image`
     margin: 0 32px 32px 32px;
+    flex: 4;
 `;
 
 const Title = styled.Text`
@@ -62,17 +70,20 @@ const ButtonText = styled.Text`
     text-align: center;
 `;
 
-const SlideContainer = styled.View``;
+const SlideContainer = styled.View`
+  flex: 3;
+`;
 
 export {
-    Container,
-    Warp,
-    HeaderLogo,
-    Slide,
-    Title,
-    Text,
-    Image,
-    NextButton,
-    ButtonText,
-    SlideContainer
+  Container,
+  Warp,
+  HeaderLogo,
+  Slide,
+  Title,
+  Text,
+  Icon,
+  Image,
+  NextButton,
+  ButtonText,
+  SlideContainer
 }

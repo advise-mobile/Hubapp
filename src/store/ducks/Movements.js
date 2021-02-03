@@ -2,13 +2,17 @@ import { createActions, createReducer } from 'reduxsauce';
 import Immutable from 'seamless-immutable';
 
 const { Types, Creators } = createActions({
-  movementsRequest: ['params'],
-  toggleMovements: ['checked'],
-  toggleAsRead: ['params'],
-  movementsSuccess: ['data', 'page'],
+  clearMovements: null,
   diariesRequest: ['params'],
   diariesSuccess: ['data'],
-  clearMovements: null,
+  movementsRefresh: ['params'],
+  movementsRefreshSuccess: ['data'],
+  movementsRequest: ['params'],
+  movementsSuccess: ['data', 'page'],
+  toggleAsRead: ['params'],
+  toggleMovements: ['checked'],
+  tribunalsRequest: ['params'],
+  tribunalsSuccess: ['data'],
 });
 
 export const MovementsTypes = Types;
@@ -18,10 +22,21 @@ export const INITIAL_STATE = Immutable({
   data: [],
   page: null,
   loading: false,
+  refreshing: false,
   diaries: [],
+  tribunals: [],
   userPermissions: [],
   endReached: false,
   havePermission: false
+});
+
+export const refreshRequest = state => state.merge({ refreshing: true });
+
+export const refreshSuccess = (state, action) => state.merge({
+  refreshing: false,
+  data: action.data.itens,
+  page: action.page,
+  endReached: action.data.endReached,
 });
 
 export const request = (state) => state.merge({
@@ -54,7 +69,7 @@ export const toggleMovements = (state, action) => {
   return state.merge({
     data: movements
   });
-}
+};
 
 export const toggleAsRead = (state, action) => {
   let movements = state.data.map(movement => {
@@ -70,7 +85,7 @@ export const toggleAsRead = (state, action) => {
   return state.merge({
     data: movements
   });
-}
+};
 
 export const diariesRequest = (state, action) => state.merge({
   loading: true,
@@ -83,12 +98,27 @@ export const diariesSuccess = (state, action) => {
   })
 };
 
+export const tribunalsRequest = state => state.merge({
+  loading: true,
+});
+
+export const tribunalsSuccess = (state, action) => {
+  return state.merge({
+    tribunals: action.data,
+    loading: false,
+  })
+};
+
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.MOVEMENTS_REQUEST]: request,
   [Types.MOVEMENTS_SUCCESS]: success,
+  [Types.MOVEMENTS_REFRESH]: refreshRequest,
+  [Types.MOVEMENTS_REFRESH_SUCCESS]: refreshSuccess,
   [Types.CLEAR_MOVEMENTS]: clear,
   [Types.DIARIES_REQUEST]: diariesRequest,
   [Types.DIARIES_SUCCESS]: diariesSuccess,
+  [Types.TRIBUNALS_REQUEST]: tribunalsRequest,
+  [Types.TRIBUNALS_SUCCESS]: tribunalsSuccess,
   [Types.TOGGLE_MOVEMENTS]: toggleMovements,
   [Types.TOGGLE_AS_READ]: toggleAsRead,
 });

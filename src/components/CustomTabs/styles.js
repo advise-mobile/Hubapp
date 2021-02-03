@@ -3,7 +3,6 @@ import { colors, fonts } from 'assets/styles';
 
 const Tabs = styled.View`
   height: 54;
-  padding-bottom: 12px;
   margin-horizontal: 36px;
   background: ${colors.white};
   overflow: scroll;

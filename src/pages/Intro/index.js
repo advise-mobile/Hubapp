@@ -2,13 +2,13 @@ import React from 'react';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { StyleSheet } from 'react-native';
 
-import { Container, Warp, Slide, Title, Image, Text, NextButton, ButtonText, SlideContainer } from './styles';
+import { Container, Warp, Slide, Title, Icon, Image, Text, NextButton, ButtonText, SlideContainer } from './styles';
 
 import { colors } from 'assets/styles';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Icon = require('assets/images/icon.png');
+const icon = require('assets/images/icon.png');
 
 const slides = [
   {
@@ -55,7 +55,7 @@ export default function Intro(props) {
   _renderItem = ({ item }) => {
     return (
       <Slide>
-        <Image source={Icon} resizeMode="contain" style={styles.icon} />
+        <Icon source={icon} resizeMode="contain" style={styles.icon} />
         <Image source={item.image} resizeMode="contain" />
         <SlideContainer>
           <Title>{item.title}</Title>

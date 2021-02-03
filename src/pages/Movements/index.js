@@ -1,10 +1,12 @@
-import React, { useState, useRef, useCallback, useEffect, createRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect, createRef, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Appearance } from 'react-native';
+
 import MovementsActions from 'store/ducks/Movements';
 import MovementActions from 'store/ducks/Movement';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import CheckBox from '@react-native-community/checkbox';
+// import CheckBox from '@react-native-community/checkbox';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 import Header from 'components/Header';
@@ -33,13 +35,21 @@ import {
   MovementTags,
   Tag,
   TagText,
+  NotFound,
+  Image,
+  NotFoundText,
+  NotFoundDescription,
 } from './styles';
 
 import { MaskCnj } from 'helpers/Mask';
 
+const colorScheme = Appearance.getColorScheme();
+
+const notFound = (colorScheme == 'dark') ? require('assets/images/not_found/movements_white.png') : require('assets/images/not_found/movements.png');
+
 export default Movements = props => {
   const listRef = useRef(null);
-  const filtersRef = createRef();
+  const filtersRef = useRef(null);
 
   const [filters, setFilters] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,12 +58,16 @@ export default Movements = props => {
   const endReached = useSelector(state => state.movements.endReached);
   const loading = useSelector(state => state.movements.loading);
   const diaries = useSelector(state => state.movements.diaries);
+  const tribunals = useSelector(state => state.movements.tribunals);
+  const refreshing = useSelector(state => state.movements.refreshing);
 
   const [folder] = useState(props.navigation.getParam('item'));
 
   const [selecteds, setSelecteds] = useState(0);
   const [selectAll, setSelectedAll] = useState(selecteds > 0 ? true : false);
   const [trigger, setTrigger] = useState(false);
+
+  const [formattedData, setFormattedData] = useState({});
 
   const dispatch = useDispatch();
 
@@ -73,21 +87,32 @@ export default Movements = props => {
           idPalavraChave: folder.idPalavraChave
         })
       );
+    else
+      dispatch(
+        MovementsActions.tribunalsRequest({
+          processNumber: folder.numeroProcesso
+        })
+      );
+
   }, [trigger, filters]);
 
-  const renderMovementTitle = useCallback(movement => {
-    let title = FormatDateBR(movement.dataHoraMovimento);
+  useEffect(() => {
+    const custom = (folder.idTipoPasta == -2) ? { title: 'Diários', name: 'diario', data: diaries } : { title: 'Tribunais', name: 'IdsOrgaosJudiciarios', data: tribunals.map(tribunal => { return { nome: tribunal.nomeOrgaoJudiciario, id: tribunal.idOrgaoJudiciario } }) };
+    setFormattedData(custom);
+  }, [props, tribunals, folder]);
 
-    let { andamentoProcesso } = movement;
 
-    if (movement.idTipoMovProcesso == -1) {
-      title += ' - ' + andamentoProcesso.siglaOrgaoJudiriario;
-      if (andamentoProcesso.nomeFontePesquisa) title += ' - ' + andamentoProcesso.nomeFontePesquisa;
-    } else
-      title += ' - ' + movement.publicacao.descricaoCadernoDiario;
-
-    return title;
-  });
+  const refresh = useCallback(() => {
+    dispatch(
+      MovementsActions.movementsRefresh({
+        filters,
+        page: 1,
+        perPage: 20,
+        folderId: folder.id,
+        refreshing: true,
+      })
+    );
+  }, [filters, folder]);
 
   const toggleCheck = useCallback((item, checked) => {
     item.checked = checked;
@@ -161,6 +186,33 @@ export default Movements = props => {
 
   });
 
+  const openRow = useCallback(key => !listRef.current._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-120) : closeOpenedRow(key));
+
+  const closeOpenedRow = useCallback(key => listRef.current._rows[key].closeRow());
+
+  const handleSubmit = useCallback(data => {
+    setCurrentPage(1);
+    setFilters(data);
+  }, []);
+
+  const renderFilters = useMemo(() => <Filters ref={filtersRef} customField={formattedData} submit={data => handleSubmit(data)} filters={filters} />, [formattedData]);
+
+  const openFilters = () => filtersRef.current?.open();
+
+  const renderMovementTitle = useCallback(movement => {
+    let title = FormatDateBR(movement.dataHoraMovimento);
+
+    let { andamentoProcesso } = movement;
+
+    if (movement.idTipoMovProcesso == -1) {
+      title += ' - ' + andamentoProcesso.siglaOrgaoJudiriario;
+      if (andamentoProcesso.nomeFontePesquisa) title += ' - ' + andamentoProcesso.nomeFontePesquisa;
+    } else
+      title += ' - ' + movement.publicacao.descricaoCadernoDiario;
+
+    return title;
+  });
+
   const renderHiddenItem = useCallback(data => (
     <Actions>
       <ActionButton onPress={() => toggleAsRead(data)}>
@@ -184,18 +236,19 @@ export default Movements = props => {
   const renderItem = ({ item }) => (
     <Movement>
       <MovementHeader>
-        <CheckBox
+        {/* <CheckBox
           lineWidth={1.5}
           boxType={'square'}
           value={item.checked}
           onValueChange={newValue => toggleCheck(item, newValue)}
           animationDuration={0.2}
           tintColor={colors.primary}
+          tintColors={{ true: colors.primary }}
           onCheckColor={colors.white}
           onFillColor={colors.primary}
           onTintColor={colors.primary}
           style={{ width: 18, height: 18, marginRight: 12 }}
-        />
+        /> */}
         <MovementHeading numberOfLines={1} onPress={() => props.navigation.navigate('MovementDetail', { movement: item })} underlayColor={colors.white} activeOpacity={1}>{renderMovementTitle(item.movimento)}</MovementHeading>
         <MovementAction onPress={() => openRow(item.id)}>
           <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
@@ -251,17 +304,6 @@ export default Movements = props => {
     </Movement>
   );
 
-  const openRow = useCallback(key => !listRef.current._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-120) : closeOpenedRow(key));
-
-  const closeOpenedRow = useCallback(key => listRef.current._rows[key].closeRow());
-
-  const handleSubmit = useCallback(data => {
-    setCurrentPage(1);
-    setFilters(data);
-  }, []);
-
-  const openFooter = () => filtersRef.current?.open();
-
   const renderFooter = useCallback(() => {
     if (!loading) return null;
 
@@ -271,29 +313,31 @@ export default Movements = props => {
   return (
     <Container>
       <Warp>
-        <Header title='Movimentações' add={() => { }} edit={() => { }} filter={() => openFooter()} />
+        {/* <Header title='Movimentações' add={() => { }} edit={() => { }} filter={() => openFilters()} /> */}
+        <Header title='Movimentações' filter={() => openFilters()} />
         {selecteds == 0 ? (
           <Heading>
             <BackButton onPress={() => props.navigation.goBack()}>
               <MaterialIcons name="arrow-back" size={20} color={colors.fadedBlack} />
             </BackButton>
-            <FolderTitle>{folder.nome}</FolderTitle>
+            <FolderTitle>{MaskCnj(folder.nome)}</FolderTitle>
           </Heading>
         ) : (
             <Heading>
               <FolderSelected>
-                <CheckBox
+                {/* <CheckBox
                   lineWidth={1.5}
                   boxType={'square'}
                   value={selectAll}
                   onValueChange={newValue => toggleCheckAll(newValue)}
                   animationDuration={0.2}
+                  tintColors={{ true: colors.primary }}
                   tintColor={colors.primary}
                   onCheckColor={colors.white}
                   onFillColor={colors.primary}
                   onTintColor={colors.primary}
                   style={{ width: 18, height: 18, marginRight: 12, marginVertical: 1 }}
-                />
+                /> */}
                 <FolderSelectedTitle>
                   <FolderSelectedTitleHighlight>Selecionado {selecteds}</FolderSelectedTitleHighlight> de {movements.length} publicações
                 </FolderSelectedTitle>
@@ -313,25 +357,34 @@ export default Movements = props => {
           )}
         {loading && currentPage == 1 ? <Spinner /> :
           <>
-            <SwipeListView
-              ref={listRef}
-              data={movements}
-              disableRightSwipe
-              previewRowKey={'2'}
-              rightOpenValue={-120}
-              closeOnRowOpen={false}
-              renderItem={renderItem}
-              previewOpenValue={-150}
-              previewOpenDelay={2000}
-              // rightOpenValue={-260}
-              onEndReached={onEndReached}
-              ListFooterComponent={renderFooter}
-              renderHiddenItem={renderHiddenItem}
-              keyExtractor={(item, _) => item.id.toString()}
-            />
-            <Filters ref={filtersRef} customField={{ title: 'Diários', name: 'diario', data: diaries }} submit={data => handleSubmit(data)} filters={filters} />
+            {movements.length > 0 ?
+              <SwipeListView
+                onRefresh={refresh}
+                refreshing={refreshing}
+                ref={listRef}
+                data={movements}
+                disableRightSwipe
+                previewRowKey={'2'}
+                rightOpenValue={-100}
+                closeOnRowOpen={false}
+                renderItem={renderItem}
+                previewOpenValue={-100}
+                previewOpenDelay={2000}
+                // rightOpenValue={-260}
+                onEndReached={onEndReached}
+                ListFooterComponent={renderFooter}
+                renderHiddenItem={renderHiddenItem}
+                keyExtractor={(item, _) => item.id.toString()}
+              /> :
+              <NotFound>
+                <Image source={notFound} />
+                <NotFoundText>Não há resultados</NotFoundText>
+                <NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+              </NotFound>
+            }
           </>
         }
+        {renderFilters}
       </Warp>
     </Container>
   );

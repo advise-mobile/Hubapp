@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { KeyboardAvoidingView } from 'react-native';
+import { KeyboardAvoidingView, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import FolderKeywordsActions from 'store/ducks/FolderKeywords';
 import FolderProcessesActions from 'store/ducks/FolderProcesses';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import CustomTabs from 'components/CustomTabs';
+import { PermissionsGroups, checkPermission } from 'helpers/Permissions';
+
 import Header from 'components/Header';
 import Spinner from 'components/Spinner';
+import CustomTabs from 'components/CustomTabs';
+import HasNotPermission from 'components/HasNotPermission';
 
 import { colors } from 'assets/styles';
+
+import { MaskCnj } from 'helpers/Mask';
 
 import {
   Container,
@@ -46,6 +51,8 @@ export default function Folders(props) {
   const [currentKeywordsPage, setCurrentKeywordsPage] = useState(1);
   const [triggerKeywordRequest, setTriggerKeywordRequest] = useState(false);
   const [currentProcessesPage, setCurrentProcessesPage] = useState(1);
+  const [publicationsPermission, setPublicationsPermission] = useState(false);
+  const [processesPermission, setProcessesPermission] = useState(false);
 
   const folderKeywords = useSelector(state => state.folderKeywords.data);
   const endKeywordsReached = useSelector(state => state.folderKeywords.endReached);
@@ -57,8 +64,15 @@ export default function Folders(props) {
   const loadingProcesses = useSelector(state => state.folderProcesses.loading);
   const totalProcessesNotRead = useSelector(state => state.folderProcesses.totalNotRead);
 
+  const image = require('assets/images/permissions/folders.png');
+
   const dispatch = useDispatch();
   const threshold = 0;
+
+  useEffect(() => {
+    checkPermission(PermissionsGroups.PUBLICATIONS).then(permission => setPublicationsPermission(permission));
+    checkPermission(PermissionsGroups.PROCESSES).then(permission => setProcessesPermission(permission));
+  }, [props]);
 
   useEffect(() => {
     dispatch(
@@ -162,36 +176,55 @@ export default function Folders(props) {
       style={{ flex: 1 }}
       tabLabel="Publicações"
     >
-      <List
-        data={folderKeywords}
-        renderItem={renderList}
-        keyExtractor={(_, index) => index.toString()}
-        onEndReached={onKeywordsEndReached}
-        onEndReachedThreshold={threshold}
-        ListHeaderComponent={renderKeywordsHeader()}
-        ListFooterComponent={renderKeywordsFooter}
-      />
+      {publicationsPermission ?
+        <List
+          data={folderKeywords}
+          renderItem={renderList}
+          keyExtractor={(_, index) => index.toString()}
+          onEndReached={onKeywordsEndReached}
+          onEndReachedThreshold={threshold}
+          ListHeaderComponent={renderKeywordsHeader()}
+          ListFooterComponent={renderKeywordsFooter}
+        />
+        :
+        <HasNotPermission
+          image={image}
+          title="Informações detalhadas sobre suas publicações e processos!"
+          body="Monitore e receba de forma unificada as informações referentes às suas publicações e processos. Escolha o tribunal, órgão oficial ou diários de forma simples e segura."
+        />
+      }
     </KeyboardAvoidingView>
   );
 
   const Processos = () => (
-    <List
+    <Container
       tabLabel="Processos"
-      data={folderProcesses}
-      renderItem={renderList}
-      keyExtractor={(_, index) => index.toString()}
-      onEndReached={onProcessesEndReached}
-      onEndReachedThreshold={threshold}
-      ListHeaderComponent={renderProcessesHeader}
-      ListFooterComponent={renderProcessesFooter}
-    />
+    >
+      {processesPermission ?
+        <List
+          data={folderProcesses}
+          renderItem={renderList}
+          keyExtractor={(_, index) => index.toString()}
+          onEndReached={onProcessesEndReached}
+          onEndReachedThreshold={threshold}
+          ListHeaderComponent={renderProcessesHeader}
+          ListFooterComponent={renderProcessesFooter}
+        />
+        :
+        <HasNotPermission
+          image={image}
+          title="InfoInformações detalhadas sobre suas publicações e processos!"
+          body="Monitore e receba de forma unificada as informações referentes às suas publicações e processos. Escolha o tribunal, órgão oficial ou diários de forma simples e segura."
+        />
+      }
+    </Container>
   );
 
   const renderList = folder => (
     <>
       { loadingKeywords && currentKeywordsPage == 1 ? <Spinner /> :
         <ListItem onPress={() => props.navigation.navigate('Movements', folder)}>
-          <ListItemText>{folder.item.nome}</ListItemText>
+          <ListItemText>{MaskCnj(folder.item.nome)}</ListItemText>
           <ListItemCounterContainer>
             <ListItemCounterText>{folder.item.totalNaoLidas}</ListItemCounterText>
           </ListItemCounterContainer>
@@ -206,7 +239,8 @@ export default function Folders(props) {
   return (
     <Container>
       <Warp>
-        <Header title='Movimentações' add={add} edit={edit} />
+        {/* <Header title='Movimentações' add={add} edit={edit} /> */}
+        <Header title='Movimentações' />
         <ScrollableTabView renderTabBar={renderTabBar}>
           {Publicacoes()}
           {Processos()}

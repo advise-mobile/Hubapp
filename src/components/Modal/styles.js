@@ -7,7 +7,9 @@ const Container = styled.View`
 `;
 
 const Header = styled.View`
+  flex-direction: row;
   justify-content: center;
+  align-items: center;
   padding: 40px 24px 12px 24px;
 `;
 
@@ -22,9 +24,25 @@ const Footer = styled.View`
   padding: 24px;
 `;
 
+const ClearFilters = styled.TouchableOpacity`
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+  height: 20;
+  margin: auto;
+`;
+
+const ClearText = styled.Text`
+  font-size: ${fonts.smaller};
+  color: ${colors.grayLight};
+  font-family: ${fonts.circularStdBold};
+`;
+
 export {
   Container,
   Header,
   Title,
-  Footer
+  Footer,
+  ClearFilters,
+  ClearText,
 };

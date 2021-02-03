@@ -78,6 +78,7 @@ export default People = (props) => {
             onCheckColor={colors.white}
             onFillColor={colors.primary}
             onTintColor={colors.primary}
+            tintColors={{ true: colors.primary }}
             style={{
               width: 18,
               height: 18,

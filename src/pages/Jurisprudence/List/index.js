@@ -204,8 +204,6 @@ export default function jurisprudenceList(props) {
   }, [filtersData]);
 
   const renderFilters = useMemo(() => {
-    console.log('called');
-
     const newFilters = makeFiltersData();
     return <Filters ref={filtersRef} filters={filters} data={newFilters} submit={data => handleSubmit(data)} />
   }, [jurisprudences, filtersData]);

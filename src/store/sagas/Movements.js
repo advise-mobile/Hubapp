@@ -48,7 +48,7 @@ function getFilterString(filters) {
 export function* getDiaries({ params }) {
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(200);
 
     const userInfo = yield getLoggedUser();
     const query = `campos=diario&FlListarVariacoes=true&idCliente=${userInfo.idCliente}&idPalavraChave=${params.idPalavraChave}&idUsuarioCliente=${userInfo.idUsuarioCliente}`;
@@ -76,9 +76,33 @@ export function* getDiaries({ params }) {
   }
 }
 
+export function* getTribunals({ params }) {
+  try {
+    yield getLogin();
+    yield delay(200);
+
+    const query = `campos=idOrgaoJudiciario,nomeOrgaoJudiciario&numeroProcesso=${params.processNumber}`;
+
+    const { data } = yield call(
+      Api.get,
+      `/core/v1/processos-solicitados/orgaos-judiciarios?${query}`
+    );
+
+    yield put(MovementsTypes.tribunalsSuccess(data.itens));
+    return;
+  } catch (err) {
+    yield put(
+      ToastNotifyActions.toastNotifyShow(
+        'Não foi possível carregar as Publicações',
+        true
+      )
+    );
+  }
+}
+
 export function* getMovements({ params }) {
   try {
-    const { filters } = params;
+    const { filters, refreshing } = params;
 
     const queryFilters = getFilterString(filters);
 
@@ -86,7 +110,7 @@ export function* getMovements({ params }) {
     const paginator = `registrosPorPagina=${params.perPage}&paginaAtual=${params.page}`;
 
     yield getLogin();
-    yield delay(700);
+    yield delay(200);
 
     let { data } = yield call(
       Api.get,
@@ -97,10 +121,14 @@ export function* getMovements({ params }) {
 
     const endReached = data.itens.length == 0;
 
-    yield put(MovementsTypes.movementsSuccess({ ...data, endReached }, params.page));
+    if (refreshing)
+      yield put(MovementsTypes.movementsRefreshSuccess({ ...data, endReached }, params.page));
+    else
+      yield put(MovementsTypes.movementsSuccess({ ...data, endReached }, params.page));
 
     return;
   } catch (err) {
+    console.error(err);
     yield put(
       ToastNotifyActions.toastNotifyShow(
         'Não foi possível carregar as Publicações',

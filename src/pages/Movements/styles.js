@@ -103,6 +103,32 @@ const TagText = styled.Text`
   font-size: ${fonts.smaller};
 `;
 
+const NotFound = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Image = styled.Image`
+  width: 170px;
+  height: 170px;
+  resize-mode: contain;
+  margin-bottom: 12px;
+`;
+
+const NotFoundText = styled.Text`
+  font-size: ${fonts.big};
+  color: ${colors.grayDarker};
+  font-family: ${fonts.circularStdBold};
+  margin-bottom: 8px;
+`;
+
+const NotFoundDescription = styled.Text`
+  color: ${colors.grayLight};
+  font-size: ${fonts.regular};
+  font-family: ${fonts.circularStdBook};
+`;
+
 export {
   Heading,
   FolderTitle,
@@ -120,4 +146,8 @@ export {
   MovementTags,
   Tag,
   TagText,
+  NotFound,
+  Image,
+  NotFoundText,
+  NotFoundDescription,
 }
