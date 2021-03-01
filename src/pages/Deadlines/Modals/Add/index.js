@@ -68,6 +68,8 @@ export default Add = forwardRef((props, ref) => {
   const [typesErr, setTypesErr] = useState(false);
   const [viewPicker, setViewPicker] = useState(false);
 
+  const onAdd = props.onAdd;
+
   const hidePicker = () => setViewPicker(false);
 
   const defaultValues = {
@@ -142,6 +144,7 @@ export default Add = forwardRef((props, ref) => {
     dispatch(DeadlinesActions.deadlinesAdd(itens));
 
     setTimeout(() => closeModal(), 500);
+    setTimeout(() => onAdd(), 1000);
 
     resetValues();
   };

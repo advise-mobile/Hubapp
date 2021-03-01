@@ -11,6 +11,7 @@ import Datepicker from 'components/DatePicker';
 import Spinner from 'components/Spinner';
 import UserActions from 'store/ducks/User';
 import CustomerActions from 'store/ducks/Customer';
+import AuthAction from 'store/ducks/Auth';
 
 import { colors, fonts } from 'assets/styles';
 import { Container, Warp, HeaderAction } from 'assets/styles/general';
@@ -32,6 +33,7 @@ import {
 } from './styles';
 
 import { FormatDateBR, FormatFullDateEN } from 'helpers/DateFunctions';
+import { disableNotificationDevice } from 'helpers/Pushs';
 
 export default Infos = props => {
   const [scene, setScene] = useState('user');
@@ -68,6 +70,16 @@ export default Infos = props => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (!props.selected) return;
+
+    props.setCustomActions(
+      <HeaderAction key={1}>
+        <MaterialIcons name={editMode ? "check" : "edit"} size={20} color={colors.fadedBlack} onPress={() => editMode ? editUserData(userData) : setEditMode(!editMode)} />
+      </HeaderAction >
+    );
+  }, [props.selected]);
+
+  useEffect(() => {
     props.setCustomActions(
       <HeaderAction key={1}>
         <MaterialIcons name={editMode ? "check" : "edit"} size={20} color={colors.fadedBlack} onPress={() => editMode ? editUserData(userData) : setEditMode(!editMode)} />
@@ -82,9 +94,9 @@ export default Infos = props => {
   }, []);
 
   const logout = useCallback(async () => {
-    await AsyncStorage.clear();
+    dispatch(AuthAction.logoutRequest());
 
-    props.navigation.navigate('Login');
+    disableNotificationDevice().then(() => AsyncStorage.clear(() => props.navigation.navigate('Login')));
   }, []);
 
   const editUserData = useCallback(data => {

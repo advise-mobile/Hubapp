@@ -74,7 +74,7 @@ export const deadlinesEdit = state => state.merge({
 });
 
 export const deadlinesProcessSuccess = (state, action) => state.merge({
-  data: [...action.data, ...state.data],
+  // data: [...action.data, ...state.data],
   processing: false,
 });
 

@@ -7,9 +7,9 @@ const PROD_URL = 'https://api.advise.com.br';
 
 // let BASE_URL = getUrl();
 export const BASE_URL = HOMOLOG_URL;
-const TOKEN = '@AdviseStart:token';
-const REFRESH_TOKEN = '@AdviseStart:refreshToken';
-const AVATAR = '@AdviseStart:avatar';
+const TOKEN = '@Advise:token';
+const REFRESH_TOKEN = '@Advise:refreshToken';
+const AVATAR = '@Advise:avatar';
 
 const api = axios.create({
   baseURL: BASE_URL,

@@ -67,7 +67,7 @@ export function* updateProfile({ param }) {
 
     yield put(ToastNotifyActions.toastNotifyShow('Sucesso ao atualizar sua foto', false));
 
-    yield AsyncStorage.setItem('@AdviseStart:avatar', foto);
+    yield AsyncStorage.setItem('@Advise:avatar', foto);
 
   } catch (err) {
     yield put(

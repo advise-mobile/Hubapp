@@ -3,7 +3,7 @@ import Api from 'services/Api';
 import jwtDecode from 'jwt-decode';
 
 export const getLoggedUser = async () => {
-  const token = await AsyncStorage.getItem('@AdviseStart:token');
+  const token = await AsyncStorage.getItem('@Advise:token');
 
   return jwtDecode(token);
 };
@@ -101,7 +101,7 @@ export const PermissionsGroups = {
 };
 
 export const checkPermission = async permissionGroup => {
-  const userPermissions = await AsyncStorage.getItem('@AdviseStart:permissions');
+  const userPermissions = await AsyncStorage.getItem('@Advise:permissions');
 
   let permissions = JSON.parse(userPermissions);
 
@@ -110,7 +110,7 @@ export const checkPermission = async permissionGroup => {
 
     let { data } = await getUserPermissions(user.idUsuarioCliente);
 
-    await AsyncStorage.setItem('@AdviseStart:permissions', JSON.stringify(data));
+    await AsyncStorage.setItem('@Advise:permissions', JSON.stringify(data));
 
     permissions = data;
   }

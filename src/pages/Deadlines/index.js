@@ -135,12 +135,13 @@ export default function Deadlines(props) {
   const [idAgenda, setIdAgenda] = useState(0);
 
 
-  useEffect(() => checkPermission(PermissionsGroups.SCHEDULE).then(permission => setPermission(permission)), [props]);
+  useEffect(() => { checkPermission(PermissionsGroups.SCHEDULE).then(permission => setPermission(permission)) }, [props]);
 
-  useEffect(() =>
+  useEffect(() => {
     getLoggedUser().then(user =>
       Api.get(`/core/v1/agendas?campos=*&idUsuarioCliente=${user.idUsuarioCliente}`).then(({ data }) => setIdAgenda(data.itens[0]?.id || 0))
-    ), []);
+    )
+  }, []);
 
   useEffect(() => {
     const removeIndex = props.navigation.getParam('removeIndex');
@@ -179,7 +180,9 @@ export default function Deadlines(props) {
 
   // const onMonthChange = (month, updateSource) => console.warn('ExpandableCalendarScreen onMonthChange: ', month, updateSource);
 
-  const renderAdd = useCallback(() => <Add ref={addRef} idAgenda={idAgenda} />, [idAgenda]);
+  const callbackAdd = useCallback(() => setPage(1), []);
+
+  const renderAdd = useCallback(() => <Add ref={addRef} idAgenda={idAgenda} onAdd={() => callbackAdd()} />, [idAgenda]);
 
   const renderEmail = useCallback(() => <Email ref={emailRef} deadline={currentDeadline} />, [currentDeadline]);
 
@@ -419,8 +422,8 @@ export default function Deadlines(props) {
     <Container>
       {havePermission ?
         <Warp>
-          {/* <Header title="Prazos" filter={data.length > 0 || Object.keys(customFilters).length > 0 ? () => filtersRef.current?.open() : null} add={() => addRef.current?.open()} /> */}
-          <Header title="Prazos" filter={data.length > 0 || Object.keys(customFilters).length > 0 ? () => filtersRef.current?.open() : null} />
+          <Header title="Prazos" filter={data.length > 0 || Object.keys(customFilters).length > 0 ? () => filtersRef.current?.open() : null} add={() => addRef.current?.open()} />
+          {/* <Header title="Prazos" filter={data.length > 0 || Object.keys(customFilters).length > 0 ? () => filtersRef.current?.open() : null} /> */}
           <Filters
             contentContainerStyle={{ alignItems: 'center' }}
             showsHorizontalScrollIndicator={false}

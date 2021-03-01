@@ -38,7 +38,7 @@ const UndelineTab = styled.View`
   left: 0;
   right: 0;
   background-color: ${colors.primary};
-  bottom: 12;
+  bottom: 15;
 `;
 
 export { TabsContainer, Tabs, Tab, TabButton, TabText, UndelineTab };

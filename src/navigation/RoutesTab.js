@@ -24,7 +24,7 @@ const IconLogo = require('assets/images/logoIcon.png');
 const arr = [];
 AsyncStorage.getItem('@IdProdutoAdvise').then((item) => arr.push(item));
 
-const avatar = AsyncStorage.getItem('@AdviseStart:avatar');
+const avatar = AsyncStorage.getItem('@Advise:avatar');
 
 const RoutesTab = createBottomTabNavigator(
   {

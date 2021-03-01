@@ -7,14 +7,16 @@ import Intro from '../pages/Intro';
 
 // // Auth
 import Login from '../pages/Login';
-// import Forgot from '../pages/Forgot';
+import Forgot from '../pages/Forgot';
 
 // // Search Folders
 // import Search from '../pages/Main/Search';
 
 // // Account
-// import Account from '../pages/Account';
-// import AccountUser from '../pages/Account/User';
+import Account from '../pages/Account';
+import Notifications from '../pages/Account/Notifications';
+import Pushs from '../pages/Account/Notifications/Pushs';
+import Emails from '../pages/Account/Notifications/Emails';
 // import AccountProfile from '../pages/Account/Profile';
 // import AccountOab from '../pages/Account/Oab';
 // import AccountCompany from '../pages/Account/Company';
@@ -31,16 +33,20 @@ import JurisprudenceList from '../pages/Jurisprudence/List';
 import JurisprudenceDetail from '../pages/Jurisprudence/Details';
 // import FilterSelect from '../pages/Jurisprudence/Filters/FilterSelect';
 
-import Deadlines from 'pages/Deadlines';
-import DeadlinesDetails from 'pages/Deadlines/Details';
-
+import Deadlines from '../pages/Deadlines';
+import DeadlinesDetails from '../pages/Deadlines/Details';
 
 // Menu Main
 import MenuMain from './RoutesTab';
 
-// const AuthStack = createStackNavigator({
-//   // Forgot,
-// });
+const AuthStack = createStackNavigator(
+  {
+    Forgot,
+  },
+  {
+    header: null,
+    headerMode: 'none',
+  });
 
 const AppStack = createStackNavigator(
   {
@@ -50,7 +56,10 @@ const AppStack = createStackNavigator(
     MovementDetail,
     Deadlines,
     DeadlinesDetails,
-    // Account,
+    Account,
+    Notifications,
+    Pushs,
+    Emails,
     // AccountUser,
     // AccountProfile,
     // AccountOab,
@@ -86,7 +95,7 @@ const Routes = createAppContainer(
     {
       Intro,
       Login,
-      // Auth: AuthStack,
+      Auth: AuthStack,
       App: AppStack,
     },
     {

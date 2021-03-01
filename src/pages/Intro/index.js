@@ -1,10 +1,13 @@
 import React from 'react';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { StyleSheet } from 'react-native';
+import jwtDecode from 'jwt-decode';
+import OneSignal from 'react-native-onesignal';
 
 import { Container, Warp, Slide, Title, Icon, Image, Text, NextButton, ButtonText, SlideContainer } from './styles';
 
 import { colors } from 'assets/styles';
+import env from 'services/env';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -88,9 +91,34 @@ export default function Intro(props) {
   };
 
   _checkAlreadySeen = async () => {
-    AsyncStorage.getItem('@AdviseIntro').then(seen => {
-      seen && props.navigation.navigate('Login');
-    })
+    // AsyncStorage.getItem('@AdviseIntro').then(seen => {
+    //   seen && props.navigation.navigate('Login');
+    // })
+    // const token = await AsyncStorage.getItem('@Advise:token');
+    // if (token !== null) {
+    //   const user = jwtDecode(token);
+    //   OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
+    //   props.navigation.navigate('Folders', { user });
+    // }
+    AsyncStorage.multiGet(['@AdviseIntro', '@Advise:token'], (err, items) => {
+
+      const intro = items[0][1];
+      const token = items[1][1];
+
+      if (intro) {
+        if (token) {
+          const user = jwtDecode(token);
+          OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
+          props.navigation.navigate('Folders', { user });
+
+        } else {
+          props.navigation.navigate('Login');
+        }
+      }
+    });
+    // AsyncStorage.getItem('@AdviseIntro').then(seen => {
+    //   seen && props.navigation.navigate('Login');
+    // })
   }
 
   _checkAlreadySeen();

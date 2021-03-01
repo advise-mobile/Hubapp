@@ -86,11 +86,13 @@ export default function Login(props) {
 
   const colorScheme = Appearance.getColorScheme();
 
-  const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_branca.png') : require('assets/images/logo.png');
+  const logoImage = require('assets/images/logo.png');
+  // const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_branca.png') : require('assets/images/logo.png');
 
   useEffect(() => {
     async function checkLogin() {
-      const token = await AsyncStorage.getItem('@AdviseStart:token');
+      const token = await AsyncStorage.getItem('@Advise:token');
+
       if (token !== null) {
         const user = jwtDecode(token);
         OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
@@ -112,14 +114,14 @@ export default function Login(props) {
         const { navigation } = props;
         const nlogin = login;
 
-        await AsyncStorage.setItem('@AdviseStart:token', nlogin.access_token);
+        await AsyncStorage.setItem('@Advise:token', nlogin.access_token);
         await AsyncStorage.setItem(
-          '@AdviseStart:refreshToken',
+          '@Advise:refreshToken',
           nlogin.refresh_token
         );
 
         if (nlogin.foto !== undefined) {
-          await AsyncStorage.setItem('@AdviseStart:avatar', nlogin.foto);
+          await AsyncStorage.setItem('@Advise:avatar', nlogin.foto);
         }
 
         OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
@@ -128,9 +130,7 @@ export default function Login(props) {
       }
     }
 
-    checkUpdateLogin().then(() => {
-      setLoadingIndicator(false);
-    });
+    checkUpdateLogin().then(() => setLoadingIndicator(false));
   }, [isAuthorized, login, props]);
 
   function handleEmailChange(typedEmail) {

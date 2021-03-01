@@ -61,6 +61,7 @@
     "rn-fetch-blob": "^0.12.0",
     "seamless-immutable": "^7.1.4",
     "styled-components": "^5.2.1",
+    "use-debounced-effect": "^0.0.3",
     "vanilla-masker": "^1.2.0"
   },
   "devDependencies": {

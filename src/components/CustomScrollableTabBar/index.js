@@ -1,19 +1,19 @@
 import React from 'react';
 // const React = require('react');
-import { ViewPropTypes } from 'react-native';
-const PropTypes = require('prop-types');
-
-import { colors } from 'assets/styles';
-const createReactClass = require('create-react-class');
-const {
-  View,
+import {
+  ViewPropTypes,
   Animated,
   StyleSheet,
   ScrollView,
   Text,
   Platform,
   Dimensions,
-} = ReactNative;
+} from 'react-native';
+const PropTypes = require('prop-types');
+
+import { colors } from 'assets/styles';
+const createReactClass = require('create-react-class');
+
 
 import { TabsContainer, Tabs, Tab, TabButton, TabText, UndelineTab } from './styles';
 
@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   container: {
+    marginTop: 10,
     height: 50,
     borderBottomWidth: 1,
     borderColor: colors.inactive,

@@ -61,7 +61,7 @@ export default Options = forwardRef((props, ref) => {
 
     await getLogin();
 
-    const token = await AsyncStorage.getItem('@AdviseStart:token');
+    const token = await AsyncStorage.getItem('@Advise:token');
 
     setDownloading(true);
 

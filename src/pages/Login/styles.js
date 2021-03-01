@@ -135,10 +135,10 @@ const BadgeRedText = styled(BadgeText)`
 `;
 
 const AnotherOption = styled.View`
-  background-color: ${colors.fadedBlack};
-  height: 2px;
-  margin: 32px 0 24px 0;
-  width: 350px;
+  background-color: rgba(0, 0, 0, 0.38);
+  height: 1px;
+  margin: 24px 0 24px 0;
+  width: 300px;
   align-items: center;
   justify-content: center;
 `;

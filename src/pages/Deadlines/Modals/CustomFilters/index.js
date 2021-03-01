@@ -132,8 +132,8 @@ export default CustomFilters = forwardRef((props, ref) => {
           </FormControl>
         </Row>
         <Row>
-          <Title>Tipo de Prazo</Title>
           <Column>
+            <Title>Tipo de Prazo</Title>
             <Badges>
               {loadingTypes ? <Spinner /> : renderTypes()}
             </Badges>

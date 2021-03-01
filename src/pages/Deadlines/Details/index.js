@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import DeadlinesActions from 'store/ducks/Deadlines';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

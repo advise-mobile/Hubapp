@@ -17,7 +17,7 @@ const UserIcon = props => {
 
         setInitials(initials);
       } else {
-        AsyncStorage.getItem('@AdviseStart:token').then(token => {
+        AsyncStorage.getItem('@Advise:token').then(token => {
           const userInfos = jwtDecode(token);
 
           let splittedName = userInfos.nome.split(" ");
