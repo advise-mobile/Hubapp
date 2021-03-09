@@ -228,7 +228,7 @@ export default Emails = props => {
                 <ListText>Notificar por email quando não houver novas publicações</ListText>
                 <Switch
                   onValueChange={() => toggleCheck(-24)}
-                  style={{ transform: [{ scaleX: .7 }, { scaleY: .7 }] }}
+                  style={{ transform: [{ scale: Platform.OS == 'ios' ? .7 : 1 }] }}
                   trackColor={{ false: colors.fadedBlack, true: "#689F38" }}
                   value={getActionValue(-24)} />
               </ListContent>
@@ -238,7 +238,7 @@ export default Emails = props => {
                 <ListText>Notificar por email quando houver novos andamentos</ListText>
                 <Switch
                   onValueChange={() => toggleCheck(-3)}
-                  style={{ transform: [{ scaleX: .7 }, { scaleY: .7 }] }}
+                  style={{ transform: [{ scale: Platform.OS == 'ios' ? .7 : 1 }] }}
                   trackColor={{ false: colors.fadedBlack, true: "#689F38" }}
                   value={getActionValue(-3)} />
               </ListContent>

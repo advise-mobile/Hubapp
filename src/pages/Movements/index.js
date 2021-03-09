@@ -12,7 +12,9 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import Header from 'components/Header';
 import Spinner from 'components/Spinner';
 import { Share } from 'components/Share';
+
 import Filters from './Filters';
+import Email from './Email';
 
 import { FormatDateInFull, FormatDateBR } from 'helpers/DateFunctions';
 
@@ -49,6 +51,7 @@ const notFound = (colorScheme == 'dark') ? require('assets/images/not_found/move
 
 export default Movements = props => {
   const listRef = useRef(null);
+  const emailRef = useRef(null);
   const filtersRef = useRef(null);
 
   const [filters, setFilters] = useState({});
@@ -66,6 +69,8 @@ export default Movements = props => {
   const [selecteds, setSelecteds] = useState(0);
   const [selectAll, setSelectedAll] = useState(selecteds > 0 ? true : false);
   const [trigger, setTrigger] = useState(false);
+
+  const [currentMove, setCurrentMove] = useState(movements[0]);
 
   const [formattedData, setFormattedData] = useState({});
 
@@ -130,6 +135,7 @@ export default Movements = props => {
     setSelecteds(check ? movements.length : 0);
   });
 
+
   const onEndReached = useCallback(() => {
     if (endReached) return;
 
@@ -186,7 +192,7 @@ export default Movements = props => {
 
   });
 
-  const openRow = useCallback(key => !listRef.current._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-120) : closeOpenedRow(key));
+  const openRow = useCallback(key => !listRef.current._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-150) : closeOpenedRow(key));
 
   const closeOpenedRow = useCallback(key => listRef.current._rows[key].closeRow());
 
@@ -197,7 +203,15 @@ export default Movements = props => {
 
   const renderFilters = useMemo(() => <Filters ref={filtersRef} customField={formattedData} submit={data => handleSubmit(data)} filters={filters} />, [formattedData]);
 
+  const renderEmail = useMemo(() => <Email ref={emailRef} movement={currentMove} />, [currentMove]);
+
   const openFilters = () => filtersRef.current?.open();
+
+  const handleEmail = useCallback(({ item }) => {
+    setCurrentMove(item);
+
+    emailRef.current?.open();
+  });
 
   const renderMovementTitle = useCallback(movement => {
     let title = FormatDateBR(movement.dataHoraMovimento);
@@ -218,11 +232,11 @@ export default Movements = props => {
       <ActionButton onPress={() => toggleAsRead(data)}>
         <MaterialIcons name={data.item.lido ? "visibility-off" : "visibility"} size={24} color={colors.fadedBlack} />
       </ActionButton>
+      <ActionButton onPress={() => handleEmail(data)}>
+        <MaterialIcons name="mail" size={24} color={colors.fadedBlack} />
+      </ActionButton>
       {/* <ActionButton onPress={() => console.log('clicked')}>
         <MaterialIcons name="get-app" size={24} color={colors.fadedBlack} />
-      </ActionButton>
-      <ActionButton onPress={() => console.log('clicked')}>
-        <MaterialIcons name="mail" size={24} color={colors.fadedBlack} />
       </ActionButton>
       <ActionButton onPress={() => console.log('clicked')}>
         <MaterialIcons name="delete" size={24} color={colors.fadedBlack} />
@@ -365,10 +379,10 @@ export default Movements = props => {
                 data={movements}
                 disableRightSwipe
                 previewRowKey={'2'}
-                rightOpenValue={-100}
+                rightOpenValue={-150}
                 closeOnRowOpen={false}
                 renderItem={renderItem}
-                previewOpenValue={-100}
+                previewOpenValue={-150}
                 previewOpenDelay={2000}
                 // rightOpenValue={-260}
                 onEndReached={onEndReached}
@@ -385,6 +399,7 @@ export default Movements = props => {
           </>
         }
         {renderFilters}
+        {renderEmail}
       </Warp>
     </Container>
   );

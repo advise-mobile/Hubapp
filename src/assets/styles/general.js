@@ -163,7 +163,7 @@ const Actions = styled.View`
   flex-direction: row;
   background: ${colors.white};
   border-bottom-width: 1px;
-  border-bottom-color: #e5e5e5;
+  border-bottom-color: ${colors.grayLighter};
 `;
 
 const ActionButton = styled.TouchableOpacity`

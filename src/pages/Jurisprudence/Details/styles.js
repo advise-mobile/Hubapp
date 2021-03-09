@@ -5,7 +5,7 @@ const Content = styled.ScrollView`
   padding: 0 24px;
 `;
 
-const Tags = styled.TouchableOpacity`
+const Tags = styled.View`
   padding: 24px 24px 12px 24px;
   margin-top: ${metrics.baseMargin + 5};
   flex-flow: row wrap;
@@ -21,7 +21,7 @@ const Tag = styled.View`
 `;
 
 const TagText = styled.Text`
-  color: ${colors.grayDarker};
+  color: rgba(0, 0, 0, .8);
   font-family: ${fonts.circularStdBlack};
   font-size: ${fonts.smaller};
 `;
@@ -35,7 +35,7 @@ const Description = styled.Text`
 
 const Mark = styled.Text`
   font-size: ${fonts.small};
-  color: ${colors.grayDarker};
+  color: rgba(0, 0, 0, .8);
   font-family: ${fonts.circularStdBook};
   background-color: ${colors.yellowLight};
 `;

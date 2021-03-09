@@ -17,6 +17,7 @@ const Title = styled.Text`
   font-family: ${fonts.circularStdBold};
   text-align: center;
   font-size: ${fonts.big};
+  color: ${colors.primary};
 `;
 
 const Footer = styled.View`

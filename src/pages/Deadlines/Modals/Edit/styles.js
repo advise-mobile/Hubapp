@@ -125,11 +125,15 @@ const DateStyle = {
     justifyContent: 'flex-start',
     fontFamily: fonts.circularStdBook,
     fontSize: fonts.regular,
+    color: colors.grayLighter,
+
   },
   placeholderText: {
-    color: colors.grayLight,
+    color: colors.grayLighter,
     fontFamily: fonts.circularStdBook,
     fontSize: fonts.regular,
+    color: colors.grayLighter,
+
   },
   disabled: {
     backgroundColor: colors.white,
@@ -140,6 +144,8 @@ const DateStyle = {
     backgroundColor: colors.white,
     fontFamily: fonts.circularStdBook,
     fontSize: fonts.regular,
+    color: colors.grayLighter,
+
   },
 };
 

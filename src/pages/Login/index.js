@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
 import {
   StyleSheet,
   ActivityIndicator,
@@ -9,6 +8,7 @@ import {
   Platform,
   Appearance
 } from 'react-native';
+
 import jwtDecode from 'jwt-decode';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,7 +16,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import OneSignal from 'react-native-onesignal';
 
 import AuthAction from 'store/ducks/Auth';
-
 
 import Spinner from 'components/Spinner';
 
@@ -86,8 +85,8 @@ export default function Login(props) {
 
   const colorScheme = Appearance.getColorScheme();
 
-  const logoImage = require('assets/images/logo.png');
-  // const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_branca.png') : require('assets/images/logo.png');
+  // const logoImage = require('assets/images/logo.png');
+  const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_branca.png') : require('assets/images/logo.png');
 
   useEffect(() => {
     async function checkLogin() {

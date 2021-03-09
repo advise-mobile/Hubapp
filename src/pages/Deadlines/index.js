@@ -70,7 +70,8 @@ const rowTranslateAnimatedValues = {};
 const colorScheme = Appearance.getColorScheme();
 
 const notFound = (colorScheme == 'dark') ? require('assets/images/not_found/deadlines_white.png') : require('assets/images/not_found/deadlines.png');
-const image = require('assets/images/permissions/deadlines.png');
+
+const image = (colorScheme == 'dark') ? require('assets/images/permissions/deadlines_white.png') : require('assets/images/permissions/deadlines.png');
 
 const filters = [{
   id: 'a-vencer',
@@ -205,7 +206,6 @@ export default function Deadlines(props) {
 
     return datas;
   }, [data]);
-
 
   const share = useCallback(async item => {
     setSharing(true);
@@ -444,13 +444,13 @@ export default function Deadlines(props) {
                       // onMonthChange={onMonthChange}
                       disabledOpacity={0.6}
                       displayLoadingIndicator={loading}
-                      style={{ overflow: 'hidden', flex: 1 }}
-                      theme={{ todayButtonTextColor: colors.primary }}
+                      style={{ overflow: 'hidden', flex: 1, backgroundColor: colors.white }}
+                      theme={{ todayButtonTextColor: colors.primary, backgroundColor: colors.white }}
                     >
                       <ExpandableCalendar
 
                         initialPosition={ExpandableCalendar.positions.OPEN}
-                        style={{ shadowOpacity: 0, borderBottomWidth: 1, borderBottomColor: colors.grayLighter }}
+                        style={{ shadowOpacity: 0, borderBottomWidth: 1, borderBottomColor: colors.grayLighter, backgroundColor: colors.white }}
                         theme={theme}
                         markingType={'custom'}
                         markedDates={getMarkedDates()}

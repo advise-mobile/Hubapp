@@ -35,11 +35,15 @@ export default Modal = forwardRef((props, ref) => {
       ref={ref}
       adjustToContentHeight={true}
       modalStyle={styles.modal}
+      childrenStyle={{ maxHeight: 400 }}
       HeaderComponent={renderHeader}
       FooterComponent={renderFooter}
       handlePosition="inside"
-      avoidKeyboardLikeIOS
-      keyboardAvoidingBehavior='height'
+      disableScrollIfPossible={false}
+      keyboardAvoidingOffset={40}
+      // keyboardAvoidingBehavior='height'
+      // avoidKeyboardLikeIOS
+      avoidKeyboard={true}
     >
       <Container>
         {props.children}
@@ -52,6 +56,6 @@ export default Modal = forwardRef((props, ref) => {
 const styles = StyleSheet.create({
   modal: {
     backgroundColor: colors.white,
-    height: 300,
+    maxHeight: 50,
   }
 });

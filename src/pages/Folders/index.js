@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { KeyboardAvoidingView, View } from 'react-native';
+import { KeyboardAvoidingView, Appearance } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import FolderKeywordsActions from 'store/ducks/FolderKeywords';
 import FolderProcessesActions from 'store/ducks/FolderProcesses';
@@ -64,7 +64,9 @@ export default function Folders(props) {
   const loadingProcesses = useSelector(state => state.folderProcesses.loading);
   const totalProcessesNotRead = useSelector(state => state.folderProcesses.totalNotRead);
 
-  const image = require('assets/images/permissions/folders.png');
+  const colorScheme = Appearance.getColorScheme();
+
+  const image = (colorScheme == 'dark') ? require('assets/images/permissions/folders_white.png') : require('assets/images/permissions/folders.png');
 
   const dispatch = useDispatch();
   const threshold = 0;

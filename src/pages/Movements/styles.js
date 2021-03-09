@@ -68,12 +68,14 @@ const MovementHeader = styled.View`
 `;
 
 const MovementHeading = styled.Text`
+  color: ${colors.primary};
   font-family: ${fonts.circularStdMedium};
   font-size: 16px;
   flex: 1;
-`;
+  `;
 
 const MovementResume = styled.Text`
+  color: ${colors.primary};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBook};
 `;
@@ -98,7 +100,7 @@ const Tag = styled.View`
 `;
 
 const TagText = styled.Text`
-  color: ${colors.grayDarker};
+  color: rgba(0, 0, 0, .8);
   font-family: ${fonts.circularStdBlack};
   font-size: ${fonts.smaller};
 `;

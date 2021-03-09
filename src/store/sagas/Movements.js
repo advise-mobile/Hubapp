@@ -137,3 +137,31 @@ export function* getMovements({ params }) {
     );
   }
 }
+
+export function* sendMovementsEmail({ param }) {
+  try {
+    yield getLogin();
+    yield delay(700);
+
+    const data = {
+      'destinatarios': param.destinatarios || null,
+      'idsMovimentos': param.idsMovimentos || null,
+    };
+
+    yield call(Api.post, `/core/v1/envio-email-movimentos`, data);
+
+    yield put(ToastNotifyActions.toastNotifyShow('Movimento enviado por email!', false));
+    yield put(MovementsTypes.movementsEmailSuccess());
+  } catch (err) {
+    const { status } = err.response;
+    if (status !== 401) {
+      yield put(MovementsTypes.movementsEmailFailure());
+      yield put(
+        ToastNotifyActions.toastNotifyShow(
+          'Não foi possível movimento o prazo por email.',
+          true
+        )
+      );
+    }
+  }
+}

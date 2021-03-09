@@ -27,7 +27,7 @@ import { getCustomer } from './Customer';
 import { getFolderKeywords } from './FolderKeywords';
 import { getFolderProcesses } from './FolderProcesses';
 import { getMovement, movementRead } from './Movement';
-import { getMovements, getDiaries, getTribunals } from './Movements';
+import { getMovements, getDiaries, getTribunals, sendMovementsEmail } from './Movements';
 import { getProcess } from './Process';
 import { getPeople } from './People';
 import {
@@ -41,11 +41,11 @@ import {
   editDeadline,
 } from './Deadlines';
 // import { getScheduleId, postDeadline, putDeadline } from './DeadlineAdd';
-import { getJournal } from './Journal';
-import { getKeywords } from './Keywords';
-import { getFonts } from './Fonts';
-import { getTribunal } from './Tribunal';
-import { fetchSelectOptions } from './Select';
+// import { getJournal } from './Journal';
+// import { getKeywords } from './Keywords';
+// import { getFonts } from './Fonts';
+// import { getTribunal } from './Tribunal';
+// import { fetchSelectOptions } from './Select';
 
 import { getJurisprudences, sendJurisprudenceEmail } from './Jurisprudence';
 
@@ -78,6 +78,8 @@ export default function* rootSaga() {
     takeLatest(MovementsTypes.MOVEMENTS_REFRESH, getMovements),
     takeLatest(MovementsTypes.DIARIES_REQUEST, getDiaries),
     takeLatest(MovementsTypes.TRIBUNALS_REQUEST, getTribunals),
+    takeLatest(MovementsTypes.MOVEMENTS_EMAIL_REQUEST, sendMovementsEmail),
+
     takeLatest(ProcessTypes.PROCESS_REQUEST, getProcess),
 
     //PEOPLE

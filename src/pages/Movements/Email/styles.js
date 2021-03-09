@@ -46,15 +46,13 @@ const Content = styled.View`
   margin: 0 -24px;
 `;
 
-const Input = styled.TextInput`
+const Email = styled.TextInput`
   flex: 1;
-  font-size: ${fonts.small};
-  font-family: ${fonts.circularStdBook};
-  padding-horizontal: 24px;
-  padding-bottom: 4px;
-  border-bottom-width: 1px;
-  display: ${props => props.disabled ? 'none' : 'flex'};
+  padding: 12px 24px;
   color: ${props => props.error ? colors.red : colors.grayLight};
+  font-size: ${fonts.small};
+  font-family: ${fonts.circularStdMedium};
+  border-bottom-width: 1px;
   border-bottom-color: ${props => props.error ? colors.redLight : colors.grayLighter};
 `;
 
@@ -65,5 +63,5 @@ export {
   Submit,
   SubmitText,
   Content,
-  Input,
+  Email,
 }

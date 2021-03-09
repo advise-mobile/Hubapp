@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { colors, fonts } from 'assets/styles';
 
 const theme = {
+  backgroundColor: colors.white,
+  calendarBackground: colors.white,
   // arrows
   arrowColor: colors.grayDarker,
   arrowStyle: { padding: 0 },
@@ -67,7 +69,7 @@ const Badge = styled.View`
 `;
 
 const BadgeText = styled.Text`
-  color: ${colors.grayDarker};
+  color: rgba(0, 0, 0, .8);
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.smaller};
 `;
@@ -77,6 +79,7 @@ const ReadButton = styled.TouchableOpacity`
   height: 18px;
   border-radius: 18px;
   border-width: 1;
+  border-color: ${colors.primary}
   margin-top: 8px;
   margin-right: 8px;
 `;
@@ -114,7 +117,7 @@ const ListItem = styled.TouchableHighlight`
   background-color: ${colors.white};
   padding: 12px 24px 16px 24px;
   border-bottom-width: 1px;
-  border-bottom-color: #e5e5e5;
+  border-bottom-color: ${colors.grayLighter};
 `;
 
 const ListGrid = styled.View`
@@ -132,6 +135,7 @@ const ListTitle = styled.Text`
   color: ${colors.grayDarker};
 `;
 const ListSchedule = styled.Text`
+  color: ${colors.grayDarker};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBold};
   flex: 1;

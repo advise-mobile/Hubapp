@@ -20,7 +20,7 @@ const Icon = styled.Image`
 `;
 
 const Title = styled.Text`
-  color: rgba(0, 0, 0, .87);
+  color: ${colors.grayDarker};
   font-family: ${fonts.circularStdBold};
   fontSize: ${fonts.big + 4};
   line-height: 24px;

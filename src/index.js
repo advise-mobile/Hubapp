@@ -41,12 +41,11 @@ const App = () => {
     const push = await registerNotification(device.userId);
 
     OneSignal.sendTags(push);
-
   }, []);
 
-  const myiOSPromptCallback = () => {
-    console.log('accepted');
-  }
+  // const myiOSPromptCallback = () => {
+  //   console.log('accepted');
+  // }
 
   // The promptForPushNotifications function code will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step below)
   // OneSignal.promptForPushNotificationsWithUserResponse(myiOSPromptCallback);

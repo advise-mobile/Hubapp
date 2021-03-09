@@ -10,7 +10,7 @@ function colors() {
       darkGray: '#666666',
       fadedWhite: 'rgba(0,0,0,0.69)',
       fadedBlack: 'rgba(255,255,255,0.69)',
-      gray: '#050505',
+      gray: '#EEE',
       grayLighter: 'rgba(255, 255, 255, .12)',
       grayLight: 'rgba(255, 255, 255, .5)',
       grayDarker: 'rgba(255, 255, 255, .8)',

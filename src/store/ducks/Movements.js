@@ -13,6 +13,10 @@ const { Types, Creators } = createActions({
   toggleMovements: ['checked'],
   tribunalsRequest: ['params'],
   tribunalsSuccess: ['data'],
+
+  movementsEmailRequest: ['param'],
+  movementsEmailSuccess: null,
+  movementsEmailFailure: null,
 });
 
 export const MovementsTypes = Types;
@@ -27,7 +31,8 @@ export const INITIAL_STATE = Immutable({
   tribunals: [],
   userPermissions: [],
   endReached: false,
-  havePermission: false
+  havePermission: false,
+  sending: false,
 });
 
 export const refreshRequest = state => state.merge({ refreshing: true });
@@ -109,6 +114,12 @@ export const tribunalsSuccess = (state, action) => {
   })
 };
 
+export const emailRequest = state => state.merge({ sending: true });
+
+export const emailSuccess = state => state.merge({ sending: false });
+
+export const emailFailure = state => state.merge({ sending: false });
+
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.MOVEMENTS_REQUEST]: request,
   [Types.MOVEMENTS_SUCCESS]: success,
@@ -121,4 +132,7 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.TRIBUNALS_SUCCESS]: tribunalsSuccess,
   [Types.TOGGLE_MOVEMENTS]: toggleMovements,
   [Types.TOGGLE_AS_READ]: toggleAsRead,
+  [Types.MOVEMENTS_EMAIL_REQUEST]: emailRequest,
+  [Types.MOVEMENTS_EMAIL_SUCCESS]: emailSuccess,
+  [Types.MOVEMENTS_EMAIL_FAILURE]: emailFailure,
 });

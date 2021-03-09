@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { ActivityIndicator, Image } from 'react-native';
+import { ActivityIndicator, Appearance } from 'react-native';
 
 import AuthAction from 'store/ducks/Auth';
 
@@ -33,7 +33,9 @@ const Forgot = props => {
   const [emptyEmail, setEmptyEmail] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [sended, setSended] = useState(false);
-  const logoImage = require('assets/images/logo.png');
+  const colorScheme = Appearance.getColorScheme();
+  // const logoImage = require('assets/images/logo.png');
+  const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_branca.png') : require('assets/images/logo.png');
   const sendedIcon = require('assets/images/icons/email.png');
 
   const dispatch = useDispatch();

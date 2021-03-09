@@ -74,7 +74,7 @@ const Description = styled.Text`
 
 const Mark = styled.Text`
   font-size: ${fonts.small};
-  color: ${colors.grayDarker};
+  color: rgba(0, 0, 0, .8);
   font-family: ${fonts.circularStdBook};
   background-color: ${colors.yellowLight};
 `;

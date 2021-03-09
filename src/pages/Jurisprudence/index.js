@@ -28,7 +28,7 @@ import { colors } from 'assets/styles';
 
 const colorScheme = Appearance.getColorScheme();
 
-const permissionImage = require('assets/images/permissions/jurisprudence.png');
+const permissionImage = (colorScheme == 'dark') ? require('assets/images/permissions/jurisprudence_white.png') : require('assets/images/permissions/jurisprudence.png');
 const image = (colorScheme == 'dark') ? require('assets/images/jurisprudence_white.png') : require('assets/images/jurisprudence.png');
 
 export default function Jurisprudence(props) {
@@ -36,7 +36,7 @@ export default function Jurisprudence(props) {
   const [hasPermission, setPermission] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => checkPermission(PermissionsGroups.JURISPRUDENCE).then(permission => setPermission(permission)), [props]);
+  useEffect(() => { checkPermission(PermissionsGroups.JURISPRUDENCE).then(permission => setPermission(permission)) }, [props]);
 
   const searchKeyword = useCallback(() => {
     if (term.length < 3) {

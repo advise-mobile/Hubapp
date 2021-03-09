@@ -50,9 +50,9 @@ export default CustomFilters = forwardRef((props, ref) => {
     return removed;
   }, []);
 
-  const countFilters = useCallback(() => checkNull([minDate, maxDate, currentType]), [minDate, maxDate, currentType]);
+  const countFilters = useCallback(() => [minDate, maxDate, currentType].filter(state => state != null).length, [minDate, maxDate, currentType]);
 
-  const checkNull = useCallback(states => states.filter(state => state != null).length);
+  // const checkNull = useCallback(states => states.filter(state => state != null).length);
 
   const clearFilters = useCallback(() => {
     setMinDate(null);

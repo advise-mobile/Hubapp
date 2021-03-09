@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useEffect } from 'react';
+import React, { forwardRef, useState, useEffect, useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { useForm, Controller } from "react-hook-form";
@@ -33,6 +33,25 @@ export default Filters = forwardRef((props, ref) => {
     setValue("tribunal", selectedTribunal);
     setData(props.data);
   }, [props]);
+
+  // const countFilters = useCallback(() => [selectedTypeLabel, selectedType, selectedYear, selectedArea, selectedQuote, selectedTribunal].filter(state => state != null).length, [selectedTypeLabel, selectedType, selectedYear, selectedArea, selectedQuote, selectedTribunal]);
+
+  // const clearFilters = useCallback(() => {
+  //   console.log(props.data);
+
+  //   setSelectedQuote(undefined);
+  //   // setSelectedType(null);
+  //   setSelectedTribunal(undefined);
+  //   setSelectedYear(null);
+  //   setSelectedArea(null);
+
+
+  //   setValue("all", undefined);
+  //   setValue("ano", null);
+  //   setValue("grupo", null);
+  //   setValue("integra", null);
+  //   setValue("tribunal", undefined);
+  // }, [props]);
 
   const onSubmit = data => {
     ref.current?.close();

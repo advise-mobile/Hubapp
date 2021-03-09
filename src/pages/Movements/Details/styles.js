@@ -6,7 +6,7 @@ const Movement = styled.ScrollView`
   padding: 12px 10px 48px 12px;
 `;
 
-const MovementTags = styled.TouchableOpacity`
+const MovementTags = styled.View`
   margin-top: ${metrics.baseMargin + 5};
   flex-flow: row wrap;
 `;
@@ -21,7 +21,7 @@ const Tag = styled.View`
 `;
 
 const TagText = styled.Text`
-  color: ${colors.grayDarker};
+  color: rgba(0, 0, 0, 0.8);
   font-family: ${fonts.circularStdBlack};
   font-size: ${fonts.smaller};
 `;
@@ -36,6 +36,7 @@ const ProcessNumberText = styled.Text`
   font-size: ${fonts.big};
   color: ${props => props.color || colors.grayDarker};
   margin-right: 14;
+  margin-left: 8px;
 `;
 
 const MovementContent = styled.Text`
@@ -43,13 +44,17 @@ const MovementContent = styled.Text`
   font-size: ${fonts.regular};
   line-height: ${fonts.big + 5};
   margin-bottom: 24;
+  margin-horizontal: 8px;
+  color: ${colors.primary};
 `;
 
 const MovementDispatch = styled.Text`
   font-family: ${fonts.circularStdBook};
   font-size: ${fonts.small};
   line-height: ${fonts.big + 5};
+  margin-horizontal: 8px;
   margin-bottom: 24;
+  color: ${colors.grayDarker};
 `;
 
 export {

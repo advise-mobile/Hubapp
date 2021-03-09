@@ -34,7 +34,17 @@ export default Pushs = props => {
     setLoading(true);
     getLoggedUser().then(user => setUserData(user));
 
-    getNotificationSettings().then(settings => setData(settings)).finally(() => setLoading(false));
+    getNotificationSettings().then(settings => {
+      if (settings.length < 1) {
+        dispatch(ToastNotifyActions.toastNotifyShow('Erro ao buscar as configuração de notificações.', true));
+
+        setTimeout(() => props.navigation.goBack(), 500);
+
+        return;
+      }
+
+      setData(settings);
+    }).finally(() => setLoading(false));
   }, []);
 
   useDebouncedEffect(() => {
