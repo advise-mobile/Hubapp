@@ -8,8 +8,6 @@ import { getLoggedUser } from 'helpers/Permissions';
 const registerNotification = async hash => {
   const register = await AsyncStorage.getItem('@Advise:pushHash');
 
-  console.log(hash, register);
-
   const { idUsuarioCliente } = await getLoggedUser();
 
   const push = {
@@ -30,8 +28,6 @@ const registerNotification = async hash => {
 const getNotificationSettings = async () => {
   const hash = await AsyncStorage.getItem('@Advise:pushHash');
 
-  console.log('A hash é: ', hash);
-  // return;
   const { data } = await Api.get(`/core/v1/push-notificacao?hash=${hash}&campos=*`);
 
   const { itens } = data;
@@ -44,12 +40,16 @@ const changeNotificationSettings = async itens => await Api.put(`/core/v1/push-n
 const disableNotificationDevice = async () => {
   const hash = await AsyncStorage.getItem('@Advise:pushHash');
 
-  // const response = await Api.put(`/core/v1/push-notificacao/alterar-situacao-dispositivo`, {
-  //   itens: [{
-  //     hash,
-  //     ativo: false,
-  //   }]
-  // });
+  if (!hash) return true;
+
+  const response = await Api.put(`/core/v1/push-notificacao/alterar-situacao-dispositivo`, {
+    itens: [{
+      hash,
+      ativo: false,
+    }]
+  });
+
+  return response;
 };
 
 export {

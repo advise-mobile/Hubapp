@@ -55,6 +55,7 @@ const Option = styled.View`
   align-items: center;
   flex-direction: row-reverse;
   justify-content: space-between;
+  flex-wrap: wrap;
 `;
 
 const EmailsList = styled.View`

@@ -26,6 +26,14 @@ const TagText = styled.Text`
   font-size: ${fonts.smaller};
 `;
 
+const Title = styled.Text`
+  font-size: ${fonts.small};
+  color: ${colors.grayDarker};
+  font-family: ${fonts.circularStdBook};
+  line-height: 24px;
+  text-transform: uppercase;
+`;
+
 const Description = styled.Text`
   font-size: ${fonts.small};
   color: ${colors.grayDarker};
@@ -45,6 +53,7 @@ export {
   Tags,
   Tag,
   TagText,
+  Title,
   Description,
   Mark,
 }

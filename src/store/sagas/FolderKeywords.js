@@ -22,7 +22,7 @@ export function* getFolderKeywords(action) {
     const query = 'campos=*&idTipoPasta=-2&ativo=true';
 
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const paginator = `paginaAtual=${page}&registrosPorPagina=${perPage}`;
 
@@ -37,7 +37,7 @@ export function* getFolderKeywords(action) {
 
     const movementsNotRead = data.itens.map(folder => folder.totalNaoLidas).reduce((a, b) => a + b, 0);
 
-    yield delay(700);
+    yield delay(300);
     yield put(FolderKeywordsActions.folderKeywordsSuccess({ ...data, endReached, movementsNotRead }, page));
   } catch (err) {
     const { status } = err.response;

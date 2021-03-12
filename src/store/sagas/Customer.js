@@ -16,7 +16,7 @@ export function* getCustomer() {
     const expansion = 'pessoaCliente';
 
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const customer = yield call(
       Api.get,

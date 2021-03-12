@@ -141,7 +141,7 @@ export function* getMovements({ params }) {
 export function* sendMovementsEmail({ param }) {
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const data = {
       'destinatarios': param.destinatarios || null,

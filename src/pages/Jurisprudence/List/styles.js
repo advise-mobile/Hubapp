@@ -65,6 +65,14 @@ const PublicationDate = styled.Text`
 
 `;
 
+const Title = styled.Text`
+  font-size: ${fonts.small};
+  color: ${colors.grayDarker};
+  font-family: ${fonts.circularStdBook};
+  line-height: 24px;
+  text-transform: uppercase;
+`;
+
 const Description = styled.Text`
   font-size: ${fonts.small};
   color: ${colors.grayDarker};
@@ -115,6 +123,7 @@ export {
   Jurisprudence,
   Tribunal,
   PublicationDate,
+  Title,
   Description,
   Mark,
   NotFound,

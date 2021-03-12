@@ -24,12 +24,12 @@ function* getMarkers() {
       Api.get,
       `/core/v1/marcadores-contato?ativo=true&campos=*`
     );
-    
+
     const allMarkers = {
       idMarcadorContato: 0,
       nomeMarcadorContato: 'Todas',
     };
-    
+
     data.itens.unshift(allMarkers);
     return data;
   } catch (err) {
@@ -48,20 +48,20 @@ export function* getPeople(action) {
   try {
     const { param } = action;
     const { filters } = param;
-    
+
     const queryFilters = getFilterString(filters);
     const paginator = `registrosPorPagina=10&paginaAtual=${param.page}`;
-    
+
     yield getLogin();
-    yield delay(700);
-    
+    yield delay(300);
+
     let { data } = yield call(
       Api.get,
       `/core/v1/contatos?campos=*&ordenacao=%2BNomePessoaCliente${queryFilters}&${paginator}`
-      );
+    );
 
     data.itens.map(item => item.checked = false);
-      
+
     let markers = param.loadMarkers ? yield getMarkers() : false;
 
     yield put(

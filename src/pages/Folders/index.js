@@ -43,8 +43,8 @@ import {
 } from './styles';
 
 export default function Folders(props) {
-  const add = () => { console.log("add") };
-  const edit = () => { console.log("edit") };
+  // const add = () => { console.log("add") };
+  // const edit = () => { console.log("edit") };
 
   const [filters, setFilters] = useState();
   const [keywordSearch, setKeywordSearch] = useState('');

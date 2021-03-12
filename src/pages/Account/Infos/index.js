@@ -28,6 +28,7 @@ import {
   InfoLink,
   InfoLinkText,
   InfoText,
+  InfoContent,
   ButtonLogout,
   LogoutText
 } from './styles';
@@ -96,7 +97,7 @@ export default Infos = props => {
   const logout = useCallback(async () => {
     dispatch(AuthAction.logoutRequest());
 
-    disableNotificationDevice().then(() => AsyncStorage.clear(() => props.navigation.navigate('Login')));
+    disableNotificationDevice().then(() => AsyncStorage.multiRemove([`@Advise:permissions`, `@IdProdutoAdvise`, `@Advise:pushHash`, `@Advise:token`, `@Advise:refreshToken`, `@Advise:avatar`, `@loginObject`], () => props.navigation.navigate('Login')));
   }, []);
 
   const editUserData = useCallback(data => {
@@ -272,13 +273,15 @@ export default Infos = props => {
               }
               <InfoContainer>
                 <InfoTitle>Legal</InfoTitle>
-                <InfoLink onPress={() => openLink("termos")}>
-                  <InfoLinkText>Termos de uso</InfoLinkText>
-                </InfoLink>
-                <InfoText> e </InfoText>
-                <InfoLink onPress={() => openLink("politica")}>
-                  <InfoLinkText>Política de Privacidade</InfoLinkText>
-                </InfoLink>
+                <InfoContent>
+                  <InfoLink onPress={() => openLink("termos")}>
+                    <InfoLinkText>Termos de uso</InfoLinkText>
+                  </InfoLink>
+                  <InfoText> e </InfoText>
+                  <InfoLink onPress={() => openLink("politica")}>
+                    <InfoLinkText>Política de Privacidade</InfoLinkText>
+                  </InfoLink>
+                </InfoContent>
               </InfoContainer>
               <InfoContainer>
                 <InfoTitle>Cancelar contrato</InfoTitle>

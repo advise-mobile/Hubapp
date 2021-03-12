@@ -3,6 +3,8 @@ import JurisprudenceActions from 'store/ducks/Jurisprudence';
 import { useSelector, useDispatch } from 'react-redux';
 import { FlatList, Appearance, Keyboard } from 'react-native';
 
+import moment from 'moment';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HTML from "react-native-render-html";
 
@@ -23,6 +25,7 @@ import {
   Jurisprudence,
   Tribunal,
   PublicationDate,
+  Title,
   Description,
   Mark,
   NotFound,
@@ -54,8 +57,9 @@ export default function jurisprudenceList(props) {
   const filtersData = useSelector(state => state.jurisprudence.filters);
 
   const renderers = {
-    mark: (htmlAttribs, children, convertedCSSStyles, passProps) => <Mark key={Math.random()}>{children}</Mark>,
     description: (htmlAttribs, children, convertedCSSStyles, passProps) => <Description key={Math.random()} numberOfLines={7}>{children}</Description>,
+    mark: (htmlAttribs, children, convertedCSSStyles, passProps) => (<Mark key={Math.random()}>{children}</Mark>),
+    title: (htmlAttribs, children, convertedCSSStyles, passProps) => (<Title key={Math.random()}>{children}</Title>),
   };
 
   const dispatch = useDispatch();
@@ -113,8 +117,8 @@ export default function jurisprudenceList(props) {
   const renderItem = ({ item }) => (
     <Jurisprudence key={item.codEmenta} onPress={() => props.navigation.navigate('JurisprudenceDetail', { jurisprudence: item, term })}>
       <Tribunal>{item.nomeTribunal}</Tribunal>
-      <PublicationDate>Data de publicação: {FormatDateBR(item.dataPublicacao)}</PublicationDate>
-      <HTML source={{ html: `<title>${item.tituloMarcado || item.titulo}</title><description>${item.ementaMarcada || item.ementa}</description>` }} renderers={renderers} ignoredTags={['strong']} />
+      <PublicationDate>Data de publicação: {moment(item.dataPublicacao, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}</PublicationDate>
+      <HTML source={{ html: `<title>${item.tituloMarcado || item.titulo}</title><description>${item.ementaMarcada.join("").split('\u0000').join('') || item.ementa}</description>` }} renderers={renderers} ignoredTags={['strong']} />
     </Jurisprudence>
   );
 

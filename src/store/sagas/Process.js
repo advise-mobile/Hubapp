@@ -11,7 +11,7 @@ export function* getProcess(action) {
     const { param } = action;
 
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     let { data } = yield call(
       Api.get,

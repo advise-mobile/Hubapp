@@ -43,7 +43,6 @@ const InfoContainer = styled.View`
   align-items: flex-start;
   justify-content: flex-start;
   flex: 1;
-
 `;
 
 const InfoTitle = styled.Text`
@@ -64,7 +63,7 @@ const InfoValue = styled.TextInput`
   padding: 0;
   height: 20px;
   color: ${colors.fadedBlack};
-  font-size: ${fonts.regular};
+  font-size: ${fonts.small};
   font-family: ${fonts.circularStdBook};
   border-bottom-width: 1px;
   border-bottom-color: ${props => props.editable ? colors.grayLighter : colors.white};
@@ -73,11 +72,17 @@ const InfoValue = styled.TextInput`
 
 const InfoText = styled.Text`
   color: ${colors.fadedBlack};
-  font-size: ${fonts.regular};
+  font-size: ${fonts.small};
   font-family: ${fonts.circularStdBook};
   flex-wrap: wrap;
   flex-shrink: 1;
   max-width: 225;
+`;
+
+const InfoContent = styled.View`
+  flex-direction: row;
+  max-width: 200;
+  flex-wrap: wrap;
 `;
 
 const InfoLink = styled.TouchableOpacity`
@@ -86,7 +91,7 @@ const InfoLink = styled.TouchableOpacity`
 
 const InfoLinkText = styled.Text`
   color: ${colors.forgetLink};
-  font-size: ${fonts.regular};
+  font-size: ${fonts.small};
   font-family: ${fonts.circularStdBook};
 `;
 
@@ -116,6 +121,7 @@ export {
   InfoLink,
   InfoLinkText,
   InfoText,
+  InfoContent,
   ButtonLogout,
   LogoutText
 }

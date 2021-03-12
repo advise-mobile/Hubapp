@@ -10,7 +10,7 @@ export function* getFolderProcesses(action) {
     const query = 'campos=*&idTipoPasta=-3&ativo=true';
 
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const paginator = `paginaAtual=${page}&registrosPorPagina=${perPage}`;
 

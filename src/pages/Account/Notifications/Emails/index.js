@@ -260,7 +260,7 @@ export default Emails = props => {
                   outputRange: [0, 500],
                 })
               }}>
-                <Options style={{ height: 80 }}>
+                <Options style={{ height: 90 }}>
                   <RadioForm animation={true} style={{ flex: 1 }}>
                     <Option as={RadioButton}>
                       <RadioButtonInput
@@ -275,6 +275,9 @@ export default Emails = props => {
                       />
                       <RadioButtonLabel
                         obj={{ label: 'Enviar novas publicações na íntegra', value: getActionValue(-23) }}
+                        labelWrapStyle={{
+                          'flex': 2,
+                        }}
                         labelStyle={{
                           'color': colors.grayDarker,
                           'fontFamily': fonts.circularStdBook,
@@ -297,10 +300,14 @@ export default Emails = props => {
                       />
                       <RadioButtonLabel
                         obj={{ label: 'Enviar apenas a quantidade de novas publicações', value: getActionValue(-1) }}
+                        labelWrapStyle={{
+                          'flex': 2,
+                        }}
                         labelStyle={{
                           'color': colors.grayDarker,
                           'fontFamily': fonts.circularStdBook,
                           'fontSize': fonts.small,
+                          'paddingLeft': 0,
                           'paddingRight': 22,
                         }}
                         onPress={value => handleNotificationMovements(-1, value)}

@@ -17,7 +17,7 @@ export function* getPerson() {
     const expansion = 'pessoa,dadosOAB';
 
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
 
     const person = yield call(
@@ -48,7 +48,7 @@ export function* getPerson() {
 export function* updateProfile({ param }) {
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const { extensao, foto } = param;
 
@@ -94,7 +94,7 @@ export function* updatePerson({ param }) {
     };
 
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     yield call(
       Api.put,

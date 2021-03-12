@@ -41,7 +41,7 @@ export function* getDeadlines({ param }) {
 export function* sendDeadlineEmail({ param }) {
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const data = {
       'idPublicacao': param.idPublicacao || null,
@@ -72,7 +72,7 @@ export function* markAsImportant({ param }) {
   const { importante, id, idAgenda } = param;
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const data = {
       itens: [
@@ -99,7 +99,7 @@ export function* markAsConcluded({ param }) {
   const { concluido, id, idAgenda } = param;
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const data = {
       itens: [
@@ -124,7 +124,7 @@ export function* markAsConcluded({ param }) {
 export function* markAsInactive({ id }) {
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const data = {
       Ids: [id],
@@ -144,7 +144,7 @@ export function* markAsInactive({ id }) {
 export function* getTypes() {
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const user = getLoggedUser();
 
@@ -160,7 +160,7 @@ export function* getTypes() {
 export function* addDeadline({ itens }) {
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const data = { itens };
 
@@ -179,7 +179,7 @@ export function* addDeadline({ itens }) {
 export function* editDeadline({ itens }) {
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const data = { itens };
 

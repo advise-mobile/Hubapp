@@ -8,7 +8,7 @@ import { getLogin } from '../../services/Api';
 export function* getFolderUnread() {
   try {
     yield getLogin();
-    yield delay(700);
+    yield delay(300);
 
     const { data } = yield call(
       Api.get,

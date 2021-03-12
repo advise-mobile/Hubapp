@@ -1,7 +1,9 @@
-import React, { createRef, useCallback } from 'react';
+import React, { createRef, useCallback, useMemo } from 'react';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HTML from "react-native-render-html";
+
+import moment from 'moment';
 
 import { FormatDateBR } from 'helpers/DateFunctions';
 
@@ -17,6 +19,7 @@ import {
   Tags,
   Tag,
   TagText,
+  Title,
   Description,
   Mark
 } from './styles';
@@ -25,6 +28,7 @@ export default function jurisprudenceDetails(props) {
   const optionsRef = createRef();
   const emailRef = createRef();
   const jurisprudence = props.navigation.getParam("jurisprudence");
+
   const term = props.navigation.getParam("term");
   const renderers = {
     mark: (htmlAttribs, children, convertedCSSStyles, passProps) => (
@@ -32,6 +36,9 @@ export default function jurisprudenceDetails(props) {
     ),
     description: (htmlAttribs, children, convertedCSSStyles, passProps) => (
       <Description key={Math.random()}>{children}</Description>
+    ),
+    title: (htmlAttribs, children, convertedCSSStyles, passProps) => (
+      <Title key={Math.random()}>{children}</Title>
     ),
   };
 
@@ -45,6 +52,10 @@ export default function jurisprudenceDetails(props) {
     </HeaderAction>
   ));
 
+  const renderJurisprudence = useMemo(() =>
+    <HTML source={{ html: `<title>${jurisprudence.tituloMarcado || jurisprudence.titulo}</title><description>${jurisprudence.ementaMarcada.join("").split('\u0000').join('') || jurisprudence.ementa}</description>` }} renderers={renderers} ignoredTags={['strong']} />
+    , [jurisprudence]);
+
   return (
     <Container>
       <Warp>
@@ -52,7 +63,7 @@ export default function jurisprudenceDetails(props) {
         <Tags>
           {jurisprudence.dataPublicacao ?
             <Tag key={1}>
-              <TagText>Data de publicação: {FormatDateBR(jurisprudence.dataPublicacao)}</TagText>
+              <TagText>Data de publicação: {moment(jurisprudence.dataPublicacao, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}</TagText>
             </Tag> : null}
           {jurisprudence.descricaoArea ?
             <Tag key={2}>
@@ -78,7 +89,7 @@ export default function jurisprudenceDetails(props) {
           ) : null}
         </Tags>
         <Content>
-          <HTML source={{ html: `<title>${jurisprudence.tituloMarcado || jurisprudence.titulo}</title><description>${jurisprudence.ementaMarcada}</description>` }} renderers={renderers} ignoredTags={['strong']} />
+          {renderJurisprudence}
         </Content>
         <Options ref={optionsRef} jurisprudence={jurisprudence} openEmail={openEmail} />
         <Email ref={emailRef} jurisprudence={jurisprudence} term={term} />
