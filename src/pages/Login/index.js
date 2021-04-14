@@ -29,6 +29,7 @@ import {
   Form,
   InputGroup,
   InputGroupPrepend,
+  InputGroupAppend,
   Input,
   InputHelpText,
   Button,
@@ -44,7 +45,7 @@ import {
 
 const style = StyleSheet.create({
   hasIcon: {
-    color: colors.backgroundButton,
+    color: colors.fadedBlack,
     paddingTop: 7,
     textAlign: 'center',
     zIndex: 100,
@@ -75,6 +76,8 @@ export default function Login(props) {
   const [countAmbient, setCountAmbient] = useState(0);
   const [ambient, setAmbient] = useState('TESTE');
 
+  const [passwordView, setPasswordView] = useState(false);
+
   const [loadingIndicator, setLoadingIndicator] = useState(true);
 
   const login = useSelector((state) => state.auth.data);
@@ -89,13 +92,21 @@ export default function Login(props) {
   const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_branca.png') : require('assets/images/logo.png');
 
   useEffect(() => {
+    props.navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+
+      return;
+    })
+  }, []);
+
+  useEffect(() => {
     async function checkLogin() {
       const token = await AsyncStorage.getItem('@Advise:token');
 
       if (token !== null) {
         const user = jwtDecode(token);
         OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
-        props.navigation.navigate('Folders', { user });
+        props.navigation.navigate('App', { user });
       }
     }
 
@@ -109,27 +120,29 @@ export default function Login(props) {
 
   useEffect(() => {
     async function checkUpdateLogin() {
-      if (isAuthorized) {
-        const { navigation } = props;
-        const nlogin = login;
+      if (!isAuthorized) return false;
 
-        await AsyncStorage.setItem('@Advise:token', nlogin.access_token);
-        await AsyncStorage.setItem(
-          '@Advise:refreshToken',
-          nlogin.refresh_token
-        );
+      await AsyncStorage.multiSet([
+        ['@Advise:refreshToken', login.refresh_token],
+        ['@Advise:token', login.access_token]
+      ]);
 
-        if (nlogin.foto !== undefined) {
-          await AsyncStorage.setItem('@Advise:avatar', nlogin.foto);
-        }
-
-        OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
-
-        navigation.navigate('Folders', { user: jwtDecode(nlogin.access_token) });
+      if (login.foto !== undefined) {
+        await AsyncStorage.setItem('@Advise:avatar', login.foto);
       }
+
+      OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
+
+      return true;
     }
 
-    checkUpdateLogin().then(() => setLoadingIndicator(false));
+    checkUpdateLogin().then(authorized => {
+      setLoadingIndicator(false);
+
+      if (!authorized) return;
+
+      props.navigation.navigate('App', { user: jwtDecode(login.access_token) });
+    });
   }, [isAuthorized, login, props]);
 
   function handleEmailChange(typedEmail) {
@@ -172,7 +185,7 @@ export default function Login(props) {
   }
 
   function handleForgotPress() {
-    props.navigation.navigate('Auth');
+    props.navigation.navigate('Forgot');
   }
 
   function incrementChangeAmbient() {
@@ -198,88 +211,87 @@ export default function Login(props) {
         {loadingIndicator ? (
           <Spinner />
         ) : (
-            <Warp>
-              <Logo source={logoImage} resizeMode="contain" />
-              {__DEV__ && (
-                <BadgeRed onPress={__DEV__ && incrementChangeAmbient}>
-                  <BadgeRedText>VERSÃO DE {ambient}</BadgeRedText>
-                </BadgeRed>
-              )}
-              <Form>
-                <InputGroup>
-                  <InputGroupPrepend>
-                    <Icon
-                      name="mail"
-                      size={23}
-                      style={[
-                        emptyEmail === true ? style.hasIconError : style.hasIcon,
-                      ]}
-                    />
-                  </InputGroupPrepend>
-                  <Input
-                    placeholder="E-mail"
-                    placeholderTextColor={colors.red}
-                    value={email}
-                    onChangeText={handleEmailChange}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={[
-                      emptyEmail === true ? style.hasError : style.hasSuccess,
-                    ]}
+          <Warp>
+            <Logo source={logoImage} resizeMode="contain" />
+            {__DEV__ && (
+              <BadgeRed onPress={__DEV__ && incrementChangeAmbient}>
+                <BadgeRedText>VERSÃO DE {ambient}</BadgeRedText>
+              </BadgeRed>
+            )}
+            <Form>
+              <InputGroup>
+                <InputGroupPrepend>
+                  <Icon
+                    name="mail"
+                    size={23}
+                    style={emptyEmail === true ? style.hasIconError : style.hasIcon}
                   />
-                  {!!emptyEmail && (
-                    <InputHelpText>Este campo é obrigatório.</InputHelpText>
-                  )}
-                </InputGroup>
-                <InputGroup>
-                  <InputGroupPrepend>
-                    <Icon
-                      name="lock"
-                      size={23}
-                      style={[
-                        emptyPassword === true
-                          ? style.hasIconError
-                          : style.hasIcon,
-                      ]}
-                    />
-                  </InputGroupPrepend>
-                  <Input
-                    placeholder="Senha"
-                    placeholderTextColor={colors.red}
-                    value={password}
-                    onChangeText={handlePasswordChange}
-                    onSubmitEditing={handleLoginPress}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    returnKeyType="send"
-                    secureTextEntry
-                    style={[
-                      emptyPassword === true ? style.hasError : style.hasSuccess,
-                    ]}
+                </InputGroupPrepend>
+                <Input
+                  placeholder="E-mail"
+                  placeholderTextColor={colors.grayDarker}
+                  value={email}
+                  onChangeText={handleEmailChange}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={emptyEmail === true ? style.hasError : style.hasSuccess}
+                />
+                {!!emptyEmail && (
+                  <InputHelpText>Este campo é obrigatório.</InputHelpText>
+                )}
+              </InputGroup>
+              <InputGroup>
+                <InputGroupPrepend>
+                  <Icon
+                    name="lock"
+                    size={23}
+                    style={emptyPassword === true ? style.hasIconError : style.hasIcon}
                   />
-                  {!!emptyPassword && (
-                    <InputHelpText>Este campo é obrigatório.</InputHelpText>
-                  )}
-                </InputGroup>
-                <Button onPress={handleLoginPress} disabled={disabled}>
-                  {loading ? (
-                    <ActivityIndicator size="small" color={colors.white} />
-                  ) : (
-                      <ButtonText>Acessar conta</ButtonText>
-                    )}
-                </Button>
-              </Form>
-              <ForgotLink onPress={handleForgotPress}>
-                <ForgotLinkText>Esqueceu sua senha de acesso?</ForgotLinkText>
-              </ForgotLink>
-              <AnotherOption>
-                <AnotherOptionText>ou</AnotherOptionText>
-              </AnotherOption>
-              <Button>
-                <ButtonText>Ainda não sou cliente</ButtonText>
+                </InputGroupPrepend>
+                <Input
+                  placeholder="Senha"
+                  placeholderTextColor={colors.grayDarker}
+                  value={password}
+                  onChangeText={handlePasswordChange}
+                  onSubmitEditing={handleLoginPress}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  returnKeyType="send"
+                  secureTextEntry={!passwordView}
+                  style={emptyPassword === true ? style.hasError : style.hasSuccess}
+                />
+                <InputGroupAppend
+                  onPress={() => setPasswordView(!passwordView)}
+                >
+                  <Icon
+                    name={passwordView ? "visibility-off" : "visibility"}
+                    size={23}
+                    style={emptyEmail === true ? style.hasIconError : style.hasIcon}
+                  />
+                </InputGroupAppend>
+                {!!emptyPassword && (
+                  <InputHelpText>Este campo é obrigatório.</InputHelpText>
+                )}
+              </InputGroup>
+              <Button onPress={handleLoginPress} disabled={disabled}>
+                {loading ? (
+                  <ActivityIndicator size="small" color={colors.white} />
+                ) : (
+                  <ButtonText>Acessar conta</ButtonText>
+                )}
               </Button>
-            </Warp>
-          )}
+            </Form>
+            <ForgotLink onPress={handleForgotPress}>
+              <ForgotLinkText>Esqueceu sua senha de acesso?</ForgotLinkText>
+            </ForgotLink>
+            <AnotherOption>
+              <AnotherOptionText>ou</AnotherOptionText>
+            </AnotherOption>
+            <Button>
+              <ButtonText>Ainda não sou cliente</ButtonText>
+            </Button>
+          </Warp>
+        )}
       </Container>
     </KeyboardAvoidingView>
   );

@@ -28,16 +28,16 @@ const CancelText = styled.Text`
 const Submit = styled.TouchableOpacity`
   flex: 1;
   padding: 8px;
-  background: ${colors.primary};
+  background: ${props => props.disabled ? colors.disabled : colors.primary};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color: ${colors.primary};
+  border-color: rgba(0, 0, 0, 0);
 `;
 
 const SubmitText = styled.Text`
-  color: ${colors.white};
+  color: ${props => props.sending ? colors.disabledText : colors.white};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;

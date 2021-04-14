@@ -205,8 +205,9 @@ export default People = (props) => {
               renderItem={renderItem}
               renderHiddenItem={renderHiddenItem}
               rightOpenValue={-260}
+              stopRightSwipe={-260}
               previewRowKey={'0'}
-              previewOpenValue={-150}
+              previewOpenValue={-260}
               previewOpenDelay={2000}
               closeOnRowOpen={false}
               onEndReached={() => teste}

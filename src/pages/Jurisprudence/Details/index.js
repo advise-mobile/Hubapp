@@ -27,19 +27,13 @@ import {
 export default function jurisprudenceDetails(props) {
   const optionsRef = createRef();
   const emailRef = createRef();
-  const jurisprudence = props.navigation.getParam("jurisprudence");
+  const jurisprudence = props.route.params.jurisprudence;
 
-  const term = props.navigation.getParam("term");
+  const term = props.route.params.term;
   const renderers = {
-    mark: (htmlAttribs, children, convertedCSSStyles, passProps) => (
-      <Mark key={Math.random()}>{children}</Mark>
-    ),
-    description: (htmlAttribs, children, convertedCSSStyles, passProps) => (
-      <Description key={Math.random()}>{children}</Description>
-    ),
-    title: (htmlAttribs, children, convertedCSSStyles, passProps) => (
-      <Title key={Math.random()}>{children}</Title>
-    ),
+    mark: (htmlAttribs, children, convertedCSSStyles, passProps) => <Mark key={Math.random()}>{children}</Mark>,
+    description: (htmlAttribs, children, convertedCSSStyles, passProps) => <Description key={Math.random()}>{children}</Description>,
+    title: (htmlAttribs, children, convertedCSSStyles, passProps) => <Title key={Math.random()}>{children}</Title>,
   };
 
   const openModal = () => optionsRef.current?.open();
@@ -60,35 +54,35 @@ export default function jurisprudenceDetails(props) {
     <Container>
       <Warp>
         <Header title={jurisprudence.nomeTribunal} back={() => props.navigation.goBack()} customActions={customActions()} />
-        <Tags>
-          {jurisprudence.dataPublicacao ?
-            <Tag key={1}>
-              <TagText>Data de publicação: {moment(jurisprudence.dataPublicacao, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}</TagText>
-            </Tag> : null}
-          {jurisprudence.descricaoArea ?
-            <Tag key={2}>
-              <TagText>{jurisprudence.descricaoArea}</TagText>
-            </Tag> : null}
-          {jurisprudence.nomeRelator ?
-            <Tag key={3}>
-              <TagText>{jurisprudence.nomeRelator}</TagText>
-            </Tag> : null}
-          {jurisprudence.numeroRecurso ?
-            <Tag key={4}>
-              <TagText>Recurso {jurisprudence.numeroRecurso}</TagText>
-            </Tag> : null}
-          {jurisprudence.orgaoJulgador ?
-            <Tag key={5}>
-              <TagText>{jurisprudence.orgaoJulgador}</TagText>
-            </Tag> : null}
-
-          {jurisprudence.grupo ? jurisprudence.grupo.map((group, i) =>
-            <Tag key={6 + i}>
-              <TagText>{group}</TagText>
-            </Tag>
-          ) : null}
-        </Tags>
         <Content>
+          <Tags>
+            {jurisprudence.dataPublicacao ?
+              <Tag key={1}>
+                <TagText>Data de publicação: {moment(jurisprudence.dataPublicacao, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}</TagText>
+              </Tag> : null}
+            {jurisprudence.descricaoArea ?
+              <Tag key={2}>
+                <TagText>{jurisprudence.descricaoArea}</TagText>
+              </Tag> : null}
+            {jurisprudence.nomeRelator ?
+              <Tag key={3}>
+                <TagText>{jurisprudence.nomeRelator}</TagText>
+              </Tag> : null}
+            {jurisprudence.numeroRecurso ?
+              <Tag key={4}>
+                <TagText>Recurso {jurisprudence.numeroRecurso}</TagText>
+              </Tag> : null}
+            {jurisprudence.orgaoJulgador ?
+              <Tag key={5}>
+                <TagText>{jurisprudence.orgaoJulgador}</TagText>
+              </Tag> : null}
+
+            {jurisprudence.grupo ? jurisprudence.grupo.map((group, i) =>
+              <Tag key={6 + i}>
+                <TagText>{group}</TagText>
+              </Tag>
+            ) : null}
+          </Tags>
           {renderJurisprudence}
         </Content>
         <Options ref={optionsRef} jurisprudence={jurisprudence} openEmail={openEmail} />

@@ -1,7 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import {
-  Text
-} from 'react-native';
 
 import Header from 'components/Header';
 import CustomScrollableTabBar from 'components/CustomScrollableTabBar';
@@ -19,6 +16,14 @@ export default Account = props => {
   const [selectedTab, setSelectedTab] = useState(0);
 
   const [customActions, setCustomActions] = useState();
+
+  useEffect(() => {
+    props.navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+
+      return;
+    })
+  }, []);
 
   const renderTabs = useCallback(() =>
     <ScrollableTabView ref={scrollRef} initialPage={0} renderTabBar={() => <CustomScrollableTabBar />} onChangeTab={tab => setSelectedTab(tab.i)}>

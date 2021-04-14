@@ -23,7 +23,7 @@ const TabButton = styled.TouchableOpacity`
 `;
 
 const TabText = styled.Text`
-  font-family: ${fonts.circularStdBook};
+  font-family: ${(props) => (props.active ? fonts.circularStdBold : fonts.circularStdBook)};
   font-size: ${(props) => (props.active ? fonts.big + 2 : fonts.regular)};
   color: ${(props) => (props.active ? colors.primary : colors.inactive)};
 `;

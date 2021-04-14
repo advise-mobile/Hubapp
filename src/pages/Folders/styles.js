@@ -117,6 +117,33 @@ const SearchButton = styled.TouchableOpacity`
 
 const HeaderContainer = styled.View``;
 
+const NotFound = styled.View`
+  flex: 1;
+  padding: 24px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Image = styled.Image`
+  width: 170px;
+  height: 170px;
+  resize-mode: contain;
+  margin-bottom: 12px;
+`;
+
+const NotFoundText = styled.Text`
+  font-size: ${fonts.big};
+  color: ${colors.grayDarker};
+  font-family: ${fonts.circularStdBold};
+  margin-bottom: 8px;
+`;
+
+const NotFoundDescription = styled.Text`
+  color: ${colors.grayLight};
+  font-size: ${fonts.regular};
+  font-family: ${fonts.circularStdBook};
+`;
+
 export {
   Scene,
   Card,
@@ -135,5 +162,9 @@ export {
   SearchBar,
   SearchInput,
   SearchButton,
-  HeaderContainer
+  HeaderContainer,
+  NotFound,
+  Image,
+  NotFoundText,
+  NotFoundDescription,
 }

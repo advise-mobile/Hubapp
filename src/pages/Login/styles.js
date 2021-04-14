@@ -47,6 +47,16 @@ const InputGroupPrepend = styled.View`
   width: 50px;
 `;
 
+const InputGroupAppend = styled.TouchableOpacity`
+  background-color: transparent;
+  color: ${colors.primary};
+  height: 49px;
+  right: ${metrics.basePadding};
+  padding: 5px;
+  position: absolute;
+  width: 50px;
+`;
+
 const Input = styled.TextInput`
   align-self: stretch;
   margin-horizontal: 20px;
@@ -54,7 +64,7 @@ const Input = styled.TextInput`
   border-radius: ${metrics.baseRadius};
   border-width: 0.5px;
   color: ${colors.primary};
-  font-family: ${fonts.circularStdBold};
+  font-family: ${fonts.circularStdBook};
   font-size: ${fonts.regular};
   padding: 10px;
   height: 45px;
@@ -162,6 +172,7 @@ export {
   Form,
   InputGroup,
   InputGroupPrepend,
+  InputGroupAppend,
   Input,
   InputHelpText,
   Button,

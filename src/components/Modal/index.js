@@ -24,12 +24,6 @@ export default Modal = forwardRef((props, ref) => {
     </Header>
   ), [props]);
 
-  const renderFooter = () => (
-    <Footer>
-      {props.footer}
-    </Footer>
-  );
-
   return (
     <Modalize
       ref={ref}
@@ -37,16 +31,19 @@ export default Modal = forwardRef((props, ref) => {
       modalStyle={styles.modal}
       childrenStyle={{ maxHeight: 400 }}
       HeaderComponent={renderHeader}
-      FooterComponent={renderFooter}
       handlePosition="inside"
       disableScrollIfPossible={false}
       keyboardAvoidingOffset={40}
-      // keyboardAvoidingBehavior='height'
-      // avoidKeyboardLikeIOS
       avoidKeyboard={true}
+    // FooterComponent={renderFooter}
+    // keyboardAvoidingBehavior='height'
+    // avoidKeyboardLikeIOS
     >
       <Container>
         {props.children}
+        <Footer>
+          {props.footer}
+        </Footer>
       </Container>
     </Modalize>
   );

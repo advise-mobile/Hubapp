@@ -61,7 +61,7 @@ export default EmailModal = forwardRef((props, ref) => {
         <CancelText>Cancelar</CancelText>
       </Cancel>
       <Submit onPress={() => sendEmail()} disabled={sending}>
-        {sending ? <Spinner transparent={true} color={colors.white} height='auto' /> : <SubmitText>Enviar</SubmitText>}
+        <SubmitText sending={sending}>{sending ? 'Enviando' : 'Enviar'}</SubmitText>
       </Submit>
     </Footer>
   );

@@ -22,7 +22,7 @@ const Title = styled.Text`
 
 const Footer = styled.View`
   background-color: ${colors.white};
-  padding: 24px;
+  padding: 24px 0;
 `;
 
 const ClearFilters = styled.TouchableOpacity`

@@ -63,19 +63,19 @@ const RoutesTab = createBottomTabNavigator(
     //     ),
     //   }),
     // },
-    Jurisprudence: {
-      screen: Jurisprudence,
-      navigationOptions: () => ({
-        tabBarIcon: ({ tintColor }) => (
-          <MaterialIcons name="gavel" size={25} color={tintColor} />
-        ),
-      }),
-    },
     Deadlines: {
       screen: Deadlines,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
           <MaterialIcons name="event" size={25} color={tintColor} />
+        ),
+      }),
+    },
+    Jurisprudence: {
+      screen: Jurisprudence,
+      navigationOptions: () => ({
+        tabBarIcon: ({ tintColor }) => (
+          <MaterialIcons name="gavel" size={25} color={tintColor} />
         ),
       }),
     },
@@ -112,7 +112,7 @@ const RoutesTab = createBottomTabNavigator(
     initialRouteName: 'Folders',
     tabBarPosition: 'top',
     swipeEnabled: false,
-    animationEnabled: false,
+    animationEnabled: true,
   }
 );
 

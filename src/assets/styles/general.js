@@ -161,13 +161,14 @@ const Actions = styled.View`
   position: absolute;
   align-items: center;
   flex-direction: row;
-  background: ${colors.white};
+  padding-horizontal: 8px;
   border-bottom-width: 1px;
+  background: ${colors.white};
   border-bottom-color: ${colors.grayLighter};
 `;
 
 const ActionButton = styled.TouchableOpacity`
-  padding: 0 14px;
+  padding: 12px;
   background: ${colors.white}
 `;
 

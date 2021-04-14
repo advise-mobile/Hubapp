@@ -18,7 +18,10 @@ export const INITIAL_STATE = Immutable({
   totalNotRead: 0
 });
 
-export const request = state => state.merge({ loading: true });
+export const request = (state, action) => state.merge({
+  loading: true,
+  data: (action.params.page == 1) ? [] : state.data
+});
 
 export const success = (state, action) => {
   return state.merge({

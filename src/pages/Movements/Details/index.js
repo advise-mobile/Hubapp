@@ -32,7 +32,7 @@ import { FormatDateBR } from 'helpers/DateFunctions';
 import { MaskCnj } from 'helpers/Mask';
 
 export default MovementDetail = props => {
-  const [movement] = useState(props.navigation.getParam('movement'));
+  const [movement] = useState(props.route.params.movement);
 
   const details = useSelector(state => state.process.data);
   const loading = useSelector(state => state.process.loading);
@@ -138,9 +138,9 @@ export default MovementDetail = props => {
             </Tag>
           )}
 
-          {publicacao.paginaInicial && (
+          {(publicacao.paginaInicial > 0 && publicacao.paginaFinal > 0) && (
             <Tag background={colors.gray}>
-              <TagText>{publicacao.paginaInicial} a {publicacao.paginaFinal}</TagText>
+              <TagText>{publicacao.paginaInicial || 0} a {publicacao.paginaFinal || 0}</TagText>
             </Tag>
           )}
 

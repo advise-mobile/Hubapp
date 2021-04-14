@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { LogBox, Appearance, View, Text, Platform } from 'react-native';
 import OneSignal from 'react-native-onesignal';
+import SplashScreen from 'react-native-splash-screen'
 
 import store from './store';
 import { Provider } from 'react-redux';
@@ -14,6 +15,7 @@ import ToastNotify from './components/ToastNotify';
 import { getLoggedUser } from 'helpers/Permissions';
 import { registerNotification } from 'helpers/Pushs';
 
+
 LogBox.ignoreLogs([
   "Can't perform a React state update on an unmounted component",
 ]);
@@ -23,6 +25,8 @@ LogBox.ignoreAllLogs(true);
 const App = () => {
   const colorScheme = Appearance.getColorScheme();
   const barStyle = colorScheme === 'dark' ? 'light-content' : 'dark-content';
+
+  useEffect(() => { SplashScreen.hide(); }, []);
 
   // const onReceived = useCallback(notification => {
   //   console.log("Notification received: ", notification);
@@ -37,6 +41,8 @@ const App = () => {
 
   const onIds = useCallback(async device => {
     if (!device.userId) return false;
+
+    console.log(device.userId);
 
     const push = await registerNotification(device.userId);
 
@@ -60,7 +66,8 @@ const App = () => {
         backgroundColor={colorScheme === 'dark' ? '#111111' : '#fff'}
         barStyle={barStyle}
       />
-      <Routes ref={(navigatorRef) => setTopLevelNavigator(navigatorRef)} />
+      {/* <Routes /> */}
+      <Routes />
       <ToastNotify />
     </Provider>
   );

@@ -63,13 +63,13 @@ const Badge = styled.View`
       case -6: return '#E6EE9C'; //diligence
       case -7: return '#F48FB1'; //reminders
 
-      default: return '#b0bec5'; //others
+      default: return colors.red; //others
     }
   }}
 `;
 
 const BadgeText = styled.Text`
-  color: rgba(0, 0, 0, .8);
+  color: ${props => props.expired ? '#fff' : colors.grayDarker};
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.smaller};
 `;
@@ -89,6 +89,7 @@ const Filters = styled.FlatList`
   background: ${colors.white};
   overflow: scroll;
   max-height: 54px;
+  margin-right: 12px;
 `;
 
 const FiltersButton = styled.TouchableOpacity`
@@ -97,7 +98,7 @@ const FiltersButton = styled.TouchableOpacity`
 `;
 
 const FiltersText = styled.Text`
-  font-family: ${fonts.circularStdBook};
+  font-family: ${(props) => (props.active ? fonts.circularStdBold : fonts.circularStdBook)};
   font-size: ${(props) => (props.active ? fonts.big + 2 : fonts.regular)};
   color: ${(props) => (props.active ? colors.primary : colors.inactive)};
 `;
@@ -106,7 +107,7 @@ const FiltersActive = styled.View`
   width: ${(props) => (props.active ? 40 : 20)};
   height: 2px;
   margin-top: 4px;
-  background-color: ${(props) => props.active ? colors.primary : colors.inactive};
+  background-color: ${(props) => props.active ? colors.primary : colors.grayLight};
 `;
 
 const Agenda = styled.View`
@@ -132,10 +133,10 @@ const ListContainer = styled.View`
 const ListTitle = styled.Text`
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
-  color: ${colors.grayDarker};
+  color: ${props => props.expired ? colors.red : colors.grayDarker};
 `;
 const ListSchedule = styled.Text`
-  color: ${colors.grayDarker};
+  color: ${props => props.expired ? colors.red : colors.grayDarker};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBold};
   flex: 1;
@@ -195,8 +196,6 @@ const CreateNewText = styled.Text`
 const Content = styled.View`
   flex: 1;
   background-color: ${colors.white};
-  align-items: center;
-  justify-content: center;
 `;
 
 

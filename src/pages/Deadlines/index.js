@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Animated, Appearance } from 'react-native';
+import { Animated, Appearance, View } from 'react-native';
 import moment from 'moment';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,7 +10,7 @@ import Api from 'services/Api';
 import { FormatDateBR } from 'helpers/DateFunctions';
 
 
-import { ExpandableCalendar, CalendarProvider, LocaleConfig } from 'react-native-calendars';
+import { ExpandableCalendar, Calendar, CalendarProvider, LocaleConfig } from 'react-native-calendars';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
@@ -111,10 +111,11 @@ export default function Deadlines(props) {
   const editRef = useRef(null);
   const emailRef = useRef(null);
   const filtersRef = useRef(null);
+  const headerFiltersRef = useRef(null);
   const confirmationRef = useRef(null);
 
   const dispatch = useDispatch();
-
+  const triggerChange = useSelector(state => state.deadlines.triggerChange);
   const endReached = useSelector(state => state.deadlines.endReached);
   const loading = useSelector(state => state.deadlines.loading);
   const updating = useSelector(state => state.deadlines.updating);
@@ -135,6 +136,22 @@ export default function Deadlines(props) {
 
   const [idAgenda, setIdAgenda] = useState(0);
 
+  useEffect(() => {
+    const isFocused = props.navigation.isFocused();
+
+    if (!triggerChange || !isFocused) return;
+
+    setPage(1);
+    setTrigger(!trigger);
+  }, [triggerChange, props.navigation.isFocused()])
+
+  useEffect(() => {
+    props.navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+
+      return;
+    })
+  }, []);
 
   useEffect(() => { checkPermission(PermissionsGroups.SCHEDULE).then(permission => setPermission(permission)) }, [props]);
 
@@ -145,7 +162,7 @@ export default function Deadlines(props) {
   }, []);
 
   useEffect(() => {
-    const removeIndex = props.navigation.getParam('removeIndex');
+    const removeIndex = props.route.params?.removeIndex || false;
 
     if (!removeIndex) return;
 
@@ -173,9 +190,9 @@ export default function Deadlines(props) {
 
   const clearCustomFilters = useCallback(() => setCustomFilters({}), []);
 
-  const openRow = useCallback(key => !listRef.current._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-260) : closeOpenedRow(key));
+  const openRow = useCallback(key => !listRef.current?._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-260) : closeOpenedRow(key));
 
-  const closeOpenedRow = useCallback(key => listRef.current._rows[key].closeRow());
+  const closeOpenedRow = useCallback(key => listRef.current?._rows[key].closeRow());
 
   // const onDateChanged = (date, updateSource) => console.warn('ExpandableCalendarScreen onDateChanged: ', date, updateSource);
 
@@ -194,6 +211,15 @@ export default function Deadlines(props) {
   const renderConfirmation = useCallback(() => <Confirmation ref={confirmationRef} deadline={currentDeadline} remove={id => removeFromList(id)} />, [currentDeadline]);
 
   const renderFooter = useCallback(() => (!loading) ? null : <Spinner />, [loading]);
+
+  const renderCalendar = useCallback(() => (
+    <Calendar
+      style={{ shadowOpacity: 0, borderBottomWidth: 1, borderBottomColor: colors.grayLighter, backgroundColor: colors.white, paddingHorizontal: 16, paddingVertical: 8 }}
+      theme={theme}
+      markingType={'custom'}
+      markedDates={getMarkedDates()}
+    />
+  ), []);
 
   const getMarkedDates = useCallback(() => {
     let datas = {};
@@ -291,7 +317,9 @@ export default function Deadlines(props) {
     confirmationRef.current?.open();
   }, []);
 
-  const handleFilter = useCallback(id => {
+  const handleFilter = useCallback((id, index) => {
+    headerFiltersRef.current?.scrollToIndex({ animated: true, index: index });
+
     setPage(1);
     setCurrentFilter(id);
   }, []);
@@ -333,11 +361,9 @@ export default function Deadlines(props) {
       );
     };
 
-    removeFromList(deadline.id, mark);
-    // if (currentFilter != 'vencidos' && currentFilter != 'importantes') {
-    // } else {
-    //   mark();
-    // }
+    removeFromList(deadline.id);
+
+    setTimeout(() => mark(), 500);
   }, []);
 
   const markAsImportant = useCallback(deadline => {
@@ -352,10 +378,17 @@ export default function Deadlines(props) {
     );
 
     setTimeout(() => closeOpenedRow(deadline.id), 500);
+
+    if (importante && currentFilter === 'importantes') {
+      setTimeout(() => {
+        setPage(1);
+        setTrigger(!trigger);
+      }, 2000);
+    }
   }, []);
 
-  const renderFilters = useCallback(({ item }) => (
-    <FiltersButton onPress={() => handleFilter(item.id)}>
+  const renderFilters = useCallback(({ item, index }) => (
+    <FiltersButton onPress={() => handleFilter(item.id, index)}>
       <FiltersText active={currentFilter == item.id}>
         {item.name}
       </FiltersText>
@@ -403,14 +436,14 @@ export default function Deadlines(props) {
           <ReadButton onPress={() => markAsRead(item)}></ReadButton>
           <ListContainer>
             <ListHeader>
-              <ListSchedule>{moment(item.dataHoraInicio).format('DD/MM/YYYY')} • {moment(item.dataHoraInicio).format('HH:mm')}</ListSchedule>
+              <ListSchedule expired={currentFilter == 'vencidos'}>{moment(item.dataHoraInicio).format('DD/MM/YYYY')} • {moment(item.dataHoraInicio).format('HH:mm')}</ListSchedule>
               <ListAction onPress={() => openRow(item.id)}>
                 <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
               </ListAction>
             </ListHeader>
-            <ListTitle>{item.titulo}</ListTitle>
-            <Badge type={item.idPadraoTipoEventoAgenda}>
-              <BadgeText>{item.tipoEventoAgenda}</BadgeText>
+            <ListTitle expired={currentFilter == 'vencidos'}>{item.titulo}</ListTitle>
+            <Badge type={currentFilter == 'vencidos' ? 0 : item.idPadraoTipoEventoAgenda}>
+              <BadgeText expired={currentFilter == 'vencidos'}>{item.tipoEventoAgenda}</BadgeText>
             </Badge>
           </ListContainer>
         </ListGrid>
@@ -425,7 +458,8 @@ export default function Deadlines(props) {
           <Header title="Prazos" filter={data.length > 0 || Object.keys(customFilters).length > 0 ? () => filtersRef.current?.open() : null} add={() => addRef.current?.open()} />
           {/* <Header title="Prazos" filter={data.length > 0 || Object.keys(customFilters).length > 0 ? () => filtersRef.current?.open() : null} /> */}
           <Filters
-            contentContainerStyle={{ alignItems: 'center' }}
+            ref={headerFiltersRef}
+            contentContainerStyle={{ alignItems: 'center', paddingRight: 16 }}
             showsHorizontalScrollIndicator={false}
             horizontal
             data={filters}
@@ -437,44 +471,25 @@ export default function Deadlines(props) {
             {loading && page == 1 ? <Spinner height={'auto'} /> :
               <>
                 {data.length > 0 ?
-                  <>
-                    <CalendarProvider
-                      date={moment().format(`YYYY-MM-DD`)}
-                      // onDateChanged={onDateChanged}
-                      // onMonthChange={onMonthChange}
-                      disabledOpacity={0.6}
-                      displayLoadingIndicator={loading}
-                      style={{ overflow: 'hidden', flex: 1, backgroundColor: colors.white }}
-                      theme={{ todayButtonTextColor: colors.primary, backgroundColor: colors.white }}
-                    >
-                      <ExpandableCalendar
-
-                        initialPosition={ExpandableCalendar.positions.OPEN}
-                        style={{ shadowOpacity: 0, borderBottomWidth: 1, borderBottomColor: colors.grayLighter, backgroundColor: colors.white }}
-                        theme={theme}
-                        markingType={'custom'}
-                        markedDates={getMarkedDates()}
-                      />
-                      <Agenda>
-                        <SwipeListView
-                          data={data}
-                          ref={listRef}
-                          closeOnRowOpen
-                          disableRightSwipe
-                          previewRowKey={'0'}
-                          rightOpenValue={-260}
-                          useNativeDriver={false}
-                          previewOpenValue={-260}
-                          previewOpenDelay={2000}
-                          renderItem={renderItem}
-                          onEndReached={onEndReached}
-                          ListFooterComponent={renderFooter}
-                          renderHiddenItem={renderHiddenItem}
-                          keyExtractor={(item) => item.id}
-                        />
-                      </Agenda>
-                    </CalendarProvider>
-                  </>
+                  <SwipeListView
+                    data={data}
+                    ref={listRef}
+                    closeOnRowOpen
+                    disableRightSwipe
+                    previewRowKey={'0'}
+                    rightOpenValue={-260}
+                    stopRightSwipe={-260}
+                    useNativeDriver={false}
+                    previewOpenValue={-260}
+                    previewOpenDelay={2000}
+                    renderItem={renderItem}
+                    onEndReached={onEndReached}
+                    ListFooterComponent={renderFooter}
+                    // style={{ overflow: 'hidden', flex: 1, backgroundColor: colors.white }}
+                    renderHiddenItem={renderHiddenItem}
+                    ListHeaderComponent={renderCalendar}
+                    keyExtractor={(item) => item.id}
+                  />
                   :
                   <NotFound>
                     <Image source={notFound} />

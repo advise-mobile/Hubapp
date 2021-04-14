@@ -1,13 +1,13 @@
-import React from 'react';
-import AppIntroSlider from 'react-native-app-intro-slider';
+import React, { useCallback } from 'react';
 import { StyleSheet } from 'react-native';
-import jwtDecode from 'jwt-decode';
-import OneSignal from 'react-native-onesignal';
 
-import { Container, Warp, Slide, Title, Icon, Image, Text, NextButton, ButtonText, SlideContainer } from './styles';
+import AppIntroSlider from 'react-native-app-intro-slider';
+// import jwtDecode from 'jwt-decode';
+// import OneSignal from 'react-native-onesignal';
 
 import { colors } from 'assets/styles';
-import env from 'services/env';
+import { Container, Warp, Slide, Title, Icon, Image, Text, NextButton, ButtonText, SlideContainer } from './styles';
+// import env from 'services/env';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -54,74 +54,72 @@ const styles = StyleSheet.create({
 
 _keyExtractor = (item) => item.title;
 
-export default function Intro(props) {
-  _renderItem = ({ item }) => {
-    return (
-      <Slide>
-        <Icon source={icon} resizeMode="contain" style={styles.icon} />
-        <Image source={item.image} resizeMode="contain" />
-        <SlideContainer>
-          <Title>{item.title}</Title>
-          <Text>{item.text}</Text>
-        </SlideContainer>
-      </Slide>
-    );
-  };
+const Intro = props => {
+  const _renderItem = useCallback(({ item }) => (
+    <Slide>
+      <Icon source={icon} resizeMode="contain" style={styles.icon} />
+      <Image source={item.image} resizeMode="contain" />
+      <SlideContainer>
+        <Title>{item.title}</Title>
+        <Text>{item.text}</Text>
+      </SlideContainer>
+    </Slide>
+  ), []);
 
-  _onDone = () => {
+  const _onDone = useCallback(() => {
     AsyncStorage.setItem('@AdviseIntro', 'true').then(() => {
       props.navigation.navigate('Login');
     });
-  };
+  }, []);
 
-  _renderNextButton = () => {
+  const _renderNextButton = useCallback(() => {
     return (
       <NextButton>
         <ButtonText>Próximo</ButtonText>
       </NextButton>
     );
-  };
+  }, []);
 
-  _renderFinishButton = () => {
+  const _renderFinishButton = useCallback(() => {
     return (
       <NextButton>
         <ButtonText>Continuar</ButtonText>
       </NextButton>
     );
-  };
+  }, []);
 
-  _checkAlreadySeen = async () => {
-    // AsyncStorage.getItem('@AdviseIntro').then(seen => {
-    //   seen && props.navigation.navigate('Login');
-    // })
-    // const token = await AsyncStorage.getItem('@Advise:token');
-    // if (token !== null) {
-    //   const user = jwtDecode(token);
-    //   OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
-    //   props.navigation.navigate('Folders', { user });
-    // }
-    AsyncStorage.multiGet(['@AdviseIntro', '@Advise:token'], (err, items) => {
+  // _checkAlreadySeen = async () => {
+  //   // AsyncStorage.getItem('@AdviseIntro').then(seen => {
+  //   //   seen && props.navigation.navigate('Login');
+  //   // })
+  //   // const token = await AsyncStorage.getItem('@Advise:token');
+  //   // if (token !== null) {
+  //   //   const user = jwtDecode(token);
+  //   //   OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
+  //   //   props.navigation.navigate('Folders', { user });
+  //   // }
+  //   AsyncStorage.multiGet(['@AdviseIntro', '@Advise:token'], (err, items) => {
 
-      const intro = items[0][1];
-      const token = items[1][1];
+  //     const intro = items[0][1];
+  //     const token = items[1][1];
 
-      if (intro) {
-        if (token) {
-          const user = jwtDecode(token);
-          OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
-          props.navigation.navigate('Folders', { user });
+  //     if (intro) {
+  //       if (token) {
+  //         const user = jwtDecode(token);
+  //         OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
+  //         props.navigation.navigate('App', { user });
 
-        } else {
-          props.navigation.navigate('Login');
-        }
-      }
-    });
-    // AsyncStorage.getItem('@AdviseIntro').then(seen => {
-    //   seen && props.navigation.navigate('Login');
-    // })
-  }
+  //       } else {
+  //         props.navigation.navigate('Login');
+  //       }
+  //     }
+  //   });
+  //   // AsyncStorage.getItem('@AdviseIntro').then(seen => {
+  //   //   seen && props.navigation.navigate('Login');
+  //   // })
+  // }
 
-  _checkAlreadySeen();
+  // _checkAlreadySeen();
 
   return (
     <Container>
@@ -142,3 +140,5 @@ export default function Intro(props) {
     </Container>
   );
 }
+
+export default Intro;

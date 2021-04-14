@@ -42,7 +42,7 @@ export default Menu = forwardRef((props, ref) => {
     );
 
     setTimeout(() => closeModal(), 500);
-  }, []);
+  }, [props]);
 
   const markAsImportant = useCallback(() => {
     const { importante, id, idAgenda } = deadline;
@@ -142,7 +142,7 @@ export default Menu = forwardRef((props, ref) => {
       <Content>
         <Item onPress={() => markAsRead()}>
           <MaterialIcons name={'check'} size={22} color={colors.fadedBlack} />
-          <ItemText>Marcar como concluído</ItemText>
+          <ItemText>{deadline.concluido ? 'Desmarcar' : 'Marcar'} como concluído</ItemText>
         </Item>
         <Item onPress={() => openEdit()}>
           <MaterialIcons name={'edit'} size={22} color={colors.fadedBlack} />

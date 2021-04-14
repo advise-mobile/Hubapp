@@ -69,10 +69,10 @@ const MovementHeader = styled.View`
 
 const MovementHeading = styled.Text`
   color: ${colors.primary};
-  font-family: ${fonts.circularStdMedium};
+  font-family: ${props => props.read ? fonts.circularStdBook : fonts.circularStdBold};
   font-size: 16px;
   flex: 1;
-  `;
+`;
 
 const MovementResume = styled.Text`
   color: ${colors.primary};

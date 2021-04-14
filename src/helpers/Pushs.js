@@ -22,6 +22,8 @@ const registerNotification = async hash => {
     itens: [push]
   }).then(() => {
     AsyncStorage.setItem('@Advise:pushHash', hash);
+  }).finally(() => {
+    return push;
   });
 };
 

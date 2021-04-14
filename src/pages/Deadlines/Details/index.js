@@ -44,7 +44,7 @@ export default function DeadlinesDetails(props) {
 
   const dispatch = useDispatch();
 
-  const [deadline, setDeadline] = useState(props.navigation.getParam('deadline'));
+  const [deadline, setDeadline] = useState(props.route.params.deadline);
 
   const customActions = useMemo(() => (
     <HeaderAction>

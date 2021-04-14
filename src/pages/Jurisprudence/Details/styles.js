@@ -3,10 +3,11 @@ import { fonts, colors, metrics } from 'assets/styles';
 
 const Content = styled.ScrollView`
   padding: 0 24px;
+  margin-bottom: 16px;
 `;
 
 const Tags = styled.View`
-  padding: 24px 24px 12px 24px;
+  padding: 12px 0;
   margin-top: ${metrics.baseMargin + 5};
   flex-flow: row wrap;
 `;

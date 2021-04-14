@@ -23,7 +23,6 @@ import {
 } from 'assets/styles/general';
 
 import {
-  Scene,
   Card,
   CardCounter,
   CardContainer,
@@ -39,7 +38,10 @@ import {
   SearchBar,
   SearchInput,
   SearchButton,
-  HeaderContainer
+  NotFound,
+  Image,
+  NotFoundText,
+  NotFoundDescription,
 } from './styles';
 
 export default function Folders(props) {
@@ -47,12 +49,18 @@ export default function Folders(props) {
   // const edit = () => { console.log("edit") };
 
   const [filters, setFilters] = useState();
+  const [processFilters, setProcessFilters] = useState();
   const [keywordSearch, setKeywordSearch] = useState('');
+  const [processSearch, setProcessSearch] = useState('');
   const [currentKeywordsPage, setCurrentKeywordsPage] = useState(1);
   const [triggerKeywordRequest, setTriggerKeywordRequest] = useState(false);
   const [currentProcessesPage, setCurrentProcessesPage] = useState(1);
+  const [triggerProcessesRequest, setTriggerProcessesRequest] = useState(false);
   const [publicationsPermission, setPublicationsPermission] = useState(false);
   const [processesPermission, setProcessesPermission] = useState(false);
+
+  const [searched, setSearched] = useState(false);
+  const [searchedProcess, setSearchedProcess] = useState(false);
 
   const folderKeywords = useSelector(state => state.folderKeywords.data);
   const endKeywordsReached = useSelector(state => state.folderKeywords.endReached);
@@ -68,8 +76,18 @@ export default function Folders(props) {
 
   const image = (colorScheme == 'dark') ? require('assets/images/permissions/folders_white.png') : require('assets/images/permissions/folders.png');
 
+  const notFound = (colorScheme == 'dark') ? require('assets/images/not_found/movements_white.png') : require('assets/images/not_found/movements.png');
+
   const dispatch = useDispatch();
   const threshold = 0;
+
+  useEffect(() => {
+    props.navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+
+      return;
+    })
+  }, []);
 
   useEffect(() => {
     checkPermission(PermissionsGroups.PUBLICATIONS).then(permission => setPublicationsPermission(permission));
@@ -84,17 +102,17 @@ export default function Folders(props) {
         perPage: 20,
       })
     );
-  }, [props, filters, triggerKeywordRequest]);
+  }, [filters, triggerKeywordRequest]);
 
   useEffect(() => {
     dispatch(
       FolderProcessesActions.folderProcessesRequest({
-        filters,
+        filters: processFilters,
         page: currentProcessesPage,
         perPage: 20,
       })
     )
-  }, [currentProcessesPage]);
+  }, [processFilters, triggerProcessesRequest]);
 
   const onKeywordsEndReached = useCallback(() => {
     if (endKeywordsReached) return;
@@ -105,19 +123,23 @@ export default function Folders(props) {
   }, []);
 
   const onProcessesEndReached = useCallback(() => {
-    if (!endProcessesReached && currentKeywordsPage > 1) setCurrentProcessesPage(currentProcessesPage + 1);
+    if (endProcessesReached) return;
+
+    setCurrentProcessesPage(currentProcessesPage + 1);
+
+    setTriggerProcessesRequest(!triggerProcessesRequest);
   }, []);
 
   const renderKeywordsHeader = () => (
     <>
-      <Card>
+      <Card underlayColor={colors.white} activeOpacity={1}>
         <CardInfos>
           <CardCounter>{totalKeywordsNotRead}</CardCounter>
           <CardContainer>
             <CardDescription>Publicações em diários</CardDescription>
             <CardSubtitle>não lidas</CardSubtitle>
           </CardContainer>
-          <MaterialIcons size={20} name="arrow-forward" color={colors.fadedBlack} />
+          {/* <MaterialIcons size={20} name="arrow-forward" color={colors.fadedBlack} /> */}
         </CardInfos>
       </Card>
       <Heading>Selecione a palavra-chave desejada</Heading>
@@ -132,12 +154,36 @@ export default function Folders(props) {
           onSubmitEditing={searchKeyword}
           returnKeyType='search'
         />
-        <SearchButton onPress={() => searchKeyword()}>
-          <MaterialIcons size={20} name="search" color={colors.fadedBlack} />
+        <SearchButton onPress={() => searched ? clearSearchKeyword() : searchKeyword()}>
+          <MaterialIcons size={20} name={searched ? "close" : "search"} color={colors.fadedBlack} />
         </SearchButton>
       </SearchBar>
     </>
   );
+
+  const renderKeywordsNotFound = useCallback(() => (
+    <>
+      {!loadingKeywords &&
+        <NotFound>
+          <Image source={notFound} />
+          <NotFoundText>Não há resultados</NotFoundText>
+          <NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+        </NotFound>
+      }
+    </>
+  ), [loadingKeywords]);
+
+  const renderProcessesNotFound = useCallback(() => (
+    <>
+      {!loadingProcesses &&
+        <NotFound>
+          <Image source={notFound} />
+          <NotFoundText>Não há resultados</NotFoundText>
+          <NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+        </NotFound>
+      }
+    </>
+  ), [loadingProcesses]);
 
   const renderKeywordsFooter = useCallback(() => {
     if (!loadingKeywords) return null;
@@ -146,19 +192,34 @@ export default function Folders(props) {
   }, [loadingKeywords]);
 
   const renderProcessesHeader = () => (
-    <HeaderContainer>
-      <Card>
+    <>
+      <Card underlayColor={colors.white} activeOpacity={1}>
         <CardInfos>
           <CardCounter>{totalProcessesNotRead}</CardCounter>
           <CardContainer>
             <CardDescription>Andamentos processuais</CardDescription>
             <CardSubtitle>não lidos</CardSubtitle>
           </CardContainer>
-          <MaterialIcons size={20} name="arrow-forward" color={colors.fadedBlack} />
+          {/* <MaterialIcons size={20} name="arrow-forward" color={colors.fadedBlack} /> */}
         </CardInfos>
       </Card>
       <Heading>Selecione o processo desejado</Heading>
-    </HeaderContainer>
+      <SearchBar>
+        <SearchInput
+          autoCorrect={false}
+          autoCapitalize="none"
+          placeholder='Buscar processo'
+          placeholderTextColor={colors.grayLight}
+          value={processSearch}
+          onChangeText={typedSearch => setProcessSearch(typedSearch)}
+          onSubmitEditing={searchProcess}
+          returnKeyType='search'
+        />
+        <SearchButton onPress={() => searchedProcess ? clearSearchProcess() : searchProcess()}>
+          <MaterialIcons size={20} name={searchedProcess ? "close" : "search"} color={colors.fadedBlack} />
+        </SearchButton>
+      </SearchBar>
+    </>
   );
 
   const renderProcessesFooter = useCallback(() => {
@@ -167,10 +228,36 @@ export default function Folders(props) {
     return <Spinner />
   }, [loadingProcesses]);
 
-  const searchKeyword = () => {
+  const clearSearchKeyword = useCallback(() => {
+    setCurrentKeywordsPage(1);
+    setKeywordSearch('');
+    setFilters({});
+
+    setSearched(false);
+  }, []);
+
+  const clearSearchProcess = useCallback(() => {
+    setCurrentProcessesPage(1);
+    setProcessSearch('');
+    setProcessFilters({});
+
+    setSearchedProcess(false);
+  }, []);
+
+  const searchKeyword = useCallback(() => {
     setCurrentKeywordsPage(1);
     setFilters({ nome: keywordSearch });
-  }
+
+    setSearched(keywordSearch.length > 0);
+  }, [keywordSearch]);
+
+
+  const searchProcess = useCallback(() => {
+    setCurrentProcessesPage(1);
+    setProcessFilters({ nome: processSearch });
+
+    setSearchedProcess(processSearch.length > 0);
+  }, [processSearch]);
 
   const Publicacoes = () => (
     <KeyboardAvoidingView
@@ -187,6 +274,7 @@ export default function Folders(props) {
           onEndReachedThreshold={threshold}
           ListHeaderComponent={renderKeywordsHeader()}
           ListFooterComponent={renderKeywordsFooter}
+          ListEmptyComponent={renderKeywordsNotFound}
         />
         :
         <HasNotPermission
@@ -209,8 +297,9 @@ export default function Folders(props) {
           keyExtractor={(_, index) => index.toString()}
           onEndReached={onProcessesEndReached}
           onEndReachedThreshold={threshold}
-          ListHeaderComponent={renderProcessesHeader}
+          ListHeaderComponent={renderProcessesHeader()}
           ListFooterComponent={renderProcessesFooter}
+          ListEmptyComponent={renderProcessesNotFound}
         />
         :
         <HasNotPermission
@@ -225,7 +314,7 @@ export default function Folders(props) {
   const renderList = folder => (
     <>
       { loadingKeywords && currentKeywordsPage == 1 ? <Spinner /> :
-        <ListItem onPress={() => props.navigation.navigate('Movements', folder)}>
+        <ListItem onPress={() => props.navigation.push('Movements', folder)}>
           <ListItemText>{MaskCnj(folder.item.nome)}</ListItemText>
           <ListItemCounterContainer>
             <ListItemCounterText>{folder.item.totalNaoLidas}</ListItemCounterText>

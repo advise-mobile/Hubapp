@@ -44,8 +44,8 @@ export default function jurisprudenceList(props) {
   const filtersRef = createRef();
 
   const [filters, setFilters] = useState({});
-  const [term, setTerm] = useState(props.navigation.getParam("term"));
-  const [searchedTerm, setSearchedTerm] = useState(props.navigation.getParam("term"));
+  const [term, setTerm] = useState(props.route.params.term);
+  const [searchedTerm, setSearchedTerm] = useState(props.route.params.term);
   const [page, setPage] = useState(1);
   const [trigger, setTrigger] = useState(false);
 
@@ -118,7 +118,7 @@ export default function jurisprudenceList(props) {
     <Jurisprudence key={item.codEmenta} onPress={() => props.navigation.navigate('JurisprudenceDetail', { jurisprudence: item, term })}>
       <Tribunal>{item.nomeTribunal}</Tribunal>
       <PublicationDate>Data de publicação: {moment(item.dataPublicacao, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}</PublicationDate>
-      <HTML source={{ html: `<title>${item.tituloMarcado || item.titulo}</title><description>${item.ementaMarcada.join("").split('\u0000').join('') || item.ementa}</description>` }} renderers={renderers} ignoredTags={['strong']} />
+      <HTML source={{ html: `<title>${item.tituloMarcado || item.titulo}</title><description>${item.ementaMarcada?.join("").split('\u0000').join('') || item.ementa}</description>` }} renderers={renderers} ignoredTags={['strong']} />
     </Jurisprudence>
   );
 

@@ -36,6 +36,14 @@ export default function Jurisprudence(props) {
   const [hasPermission, setPermission] = useState(false);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    props.navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+
+      return;
+    })
+  }, []);
+
   useEffect(() => { checkPermission(PermissionsGroups.JURISPRUDENCE).then(permission => setPermission(permission)) }, [props]);
 
   const searchKeyword = useCallback(() => {

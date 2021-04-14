@@ -64,7 +64,7 @@ export default Movements = props => {
   const tribunals = useSelector(state => state.movements.tribunals);
   const refreshing = useSelector(state => state.movements.refreshing);
 
-  const [folder] = useState(props.navigation.getParam('item'));
+  const [folder] = useState(props.route.params.item);
 
   const [selecteds, setSelecteds] = useState(0);
   const [selectAll, setSelectedAll] = useState(selecteds > 0 ? true : false);
@@ -263,7 +263,7 @@ export default Movements = props => {
           onTintColor={colors.primary}
           style={{ width: 18, height: 18, marginRight: 12 }}
         /> */}
-        <MovementHeading numberOfLines={1} onPress={() => props.navigation.navigate('MovementDetail', { movement: item })} underlayColor={colors.white} activeOpacity={1}>{renderMovementTitle(item.movimento)}</MovementHeading>
+        <MovementHeading numberOfLines={1} onPress={() => props.navigation.navigate('MovementDetail', { movement: item })} underlayColor={colors.white} activeOpacity={1} read={item.lido}>{renderMovementTitle(item.movimento)}</MovementHeading>
         <MovementAction onPress={() => openRow(item.id)}>
           <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
         </MovementAction>
@@ -337,9 +337,9 @@ export default Movements = props => {
             <FolderTitle>{MaskCnj(folder.nome)}</FolderTitle>
           </Heading>
         ) : (
-            <Heading>
-              <FolderSelected>
-                {/* <CheckBox
+          <Heading>
+            <FolderSelected>
+              {/* <CheckBox
                   lineWidth={1.5}
                   boxType={'square'}
                   value={selectAll}
@@ -352,23 +352,23 @@ export default Movements = props => {
                   onTintColor={colors.primary}
                   style={{ width: 18, height: 18, marginRight: 12, marginVertical: 1 }}
                 /> */}
-                <FolderSelectedTitle>
-                  <FolderSelectedTitleHighlight>Selecionado {selecteds}</FolderSelectedTitleHighlight> de {movements.length} publicações
+              <FolderSelectedTitle>
+                <FolderSelectedTitleHighlight>Selecionado {selecteds}</FolderSelectedTitleHighlight> de {movements.length} publicações
                 </FolderSelectedTitle>
-                <FolderSelectedActions>
-                  {/* <FolderSelectedActionButton onPress={() => console.log('clicked')}>
+              <FolderSelectedActions>
+                {/* <FolderSelectedActionButton onPress={() => console.log('clicked')}>
                     <MaterialIcons name="preview" size={22} color={colors.fadedBlack} />
                   </FolderSelectedActionButton> */}
-                  <FolderSelectedActionButton onPress={() => console.log('clicked')}>
-                    <MaterialIcons name="mail" size={22} color={colors.fadedBlack} />
-                  </FolderSelectedActionButton>
-                  <FolderSelectedActionButton onPress={() => console.log('clicked')}>
-                    <MaterialIcons name="delete" size={22} color={colors.fadedBlack} />
-                  </FolderSelectedActionButton>
-                </FolderSelectedActions>
-              </FolderSelected>
-            </Heading>
-          )}
+                <FolderSelectedActionButton onPress={() => console.log('clicked')}>
+                  <MaterialIcons name="mail" size={22} color={colors.fadedBlack} />
+                </FolderSelectedActionButton>
+                <FolderSelectedActionButton onPress={() => console.log('clicked')}>
+                  <MaterialIcons name="delete" size={22} color={colors.fadedBlack} />
+                </FolderSelectedActionButton>
+              </FolderSelectedActions>
+            </FolderSelected>
+          </Heading>
+        )}
         {loading && currentPage == 1 ? <Spinner /> :
           <>
             {movements.length > 0 ?
@@ -380,6 +380,7 @@ export default Movements = props => {
                 disableRightSwipe
                 previewRowKey={'2'}
                 rightOpenValue={-150}
+                stopRightSwipe={-150}
                 closeOnRowOpen={false}
                 renderItem={renderItem}
                 previewOpenValue={-150}

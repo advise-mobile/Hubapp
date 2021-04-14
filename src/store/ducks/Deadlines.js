@@ -37,6 +37,7 @@ export const INITIAL_STATE = Immutable({
   processing: false,
   endReached: false,
   loadingTypes: false,
+  triggerChange: false,
 });
 
 export const deadlinesRequest = state => state.merge({
@@ -50,6 +51,7 @@ export const deadlinesSuccess = (state, action) => state.merge({
   loading: false,
   updating: false,
   failure: false,
+  triggerChange: false,
 });
 
 export const deadlinesFailure = state => state.merge({
@@ -76,6 +78,7 @@ export const deadlinesEdit = state => state.merge({
 export const deadlinesProcessSuccess = (state, action) => state.merge({
   // data: [...action.data, ...state.data],
   processing: false,
+  triggerChange: true,
 });
 
 export const deadlinesProccessFailure = state => state.merge({
@@ -115,6 +118,7 @@ export const deadlinesAlterationSuccess = (state, action) => {
     data: deadlines,
     updating: false,
     deleting: false,
+    triggerChange: true,
   });
 };
 

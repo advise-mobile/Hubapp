@@ -3,7 +3,7 @@ import Immutable from 'seamless-immutable';
 
 const { Types, Creators } = createActions({
   folderProcessesRequest: ['params'],
-  folderProcessesSuccess: ['data'],
+  folderProcessesSuccess: ['data', 'page'],
   folderProcessesFailure: null,
 });
 
@@ -17,7 +17,10 @@ export const INITIAL_STATE = Immutable({
   totalNotRead: 0
 });
 
-export const request = (state) => state.merge({ loading: true });
+export const request = (state, action) => state.merge({
+  loading: true,
+  data: (action.params.page == 1) ? [] : state.data
+});
 
 export const success = (state, action) => state.merge({
   data: action.page === 1 ? action.data.itens : [...state.data, ...action.data.itens],
