@@ -25,6 +25,8 @@ import Edit from './Modals/Edit';
 import CustomFilters from './Modals/CustomFilters';
 import Confirmation from './Modals/Confirmation';
 
+import Blocked from 'pages/Blocked';
+
 import {
   theme,
   Badge,
@@ -49,6 +51,7 @@ import {
   Content,
   CreateNew,
   CreateNewText,
+  ImportantFlag
 } from './styles';
 
 import { colors } from 'assets/styles';
@@ -134,6 +137,8 @@ export default function Deadlines(props) {
   const [page, setPage] = useState(1);
   const [havePermission, setPermission] = useState(false);
 
+  const active = useSelector(state => state.auth.active);
+
   const [idAgenda, setIdAgenda] = useState(0);
 
   useEffect(() => {
@@ -190,7 +195,7 @@ export default function Deadlines(props) {
 
   const clearCustomFilters = useCallback(() => setCustomFilters({}), []);
 
-  const openRow = useCallback(key => !listRef.current?._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-260) : closeOpenedRow(key));
+  const openRow = useCallback(key => !listRef.current?._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-250) : closeOpenedRow(key));
 
   const closeOpenedRow = useCallback(key => listRef.current?._rows[key].closeRow());
 
@@ -219,7 +224,7 @@ export default function Deadlines(props) {
       markingType={'custom'}
       markedDates={getMarkedDates()}
     />
-  ), []);
+  ), [data]);
 
   const getMarkedDates = useCallback(() => {
     let datas = {};
@@ -433,7 +438,7 @@ export default function Deadlines(props) {
     }}>
       <ListItem onPress={() => props.navigation.navigate('DeadlinesDetails', { deadline: item })} underlayColor={colors.white} activeOpacity={1}>
         <ListGrid>
-          <ReadButton onPress={() => markAsRead(item)}></ReadButton>
+          <ReadButton concluded={item.concluido} onPress={() => markAsRead(item)}></ReadButton>
           <ListContainer>
             <ListHeader>
               <ListSchedule expired={currentFilter == 'vencidos'}>{moment(item.dataHoraInicio).format('DD/MM/YYYY')} • {moment(item.dataHoraInicio).format('HH:mm')}</ListSchedule>
@@ -445,6 +450,12 @@ export default function Deadlines(props) {
             <Badge type={currentFilter == 'vencidos' ? 0 : item.idPadraoTipoEventoAgenda}>
               <BadgeText expired={currentFilter == 'vencidos'}>{item.tipoEventoAgenda}</BadgeText>
             </Badge>
+
+            {item.importante &&
+              <ImportantFlag onPress={() => !updating && markAsImportant(item)}>
+                {updating ? <Spinner height='auto' /> : <MaterialIcons name="flag" size={24} color={colors.blueImportant} />}
+              </ImportantFlag>
+            }
           </ListContainer>
         </ListGrid>
       </ListItem>
@@ -453,68 +464,73 @@ export default function Deadlines(props) {
 
   return (
     <Container>
-      {havePermission ?
-        <Warp>
-          <Header title="Prazos" filter={data.length > 0 || Object.keys(customFilters).length > 0 ? () => filtersRef.current?.open() : null} add={() => addRef.current?.open()} />
-          {/* <Header title="Prazos" filter={data.length > 0 || Object.keys(customFilters).length > 0 ? () => filtersRef.current?.open() : null} /> */}
-          <Filters
-            ref={headerFiltersRef}
-            contentContainerStyle={{ alignItems: 'center', paddingRight: 16 }}
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            data={filters}
-            scrollEnabled
-            renderItem={renderFilters}
-            keyExtractor={(item, _) => item.id.toString()}
-          />
-          <Content>
-            {loading && page == 1 ? <Spinner height={'auto'} /> :
-              <>
-                {data.length > 0 ?
-                  <SwipeListView
-                    data={data}
-                    ref={listRef}
-                    closeOnRowOpen
-                    disableRightSwipe
-                    previewRowKey={'0'}
-                    rightOpenValue={-260}
-                    stopRightSwipe={-260}
-                    useNativeDriver={false}
-                    previewOpenValue={-260}
-                    previewOpenDelay={2000}
-                    renderItem={renderItem}
-                    onEndReached={onEndReached}
-                    ListFooterComponent={renderFooter}
-                    // style={{ overflow: 'hidden', flex: 1, backgroundColor: colors.white }}
-                    renderHiddenItem={renderHiddenItem}
-                    ListHeaderComponent={renderCalendar}
-                    keyExtractor={(item) => item.id}
-                  />
-                  :
-                  <NotFound>
-                    <Image source={notFound} />
-                    <NotFoundText>Não há prazos</NotFoundText>
-                    <NotFoundDescription>A sua lista está vazia</NotFoundDescription>
-                    <CreateNew onPress={() => addRef.current?.open()}>
-                      <CreateNewText>Cadastrar</CreateNewText>
-                    </CreateNew>
-                  </NotFound>
+      {active ?
+        <>
+          {havePermission ?
+            <Warp>
+              <Header title="Prazos" filter={data.length > 0 || Object.keys(customFilters).length > 0 ? () => filtersRef.current?.open() : null} add={() => addRef.current?.open()} />
+              {/* <Header title="Prazos" filter={data.length > 0 || Object.keys(customFilters).length > 0 ? () => filtersRef.current?.open() : null} /> */}
+              <Filters
+                ref={headerFiltersRef}
+                contentContainerStyle={{ alignItems: 'center', paddingRight: 16 }}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                data={filters}
+                scrollEnabled
+                renderItem={renderFilters}
+                keyExtractor={(item, _) => item.id.toString()}
+              />
+              <Content>
+                {loading && page == 1 ? <Spinner height={'auto'} /> :
+                  <>
+                    {data.length > 0 ?
+                      <SwipeListView
+                        data={data}
+                        ref={listRef}
+                        closeOnRowOpen
+                        disableRightSwipe
+                        previewRowKey={'0'}
+                        rightOpenValue={-250}
+                        stopRightSwipe={-250}
+                        useNativeDriver={false}
+                        previewOpenValue={-250}
+                        previewOpenDelay={2000}
+                        renderItem={renderItem}
+                        onEndReached={onEndReached}
+                        ListFooterComponent={renderFooter}
+                        // style={{ overflow: 'hidden', flex: 1, backgroundColor: colors.white }}
+                        renderHiddenItem={renderHiddenItem}
+                        ListHeaderComponent={renderCalendar}
+                        keyExtractor={(item) => item.id}
+                      />
+                      :
+                      <NotFound>
+                        <Image source={notFound} />
+                        <NotFoundText>Não há prazos</NotFoundText>
+                        <NotFoundDescription>A sua lista está vazia</NotFoundDescription>
+                        <CreateNew onPress={() => addRef.current?.open()}>
+                          <CreateNewText>Cadastrar</CreateNewText>
+                        </CreateNew>
+                      </NotFound>
+                    }
+                  </>
                 }
-              </>
-            }
-          </Content>
-          {renderCustomFilters()}
-          {renderAdd()}
-          {renderEdit()}
-          {renderEmail()}
-          {renderConfirmation()}
-        </Warp>
-        :
-        <HasNotPermission
-          image={image}
-          title="A sua rotina totalmente organizada!"
-          body="Tenha a facilidade de cadastrar um prazo judicial, uma audiência ou uma reunião diretamente na sua ferramenta de monitoramento de informações jurídicas"
-        />}
+              </Content>
+              {renderCustomFilters()}
+              {renderAdd()}
+              {renderEdit()}
+              {renderEmail()}
+              {renderConfirmation()}
+            </Warp>
+            :
+            <HasNotPermission
+              image={image}
+              title="A sua rotina totalmente organizada!"
+              body="Tenha a facilidade de cadastrar um prazo judicial, uma audiência ou uma reunião diretamente na sua ferramenta de monitoramento de informações jurídicas"
+            />}
+        </> :
+        <Blocked />
+      }
     </Container>
   );
 };

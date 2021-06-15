@@ -44,6 +44,11 @@ const Datepicker = ({ date, onDateChange, title, enabled, style, minDate, maxDat
         fontFamily: fonts.circularStdBook,
         fontSize: fonts.regular,
       },
+      dateText: {
+        color: colors.grayLighter,
+        fontFamily: fonts.circularStdBook,
+        fontSize: fonts.regular,
+      },
       datePicker: {
         backgroundColor: colors.white,
         fontFamily: fonts.circularStdBook,

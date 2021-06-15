@@ -6,7 +6,7 @@ const HOMOLOG_URL = 'https://homologacao-api.advise.com.br';
 const PROD_URL = 'https://api.advise.com.br';
 
 // let BASE_URL = getUrl();
-export const BASE_URL = HOMOLOG_URL;
+export const BASE_URL = PROD_URL;
 const TOKEN = '@Advise:token';
 const REFRESH_TOKEN = '@Advise:refreshToken';
 const AVATAR = '@Advise:avatar';
@@ -23,16 +23,20 @@ export async function getUrl() {
   return urlStorage ? urlStorage : DEV_URL;
 };
 
-api.interceptors.request.use(
-  async (config) => {
-    const token = await AsyncStorage.getItem(TOKEN);
-    const headers = { Authorization: `bearer ${token}` };
+api.interceptors.request.use(async config => {
+  const TOKEN_URL = `/login/v1/token`;
 
-    if (token != null)
-      config.headers = headers;
+  const { url } = config;
 
-    return Promise.resolve(config);
-  },
+  const token = await AsyncStorage.getItem(TOKEN);
+
+  const headers = { Authorization: `bearer ${token}` };
+
+  if (token != null && url !== TOKEN_URL)
+    config.headers = headers;
+
+  return Promise.resolve(config);
+},
   (error) => Promise.reject(error)
 );
 
@@ -77,17 +81,22 @@ export async function getLogin() {
         access_type: '94be650011cf412ca906fc335f615cdc'
       };
 
-      const { data } = await axios.post(`${BASE_URL}/login/v1/token`, userData);
-      await AsyncStorage.setItem(TOKEN, data.access_token);
-      await AsyncStorage.setItem(REFRESH_TOKEN, data.refresh_token);
-      if (data.foto) {
-        await AsyncStorage.setItem(AVATAR, data.foto);
-      }
+      const data = await axios.post(`${BASE_URL}/login/v1/token`, userData).then(async data => {
+        await AsyncStorage.multiSet([
+          [TOKEN, data.access_token],
+          [REFRESH_TOKEN, data.refresh_token],
+          [AVATAR, data.foto || ''],
+        ]);
+
+        return data;
+      });
+
+      return data;
     }
   } catch (e) {
-    setTimeout(async () => {
-      await getLogin();
-    }, 2000);
+    // setTimeout(async () => {
+    //   await getLogin();
+    // }, 2000);
   }
 
   return await AsyncStorage.getItem(TOKEN);

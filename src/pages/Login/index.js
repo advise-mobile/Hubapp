@@ -1,26 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   StyleSheet,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Keyboard,
   Platform,
   Appearance
 } from 'react-native';
 
-import jwtDecode from 'jwt-decode';
+// import jwtDecode from 'jwt-decode';
+
+import { StackActions } from '@react-navigation/native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import OneSignal from 'react-native-onesignal';
 
 import AuthAction from 'store/ducks/Auth';
+import UserActions from 'store/ducks/User';
 
 import Spinner from 'components/Spinner';
 
-import { changeAmbient } from 'services/Api';
-import env from 'services/env';
+// import { changeAmbient } from 'services/Api';
+import { registerNotification } from 'helpers/Pushs';
 
 import { colors } from 'assets/styles';
 import {
@@ -70,15 +71,18 @@ const style = StyleSheet.create({
 export default function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [disabled, setDisabled] = useState(false);
   const [emptyEmail, setEmptyEmail] = useState(false);
   const [emptyPassword, setEmptyPassword] = useState(false);
-  const [disabled, setDisabled] = useState(false);
-  const [countAmbient, setCountAmbient] = useState(0);
-  const [ambient, setAmbient] = useState('TESTE');
-
   const [passwordView, setPasswordView] = useState(false);
+  // const [countAmbient, setCountAmbient] = useState(0);
+  // const [ambient, setAmbient] = useState('TESTE');
 
-  const [loadingIndicator, setLoadingIndicator] = useState(true);
+  // const [authorization, setAuthorization] = useState(false);
+
+  const passwordRef = useRef();
+
+  const [loadingIndicator, setLoadingIndicator] = useState(false);
 
   const login = useSelector((state) => state.auth.data);
   const isAuthorized = useSelector((state) => state.auth.isAuthorized);
@@ -88,8 +92,7 @@ export default function Login(props) {
 
   const colorScheme = Appearance.getColorScheme();
 
-  // const logoImage = require('assets/images/logo.png');
-  const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_branca.png') : require('assets/images/logo.png');
+  const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_hub_branca.png') : require('assets/images/logo_hub.png');
 
   useEffect(() => {
     props.navigation.addListener('beforeRemove', (e) => {
@@ -100,124 +103,74 @@ export default function Login(props) {
   }, []);
 
   useEffect(() => {
-    async function checkLogin() {
-      const token = await AsyncStorage.getItem('@Advise:token');
+    passwordRef.current?.setNativeProps({
+      style: { fontFamily: 'CircularStd-Book' }
+    })
+  }, []);
 
-      if (token !== null) {
-        const user = jwtDecode(token);
-        OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
-        props.navigation.navigate('App', { user });
-      }
-    }
-
-    checkLogin();
-
-    if (__DEV__) {
-      setEmail('testehubv1@emailna.co');
-      setPassword('senha');
-    }
-  }, [props]);
+  // useEffect(() => {
+  //   if (__DEV__) {
+  //     setEmail('sia@emailna.co')
+  //     setPassword('senha');
+  //   }
+  // }, []);
 
   useEffect(() => {
-    async function checkUpdateLogin() {
-      if (!isAuthorized) return false;
+    checkLogin();
+  }, [isAuthorized]);
 
-      await AsyncStorage.multiSet([
-        ['@Advise:refreshToken', login.refresh_token],
-        ['@Advise:token', login.access_token]
-      ]);
+  useEffect(() => {
+    setEmptyEmail(email.length > 0 && email.length < 2);
+    setEmptyPassword(password.length > 0 && password.length < 2);
+  }, [email, password])
 
-      if (login.foto !== undefined) {
-        await AsyncStorage.setItem('@Advise:avatar', login.foto);
-      }
-
-      OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
-
-      return true;
-    }
-
-    checkUpdateLogin().then(authorized => {
-      setLoadingIndicator(false);
-
-      if (!authorized) return;
-
-      props.navigation.navigate('App', { user: jwtDecode(login.access_token) });
-    });
-  }, [isAuthorized, login, props]);
-
-  function handleEmailChange(typedEmail) {
-    setEmail(typedEmail);
-    setEmptyEmail(false);
-  }
-
-  function handlePasswordChange(typedPassword) {
-    setPassword(typedPassword);
-    setEmptyPassword(false);
-  }
-
-  function handleLoginPress() {
+  const handleLoginPress = useCallback(() => {
     setDisabled(true);
-
     Keyboard.dismiss();
 
-    if (!email.length && !password.length) {
-      setEmptyEmail(true);
-      setEmptyPassword(true);
-      setDisabled(false);
-      return;
-    }
+    setEmptyEmail(email.length == 0);
+    setEmptyPassword(password.length == 0);
 
-    if (!email.length) {
-      setEmptyEmail(true);
-      setDisabled(false);
-      return;
-    }
-
-    if (!password.length) {
-      setEmptyEmail(true);
-      setDisabled(false);
-      return;
-    }
-
-    dispatch(AuthAction.loginRequest(email, password));
+    if (email.length && password.length)
+      dispatch(AuthAction.loginRequest(email.trim(), password.trim()));
 
     setDisabled(false);
-  }
+  }, [email, password]);
 
-  function handleForgotPress() {
+  const handleForgotPress = useCallback(() => {
     props.navigation.navigate('Forgot');
-  }
+  }, []);
 
-  function incrementChangeAmbient() {
-    let counter = countAmbient + 1;
+  const checkLogin = useCallback(() => {
+    if (!isAuthorized) return;
 
-    if (counter >= 5) {
-      changeAmbient().then(environment => setAmbient(environment));
-      setCountAmbient(0);
+    if (login.foto !== undefined && login.foto !== null) {
+      AsyncStorage.setItem('@Advise:avatar', login.foto);
+      dispatch(UserActions.updatePicture(login.foto));
 
-      return;
+    } else {
+      AsyncStorage.removeItem('@Advise:avatar');
+      dispatch(UserActions.updatePicture(''));
     }
 
-    setCountAmbient(counter);
-  }
+    if (login.access_token !== null) {
+      registerNotification();
 
+      props.navigation.dispatch(StackActions.push('App'))
+    }
+  }, [isAuthorized, login]);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : null}
-      style={{ flex: 1 }}
-    >
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null} style={{ flex: 1 }}>
       <Container behavior="padding">
-        {loadingIndicator ? (
-          <Spinner />
-        ) : (
+        {loadingIndicator ? <Spinner /> : (
           <Warp>
             <Logo source={logoImage} resizeMode="contain" />
-            {__DEV__ && (
-              <BadgeRed onPress={__DEV__ && incrementChangeAmbient}>
+            {/* {__DEV__ && (
+              <BadgeRed>
                 <BadgeRedText>VERSÃO DE {ambient}</BadgeRedText>
               </BadgeRed>
-            )}
+            )} */}
             <Form>
               <InputGroup>
                 <InputGroupPrepend>
@@ -231,9 +184,11 @@ export default function Login(props) {
                   placeholder="E-mail"
                   placeholderTextColor={colors.grayDarker}
                   value={email}
-                  onChangeText={handleEmailChange}
+                  onChangeText={text => setEmail(text)}
                   autoCapitalize="none"
                   autoCorrect={false}
+                  onSubmitEditing={() => passwordRef.current?.focus()}
+                  returnKeyType='next'
                   style={emptyEmail === true ? style.hasError : style.hasSuccess}
                 />
                 {!!emptyEmail && (
@@ -249,10 +204,11 @@ export default function Login(props) {
                   />
                 </InputGroupPrepend>
                 <Input
+                  ref={passwordRef}
                   placeholder="Senha"
                   placeholderTextColor={colors.grayDarker}
                   value={password}
-                  onChangeText={handlePasswordChange}
+                  onChangeText={text => setPassword(text)}
                   onSubmitEditing={handleLoginPress}
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -275,7 +231,7 @@ export default function Login(props) {
               </InputGroup>
               <Button onPress={handleLoginPress} disabled={disabled}>
                 {loading ? (
-                  <ActivityIndicator size="small" color={colors.white} />
+                  <Spinner size="small" height={22} color={colors.white} transparent={true} />
                 ) : (
                   <ButtonText>Acessar conta</ButtonText>
                 )}
@@ -287,7 +243,7 @@ export default function Login(props) {
             <AnotherOption>
               <AnotherOptionText>ou</AnotherOptionText>
             </AnotherOption>
-            <Button>
+            <Button onPress={() => props.navigation.navigate('Client')}>
               <ButtonText>Ainda não sou cliente</ButtonText>
             </Button>
           </Warp>
@@ -296,3 +252,65 @@ export default function Login(props) {
     </KeyboardAvoidingView>
   );
 }
+
+
+
+
+  // function incrementChangeAmbient() {
+  //   let counter = countAmbient + 1;
+
+  //   if (counter >= 5) {
+  //     changeAmbient().then(environment => setAmbient(environment));
+  //     setCountAmbient(0);
+
+  //     return;
+  //   }
+
+  //   setCountAmbient(counter);
+  // }
+
+
+
+  // useEffect(() => {
+  //   async function checkLogin() {
+  //     const token = await AsyncStorage.getItem('@Advise:token');
+
+  //     if (token !== null) {
+  //       const user = jwtDecode(token);
+  //       OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
+  //       props.navigation.navigate('App', { user });
+  //     }
+  //   }
+
+  //   checkLogin();
+
+  //   if (__DEV__) {
+  //     setEmail('sia@emailna.co');
+  //     setPassword('senha');
+  //   }
+  // }, [props]);
+
+  // useEffect(() => {
+  //   async function checkUpdateLogin() {
+  //     if (!isAuthorized) return false;
+
+  //     await AsyncStorage.multiSet([
+  //       ['@Advise:refreshToken', login.refresh_token || null],
+  //       ['@Advise:token', login.access_token || null]
+  //     ]);
+
+  //     if (login.foto !== undefined) {
+  //       await AsyncStorage.setItem('@Advise:avatar', login.foto || null);
+  //     }
+
+  //     OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
+
+  //     return true;
+  //   }
+
+  //   checkUpdateLogin().then(authorized => {
+  //     setLoadingIndicator(false);
+
+  //     setAuthorization(authorized);
+  //   });
+  // }, [isAuthorized, login, props]);

@@ -1,12 +1,20 @@
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from 'services/Api';
+import OneSignal from 'react-native-onesignal';
+import env from 'services/env';
 
 import { getLoggedUser } from 'helpers/Permissions';
 
 
-const registerNotification = async hash => {
-  const register = await AsyncStorage.getItem('@Advise:pushHash');
+const registerNotification = async () => {
+  OneSignal.setAppId(env.oneSignalId);
+
+  const deviceState = await OneSignal.getDeviceState();
+
+  const hash = deviceState.userId;
+
+  if (!hash) return;
 
   const { idUsuarioCliente } = await getLoggedUser();
 
@@ -16,14 +24,14 @@ const registerNotification = async hash => {
     'dispositivo': Platform.OS.toUpperCase(),
   };
 
-  if (register === hash) return push;
+  // if (register === hash) return push;
 
   Api.post(`/core/v1/push-notificacao`, {
     itens: [push]
   }).then(() => {
     AsyncStorage.setItem('@Advise:pushHash', hash);
   }).finally(() => {
-    return push;
+    OneSignal.sendTags(push);
   });
 };
 

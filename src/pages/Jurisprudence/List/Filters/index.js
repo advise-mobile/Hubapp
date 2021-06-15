@@ -31,27 +31,29 @@ export default Filters = forwardRef((props, ref) => {
     setValue("grupo", selectedArea);
     setValue("integra", selectedQuote);
     setValue("tribunal", selectedTribunal);
+
     setData(props.data);
+
+    const key = selectedType ? props.data.types.findIndex(type => selectedType.includes(type.value)) : -1;
+
+    if (key > 0) setSelectedTypeLabel(props.data.types[key]);
   }, [props]);
 
-  // const countFilters = useCallback(() => [selectedTypeLabel, selectedType, selectedYear, selectedArea, selectedQuote, selectedTribunal].filter(state => state != null).length, [selectedTypeLabel, selectedType, selectedYear, selectedArea, selectedQuote, selectedTribunal]);
+  const countFilters = useCallback(() => [selectedType, selectedYear, selectedArea, selectedQuote, selectedTribunal].filter(state => state != null && state != 0 && state != undefined).length, [selectedType, selectedYear, selectedArea, selectedQuote, selectedTribunal]);
 
-  // const clearFilters = useCallback(() => {
-  //   console.log(props.data);
+  const clearFilters = useCallback(() => {
+    setSelectedQuote(undefined);
+    setSelectedType(null);
+    setSelectedTribunal(undefined);
+    setSelectedYear(null);
+    setSelectedArea(null);
 
-  //   setSelectedQuote(undefined);
-  //   // setSelectedType(null);
-  //   setSelectedTribunal(undefined);
-  //   setSelectedYear(null);
-  //   setSelectedArea(null);
-
-
-  //   setValue("all", undefined);
-  //   setValue("ano", null);
-  //   setValue("grupo", null);
-  //   setValue("integra", null);
-  //   setValue("tribunal", undefined);
-  // }, [props]);
+    setValue("all", undefined);
+    setValue("ano", null);
+    setValue("grupo", null);
+    setValue("integra", null);
+    setValue("tribunal", undefined);
+  }, [props]);
 
   const onSubmit = data => {
     ref.current?.close();
@@ -66,13 +68,13 @@ export default Filters = forwardRef((props, ref) => {
   );
 
   return (
-    <Modal ref={ref} footer={footer()} title="Filtros">
+    <Modal ref={ref} footer={footer()} title="Filtros" filters={countFilters()} clear={clearFilters} >
       <Row>
         <Title>Ano</Title>
         <Controller
           name='ano'
           control={control}
-          defaultValue={null}
+          defaultValue={0}
           rules={{ required: false }}
           render={({ onChange }) => (
             <RNPickerSelect
@@ -92,7 +94,7 @@ export default Filters = forwardRef((props, ref) => {
         <Controller
           name='all'
           control={control}
-          defaultValue={null}
+          defaultValue={0}
           rules={{ required: false }}
           render={({ onChange }) => (
             <RNPickerSelect
@@ -107,7 +109,7 @@ export default Filters = forwardRef((props, ref) => {
           )}>
         </Controller>
       </Row>
-      {selectedType &&
+      {selectedType !== 0 &&
         <Row>
           <Title>Tribunais</Title>
           <Controller
@@ -154,7 +156,7 @@ export default Filters = forwardRef((props, ref) => {
         <Controller
           name='integra'
           control={control}
-          defaultValue={null}
+          defaultValue={0}
           rules={{ required: false }}
           render={({ onChange }) => (
             <RNPickerSelect

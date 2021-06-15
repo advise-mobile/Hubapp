@@ -1,16 +1,21 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import MovementsActions from 'store/ducks/Movements';
 import MovementActions from 'store/ducks/Movement';
 import ProcessActions from 'store/ducks/Process';
+import FolderKeywordsActions from 'store/ducks/FolderKeywords';
+import FolderProcessesActions from 'store/ducks/FolderProcesses';
 
-import { colors } from 'assets/styles';
+import Menu from './Menu';
+import Email from '../Email';
+
 import Header from 'components/Header';
 import Spinner from 'components/Spinner';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import { colors } from 'assets/styles';
 import {
   Container,
   Warp,
@@ -37,7 +42,23 @@ export default MovementDetail = props => {
   const details = useSelector(state => state.process.data);
   const loading = useSelector(state => state.process.loading);
 
+  const menuRef = useRef(null);
+  const emailRef = useRef(null);
+
   const dispatch = useDispatch();
+
+  const customActions = useMemo(() => (
+    <HeaderAction>
+      <MaterialIcons name={'more-vert'} size={20} color={colors.fadedBlack} onPress={() => menuRef.current?.open()} />
+    </HeaderAction>
+  ), []);
+
+  const renderMenu = useMemo(() =>
+    <Menu
+      ref={menuRef}
+      movement={movement}
+      openEmail={() => emailRef.current?.open()}
+    />, [movement]);
 
   useEffect(() => {
     if (!movement.lido) {
@@ -55,6 +76,24 @@ export default MovementDetail = props => {
           read: true
         })
       );
+
+      if (movement.movimento.idTipoMovProcesso == -1) {
+        dispatch(
+          FolderProcessesActions.folderProcessesRequest({
+            filters: {},
+            page: 1,
+            perPage: 20,
+          })
+        );
+      } else {
+        dispatch(
+          FolderKeywordsActions.folderKeywordsRequest({
+            filters: {},
+            page: 1,
+            perPage: 20,
+          })
+        );
+      }
     }
 
     if (movement.movimento.idTipoMovProcesso == -1) {
@@ -169,24 +208,19 @@ export default MovementDetail = props => {
     )
   });
 
-  const customActions = useCallback(() => null, []);
-  // (
-  //   <HeaderAction key={1}>
-  //     <MaterialIcons name="event" size={20} color={colors.fadedBlack} onPress={() => console.log('custom')} />
-  //   </HeaderAction>
-  // ));
-
   return (
     <Container>
       <Warp>
         {movement.movimento.idTipoMovProcesso == -1 ? loading ? <Spinner /> : ([
-          <Header title={details.orgaoJudiciario} back={() => props.navigation.goBack()} customActions={customActions()} key={1} />,
+          <Header title={details.orgaoJudiciario} back={() => props.navigation.goBack()} customActions={customActions} key={1} />,
           renderProcesses()
         ]) : ([
-          <Header title={movement.movimento.publicacao.descricaoDiario} back={() => props.navigation.goBack()} customActions={customActions()} key={0} />,
+          <Header title={movement.movimento.publicacao.descricaoDiario} back={() => props.navigation.goBack()} customActions={customActions} key={0} />,
           renderPublication()
         ])}
       </Warp>
+      {renderMenu}
+      <Email ref={emailRef} movement={movement} />
     </Container>
   );
 }

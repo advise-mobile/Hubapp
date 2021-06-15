@@ -2,9 +2,10 @@ import { createReducer, createActions } from 'reduxsauce';
 import Immutable from 'seamless-immutable';
 
 const { Types, Creators } = createActions({
-  personRequest: null,
+  personRequest: [null],
   personSuccess: ['data', 'uf', 'types'],
   personEdit: ['param'],
+  updatePicture: ['picture'],
   personUpdate: ['param'],
   personUpdateSuccess: null,
   changePasswordRequest: ['param'],
@@ -15,6 +16,7 @@ export const UserTypes = Types;
 export default Creators;
 
 export const INITIAL_STATE = Immutable({
+  picture: '',
   data: [],
   oab: [],
   ufs: [],
@@ -22,11 +24,20 @@ export const INITIAL_STATE = Immutable({
   loading: false,
 });
 
+export const updatePicture = (state, { picture }) => state.merge({
+  picture: picture,
+  data: {
+    ...state.data,
+    foto: picture
+  },
+});
+
 export const updateProfile = (state, action) => state.merge({
+  picture: action.param.foto,
   data: {
     ...state.data,
     foto: action.param.foto
-  }
+  },
 });
 
 export const PersonRequest = (state) => state.merge({ loading: true });
@@ -50,6 +61,7 @@ export const ChangePasswordRequest = (state) => state.merge({ loading: true });
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.PERSON_REQUEST]: PersonRequest,
   [Types.PERSON_SUCCESS]: PersonSuccess,
+  [Types.UPDATE_PICTURE]: updatePicture,
   [Types.PERSON_EDIT]: PersonEdit,
   [Types.PERSON_UPDATE]: PersonUpdate,
   [Types.PERSON_UPDATE_SUCCESS]: PersonUpdateSuccess,

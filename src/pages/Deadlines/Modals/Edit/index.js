@@ -191,7 +191,7 @@ export default Edit = forwardRef((props, ref) => {
         <CancelText>Cancelar</CancelText>
       </Cancel>
       <Submit onPress={handleSubmit(onSubmit)} disabled={processing} >
-        {processing ? <Spinner transparent={true} color={colors.white} height='auto' /> : <SubmitText>Salvar</SubmitText>}
+        {processing ? <Spinner transparent={true} color={colors.white} height={18} /> : <SubmitText>Salvar</SubmitText>}
       </Submit>
     </Footer>
   );
@@ -270,7 +270,7 @@ export default Edit = forwardRef((props, ref) => {
               <Datepicker
                 date={date}
                 enabled={true}
-                title="dd/mm/yyyy"
+                title="dd/mm/aaaa"
                 style={{
                   flexGrow: 1,
                   maxWidth: 200,

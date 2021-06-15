@@ -3,14 +3,17 @@ import Immutable from 'seamless-immutable';
 
 const { Types, Creators } = createActions({
   loginRequest: ['email', 'password'],
-  loginSuccess: ['data'],
+  loginSuccess: ['data', 'convenio', 'active'],
   loginFailure: null,
   logoutRequest: null,
   logoutSuccess: ['data'],
+  forgotReset: null,
   logoutFailure: null,
   forgotRequest: ['email'],
   forgotSuccess: ['data'],
   forgotFailure: null,
+  contractsRequest: null,
+  contractsSuccess: ['convenio', 'active'],
 });
 
 export const AuthTypes = Types;
@@ -22,6 +25,9 @@ export const INITIAL_STATE = Immutable({
   password: null,
   isAuthorized: false,
   loading: false,
+  convenio: false,
+  active: true,
+  sended: false,
 });
 
 // Login
@@ -34,12 +40,13 @@ export const LoginRequest = (state, { email, password }) =>
     loading: true,
   });
 
-export const LoginSuccess = (state, action) =>
-  state.merge({
-    data: action.data,
-    isAuthorized: true,
-    loading: false,
-  });
+export const LoginSuccess = (state, action) => state.merge({
+  data: action.data,
+  isAuthorized: true,
+  loading: false,
+  convenio: action.convenio,
+  active: action.active,
+});
 
 export const LoginFailure = (state) =>
   state.merge({ isAuthorized: false, loading: false });
@@ -57,16 +64,32 @@ export const LogoutFailure = (state) =>
 
 // Forgot
 
+export const ForgotReset = (state = INITIAL_STATE) =>
+  state.merge({ loading: false, sended: false });
+
 export const ForgotRequest = (state = INITIAL_STATE) =>
   state.merge({ loading: true });
 
 export const ForgotSuccess = (state, action) =>
   state.merge({
+    sended: true,
     data: action.data,
     loading: false,
   });
 
-export const ForgotFailure = (state) => state.merge({ loading: false });
+export const ForgotFailure = (state) => state.merge({ loading: false, sended: false });
+
+//Contratos
+
+export const ContractsRequest = (state) => state.merge({
+  // convenio: false,
+  // active: false,
+});
+
+export const ContractsSuccess = (state, action) => state.merge({
+  convenio: action.convenio,
+  active: action.active,
+});
 
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.LOGIN_REQUEST]: LoginRequest,
@@ -77,7 +100,11 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.LOGOUT_SUCCESS]: LogoutSuccess,
   [Types.LOGOUT_FAILURE]: LogoutFailure,
 
+  [Types.FORGOT_RESET]: ForgotReset,
   [Types.FORGOT_REQUEST]: ForgotRequest,
   [Types.FORGOT_SUCCESS]: ForgotSuccess,
   [Types.FORGOT_FAILURE]: ForgotFailure,
+
+  [Types.CONTRACTS_REQUEST]: ContractsRequest,
+  [Types.CONTRACTS_SUCCESS]: ContractsSuccess,
 });

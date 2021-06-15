@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Linking, StyleSheet } from 'react-native';
+
+import { StackActions } from '@react-navigation/native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import RNPickerSelect from 'react-native-picker-select';
@@ -30,7 +32,8 @@ import {
   InfoText,
   InfoContent,
   ButtonLogout,
-  LogoutText
+  LogoutText,
+  DateStyle
 } from './styles';
 
 import { FormatDateBR, FormatFullDateEN } from 'helpers/DateFunctions';
@@ -41,7 +44,10 @@ export default Infos = props => {
   const [editMode, setEditMode] = useState(false);
   const loading = useSelector(state => state.user.loading);
   const userData = useSelector(state => state.user);
+  const picture = useSelector(state => state.user.picture);
   const customerData = useSelector(state => state.customer.data);
+
+  const active = useSelector(state => state.auth.active);
 
   const oabTypes = useSelector(state => state.user.typesOAB.map(type => {
     return {
@@ -70,8 +76,10 @@ export default Infos = props => {
 
   const dispatch = useDispatch();
 
+  // useEffect(() => { props.navigation.dispatch(CommonActions.navigate({ name: 'Login' })); }, []);
+
   useEffect(() => {
-    if (!props.selected) return;
+    if (!props.selected || !active) return;
 
     props.setCustomActions(
       <HeaderAction key={1}>
@@ -94,10 +102,22 @@ export default Infos = props => {
     dispatch(CustomerActions.customerRequest());
   }, []);
 
-  const logout = useCallback(async () => {
-    dispatch(AuthAction.logoutRequest());
+  const logoutUser = useCallback(() => {
+    try {
+      disableNotificationDevice()
+        .then(() => {
+          dispatch(AuthAction.logoutRequest());
+        })
+        .finally(() => {
+          AsyncStorage.multiRemove([`@Advise:permissions`, `@IdProdutoAdvise`, `@Advise:token`, `@Advise:refreshToken`, `@Advise:avatar`, `@loginObject`], () => {
+            props.navigation.dispatch(StackActions.push('Login'));
+            // props.navigation.navigate('Login');
+          });
+        });
+    } catch (err) {
+      console.error(err);
+    }
 
-    disableNotificationDevice().then(() => AsyncStorage.multiRemove([`@Advise:permissions`, `@IdProdutoAdvise`, `@Advise:pushHash`, `@Advise:token`, `@Advise:refreshToken`, `@Advise:avatar`, `@loginObject`], () => props.navigation.navigate('Login')));
   }, []);
 
   const editUserData = useCallback(data => {
@@ -145,14 +165,22 @@ export default Infos = props => {
     )
   }, []);
 
+  const renderImage = useMemo(() =>
+    <ProfileImageContainer>
+      <ProfileImageButton onPress={() => choosePicture()} active={picture ? true : false}>
+        <ProfileImage source={{ uri: `data:image/png;charset=utf-8;base64,${picture}` }} />
+      </ProfileImageButton>
+    </ProfileImageContainer>, [picture]);
+
   return (
     <Container>
       <Warp>
         <PickerContainer>
           <RNPickerSelect
-            style={pickerSelectStyles}
+            style={scenePickerSelectStyles}
             onValueChange={value => setScene(value)}
             placeholder={{}}
+            useNativeAndroidPickerStyle={false}
             doneText="Selecionar"
             value={scene}
             items={scenes}
@@ -164,11 +192,7 @@ export default Infos = props => {
             <>
               {loading ? <Spinner height={50} /> :
                 <>
-                  <ProfileImageContainer>
-                    <ProfileImageButton onPress={() => choosePicture()} active={userData.data.foto ? true : false}>
-                      <ProfileImage source={{ uri: `data:image/png;charset=utf-8;base64,${userData.data.foto}` }} />
-                    </ProfileImageButton>
-                  </ProfileImageContainer>
+                  {renderImage}
                   <InfoContainer>
                     <InfoTitle>Nome</InfoTitle>
                     <InfoValue
@@ -187,6 +211,7 @@ export default Infos = props => {
                         style={pickerSelectStyles}
                         value={userData.data.idSexo}
                         onValueChange={value => setUserData({ data: { ...userData.data, idSexo: value } })}
+                        useNativeAndroidPickerStyle={false}
                         items={[
                           {
                             label: "Masculino",
@@ -217,6 +242,8 @@ export default Infos = props => {
                     <InfoTitle>Data de nascimento</InfoTitle>
                     <Datepicker
                       enabled={editMode}
+                      style={{ flex: 1 }}
+                      customStyles={DateStyle({ editable: editMode })}
                       date={FormatDateBR(userData.data.dataNascimentoAbertura)}
                       onDateChange={date => setUserData({ data: { ...userData.data, dataNascimentoAbertura: FormatFullDateEN(date) } })}
                     />
@@ -240,6 +267,7 @@ export default Infos = props => {
                           placeholder={{}}
                           doneText="Selecionar"
                           value={userData.oab.idUF}
+                          useNativeAndroidPickerStyle={false}
                           disabled={!editMode}
                           items={ufs}
                         />
@@ -255,6 +283,7 @@ export default Infos = props => {
                           doneText="Selecionar"
                           value={userData.oab.idTipoOAB}
                           disabled={!editMode}
+                          useNativeAndroidPickerStyle={false}
                           items={oabTypes}
                         />
                       </InfoCustomValue>
@@ -288,7 +317,7 @@ export default Infos = props => {
                 <InfoText>Entre em contato para realizar o pedido de cancelamento do contrato em vigência.</InfoText>
               </InfoContainer>
 
-              <ButtonLogout onPress={() => logout()}>
+              <ButtonLogout onPress={logoutUser}>
                 <LogoutText>Sair do aplicativo</LogoutText>
               </ButtonLogout>
             </>
@@ -332,12 +361,32 @@ export default Infos = props => {
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
+    fontSize: 14,
+    color: colors.fadedBlack,
+    fontFamily: fonts.circularStdBook,
+  },
+  inputAndroid: {
+    flex: 1,
+    height: 22,
+    marginTop: 5,
+    lineHeight: 1,
+    padding: 0,
+    fontSize: 14,
+    color: colors.fadedBlack,
+    fontFamily: fonts.circularStdBook,
+    minWidth: 400,
+  },
+});
+
+const scenePickerSelectStyles = StyleSheet.create({
+  inputIOS: {
     fontSize: 16,
     color: colors.fadedBlack,
     fontFamily: fonts.circularStdBook,
   },
   inputAndroid: {
     height: 20,
+    padding: 0,
     fontSize: 16,
     color: colors.fadedBlack,
     fontFamily: fonts.circularStdBook,

@@ -9,7 +9,7 @@ const Footer = styled.View`
 
 const Cancel = styled.TouchableOpacity`
   flex: 1;
-  padding: 8px;
+  padding: 7px;
   margin-right: 12px;
   background: ${colors.white};
   justify-content: center;
@@ -113,40 +113,34 @@ const MarkAsReadText = styled.Text`
   font-size: ${fonts.regular};
 `;
 
-const DateStyle = {
-  dateInput: {
-    height: 20,
-    paddingBottom: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
-  },
-  placeholderText: {
-    color: colors.grayLight,
-    fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
-  },
-  disabled: {
-    backgroundColor: colors.white,
-    fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
-  },
-  datePicker: {
-    backgroundColor: colors.white,
-    fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
-  },
+const DateStyle = (props) => {
+  return ({
+    dateInput: {
+      height: 20,
+      paddingBottom: 0,
+      borderWidth: 0,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+    },
+    dateText: {
+      color: colors.grayLight,
+      fontFamily: fonts.circularStdBook,
+      fontSize: fonts.regular,
+    },
+    placeholderText: {
+      color: props.error ? colors.red : colors.grayLight,
+      fontSize: fonts.regular,
+    },
+    disabled: {
+      backgroundColor: colors.white,
+    },
+  })
 };
 
 const Hour = styled.TouchableOpacity``;
 
 const HourText = styled.Text`
-  color: ${colors.grayLight};
+  color: ${props => props.error ? colors.red : colors.grayLight};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
 `;

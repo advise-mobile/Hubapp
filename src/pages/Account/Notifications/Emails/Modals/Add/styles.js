@@ -9,7 +9,7 @@ const Footer = styled.View`
 
 const Cancel = styled.TouchableOpacity`
   flex: 1;
-  padding: 8px;
+  padding: 7px;
   margin-right: 12px;
   background: ${colors.white};
   justify-content: center;
@@ -48,7 +48,7 @@ const Content = styled.View`
 
 const Input = styled.TextInput`
   flex: 1;
-  font-size: ${fonts.small};
+  font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
   padding-horizontal: 24px;
   padding-bottom: 4px;
@@ -56,6 +56,16 @@ const Input = styled.TextInput`
   display: ${props => props.disabled ? 'none' : 'flex'};
   color: ${props => props.error ? colors.red : colors.grayLight};
   border-bottom-color: ${props => props.error ? colors.redLight : colors.grayLighter};
+`;
+
+const Description = styled.Text`
+  color: ${colors.grayLight};
+  font-size: ${fonts.regular};
+  font-family: ${fonts.circularStdBook};
+  text-align: center;
+  padding-horizontal: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 12px;
 `;
 
 export {
@@ -66,4 +76,5 @@ export {
   SubmitText,
   Content,
   Input,
+  Description,
 }

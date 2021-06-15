@@ -3,28 +3,21 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '10.0'
 
-target 'HubApp' do
+target 'Advise Hub' do
   config = use_native_modules!
 
   use_react_native!(:path => config["reactNativePath"])
-
-
-
-  target 'HubAppTests' do
-    inherit! :complete
-    # Pods for testing
-  end
 
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
-  use_flipper!
-  post_install do |installer|
-    flipper_post_install(installer)
-  end
+  # use_flipper!
+  # post_install do |installer|
+  #   flipper_post_install(installer)
+  # end
 end
 
 target 'OneSignalNotificationServiceExtension' do
-  pod 'OneSignal', '>= 2.9.3', '< 3.0'
+  pod 'OneSignal', '>= 3.0', '< 4.0'
 end

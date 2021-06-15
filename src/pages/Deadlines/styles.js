@@ -69,7 +69,7 @@ const Badge = styled.View`
 `;
 
 const BadgeText = styled.Text`
-  color: ${props => props.expired ? '#fff' : colors.grayDarker};
+  color: ${props => props.expired ? '#fff' : 'rgba(0, 0, 0, .8)'};
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.smaller};
 `;
@@ -78,7 +78,7 @@ const ReadButton = styled.TouchableOpacity`
   width: 18px;
   height: 18px;
   border-radius: 18px;
-  border-width: 1;
+  border-width: ${props => props.concluded ? 6 : 1};
   border-color: ${colors.primary}
   margin-top: 8px;
   margin-right: 8px;
@@ -198,6 +198,14 @@ const Content = styled.View`
   background-color: ${colors.white};
 `;
 
+const ImportantFlag = styled.TouchableOpacity`
+  background: ${colors.white};
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding-top: 12px;
+  padding-left: 12px;
+`;
 
 export {
   theme,
@@ -223,4 +231,5 @@ export {
   CreateNew,
   CreateNewText,
   Content,
+  ImportantFlag,
 }

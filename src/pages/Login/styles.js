@@ -90,6 +90,10 @@ const Button = styled.TouchableOpacity`
   margin: 20px;
   margin-horizontal: 20px;
   padding: 12px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 `;
 
 const ButtonText = styled.Text`
@@ -145,7 +149,7 @@ const BadgeRedText = styled(BadgeText)`
 `;
 
 const AnotherOption = styled.View`
-  background-color: rgba(0, 0, 0, 0.38);
+  background-color: ${colors.disabled};
   height: 1px;
   margin: 24px 0 24px 0;
   width: 300px;

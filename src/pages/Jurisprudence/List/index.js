@@ -133,7 +133,7 @@ export default function jurisprudenceList(props) {
   const makeFiltersData = useCallback(() => {
     let filtersFormatted = {
       quotes: [
-        { label: 'Todas parciais e íntegras', value: null },
+        { label: 'Todas parciais e íntegras', value: 0, type: null },
         { label: 'Com íntegra', value: true },
         { label: 'Sem íntegra', value: false },
       ],
@@ -148,7 +148,8 @@ export default function jurisprudenceList(props) {
       }],
       years: [{
         label: 'Todos os anos',
-        value: null,
+        value: 0,
+        type: null,
       }],
       groups: [{
         label: 'Todos as áreas',
@@ -163,7 +164,7 @@ export default function jurisprudenceList(props) {
 
       const typesList = Object.keys(filtersData.listaTribunal);
       typesList.map(key => {
-        let tribunals = filtersData.listaTribunal[key].map(tribunal => {
+        const tribunals = filtersData.listaTribunal[key].map(tribunal => {
           tribunalsList.push({
             label: `${tribunal.nome.toUpperCase()}`,
             value: tribunal.nome,
@@ -196,7 +197,7 @@ export default function jurisprudenceList(props) {
     if (filtersData.listaGrupo) {
       const groups = filtersData.listaGrupo.map(group => {
         return {
-          label: `${group.nome != 'undefined' ? capitalize(group.nome) : 'Sem área definida'}`,
+          label: group.nome != 'undefined' ? capitalize(group.nome) : 'Sem área definida',
           value: group.nome
         }
       });

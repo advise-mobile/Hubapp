@@ -9,7 +9,7 @@ const Footer = styled.View`
 
 const Cancel = styled.TouchableOpacity`
   flex: 1;
-  padding: 8px;
+  padding: 7px;
   margin-right: 12px;
   background: ${colors.white};
   justify-content: center;
@@ -115,33 +115,23 @@ const MarkAsReadText = styled.Text`
 
 const DateStyle = {
   dateInput: {
+    flex: 1,
     height: 20,
     paddingBottom: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
+    borderWidth: 0,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
-  },
-  placeholderText: {
-    color: colors.grayLight,
-    fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
   },
   disabled: {
     backgroundColor: colors.white,
-    fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
   },
-  datePicker: {
-    backgroundColor: colors.white,
+  dateText: {
+    fontSize: 16,
+    color: colors.grayDarker,
     fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
-  },
+  }
 };
+
 
 const Hour = styled.TouchableOpacity``;
 

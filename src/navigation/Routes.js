@@ -9,13 +9,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import { navigationRef } from 'navigation/NavigationService';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import UserIcon from 'components/UserIcon';
+import CustomIcon from 'components/CustomIcon';
 
 import Intro from '../pages/Intro';
 import Login from '../pages/Login';
 import Forgot from '../pages/Forgot';
+import Client from '../pages/Client';
+import Blank from '../pages/Blank';
 
 import Account from '../pages/Account';
 import Notifications from '../pages/Account/Notifications';
@@ -36,6 +41,8 @@ import DeadlinesDetails from '../pages/Deadlines/Details';
 import Initial from '../pages/Initial';
 
 import { colors } from 'assets/styles';
+
+import { PermissionsGroups } from 'helpers/Permissions';
 
 const MainStack = createStackNavigator();
 
@@ -99,19 +106,32 @@ const AppScreens = () => (
       },
     }}
   >
+    <TabsStack.Screen component={Blank} name="Blank" options={{
+      tabBarIcon: ({ color }) => (
+        <CustomIcon group={PermissionsGroups.MOVEMENTS}>
+          <FontAwesome name="bolt" size={23} color={color} />
+        </CustomIcon>
+      ),
+    }} />
     <TabsStack.Screen component={FoldersScreens} name="Folders" options={{
       tabBarIcon: ({ color }) => (
-        <FontAwesome name="bolt" size={23} color={color} />
+        <CustomIcon group={PermissionsGroups.MOVEMENTS}>
+          <FontAwesome name="bolt" size={23} color={color} />
+        </CustomIcon>
       ),
     }} />
     <TabsStack.Screen component={DeadlinesScreens} name="Deadlines" options={{
       tabBarIcon: ({ color }) => (
-        <MaterialIcons name="event" size={25} color={color} />
+        <CustomIcon group={PermissionsGroups.SCHEDULE}>
+          <MaterialIcons name="event" size={25} color={color} />
+        </CustomIcon>
       ),
     }} />
     <TabsStack.Screen component={JurisprudenceScreens} name="Jurisprudence" options={{
       tabBarIcon: ({ color }) => (
-        <MaterialIcons name="gavel" size={25} color={color} />
+        <CustomIcon group={PermissionsGroups.JURISPRUDENCE}>
+          <MaterialIcons name="gavel" size={25} color={color} />
+        </CustomIcon>
       ),
     }} />
     <TabsStack.Screen component={AccountScreens} name="Account" options={{
@@ -124,111 +144,18 @@ const AppScreens = () => (
 
 
 const MainScreens = () => (
-  <MainStack.Navigator headerMode="none" screenOptions={{
-    gestureEnabled: false,
-  }}>
+  <MainStack.Navigator headerMode="none" screenOptions={{ gestureEnabled: false }}>
     <MainStack.Screen name="Initial" component={Initial} />
     <MainStack.Screen name="Intro" component={Intro} />
     <MainStack.Screen name="Login" component={Login} />
     <MainStack.Screen name="Forgot" component={Forgot} />
+    <MainStack.Screen name="Client" component={Client} />
     <MainStack.Screen name="App" component={AppScreens} />
-    {/* <MainStack.Screen name="Account" component={Account} />
-    <MainStack.Screen name="Notifications" component={Notifications} />
-    <MainStack.Screen name="Pushs" component={Pushs} />
-    <MainStack.Screen name="Emails" component={Emails} />
-    <MainStack.Screen name="Folders" component={Folders} />
-    <MainStack.Screen name="Movements" component={Movements} />
-    <MainStack.Screen name="MovementDetail" component={MovementDetail} />
-    <MainStack.Screen name="Jurisprudence" component={Jurisprudence} />
-    <MainStack.Screen name="JurisprudenceList" component={JurisprudenceList} />
-    <MainStack.Screen name="JurisprudenceDetail" component={JurisprudenceDetail} />
-    <MainStack.Screen name="Deadlines" component={Deadlines} />
-    <MainStack.Screen name="DeadlinesDetails" component={DeadlinesDetails} /> */}
   </MainStack.Navigator>
 );
 
-// const AuthStack = createStackNavigator(
-//   {
-//     Forgot,
-//   },
-//   {
-//     header: null,
-//     headerMode: 'none',
-//   });
-
-// const AppStack = createStackNavigator(
-//   {
-//     MenuMain,
-//     Folders,
-//     Movements,
-//     MovementDetail,
-//     Deadlines,
-//     DeadlinesDetails,
-//     Account,
-//     Notifications,
-//     Pushs,
-//     Emails,
-//     // AccountUser,
-//     // AccountProfile,
-//     // AccountOab,
-//     // JurisFilterPage,
-//     // AccountCompany,
-//     // AccountPassword,
-//     // ProcessList,
-//     // Process,
-//     // Add,
-//     // Advogados,
-//     // Partes,
-//     // PublicationDetail,
-//     // FilterSelect,
-//     // Filters,
-//     // FilterFonts,
-//     // FilterKeywords,
-//     // FilterJournal,
-//     // FilterTribunal,
-//     // FilterDateOfAvailability,
-//     // SituationFilter,
-//     Jurisprudence,
-//     JurisprudenceList,
-//     JurisprudenceDetail,
-//   },
-//   {
-//     header: null,
-//     headerMode: 'none',
-//     false: false
-//     // waitForRender: true,
-//     // animationEnabled: true,
-//     // defaultNavigationOptions: {
-//     //   gestureEnabled: true,
-//     //   cardOverlayEnabled: true,
-//     // },
-//   }
-// );
-
-// const Routes = createAppContainer(
-//   // AppStack);
-//   createSwitchNavigator(
-//     {
-//       Intro,
-//       Login,
-//       Auth: AuthStack,
-//       App: AppStack,
-//     },
-//     {
-//       initialRouteName: 'Intro',
-//       waitForRender: true,
-
-//       defaultNavigationOptions: {
-//         gestureEnabled: true,
-//         cardOverlayEnabled: true,
-//         // ...TransitionPresets.ModalPresentationIOS,
-//       },
-//     }
-//   )
-// );
-
 const Routes = () => (
-  <NavigationContainer>
+  <NavigationContainer ref={navigationRef}>
     <MainScreens />
   </NavigationContainer>
 )

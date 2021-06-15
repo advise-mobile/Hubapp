@@ -9,7 +9,7 @@ const Footer = styled.View`
 
 const Cancel = styled.TouchableOpacity`
   flex: 1;
-  padding: 8px;
+  padding: 7px;
   margin-right: 12px;
   background: ${colors.white};
   justify-content: center;

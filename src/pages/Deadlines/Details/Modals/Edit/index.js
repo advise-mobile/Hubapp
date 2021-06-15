@@ -272,7 +272,7 @@ export default Edit = forwardRef((props, ref) => {
               <Datepicker
                 date={date}
                 enabled={true}
-                title="dd/mm/yyyy"
+                title="dd/mm/aaaa"
                 style={{
                   flexGrow: 1,
                   maxWidth: 200,

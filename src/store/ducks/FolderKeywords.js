@@ -23,14 +23,12 @@ export const request = (state, action) => state.merge({
   data: (action.params.page == 1) ? [] : state.data
 });
 
-export const success = (state, action) => {
-  return state.merge({
-    data: action.page === 1 ? action.data.itens : [...state.data, ...action.data.itens],
-    loading: false,
-    endReached: action.data.endReached,
-    totalNotRead: action.page === 1 ? action.data.movementsNotRead : state.totalNotRead + action.data.movementsNotRead
-  })
-};
+export const success = (state, action) => state.merge({
+  data: action.page === 1 ? action.data.itens : [...state.data, ...action.data.itens],
+  loading: false,
+  endReached: action.data.endReached,
+  totalNotRead: action.page === 1 ? action.data.movementsNotRead : state.totalNotRead + action.data.movementsNotRead
+});
 
 export const failure = (state) => state.merge({
   data: null,

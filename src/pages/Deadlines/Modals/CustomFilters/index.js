@@ -9,7 +9,7 @@ import Datepicker from 'components/DatePicker';
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from 'react-redux';
 
-import { colors } from 'assets/styles';
+import { fonts, colors } from 'assets/styles';
 import {
   Footer,
   Cancel,
@@ -103,7 +103,8 @@ export default CustomFilters = forwardRef((props, ref) => {
                   <Datepicker
                     date={minDate}
                     enabled={true}
-                    title="dd/mm/yyyy"
+                    customStyles={DateStyle}
+                    title="dd/mm/aaaa"
                     style={{ maxWidth: 100 }}
                     maxDate={maxDate || undefined}
                     onDateChange={date => { setMinDate(date), onChange(FormatInitialDateEN(date)) }}
@@ -121,7 +122,8 @@ export default CustomFilters = forwardRef((props, ref) => {
                   <Datepicker
                     date={maxDate}
                     enabled={true}
-                    title="dd/mm/yyyy"
+                    customStyles={DateStyle}
+                    title="dd/mm/aaaa"
                     style={{ maxWidth: 100 }}
                     minDate={minDate || undefined}
                     onDateChange={date => { setMaxDate(date), onChange(FormatFinalDateEN(date)) }}
@@ -143,3 +145,27 @@ export default CustomFilters = forwardRef((props, ref) => {
     </Modal >
   );
 });
+
+
+const DateStyle = {
+  dateInput: {
+    flex: 1,
+    marginTop: 2,
+    height: 20,
+    paddingBottom: 0,
+    borderWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grayLighter,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  disabled: {
+    backgroundColor: colors.white,
+  },
+  dateText: {
+    marginTop: 2,
+    fontSize: 16,
+    color: colors.grayDarker,
+    fontFamily: fonts.circularStdBook,
+  }
+};

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { KeyboardAvoidingView, Appearance } from 'react-native';
+import { KeyboardAvoidingView, Appearance, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import FolderKeywordsActions from 'store/ducks/FolderKeywords';
 import FolderProcessesActions from 'store/ducks/FolderProcesses';
@@ -12,6 +12,8 @@ import Header from 'components/Header';
 import Spinner from 'components/Spinner';
 import CustomTabs from 'components/CustomTabs';
 import HasNotPermission from 'components/HasNotPermission';
+
+import Blocked from 'pages/Blocked';
 
 import { colors } from 'assets/styles';
 
@@ -72,6 +74,8 @@ export default function Folders(props) {
   const loadingProcesses = useSelector(state => state.folderProcesses.loading);
   const totalProcessesNotRead = useSelector(state => state.folderProcesses.totalNotRead);
 
+  const active = useSelector(state => state.auth.active);
+
   const colorScheme = Appearance.getColorScheme();
 
   const image = (colorScheme == 'dark') ? require('assets/images/permissions/folders_white.png') : require('assets/images/permissions/folders.png');
@@ -130,6 +134,30 @@ export default function Folders(props) {
     setTriggerProcessesRequest(!triggerProcessesRequest);
   }, []);
 
+  const renderKeywordsNotFound = useCallback(() => (
+    <>
+      {!loadingKeywords &&
+        <NotFound>
+          <Image source={notFound} />
+          <NotFoundText>Não há resultados</NotFoundText>
+          <NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+        </NotFound>
+      }
+    </>
+  ), [loadingKeywords]);
+
+  const renderProcessesNotFound = useCallback(() => (
+    <>
+      {!loadingProcesses &&
+        <NotFound>
+          <Image source={notFound} />
+          <NotFoundText>Não há resultados</NotFoundText>
+          <NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+        </NotFound>
+      }
+    </>
+  ), [loadingProcesses]);
+
   const renderKeywordsHeader = () => (
     <>
       <Card underlayColor={colors.white} activeOpacity={1}>
@@ -154,36 +182,12 @@ export default function Folders(props) {
           onSubmitEditing={searchKeyword}
           returnKeyType='search'
         />
-        <SearchButton onPress={() => searched ? clearSearchKeyword() : searchKeyword()}>
+        <SearchButton onPress={() => searched ? clearSearchKeyword() : searchKeyword()} platform={Platform.OS}>
           <MaterialIcons size={20} name={searched ? "close" : "search"} color={colors.fadedBlack} />
         </SearchButton>
       </SearchBar>
     </>
   );
-
-  const renderKeywordsNotFound = useCallback(() => (
-    <>
-      {!loadingKeywords &&
-        <NotFound>
-          <Image source={notFound} />
-          <NotFoundText>Não há resultados</NotFoundText>
-          <NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
-        </NotFound>
-      }
-    </>
-  ), [loadingKeywords]);
-
-  const renderProcessesNotFound = useCallback(() => (
-    <>
-      {!loadingProcesses &&
-        <NotFound>
-          <Image source={notFound} />
-          <NotFoundText>Não há resultados</NotFoundText>
-          <NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
-        </NotFound>
-      }
-    </>
-  ), [loadingProcesses]);
 
   const renderKeywordsFooter = useCallback(() => {
     if (!loadingKeywords) return null;
@@ -251,7 +255,6 @@ export default function Folders(props) {
     setSearched(keywordSearch.length > 0);
   }, [keywordSearch]);
 
-
   const searchProcess = useCallback(() => {
     setCurrentProcessesPage(1);
     setProcessFilters({ nome: processSearch });
@@ -267,6 +270,8 @@ export default function Folders(props) {
     >
       {publicationsPermission ?
         <List
+          onRefresh={clearSearchKeyword}
+          refreshing={false}
           data={folderKeywords}
           renderItem={renderList}
           keyExtractor={(_, index) => index.toString()}
@@ -292,6 +297,8 @@ export default function Folders(props) {
     >
       {processesPermission ?
         <List
+          onRefresh={clearSearchProcess}
+          refreshing={false}
           data={folderProcesses}
           renderItem={renderList}
           keyExtractor={(_, index) => index.toString()}
@@ -304,7 +311,7 @@ export default function Folders(props) {
         :
         <HasNotPermission
           image={image}
-          title="InfoInformações detalhadas sobre suas publicações e processos!"
+          title="Informações detalhadas sobre suas publicações e processos!"
           body="Monitore e receba de forma unificada as informações referentes às suas publicações e processos. Escolha o tribunal, órgão oficial ou diários de forma simples e segura."
         />
       }
@@ -329,14 +336,18 @@ export default function Folders(props) {
 
   return (
     <Container>
-      <Warp>
-        {/* <Header title='Movimentações' add={add} edit={edit} /> */}
-        <Header title='Movimentações' />
-        <ScrollableTabView renderTabBar={renderTabBar}>
-          {Publicacoes()}
-          {Processos()}
-        </ScrollableTabView>
-      </Warp>
+      {active ?
+        <Warp>
+          {/* <Header title='Movimentações' add={add} edit={edit} /> */}
+          <Header title='Movimentações' />
+          <ScrollableTabView renderTabBar={renderTabBar}>
+            {Publicacoes()}
+            {Processos()}
+          </ScrollableTabView>
+        </Warp>
+        :
+        <Blocked />
+      }
     </Container>
   );
 }

@@ -36,11 +36,13 @@ const slides = [
 
 const styles = StyleSheet.create({
   inactiveDot: {
+    display: 'none',
     backgroundColor: colors.grayLighter,
     width: 4,
     height: 4
   },
   activeDot: {
+    display: 'none',
     backgroundColor: colors.grayDarker,
     width: 6,
     height: 6

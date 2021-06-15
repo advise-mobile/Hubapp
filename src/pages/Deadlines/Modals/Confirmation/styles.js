@@ -9,7 +9,7 @@ const Footer = styled.View`
 
 const Cancel = styled.TouchableOpacity`
   flex: 1;
-  padding: 8px;
+  padding: 7px;
   margin-right: 12px;
   background: ${colors.white};
   justify-content: center;
@@ -51,6 +51,7 @@ const Message = styled.Text`
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
   text-align: center;
+  line-height: 24px;
 `;
 
 export {

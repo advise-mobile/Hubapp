@@ -1,9 +1,11 @@
 import Api from 'services/Api';
-import { call, put } from 'redux-saga/effects';
+import { call, put, delay } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AuthActions from 'store/ducks/Auth';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
+
+import jwtDecode from 'jwt-decode';
 
 export function* login(action) {
   const { email, password } = action;
@@ -25,24 +27,40 @@ export function* login(action) {
       })
     );
 
-    yield put(AuthActions.loginSuccess(response.data));
+    yield AsyncStorage.multiSet([
+      ['@Advise:refreshToken', response.data.refresh_token || null],
+      ['@Advise:token', response.data.access_token || null]
+    ]);
+
+    yield delay(500);
+
+    const contracts = yield call(Api.get, '/core/v2/contratos?campos=idSituacaoContrato,convenioOAB&registrosPorPagina=-1');
+
+    const { idCliente } = jwtDecode(response.data.access_token);
+
+    const isConvenio = contracts.data.itens.some(contract => contract.convenioOAB);
+
+    const activePlan = contracts.data.itens.some(contract => contract.idSituacaoContrato == -1);
+
+    let active = activePlan;
+
+    if (isConvenio) {
+      const situation = yield call(Api.get, `/core/v1/clientes?IDs=${idCliente}&campos=planosVinculados.idSituacaoClienteXPlano+&expansao=planosVinculados&registrosPorPagina=-1`);
+
+      const adheredPlan = situation.data.itens[0].planosVinculados.some(plan => (plan.idSituacaoClienteXPlano === -1));
+
+      active = adheredPlan && activePlan;
+    }
+
+    yield put(AuthActions.loginSuccess(response.data, isConvenio, active));
   } catch (err) {
     if (err.response) {
       yield put(AuthActions.loginFailure());
-      yield put(
-        ToastNotifyActions.toastNotifyShow(
-          err.response.data.status.erros[0].mensagem,
-          true
-        )
+      yield put(ToastNotifyActions.toastNotifyShow(err.response.data.status.erros[0].mensagem, true)
       );
     } else {
       yield put(AuthActions.loginFailure());
-      yield put(
-        ToastNotifyActions.toastNotifyShow(
-          'Não conseguimos realizar seu login. Por favor tente novamente!',
-          true
-        )
-      );
+      yield put(ToastNotifyActions.toastNotifyShow('Não conseguimos realizar seu login. Por favor tente novamente!', true));
     }
   }
 }
@@ -89,5 +107,33 @@ export function* forgot(action) {
           )
         );
     }
+  }
+}
+
+export function* contracts() {
+  try {
+    const contracts = yield call(Api.get, '/core/v2/contratos?campos=idSituacaoContrato,convenioOAB&registrosPorPagina=-1');
+
+    const token = contracts.config.headers.Authorization.replace("bearer ", "");
+
+    const { idCliente } = jwtDecode(token);
+
+    const isConvenio = contracts.data.itens.some(contract => contract.convenioOAB);
+
+    const activePlan = contracts.data.itens.some(contract => contract.idSituacaoContrato == -1);
+
+    let active = activePlan;
+
+    if (isConvenio) {
+      const situation = yield call(Api.get, `/core/v1/clientes?IDs=${idCliente}&campos=planosVinculados.idSituacaoClienteXPlano+&expansao=planosVinculados&registrosPorPagina=-1`);
+
+      const adheredPlan = situation.data.itens[0].planosVinculados.some(plan => (plan.idSituacaoClienteXPlano === -1));
+
+      active = adheredPlan && activePlan;
+    }
+
+    yield put(AuthActions.contractsSuccess(isConvenio, active));
+  } catch (err) {
+    // yield put(ToastNotifyActions.toastNotifyShow('Não conseguimos verificar o seu contrato. Por favor tente novamente!', true));
   }
 }

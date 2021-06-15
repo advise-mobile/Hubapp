@@ -107,6 +107,32 @@ const LogoutText = styled.Text`
   color: ${colors.red};
 `;
 
+
+const DateStyle = (props) => {
+  return ({
+    dateInput: {
+      flex: 1,
+      marginTop: 2,
+      height: 20,
+      paddingBottom: 0,
+      borderWidth: 0,
+      borderBottomWidth: 1,
+      borderBottomColor: props.editable ? colors.grayLighter : colors.white,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+    },
+    disabled: {
+      backgroundColor: colors.white,
+    },
+    dateText: {
+      marginTop: 2,
+      fontSize: 13,
+      color: colors.fadedBlack,
+      fontFamily: fonts.circularStdBook,
+    },
+  });
+};
+
 export {
   PickerContainer,
   Picker,
@@ -123,5 +149,6 @@ export {
   InfoText,
   InfoContent,
   ButtonLogout,
-  LogoutText
+  LogoutText,
+  DateStyle
 }

@@ -9,7 +9,7 @@ function getFilterString(filters) {
 
   if (!filters) result;
 
-  Object.keys(filters).map(key => result += (filters[key] != null) && `${key}=${filters[key]}&` || '');
+  Object.keys(filters).map(key => result += (filters[key] != null && filters[key] != 0) && `${key}=${filters[key]}&` || '');
 
   return result.slice(0, -1);
 }
@@ -23,14 +23,13 @@ export function* getJurisprudences({ param }) {
 
     const queryFilters = getFilterString(param.filters);
 
-    const { data } = yield call(
-      Api.get,
-      `/jurisprudencia/v1/jurisprudencia?${query}&${paginator}&${queryFilters}`,
-    );
+    const filtered = queryFilters !== '';
+
+    const { data } = yield call(Api.get, `/jurisprudencia/v1/jurisprudencia?${query}&${paginator}&${queryFilters}`);
 
     const endReached = data.itens.length == 0;
 
-    yield put(JurisprudenceActions.jurisprudenceSuccess({ ...data, endReached }, param.page));
+    yield put(JurisprudenceActions.jurisprudenceSuccess({ ...data, endReached }, param.page, filtered));
   } catch (err) {
     const { status } = err.response;
     if (status !== 401) {

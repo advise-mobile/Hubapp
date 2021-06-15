@@ -32,6 +32,7 @@ export default Modal = forwardRef((props, ref) => {
       childrenStyle={{ maxHeight: 400 }}
       HeaderComponent={renderHeader}
       handlePosition="inside"
+      handleStyle={{ backgroundColor: colors.grayDarker, marginTop: 8 }}
       disableScrollIfPossible={false}
       keyboardAvoidingOffset={40}
       avoidKeyboard={true}

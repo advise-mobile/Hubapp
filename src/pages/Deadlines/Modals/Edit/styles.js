@@ -9,7 +9,7 @@ const Footer = styled.View`
 
 const Cancel = styled.TouchableOpacity`
   flex: 1;
-  padding: 8px;
+  padding: 7px;
   margin-right: 12px;
   background: ${colors.white};
   justify-content: center;
@@ -117,35 +117,20 @@ const DateStyle = {
   dateInput: {
     height: 20,
     paddingBottom: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
+    borderWidth: 0,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+  },
+  dateText: {
+    color: colors.grayLight,
     fontFamily: fonts.circularStdBook,
     fontSize: fonts.regular,
-    color: colors.grayLighter,
-
   },
   placeholderText: {
     color: colors.grayLighter,
-    fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
-    color: colors.grayLighter,
-
   },
   disabled: {
     backgroundColor: colors.white,
-    fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
-  },
-  datePicker: {
-    backgroundColor: colors.white,
-    fontFamily: fonts.circularStdBook,
-    fontSize: fonts.regular,
-    color: colors.grayLighter,
-
   },
 };
 

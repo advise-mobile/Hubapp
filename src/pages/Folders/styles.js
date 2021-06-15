@@ -111,6 +111,7 @@ const SearchInput = styled.TextInput`
 `;
 
 const SearchButton = styled.TouchableOpacity`
+  top: ${props => props.platform == 'android' ? '4px' : 0};
   padding: 12px 24px;
   align-items: center;
 `;

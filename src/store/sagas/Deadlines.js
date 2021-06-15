@@ -1,6 +1,8 @@
 import Api, { getLogin } from 'services/Api';
 import { call, put, delay } from 'redux-saga/effects';
 
+import UserActions from 'store/ducks/User';
+import AuthAction from 'store/ducks/Auth';
 import DeadlineActions from 'store/ducks/Deadlines';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 
@@ -18,12 +20,19 @@ export function* getDeadlines({ param }) {
   try {
     const user = yield getLoggedUser();
 
-    yield getLogin();
+    const userData = yield getLogin();
+
+    yield put(AuthAction.contractsRequest());
+
     yield delay(200);
+
+    if (userData.foto) {
+      yield put(UserActions.updatePicture(userData.foto));
+    }
 
     const filters = getFilters(param.filters);
 
-    const query = 'ativo=true&campos=*&ordenacao=%2BdataHoraInicio';
+    const query = 'ativo=true&campos=*&ordenacao=%2BdataHoraUltAlteracao';
     const paginator = `registrosPorPagina=${param.perPage}&paginaAtual=${param.page}&idUsuarioCliente=${user.idUsuarioCliente}`;
 
     const { data } = yield call(Api.get, `/core/v1/eventos-agenda?${query}&${paginator}${filters}`);

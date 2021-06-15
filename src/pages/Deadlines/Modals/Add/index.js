@@ -56,30 +56,38 @@ export default Add = forwardRef((props, ref) => {
   const [title, setTitle] = useState('');
   const [currentType, setCurrentType] = useState(null);
   const [allDay, setAllDay] = useState(false);
-  const [date, setDate] = useState(props.date || new Date());
+  const [date, setDate] = useState(null);
   const [idAgenda, setIdAgenda] = useState(props.idAgenda);
-  const [hour, setHour] = useState(moment().format('hh:mm'));
+  const [hour, setHour] = useState(null);
   const [location, setLocation] = useState('');
   const [observation, setObservation] = useState('');
   // Errors
   const [titleErr, setTitleError] = useState(false);
+  const [dateErr, setDateError] = useState(false);
+  const [hourErr, setHourError] = useState(false);
   const [locationErr, setLocationError] = useState(false);
   const [observationErr, setObservationError] = useState(false);
   const [typesErr, setTypesErr] = useState(false);
   const [viewPicker, setViewPicker] = useState(false);
 
+  const [requiredFields, setRequiredFields] = useState({
+    'titulo': setTitleError,
+    'data': setDateError,
+    'hora': setHourError
+  });
+
   const onAdd = props.onAdd;
 
   const hidePicker = () => setViewPicker(false);
 
-  const defaultValues = {
-    titulo: '',
-    diaInteiro: false,
-    data: props.date || new Date(),
-    hora: moment().format('hh:mm'),
-    localizacao: '',
-    observacao: '',
-  }
+  // const defaultValues = {
+  //   titulo: '',
+  //   diaInteiro: false,
+  //   data: props.date || new Date(),
+  //   hora: moment().format('hh:mm'),
+  //   localizacao: '',
+  //   observacao: '',
+  // }
 
   useEffect(() => setIdAgenda(props.idAgenda), [props]);
 
@@ -87,6 +95,8 @@ export default Add = forwardRef((props, ref) => {
     const hour = moment(date).format('HH:mm');
 
     setHour(hour);
+
+    setHourError(hour.length < 2);
 
     hidePicker();
 
@@ -99,25 +109,27 @@ export default Add = forwardRef((props, ref) => {
     setObservation('');
     setAllDay(false);
     setCurrentType(null);
-    setDate(props.date || new Date());
+    setDate(null);
     setIdAgenda(props.idAgenda);
-    setHour(moment().format('hh:mm'));
+    setHour(null);
 
+    setRequiredFields({ 'titulo': setTitleError, 'data': setDateError, 'hora': setHourError });
     // reset(defaultValues);
   }, []);
 
   const closeModal = useCallback(() => ref.current?.close(), []);
 
   const onSubmit = ({ titulo, observacao, localizacao, data, hora, diaInteiro }) => {
-    if (!currentType) {
-      setTypesErr(true);
 
-      return;
-    }
+    const hasErrors = checkRequiredFields({ titulo, data, hora });
+
+    setTypesErr(!currentType);
+
+    if (!currentType || hasErrors) return;
 
     const dataHoraInicio = `${moment(data || new Date()).format('YYYY-MM-DD')}T${diaInteiro ? '09:30' : hora || hour}:00`;
 
-    const dataHoraFim = diaInteiro ? moment(dataHoraInicio).format('YYYY-MM-DDT23:59:00') : moment(dataHoraInicio).add(1, 'hours').format('YYYY-MM-DDTH:mm:ss');
+    const dataHoraFim = diaInteiro ? moment(dataHoraInicio).format('YYYY-MM-DDT23:59:00') : moment(dataHoraInicio).add(1, 'hours').format('YYYY-MM-DDTHH:mm:ss');
 
     const type = types.find(type => type.id == currentType);
 
@@ -167,10 +179,29 @@ export default Add = forwardRef((props, ref) => {
     </Footer>
   );
 
+  const checkRequiredFields = useCallback(fields => {
+    let hasErrors = false;
+
+    Object.keys(requiredFields).map(field => {
+      requiredFields[field](fields[field] < 2);
+
+      if (fields[field] < 2) hasErrors = true;
+    });
+
+    return hasErrors;
+  }, [requiredFields]);
+
+  const handleRequiredFields = useCallback((allDay) => {
+    if (allDay)
+      setRequiredFields({ 'titulo': setTitleError, 'data': setDateError });
+    else
+      setRequiredFields({ 'titulo': setTitleError, 'data': setDateError, 'hora': setHourError });
+  }, []);
+
   return (
     <Modal ref={ref} title="Cadastrar prazo" footer={footer()}>
       <Content>
-        <Row>
+        <Row error={titleErr}>
           <Label>Título</Label>
           <Controller
             name='titulo'
@@ -185,7 +216,7 @@ export default Add = forwardRef((props, ref) => {
                 autoCorrect={false}
                 autoCapitalize='none'
                 placeholder='Nome do prazo'
-                placeholderTextColor={colors.grayLight}
+                placeholderTextColor={titleErr ? colors.red : colors.grayLight}
                 returnKeyType='next'
                 onChangeText={text => {
                   setTitle(text);
@@ -217,7 +248,7 @@ export default Add = forwardRef((props, ref) => {
                   lineWidth={1.5}
                   boxType={'square'}
                   value={allDay}
-                  onValueChange={newValue => { setAllDay(newValue); onChange(newValue) }}
+                  onValueChange={newValue => { setAllDay(newValue); handleRequiredFields(newValue); onChange(newValue) }}
                   animationDuration={0.2}
                   tintColor={colors.primary}
                   onCheckColor={colors.white}
@@ -230,7 +261,7 @@ export default Add = forwardRef((props, ref) => {
             )}>
           </Controller>
         </Row>
-        <Row>
+        <Row error={dateErr}>
           <Label>Data</Label>
           <Controller
             name='data'
@@ -241,20 +272,20 @@ export default Add = forwardRef((props, ref) => {
               <Datepicker
                 date={date}
                 enabled={true}
-                title="dd/mm/yyyy"
+                title="Selecione uma data"
                 style={{
                   flexGrow: 1,
                   maxWidth: 200,
                   height: 22
                 }}
-                customStyles={DateStyle}
-                onDateChange={date => { setDate(date), onChange(FormatFullDateEN(date)) }}
+                customStyles={DateStyle({ error: dateErr })}
+                onDateChange={date => { setDate(date); setDateError(date.length > 0); onChange(FormatFullDateEN(date)) }}
               />
             )}>
           </Controller>
         </Row>
         {!allDay &&
-          <Row>
+          <Row error={hourErr}>
             <Label>Hora</Label>
             <Controller
               name='hora'
@@ -263,7 +294,7 @@ export default Add = forwardRef((props, ref) => {
               rules={{ required: false }}
               render={({ onChange }) => (
                 <Hour onPress={() => setViewPicker(true)}>
-                  <HourText>{hour}</HourText>
+                  <HourText error={hourErr}>{hour || 'Selecione um horário'}</HourText>
                   <DateTimePickerModal
                     mode='time'
                     locale='en_GB'

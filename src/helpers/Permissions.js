@@ -3,7 +3,7 @@ import Api from 'services/Api';
 import jwtDecode from 'jwt-decode';
 
 export const getLoggedUser = async () => {
-  const token = await AsyncStorage.getItem('@Advise:token');
+  const token = await AsyncStorage.getItem('@Advise:token') || null;
 
   return jwtDecode(token);
 };
@@ -16,13 +16,29 @@ export const getAppByProductAdvise = async () => {
   await AsyncStorage.setItem('@IdProdutoAdvise', user.idProdutoAdvise);
 };
 
-export const getUserPermissions = (userId) => {
-  return Api.get(
-    `core/v1/permissoes-usuario-cliente?ativo=true&IDs=${userId}&Campos=*`
-  );
-};
+export const getUserPermissions = () => Api.get(
+  `core/v1/permissoes-usuario-cliente?ativo=true&campos=idFuncionalidade,idUsuarioClienteXFuncionalidade,quantidadePermitida,quantidadeUtilizada&registrosPorPagina=-1`
+);
+
 
 export const PermissionsMap = {
+  movements: {
+    createDiary: -1, // Cadastrar diários
+    createKeyword: -2, // Cadastrar palavras-chave
+    createSearchVariation: -3, // Cadastrar variações de pesquisa
+    createExclusionVariation: -4, // Cadastrar variações de exclusão
+    combinedSearch: -5, // Cadastrar busca combinada
+    downloadPublications: -6, // Gerar publicações em arquivo
+    recordPublications: -7, // Consultar publicações
+    createProcess: -8, // Cadastrar processos
+    createMovements: -9, // Consultar andamentos
+    createManualMovements: -10, // Cadastrar andamentos manuais
+    transformProcessIntoManual: -11, // Transformar processo automático em manual
+    downloadMovements: -12, // Gerar andamentos em arquivo
+    transformProcessIntoAutomatic: -16, // Transformar processo manual em automático
+    processesWithAutomaticMovementsSearch: -32, // Processos com busca automática de andamentos
+    searchAutomaticMovements: -31 // Pesquisar andamentos automáticos
+  },
   publications: {
     createDiary: -1, // Cadastrar diários
     createKeyword: -2, // Cadastrar palavras-chave
@@ -89,6 +105,7 @@ export const PermissionsMap = {
 };
 
 export const PermissionsGroups = {
+  MOVEMENTS: "movements",
   PUBLICATIONS: "publications",
   PROCESSES: "processes",
   INSURANCE: "insurance",

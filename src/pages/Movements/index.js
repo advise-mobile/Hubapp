@@ -60,6 +60,7 @@ export default Movements = props => {
   const movements = useSelector(state => state.movements.data);
   const endReached = useSelector(state => state.movements.endReached);
   const loading = useSelector(state => state.movements.loading);
+  const loadingMore = useSelector(state => state.movements.loadingMore);
   const diaries = useSelector(state => state.movements.diaries);
   const tribunals = useSelector(state => state.movements.tribunals);
   const refreshing = useSelector(state => state.movements.refreshing);
@@ -77,6 +78,8 @@ export default Movements = props => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (loadingMore) return;
+
     dispatch(
       MovementsActions.movementsRequest({
         filters,
@@ -85,6 +88,8 @@ export default Movements = props => {
         folderId: folder.id
       })
     );
+
+    if (currentPage > 1) return;
 
     if (folder.idTipoPasta == -2)
       dispatch(
@@ -137,12 +142,12 @@ export default Movements = props => {
 
 
   const onEndReached = useCallback(() => {
-    if (endReached) return;
+    if (endReached || loadingMore) return;
 
     setCurrentPage(currentPage + 1);
 
     setTrigger(!trigger);
-  });
+  }, [currentPage, loadingMore, trigger]);
 
   const toggleAsRead = useCallback(({ item }) => {
     dispatch(

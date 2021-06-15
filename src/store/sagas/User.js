@@ -3,6 +3,7 @@ import { getLoggedUser } from 'helpers/Permissions';
 import { call, put, delay } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import AuthAction from 'store/ducks/Auth';
 import UserActions from 'store/ducks/User';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 
@@ -16,9 +17,16 @@ export function* getPerson() {
     const fields = 'id,emailUsuario,idPessoa,ativoUsuario,pessoa.idTipoPessoa,pessoa.id,pessoa.nome,pessoa.cpfcnpj,pessoa.idSexo,pessoa.dataNascimentoAbertura,pessoa.fone1,pessoa.fone2,pessoa.email,pessoa.fotoId,pessoa.foto,dadosOAB.id,dadosOAB.ativo,dadosOAB.numero,dadosOAB.idUF,dadosOAB.nomeUF,dadosOAB.idTipoOAB';
     const expansion = 'pessoa,dadosOAB';
 
-    yield getLogin();
-    yield delay(300);
+    const userData = yield getLogin();
 
+    yield delay(200);
+
+    yield put(AuthAction.contractsRequest());
+
+
+    if (userData.foto) {
+      yield put(UserActions.updatePicture(userData.foto));
+    }
 
     const person = yield call(
       Api.get,
@@ -65,10 +73,9 @@ export function* updateProfile({ param }) {
       data
     );
 
-    yield put(ToastNotifyActions.toastNotifyShow('Sucesso ao atualizar sua foto', false));
-
     yield AsyncStorage.setItem('@Advise:avatar', foto);
 
+    yield put(ToastNotifyActions.toastNotifyShow('Sucesso ao atualizar sua foto', false));
   } catch (err) {
     yield put(
       ToastNotifyActions.toastNotifyShow(
@@ -77,6 +84,16 @@ export function* updateProfile({ param }) {
       )
     );
   }
+}
+
+export function* updatePicture({ param }) {
+  // try {
+  yield put(UserActions.updatePicture(param));
+  // } catch (err) {
+  //   // yield put(
+  //   //   // ToastNotifyActions.toastNotifyShow(err.response.data.status.erros[0].mensagem,true);
+  //   // );
+  // }
 }
 
 export function* updatePerson({ param }) {

@@ -1,6 +1,8 @@
-import React, { forwardRef, useState, useCallback } from 'react';
+import React, { forwardRef, useState, useCallback, useEffect } from 'react';
 import { KeyboardAvoidingView } from 'react-native';
 import { useDispatch } from 'react-redux';
+
+import { getLoggedUser } from 'helpers/Permissions';
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 
@@ -16,12 +18,15 @@ import {
   CancelText,
   Submit,
   SubmitText,
+  Description,
   Content,
   Input,
 } from './styles';
 
 export default Add = forwardRef((props, ref) => {
   const dispatch = useDispatch();
+
+  const [userData, setUserData] = useState({});
 
   //Data
   const [email, setEmail] = useState('');
@@ -59,6 +64,11 @@ export default Add = forwardRef((props, ref) => {
 
   };
 
+  useEffect(() => { getLoggedUser().then(user => setUserData(user)); }, []);
+
+  const renderDescription = useCallback(() =>
+    <Description>Ao cadastrar um email, o sistema notificará o destinatário sobre as novas movimentações da conta {userData.nome}. Todas as publicações e andamentos referentes às palavras-chaves e processos cadastrados serão notificados.</Description>,
+    [userData]);
 
   const footer = () => (
     <Footer>
@@ -77,6 +87,7 @@ export default Add = forwardRef((props, ref) => {
   return (
     <Modal ref={ref} title="Cadastrar email" footer={footer()}>
       <Content>
+        {renderDescription()}
         <KeyboardAvoidingView>
           <Input
             value={email}

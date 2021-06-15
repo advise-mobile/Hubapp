@@ -27,7 +27,7 @@ const Header = props => (
       )}
       {!props.filter && !props.back && <Blank />}
     </HeaderActionsLeft>
-    <HeaderTitle>{props.title}</HeaderTitle>
+    <HeaderTitle lower={props.lower || false}>{props.title}</HeaderTitle>
     <HeaderActionsRight>
       {props.add && (
         <HeaderAction>

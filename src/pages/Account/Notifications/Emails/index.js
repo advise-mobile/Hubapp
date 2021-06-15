@@ -207,7 +207,7 @@ export default Emails = props => {
   return (
     <Container>
       <Warp>
-        <Header title={'Notificações de Email'} back={() => props.navigation.goBack()} add={() => addRef.current?.open()} />
+        <Header title={'Notificações de email'} back={() => props.navigation.goBack()} add={() => addRef.current?.open()} lower={true} />
         {loading ? <Spinner /> :
           <List
             refreshControl={
@@ -289,7 +289,7 @@ export default Emails = props => {
                     </Option>
                     <Option as={RadioButton}>
                       <RadioButtonInput
-                        obj={{ label: 'Enviar apenas a quantidade de novas publicações', value: getActionValue(-1) }}
+                        obj={{ label: 'Enviar apenas o aviso de novas publicações', value: getActionValue(-1) }}
                         isSelected={getActionValue(-1)}
                         onPress={value => handleNotificationMovements(-1, value)}
                         borderWidth={1}
@@ -299,7 +299,8 @@ export default Emails = props => {
                         buttonOuterSize={18}
                       />
                       <RadioButtonLabel
-                        obj={{ label: 'Enviar apenas a quantidade de novas publicações', value: getActionValue(-1) }}
+                        numberOfLines={1}
+                        obj={{ label: 'Enviar apenas o aviso de novas publicações', value: getActionValue(-1) }}
                         labelWrapStyle={{
                           'flex': 2,
                         }}

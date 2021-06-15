@@ -3,26 +3,19 @@ import { all, takeLatest } from 'redux-saga/effects';
 /* Types */
 import { AuthTypes } from 'store/ducks/Auth';
 import { UserTypes } from 'store/ducks/User';
-import { FolderUnreadTypes } from 'store/ducks/FolderUnread';
 import { FolderKeywordsTypes } from 'store/ducks/FolderKeywords';
 import { FolderProcessesTypes } from 'store/ducks/FolderProcesses';
 import { MovementTypes } from 'store/ducks/Movement';
 import { MovementsTypes } from 'store/ducks/Movements';
 import { ProcessTypes } from 'store/ducks/Process';
 import { DeadlinesTypes } from 'store/ducks/Deadlines';
-import { JournalTypes } from 'store/ducks/Journal';
-import { KeywordsTypes } from 'store/ducks/Keywords';
-import { FontsTypes } from 'store/ducks/Fonts';
-import { TribunalTypes } from 'store/ducks/Tribunal';
-import { DeadlineAddTypes } from 'store/ducks/DeadlineAdd';
-import { SelectTypes } from 'store/ducks/Select';
 import { PeopleTypes } from 'store/ducks/People';
 import { CustomerTypes } from 'store/ducks/Customer';
 import { JurisprudenceTypes } from 'store/ducks/Jurisprudence';
 
 /* Saga */
-import { login, logout, forgot } from './Auth';
-import { getPerson, changePassword, updatePerson, updateProfile } from './User';
+import { login, logout, forgot, contracts } from './Auth';
+import { getPerson, changePassword, updatePerson, updateProfile, updatePicture } from './User';
 import { getCustomer } from './Customer';
 import { getFolderKeywords } from './FolderKeywords';
 import { getFolderProcesses } from './FolderProcesses';
@@ -40,6 +33,14 @@ import {
   addDeadline,
   editDeadline,
 } from './Deadlines';
+
+// import { FolderUnreadTypes } from 'store/ducks/FolderUnread';
+// import { JournalTypes } from 'store/ducks/Journal';
+// import { KeywordsTypes } from 'store/ducks/Keywords';
+// import { FontsTypes } from 'store/ducks/Fonts';
+// import { TribunalTypes } from 'store/ducks/Tribunal';
+// import { DeadlineAddTypes } from 'store/ducks/DeadlineAdd';
+// import { SelectTypes } from 'store/ducks/Select';
 // import { getScheduleId, postDeadline, putDeadline } from './DeadlineAdd';
 // import { getJournal } from './Journal';
 // import { getKeywords } from './Keywords';
@@ -53,14 +54,16 @@ export default function* rootSaga() {
   return yield all([
     // Auth
     takeLatest(AuthTypes.LOGIN_REQUEST, login),
-    takeLatest(AuthTypes.LOGOUT_REQUEST, logout),
+    // takeLatest(AuthTypes.LOGOUT_REQUEST, logout),
     takeLatest(AuthTypes.FORGOT_REQUEST, forgot),
+    takeLatest(AuthTypes.CONTRACTS_REQUEST, contracts),
 
     // User
     takeLatest(UserTypes.PERSON_REQUEST, getPerson),
     takeLatest(UserTypes.PERSON_UPDATE, updatePerson),
     takeLatest(UserTypes.CHANGE_PASSWORD_REQUEST, changePassword),
     takeLatest(UserTypes.UPDATE_PROFILE, updateProfile),
+    // takeLatest(UserTypes.UPDATE_PICTURE, updatePicture),
 
     // Customer
     takeLatest(CustomerTypes.CUSTOMER_REQUEST, getCustomer),

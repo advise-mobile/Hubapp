@@ -1,6 +1,8 @@
 import Api from 'services/Api';
 import { call, put, delay } from 'redux-saga/effects';
 
+import AuthAction from 'store/ducks/Auth';
+import UserActions from 'store/ducks/User';
 import FolderKeywordsActions from 'store/ducks/FolderKeywords';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import { getLogin } from '../../services/Api';
@@ -21,9 +23,15 @@ export function* getFolderKeywords(action) {
     const { page, perPage, filters } = action.params;
     const query = 'campos=*&idTipoPasta=-2&ativo=true';
 
-    yield getLogin();
-    yield delay(300);
+    const userData = yield getLogin();
 
+    yield put(AuthAction.contractsRequest());
+
+    yield delay(200);
+
+    if (userData.foto) {
+      yield put(UserActions.updatePicture(userData.foto));
+    }
     const paginator = `paginaAtual=${page}&registrosPorPagina=${perPage}`;
 
     const queryFilters = buildFiltersQuery(filters);

@@ -26,6 +26,7 @@ export const INITIAL_STATE = Immutable({
   data: [],
   page: null,
   loading: false,
+  loadingMore: false,
   refreshing: false,
   diaries: [],
   tribunals: [],
@@ -47,6 +48,7 @@ export const refreshSuccess = (state, action) => state.merge({
 export const request = (state) => state.merge({
   loading: true,
   refreshing: false,
+  loadingMore: true,
 });
 
 export const success = (state, action) => state.merge({
@@ -54,6 +56,7 @@ export const success = (state, action) => state.merge({
   page: action.page,
   endReached: action.data.endReached,
   loading: false,
+  loadingMore: false,
 });
 
 export const clear = (state) => state.merge({

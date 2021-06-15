@@ -62,7 +62,7 @@ const Input = styled.TextInput`
   border-radius: 4;
   border-width: 0.5;
   border-color: ${props => props.error ? colors.red : colors.grayLight};
-  color: rgba(0, 0, 0, .6);
+  color: ${colors.grayDarker};
   font-family: ${fonts.circularStdMedium};
   font-size: 16;
   padding: 10px;

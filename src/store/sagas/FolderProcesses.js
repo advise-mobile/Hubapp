@@ -1,8 +1,9 @@
-import Api from 'services/Api';
+import Api, { getLogin } from 'services/Api';
 import { call, put, delay } from 'redux-saga/effects';
 
+import AuthAction from 'store/ducks/Auth';
+import UserActions from 'store/ducks/User';
 import FolderProcessesActions from 'store/ducks/FolderProcesses';
-import { getLogin } from '../../services/Api';
 
 function buildFiltersQuery(filtersQuery) {
   let filters = '';
@@ -19,8 +20,15 @@ export function* getFolderProcesses(action) {
     const { page, perPage, filters } = action.params;
     const query = 'campos=*&idTipoPasta=-3&ativo=true';
 
-    yield getLogin();
-    yield delay(300);
+    const userData = yield getLogin();
+
+    yield put(AuthAction.contractsRequest());
+
+    yield delay(200);
+
+    if (userData.foto) {
+      yield put(UserActions.updatePicture(userData.foto));
+    }
 
     const paginator = `paginaAtual=${page}&registrosPorPagina=${perPage}`;
 

@@ -166,9 +166,9 @@ export default function DeadlinesDetails(props) {
           </Tag>
         )}
 
-        {publicacao.paginaInicial && (
-          <Tag background={colors.gray} key={7}>
-            <TagText>{publicacao.paginaInicial} a {publicacao.paginaFinal}</TagText>
+        {(publicacao.paginaInicial > 0 && publicacao.paginaFinal > 0) && (
+          <Tag background={colors.gray}>
+            <TagText>{publicacao.paginaInicial || 0} a {publicacao.paginaFinal || 0}</TagText>
           </Tag>
         )}
 

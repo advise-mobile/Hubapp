@@ -13,11 +13,12 @@ const Warp = styled.View`
 `;
 
 const HeaderContainer = styled.View`
-  align-items: flex-start;
+  align-items: center;
   background-color: ${colors.white};
   flex-direction: row;
   justify-content: space-between;
   padding-horizontal: 12;
+  z-index: 10;
 `;
 
 const HeaderEmpty = styled.TouchableOpacity`
@@ -27,6 +28,8 @@ const HeaderEmpty = styled.TouchableOpacity`
 const HeaderAction = styled.TouchableOpacity`;
   margin-top: 6px;
   margin-horizontal: 8px;
+  min-height: 25px;
+  align-items: center;
 `;
 
 const HeaderActionsLeft = styled.View`
@@ -57,7 +60,7 @@ const HeaderTitle = styled.Text`
   color: ${colors.primary};
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.bigger};
-  text-transform: capitalize;
+  text-transform: ${props => props.lower ? 'none' : 'capitalize'};
   flex: 1;
 `;
 

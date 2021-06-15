@@ -2,8 +2,10 @@ import Api from 'services/Api';
 import { call, put, delay } from 'redux-saga/effects';
 import { getLoggedUser } from 'helpers/Permissions';
 
+import AuthAction from 'store/ducks/Auth';
 import MovementsTypes from 'store/ducks/Movements';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
+import UserActions from 'store/ducks/User';
 
 import { getLogin } from '../../services/Api';
 
@@ -109,8 +111,15 @@ export function* getMovements({ params }) {
     const query = `campos=*&ordenacao=-dataPublicacao&idPastaUsuarioCliente=${params.folderId}`;
     const paginator = `registrosPorPagina=${params.perPage}&paginaAtual=${params.page}`;
 
-    yield getLogin();
+    const userData = yield getLogin();
+
+    yield put(AuthAction.contractsRequest());
+
     yield delay(200);
+
+    if (userData.foto) {
+      yield put(UserActions.updatePicture(userData.foto));
+    }
 
     let { data } = yield call(
       Api.get,
@@ -150,7 +159,7 @@ export function* sendMovementsEmail({ param }) {
 
     yield call(Api.post, `/core/v1/envio-email-movimentos`, data);
 
-    yield put(ToastNotifyActions.toastNotifyShow('Movimento enviado por email!', false));
+    yield put(ToastNotifyActions.toastNotifyShow('Movimentação enviada por email!', false));
     yield put(MovementsTypes.movementsEmailSuccess());
   } catch (err) {
     const { status } = err.response;

@@ -28,38 +28,49 @@ import {
 
 const Forgot = props => {
   const loading = useSelector(state => state.auth.loading);
+  const sended = useSelector(state => state.auth.sended);
 
   const [email, setEmail] = useState('');
   const [emptyEmail, setEmptyEmail] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [sended, setSended] = useState(false);
+  // const [sended, setSended] = useState(false);
   const colorScheme = Appearance.getColorScheme();
   // const logoImage = require('assets/images/logo.png');
-  const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_branca.png') : require('assets/images/logo.png');
-  const sendedIcon = require('assets/images/icons/email.png');
+  const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_hub_branca.png') : require('assets/images/logo_hub.png');
+  const sendedIcon = (colorScheme == 'dark') ? require('assets/images/icons/email_white.png') : require('assets/images/icons/email.png');
+
+  const [emailError, setEmailError] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleEmailChange = useCallback((email) => {
     setEmail(email);
-    setEmptyEmail(false);
+    setEmailError(email.length < 3 || !validate(email));
   }, []);
 
   const handleForgotPress = useCallback(() => {
-    setDisabled(true);
+    const validEmail = validate(email);
 
-    if (email.length < 1) {
-      setEmptyEmail(true);
-      setDisabled(false);
-      return;
-    }
+    setEmailError(email.length < 3 || !validEmail);
+
+    if (email.length < 3 || !validEmail) return;
+
+    setDisabled(true);
 
     dispatch(AuthAction.forgotRequest(email.trim()));
 
     setDisabled(false);
+    // setSended(true);
   }, [email]);
 
-  const backToLogin = useCallback(() => props.navigation.navigate('Login'), []);
+  const backToLogin = useCallback(() => {
+    dispatch(AuthAction.forgotReset());
+
+    props.navigation.navigate('Login');
+    // setSended(false);
+  }, []);
+
+  const validate = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   return (
     <Container>
@@ -77,13 +88,13 @@ const Forgot = props => {
                   placeholderTextColor={colors.grayLight}
                   onChangeText={email => handleEmailChange(email)}
                   onSubmitEditing={handleForgotPress}
-                  keyboardType="default"
+                  keyboardType="email-address"
                   autoCapitalize="none"
                   returnKeyType="send"
-                  error={emptyEmail}
+                  error={emailError}
                 />
               </InputGroup>
-              {!!emptyEmail && <InputHelpText>Este campo é obrigatório</InputHelpText>}
+              {emailError && <InputHelpText>{email.length < 3 ? `Este campo é obrigatório` : `Email inválido`}</InputHelpText>}
               <Button onPress={handleForgotPress} disabled={disabled}>
                 {loading ? <ActivityIndicator size="small" color="#FFF" /> : <ButtonText>Enviar informações</ButtonText>}
               </Button>

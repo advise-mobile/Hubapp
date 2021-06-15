@@ -53,7 +53,19 @@ export default Filters = forwardRef((props, ref) => {
   const onSubmit = data => {
     ref.current?.close();
 
-    setTimeout(() => props.submit(data), 500);
+    // console.log({
+    //   "DataMovimentoFim": data.DataMovimentoFim || maxDate ? FormatFullDateEN(maxDate) : null,
+    //   "DataMovimentoInicio": data.DataMovimentoInicio || minDate ? FormatFullDateEN(minDate) : null,
+    //   "Lido": situation,
+    //   "diario": data[props.filters[customField?.name]] || selectedCustom
+    // });
+
+    setTimeout(() => props.submit({
+      "DataMovimentoFim": data.DataMovimentoFim || maxDate ? FormatFullDateEN(maxDate) : null,
+      "DataMovimentoInicio": data.DataMovimentoInicio || minDate ? FormatFullDateEN(minDate) : null,
+      "Lido": radio_props[situation].value,
+      "diario": data[props.filters[customField?.name]] || selectedCustom
+    }), 500);
   };
 
   const radio_props = [
@@ -129,7 +141,8 @@ export default Filters = forwardRef((props, ref) => {
               <Datepicker
                 date={minDate}
                 enabled={true}
-                title="dd/mm/yyyy"
+                customStyles={DateStyle}
+                title="dd/mm/aaaa"
                 style={{ maxWidth: 100 }}
                 maxDate={maxDate || undefined}
                 onDateChange={date => { setMinDate(date), onChange(FormatFullDateEN(date)) }}
@@ -147,7 +160,8 @@ export default Filters = forwardRef((props, ref) => {
               <Datepicker
                 date={maxDate}
                 enabled={true}
-                title="dd/mm/yyyy"
+                customStyles={DateStyle}
+                title="dd/mm/aaaa"
                 style={{ maxWidth: 100 }}
                 minDate={minDate || undefined}
                 onDateChange={date => { setMaxDate(date), onChange(FormatFullDateEN(date)) }}
@@ -223,3 +237,26 @@ const pickerSelectStyles = StyleSheet.create({
     borderBottomColor: colors.grayLighter,
   },
 });
+
+const DateStyle = {
+  dateInput: {
+    flex: 1,
+    marginTop: 2,
+    height: 20,
+    paddingBottom: 0,
+    borderWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grayLighter,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  disabled: {
+    backgroundColor: colors.white,
+  },
+  dateText: {
+    marginTop: 2,
+    fontSize: 16,
+    color: colors.grayDarker,
+    fontFamily: fonts.circularStdBook,
+  }
+};

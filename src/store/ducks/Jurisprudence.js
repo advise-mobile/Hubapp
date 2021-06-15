@@ -3,7 +3,7 @@ import Immutable from 'seamless-immutable';
 
 const { Types, Creators } = createActions({
   jurisprudenceRequest: ['param'],
-  jurisprudenceSuccess: ['data', 'page'],
+  jurisprudenceSuccess: ['data', 'page', 'filtered'],
   jurisprudenceFailure: null,
   jurisprudenceRefresh: ['param'],
   jurisprudenceRefreshSuccess: ['data'],
@@ -34,7 +34,7 @@ export const success = (state, action) => state.merge({
   failure: false,
   pagination: action.data.paginacao,
   endReached: action.data.endReached,
-  filters: action.data.filtros,
+  filters: !action.filtered ? action.data.filtros : state.filters,
 });
 
 export const refreshRequest = state => state.merge({ refreshing: true });
