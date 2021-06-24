@@ -7,6 +7,7 @@ import RNFetchBlob from 'rn-fetch-blob'
 import Toast from 'react-native-simple-toast';
 
 import { FormatDateBR } from 'helpers/DateFunctions';
+import { TOKEN } from 'helpers/StorageKeys';
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import { useDispatch } from 'react-redux';
@@ -61,7 +62,7 @@ export default Options = forwardRef((props, ref) => {
 
     await getLogin();
 
-    const token = await AsyncStorage.getItem('@Advise:token');
+    const token = await AsyncStorage.getItem(TOKEN);
 
     setDownloading(true);
 

@@ -5,8 +5,6 @@ import { call, put, delay } from 'redux-saga/effects';
 import CustomerActions from 'store/ducks/Customer';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 
-import { getLogin } from 'services/Api';
-
 export function* getCustomer() {
   try {
     // Request Person
@@ -15,7 +13,6 @@ export function* getCustomer() {
     const fields = 'id,pessoaCliente.idTipoPessoa,pessoaCliente.id,pessoaCliente.nome,pessoaCliente.CPFCNPJ,pessoaCliente.cep,pessoaCliente.logradouro,pessoaCliente.numeroEndereco,pessoaCliente.complementoEndereco,pessoaCliente.idMunicipio,pessoaCliente.idUFMunicipio,pessoaCliente.fone1,possuiGrupo';
     const expansion = 'pessoaCliente';
 
-    yield getLogin();
     yield delay(300);
 
     const customer = yield call(

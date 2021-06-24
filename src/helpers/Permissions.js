@@ -2,18 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from 'services/Api';
 import jwtDecode from 'jwt-decode';
 
+import { TOKEN, PERMISSIONS } from 'helpers/StorageKeys';
+
 export const getLoggedUser = async () => {
-  const token = await AsyncStorage.getItem('@Advise:token') || null;
+  const token = await AsyncStorage.getItem(TOKEN) || null;
 
   return jwtDecode(token);
-};
-
-export const getAppByProductAdvise = async () => {
-  await getLogin();
-
-  const user = await getLoggedUser();
-
-  await AsyncStorage.setItem('@IdProdutoAdvise', user.idProdutoAdvise);
 };
 
 export const getUserPermissions = () => Api.get(
@@ -118,7 +112,7 @@ export const PermissionsGroups = {
 };
 
 export const checkPermission = async permissionGroup => {
-  const userPermissions = await AsyncStorage.getItem('@Advise:permissions');
+  const userPermissions = await AsyncStorage.getItem(PERMISSIONS);
 
   let permissions = JSON.parse(userPermissions);
 
@@ -127,7 +121,7 @@ export const checkPermission = async permissionGroup => {
 
     let { data } = await getUserPermissions(user.idUsuarioCliente);
 
-    await AsyncStorage.setItem('@Advise:permissions', JSON.stringify(data));
+    await AsyncStorage.setItem(PERMISSIONS, JSON.stringify(data));
 
     permissions = data;
   }

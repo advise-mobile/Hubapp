@@ -63,7 +63,7 @@ export default function* rootSaga() {
     takeLatest(UserTypes.PERSON_UPDATE, updatePerson),
     takeLatest(UserTypes.CHANGE_PASSWORD_REQUEST, changePassword),
     takeLatest(UserTypes.UPDATE_PROFILE, updateProfile),
-    // takeLatest(UserTypes.UPDATE_PICTURE, updatePicture),
+    takeLatest(UserTypes.UPDATE_PICTURE, updatePicture),
 
     // Customer
     takeLatest(CustomerTypes.CUSTOMER_REQUEST, getCustomer),

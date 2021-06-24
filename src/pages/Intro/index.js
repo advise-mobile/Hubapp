@@ -11,6 +11,8 @@ import { Container, Warp, Slide, Title, Icon, Image, Text, NextButton, ButtonTex
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { TOKEN, INTRO } from 'helpers/StorageKeys';
+
 const icon = require('assets/images/icon.png');
 
 const slides = [
@@ -69,7 +71,7 @@ const Intro = props => {
   ), []);
 
   const _onDone = useCallback(() => {
-    AsyncStorage.setItem('@AdviseIntro', 'true').then(() => {
+    AsyncStorage.setItem(INTRO, 'true').then(() => {
       props.navigation.navigate('Login');
     });
   }, []);
@@ -94,13 +96,13 @@ const Intro = props => {
   //   // AsyncStorage.getItem('@AdviseIntro').then(seen => {
   //   //   seen && props.navigation.navigate('Login');
   //   // })
-  //   // const token = await AsyncStorage.getItem('@Advise:token');
+  //   // const token = await AsyncStorage.getItem(TOKEN);
   //   // if (token !== null) {
   //   //   const user = jwtDecode(token);
   //   //   OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });
   //   //   props.navigation.navigate('Folders', { user });
   //   // }
-  //   AsyncStorage.multiGet(['@AdviseIntro', '@Advise:token'], (err, items) => {
+  //   AsyncStorage.multiGet(['@AdviseIntro', TOKEN], (err, items) => {
 
   //     const intro = items[0][1];
   //     const token = items[1][1];

@@ -7,8 +7,6 @@ import MovementsTypes from 'store/ducks/Movements';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import UserActions from 'store/ducks/User';
 
-import { getLogin } from '../../services/Api';
-
 import { removeDuplicateById } from 'helpers/ArrayUtils';
 
 // import moment from 'moment';
@@ -49,9 +47,6 @@ function getFilterString(filters) {
 
 export function* getDiaries({ params }) {
   try {
-    yield getLogin();
-    yield delay(200);
-
     const userInfo = yield getLoggedUser();
     const query = `campos=diario&FlListarVariacoes=true&idCliente=${userInfo.idCliente}&idPalavraChave=${params.idPalavraChave}&idUsuarioCliente=${userInfo.idUsuarioCliente}`;
 
@@ -80,9 +75,6 @@ export function* getDiaries({ params }) {
 
 export function* getTribunals({ params }) {
   try {
-    yield getLogin();
-    yield delay(200);
-
     const query = `campos=idOrgaoJudiciario,nomeOrgaoJudiciario&numeroProcesso=${params.processNumber}`;
 
     const { data } = yield call(
@@ -111,15 +103,11 @@ export function* getMovements({ params }) {
     const query = `campos=*&ordenacao=-dataPublicacao&idPastaUsuarioCliente=${params.folderId}`;
     const paginator = `registrosPorPagina=${params.perPage}&paginaAtual=${params.page}`;
 
-    const userData = yield getLogin();
-
     yield put(AuthAction.contractsRequest());
 
     yield delay(200);
 
-    if (userData.foto) {
-      yield put(UserActions.updatePicture(userData.foto));
-    }
+    yield put(UserActions.updatePicture());
 
     let { data } = yield call(
       Api.get,
@@ -149,9 +137,6 @@ export function* getMovements({ params }) {
 
 export function* sendMovementsEmail({ param }) {
   try {
-    yield getLogin();
-    yield delay(300);
-
     const data = {
       'destinatarios': param.destinatarios || null,
       'idsMovimentos': param.idsMovimentos || null,

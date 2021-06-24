@@ -5,7 +5,6 @@ import AuthAction from 'store/ducks/Auth';
 import UserActions from 'store/ducks/User';
 import FolderKeywordsActions from 'store/ducks/FolderKeywords';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
-import { getLogin } from '../../services/Api';
 
 function buildFiltersQuery(filtersQuery) {
   let filters = '';
@@ -23,15 +22,13 @@ export function* getFolderKeywords(action) {
     const { page, perPage, filters } = action.params;
     const query = 'campos=*&idTipoPasta=-2&ativo=true';
 
-    const userData = yield getLogin();
-
     yield put(AuthAction.contractsRequest());
 
     yield delay(200);
 
-    if (userData.foto) {
-      yield put(UserActions.updatePicture(userData.foto));
-    }
+    yield put(UserActions.updatePicture());
+    // if (userData.foto) {
+    // }
     const paginator = `paginaAtual=${page}&registrosPorPagina=${perPage}`;
 
     const queryFilters = buildFiltersQuery(filters);
@@ -43,7 +40,7 @@ export function* getFolderKeywords(action) {
 
     const endReached = data.itens.length == 0;
 
-    const movementsNotRead = data.itens.map(folder => folder.totalNaoLidas).reduce((a, b) => a + b, 0);
+    const movementsNotRead = endReached ? 0 : data.itens.map(folder => folder.totalNaoLidas).reduce((a, b) => a + b, 0);
 
     yield delay(300);
     yield put(FolderKeywordsActions.folderKeywordsSuccess({ ...data, endReached, movementsNotRead }, page));

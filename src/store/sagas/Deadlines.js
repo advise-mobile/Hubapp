@@ -1,4 +1,4 @@
-import Api, { getLogin } from 'services/Api';
+import Api from 'services/Api';
 import { call, put, delay } from 'redux-saga/effects';
 
 import UserActions from 'store/ducks/User';
@@ -20,15 +20,11 @@ export function* getDeadlines({ param }) {
   try {
     const user = yield getLoggedUser();
 
-    const userData = yield getLogin();
-
     yield put(AuthAction.contractsRequest());
 
     yield delay(200);
 
-    if (userData.foto) {
-      yield put(UserActions.updatePicture(userData.foto));
-    }
+    yield put(UserActions.updatePicture());
 
     const filters = getFilters(param.filters);
 
@@ -49,9 +45,6 @@ export function* getDeadlines({ param }) {
 
 export function* sendDeadlineEmail({ param }) {
   try {
-    yield getLogin();
-    yield delay(300);
-
     const data = {
       'idPublicacao': param.idPublicacao || null,
       'idAndamento': param.idAndamento || null,
@@ -80,9 +73,6 @@ export function* sendDeadlineEmail({ param }) {
 export function* markAsImportant({ param }) {
   const { importante, id, idAgenda } = param;
   try {
-    yield getLogin();
-    yield delay(300);
-
     const data = {
       itens: [
         {
@@ -107,9 +97,6 @@ export function* markAsImportant({ param }) {
 export function* markAsConcluded({ param }) {
   const { concluido, id, idAgenda } = param;
   try {
-    yield getLogin();
-    yield delay(300);
-
     const data = {
       itens: [
         {
@@ -132,9 +119,6 @@ export function* markAsConcluded({ param }) {
 
 export function* markAsInactive({ id }) {
   try {
-    yield getLogin();
-    yield delay(300);
-
     const data = {
       Ids: [id],
     };
@@ -152,9 +136,6 @@ export function* markAsInactive({ id }) {
 
 export function* getTypes() {
   try {
-    yield getLogin();
-    yield delay(300);
-
     const user = getLoggedUser();
 
     const { data } = yield call(Api.get, `/core/v1/tipos-eventos?campos=*&idCliente=${user.idCliente}`);
@@ -168,9 +149,6 @@ export function* getTypes() {
 
 export function* addDeadline({ itens }) {
   try {
-    yield getLogin();
-    yield delay(300);
-
     const data = { itens };
 
     const reponse = yield call(Api.post, '/core/v1/eventos-agenda', data);
@@ -187,9 +165,6 @@ export function* addDeadline({ itens }) {
 
 export function* editDeadline({ itens }) {
   try {
-    yield getLogin();
-    yield delay(300);
-
     const data = { itens };
 
     const reponse = yield call(Api.put, '/core/v1/eventos-agenda', data);

@@ -7,9 +7,11 @@ const PROD_URL = 'https://api.advise.com.br';
 
 // let BASE_URL = getUrl();
 export const BASE_URL = PROD_URL;
-const TOKEN = '@Advise:token';
-const REFRESH_TOKEN = '@Advise:refreshToken';
-const AVATAR = '@Advise:avatar';
+
+import { TOKEN, REFRESH_TOKEN, EXPIRES_TOKEN, AVATAR } from 'helpers/StorageKeys';
+// const TOKEN = '@Advise:token';
+// const REFRESH_TOKEN = '@Advise:refreshToken';
+// const EXPIRES_TOKEN = '@Advise:expires';
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -28,11 +30,22 @@ api.interceptors.request.use(async config => {
 
   const { url } = config;
 
-  const token = await AsyncStorage.getItem(TOKEN);
+  if (url === TOKEN_URL) return Promise.resolve(config);
+
+  const expires = new Date(await AsyncStorage.getItem(EXPIRES_TOKEN));
+  const now = new Date();
+
+  let token = await AsyncStorage.getItem(TOKEN);
+
+  if (expires < now) {
+    const data = await getAccessToken();
+
+    token = data.access_token;
+  }
 
   const headers = { Authorization: `bearer ${token}` };
 
-  if (token != null && url !== TOKEN_URL)
+  if (token != null)
     config.headers = headers;
 
   return Promise.resolve(config);
@@ -40,23 +53,23 @@ api.interceptors.request.use(async config => {
   (error) => Promise.reject(error)
 );
 
-api.interceptors.response.use(undefined, async (error) => {
-  const originalRequest = error.config;
-  const { status } = error.response;
+// api.interceptors.response.use(undefined, async (error) => {
+//   const originalRequest = error.config;
+//   const { status } = error.response;
 
-  if (status !== 401)
-    return Promise.reject(error);
+//   if (status !== 401)
+//     return Promise.reject(error);
 
-  const accessToken = await getLogin();
+//   const accessToken = await getLogin();
 
-  if (accessToken === '') {
-    return Promise.reject(error);
-  }
+//   if (accessToken === '') {
+//     return Promise.reject(error);
+//   }
 
-  originalRequest.headers.Authorization = `bearer ${accessToken}`;
+//   originalRequest.headers.Authorization = `bearer ${accessToken}`;
 
-  return axios.request(originalRequest);
-});
+//   return axios.request(originalRequest);
+// });
 
 export async function changeAmbient() {
   if (!__DEV__) return;
@@ -70,48 +83,16 @@ export async function changeAmbient() {
 }
 
 export async function getLogin() {
-  const user = JSON.parse(await AsyncStorage.getItem('@loginObject'));
+  const expires = new Date(await AsyncStorage.getItem(EXPIRES_TOKEN));
+  const now = new Date();
 
-  try {
-    if (user) {
-      const userData = {
-        username: user.email,
-        password: user.password,
-        grant_type: 'password',
-        access_type: '94be650011cf412ca906fc335f615cdc'
-      };
+  if (expires > now)
+    return true;
 
-      const data = await axios.post(`${BASE_URL}/login/v1/token`, userData).then(async data => {
-        await AsyncStorage.multiSet([
-          [TOKEN, data.access_token],
-          [REFRESH_TOKEN, data.refresh_token],
-          [AVATAR, data.foto || ''],
-        ]);
-
-        return data;
-      });
-
-      return data;
-    }
-  } catch (e) {
-    // setTimeout(async () => {
-    //   await getLogin();
-    // }, 2000);
-  }
-
-  return await AsyncStorage.getItem(TOKEN);
+  return await getAccessToken();
 }
-/*
- * Aqui era o interceptor pra pegar o refresh token
- * Eu substitui pra ele fazer request pra api de Login no lugar disso
- * essa medida foi tomada para não auterar o tempo de validade do refresh token no backend]
- *
- * **** Essa função será usada ==> getLogin() falhar ****
- * **** Caso essa também falhe, o usuário terá q logar de novo. ****
- *
- */
+
 export async function getAccessToken() {
-  const accessToken = '';
   const refreshToken = await AsyncStorage.getItem(REFRESH_TOKEN);
 
   const userData = {
@@ -119,14 +100,45 @@ export async function getAccessToken() {
     grant_type: 'refresh_token',
   };
 
-  const { data } = axios.post(`${BASE_URL}/login/v1/refresh-token`, userData);
-  await AsyncStorage.setItem(TOKEN, data.access_token);
-  await AsyncStorage.setItem(REFRESH_TOKEN, data.refresh_token);
-  if (data.foto) {
-    await AsyncStorage.setItem(AVATAR, data.foto);
-  }
+  try {
+    const { data } = await axios.post(`${BASE_URL}/login/v1/refresh-token`, userData);
 
-  return accessToken;
+    const expires = new Date(data['.expires']);
+
+    await AsyncStorage.setItem(TOKEN, data.access_token);
+    await AsyncStorage.setItem(REFRESH_TOKEN, data.refresh_token);
+    await AsyncStorage.setItem(EXPIRES_TOKEN, expires.toString());
+    if (data.foto) {
+      await AsyncStorage.setItem(AVATAR, data.foto);
+    }
+
+    return data;
+  } catch (err) {
+    const credentials = JSON.parse(await AsyncStorage.getItem('@loginObject'));
+
+    const accessData = {
+      username: credentials.email,
+      password: credentials.password,
+      grant_type: 'password',
+      access_type: '94be650011cf412ca906fc335f615cdc'
+    };
+
+    try {
+      const { data } = await axios.post(`${BASE_URL}/login/v1/token`, accessData);
+
+      await AsyncStorage.setItem(TOKEN, data.access_token);
+      await AsyncStorage.setItem(REFRESH_TOKEN, data.refresh_token);
+      await AsyncStorage.setItem(EXPIRES_TOKEN, expires.toString());
+      if (data.foto) {
+        await AsyncStorage.setItem(AVATAR, data.foto);
+      }
+
+      return data;
+
+    } catch (err) {
+      return false;
+    }
+  }
 }
 
 export default api;

@@ -6,8 +6,6 @@ import PeopleActions from '../ducks/People';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import UserActions from 'store/ducks/User';
 
-import { getLogin } from '../../services/Api';
-
 function getFilterString(filters) {
   let result = '';
 
@@ -54,15 +52,11 @@ export function* getPeople(action) {
     const queryFilters = getFilterString(filters);
     const paginator = `registrosPorPagina=10&paginaAtual=${param.page}`;
 
-    const userData = yield getLogin();
-
     yield put(AuthAction.contractsRequest());
 
     yield delay(200);
 
-    if (userData.foto) {
-      yield put(UserActions.updatePicture(userData.foto));
-    }
+    yield put(UserActions.updatePicture());
 
     let { data } = yield call(
       Api.get,

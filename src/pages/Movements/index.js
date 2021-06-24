@@ -78,8 +78,6 @@ export default Movements = props => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (loadingMore) return;
-
     dispatch(
       MovementsActions.movementsRequest({
         filters,
@@ -88,8 +86,6 @@ export default Movements = props => {
         folderId: folder.id
       })
     );
-
-    if (currentPage > 1) return;
 
     if (folder.idTipoPasta == -2)
       dispatch(
@@ -103,6 +99,33 @@ export default Movements = props => {
           processNumber: folder.numeroProcesso
         })
       );
+  }, [])
+
+  useEffect(() => {
+    if (loadingMore) return;
+
+    dispatch(
+      MovementsActions.movementsRequest({
+        filters,
+        page: currentPage, perPage: 20,
+        folderId: folder.id
+      })
+    );
+
+    // if (currentPage > 1) return;
+
+    // if (folder.idTipoPasta == -2)
+    //   dispatch(
+    //     MovementsActions.diariesRequest({
+    //       idPalavraChave: folder.idPalavraChave
+    //     })
+    //   );
+    // else
+    //   dispatch(
+    //     MovementsActions.tribunalsRequest({
+    //       processNumber: folder.numeroProcesso
+    //     })
+    //   );
 
   }, [trigger, filters]);
 
@@ -197,7 +220,7 @@ export default Movements = props => {
 
   });
 
-  const openRow = useCallback(key => !listRef.current._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-150) : closeOpenedRow(key));
+  const openRow = useCallback(key => !listRef.current._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-150) : closeOpenedRow(key), [listRef]);
 
   const closeOpenedRow = useCallback(key => listRef.current._rows[key].closeRow());
 
@@ -359,7 +382,7 @@ export default Movements = props => {
                 /> */}
               <FolderSelectedTitle>
                 <FolderSelectedTitleHighlight>Selecionado {selecteds}</FolderSelectedTitleHighlight> de {movements.length} publicações
-                </FolderSelectedTitle>
+              </FolderSelectedTitle>
               <FolderSelectedActions>
                 {/* <FolderSelectedActionButton onPress={() => console.log('clicked')}>
                     <MaterialIcons name="preview" size={22} color={colors.fadedBlack} />

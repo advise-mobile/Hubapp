@@ -6,19 +6,13 @@ import FolderUnreadActions from 'store/ducks/FolderUnread';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import UserActions from 'store/ducks/User';
 
-import { getLogin } from '../../services/Api';
-
 export function* getFolderUnread() {
   try {
-    const userData = yield getLogin();
-
     yield put(AuthAction.contractsRequest());
 
     yield delay(200);
 
-    if (userData.foto) {
-      yield put(UserActions.updatePicture(userData.foto));
-    }
+    yield put(UserActions.updatePicture());
 
     const { data } = yield call(
       Api.get,

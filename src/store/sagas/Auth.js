@@ -7,6 +7,8 @@ import ToastNotifyActions from 'store/ducks/ToastNotify';
 
 import jwtDecode from 'jwt-decode';
 
+import { REFRESH_TOKEN, TOKEN, EXPIRES_TOKEN } from 'helpers/StorageKeys';
+
 export function* login(action) {
   const { email, password } = action;
   const data = {
@@ -22,19 +24,25 @@ export function* login(action) {
     yield AsyncStorage.setItem(
       '@loginObject',
       JSON.stringify({
-        email,
+        username: email,
         password,
       })
     );
 
+    const expires = new Date(response.data['.expires']);
+
+    // expires.setHours(expires.getHours() - 3);
+    // expires.setMinutes(expires.getMinutes() - 30);
+
     yield AsyncStorage.multiSet([
-      ['@Advise:refreshToken', response.data.refresh_token || null],
-      ['@Advise:token', response.data.access_token || null]
+      [REFRESH_TOKEN, response.data.refresh_token || null],
+      [TOKEN, response.data.access_token || null],
+      [EXPIRES_TOKEN, expires.toString()]
     ]);
 
-    yield delay(500);
+    yield delay(300);
 
-    const contracts = yield call(Api.get, '/core/v2/contratos?campos=idSituacaoContrato,convenioOAB&registrosPorPagina=-1');
+    const contracts = yield call(Api.get, '/core/v1/contratos?campos=idSituacaoContrato,convenioOAB&registrosPorPagina=-1');
 
     const { idCliente } = jwtDecode(response.data.access_token);
 
@@ -54,6 +62,8 @@ export function* login(action) {
 
     yield put(AuthActions.loginSuccess(response.data, isConvenio, active));
   } catch (err) {
+    console.log(err);
+
     if (err.response) {
       yield put(AuthActions.loginFailure());
       yield put(ToastNotifyActions.toastNotifyShow(err.response.data.status.erros[0].mensagem, true)
@@ -112,7 +122,7 @@ export function* forgot(action) {
 
 export function* contracts() {
   try {
-    const contracts = yield call(Api.get, '/core/v2/contratos?campos=idSituacaoContrato,convenioOAB&registrosPorPagina=-1');
+    const contracts = yield call(Api.get, '/core/v1/contratos?campos=idSituacaoContrato,convenioOAB&registrosPorPagina=-1');
 
     const token = contracts.config.headers.Authorization.replace("bearer ", "");
 

@@ -6,21 +6,15 @@ import ProcessActions from '../ducks/Process';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import UserActions from 'store/ducks/User';
 
-import { getLogin } from '../../services/Api';
-
 export function* getProcess(action) {
   try {
     const { param } = action;
-
-    const userData = yield getLogin();
 
     yield put(AuthAction.contractsRequest());
 
     yield delay(200);
 
-    if (userData.foto) {
-      yield put(UserActions.updatePicture(userData.foto));
-    }
+    yield put(UserActions.updatePicture());
 
     let { data } = yield call(
       Api.get,

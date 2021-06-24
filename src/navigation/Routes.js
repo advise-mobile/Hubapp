@@ -106,13 +106,13 @@ const AppScreens = () => (
       },
     }}
   >
-    <TabsStack.Screen component={Blank} name="Blank" options={{
+    {/* <TabsStack.Screen component={Blank} name="Blank" options={{
       tabBarIcon: ({ color }) => (
         <CustomIcon group={PermissionsGroups.MOVEMENTS}>
           <FontAwesome name="bolt" size={23} color={color} />
         </CustomIcon>
       ),
-    }} />
+    }} /> */}
     <TabsStack.Screen component={FoldersScreens} name="Folders" options={{
       tabBarIcon: ({ color }) => (
         <CustomIcon group={PermissionsGroups.MOVEMENTS}>

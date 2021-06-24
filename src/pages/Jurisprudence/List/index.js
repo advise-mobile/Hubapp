@@ -79,7 +79,7 @@ export default function jurisprudenceList(props) {
   const handleSubmit = useCallback(data => {
     setPage(1);
     setFilters(data);
-  }, []);
+  }, [filters]);
 
   const searchTerm = useCallback(() => {
     if (term === searchedTerm) return;

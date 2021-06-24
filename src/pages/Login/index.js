@@ -22,6 +22,7 @@ import Spinner from 'components/Spinner';
 
 // import { changeAmbient } from 'services/Api';
 import { registerNotification } from 'helpers/Pushs';
+import { AVATAR, TOKEN, REFRESH_TOKEN } from 'helpers/StorageKeys';
 
 import { colors } from 'assets/styles';
 import {
@@ -141,17 +142,16 @@ export default function Login(props) {
     props.navigation.navigate('Forgot');
   }, []);
 
-  const checkLogin = useCallback(() => {
+  const checkLogin = useCallback(async () => {
     if (!isAuthorized) return;
 
     if (login.foto !== undefined && login.foto !== null) {
-      AsyncStorage.setItem('@Advise:avatar', login.foto);
-      dispatch(UserActions.updatePicture(login.foto));
-
+      await AsyncStorage.setItem(AVATAR, login.foto);
     } else {
-      AsyncStorage.removeItem('@Advise:avatar');
-      dispatch(UserActions.updatePicture(''));
+      await AsyncStorage.removeItem(AVATAR);
     }
+
+    dispatch(UserActions.updatePicture());
 
     if (login.access_token !== null) {
       registerNotification();
@@ -273,7 +273,7 @@ export default function Login(props) {
 
   // useEffect(() => {
   //   async function checkLogin() {
-  //     const token = await AsyncStorage.getItem('@Advise:token');
+  //     const token = await AsyncStorage.getItem(TOKEN);
 
   //     if (token !== null) {
   //       const user = jwtDecode(token);
@@ -295,12 +295,12 @@ export default function Login(props) {
   //     if (!isAuthorized) return false;
 
   //     await AsyncStorage.multiSet([
-  //       ['@Advise:refreshToken', login.refresh_token || null],
-  //       ['@Advise:token', login.access_token || null]
+  //       [REFRESH_TOKEN, login.refresh_token || null],
+  //       [TOKEN, login.access_token || null]
   //     ]);
 
   //     if (login.foto !== undefined) {
-  //       await AsyncStorage.setItem('@Advise:avatar', login.foto || null);
+  //       await AsyncStorage.setItem(AVATAR, login.foto || null);
   //     }
 
   //     OneSignal.init(env.oneSignalId, { kOSSettingsKeyAutoPrompt: true, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption: 2 });

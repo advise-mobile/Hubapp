@@ -6,6 +6,7 @@ import jwtDecode from 'jwt-decode';
 
 import { Icon, IconText, IconImage } from './styles';
 
+import { AVATAR, TOKEN } from 'helpers/StorageKeys';
 
 const UserIcon = props => {
   const [initials, setInitials] = useState();
@@ -13,7 +14,7 @@ const UserIcon = props => {
   const picture = useSelector(state => state.user.picture);
 
   useEffect(() => {
-    AsyncStorage.getItem('@Advise:avatar').then(image => setAvatar(image))
+    AsyncStorage.getItem(AVATAR).then(image => setAvatar(image))
       .finally(() => {
         if (!avatar) {
           if (props.name) {
@@ -22,7 +23,7 @@ const UserIcon = props => {
 
             setInitials(initials);
           } else {
-            AsyncStorage.getItem('@Advise:token').then(token => {
+            AsyncStorage.getItem(TOKEN).then(token => {
               const userInfos = jwtDecode(token);
 
               let splittedName = userInfos.nome.split(" ");

@@ -1,11 +1,9 @@
 import React from 'react';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import { Image } from 'react-native'
 import { colors } from 'assets/styles';
 
 // Pages
@@ -20,11 +18,6 @@ import Deadlines from '../pages/Deadlines';
 //Custom Icons
 import UserIcon from 'components/UserIcon';
 const IconLogo = require('assets/images/logoIcon.png');
-
-const arr = [];
-AsyncStorage.getItem('@IdProdutoAdvise').then((item) => arr.push(item));
-
-const avatar = AsyncStorage.getItem('@Advise:avatar');
 
 const RoutesTab = createBottomTabNavigator(
   {

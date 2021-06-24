@@ -6,9 +6,14 @@ import env from 'services/env';
 
 import { getLoggedUser } from 'helpers/Permissions';
 
+import { PUSH } from 'helpers/StorageKeys';
 
 const registerNotification = async () => {
   OneSignal.setAppId(env.oneSignalId);
+
+  OneSignal.promptForPushNotificationsWithUserResponse(response => {
+    console.log("Prompt response:", response);
+  });
 
   const deviceState = await OneSignal.getDeviceState();
 
@@ -29,14 +34,14 @@ const registerNotification = async () => {
   Api.post(`/core/v1/push-notificacao`, {
     itens: [push]
   }).then(() => {
-    AsyncStorage.setItem('@Advise:pushHash', hash);
+    AsyncStorage.setItem(PUSH, hash);
   }).finally(() => {
     OneSignal.sendTags(push);
   });
 };
 
 const getNotificationSettings = async () => {
-  const hash = await AsyncStorage.getItem('@Advise:pushHash');
+  const hash = await AsyncStorage.getItem(PUSH);
 
   const { data } = await Api.get(`/core/v1/push-notificacao?hash=${hash}&campos=*`);
 
@@ -48,7 +53,7 @@ const getNotificationSettings = async () => {
 const changeNotificationSettings = async itens => await Api.put(`/core/v1/push-notificacao/alterar-situacao-notificacao`, itens);
 
 const disableNotificationDevice = async () => {
-  const hash = await AsyncStorage.getItem('@Advise:pushHash');
+  const hash = await AsyncStorage.getItem(PUSH);
 
   if (!hash) return true;
 

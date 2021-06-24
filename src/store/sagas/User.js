@@ -1,5 +1,6 @@
 import Api from 'services/Api';
 import { getLoggedUser } from 'helpers/Permissions';
+import { AVATAR } from 'helpers/StorageKeys';
 import { call, put, delay } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -7,31 +8,18 @@ import AuthAction from 'store/ducks/Auth';
 import UserActions from 'store/ducks/User';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 
-import { getLogin } from 'services/Api';
-
 export function* getPerson() {
   try {
-    // Request Person
     const userInfo = yield getLoggedUser();
     const idUsuarioCliente = userInfo.idUsuarioCliente;
     const fields = 'id,emailUsuario,idPessoa,ativoUsuario,pessoa.idTipoPessoa,pessoa.id,pessoa.nome,pessoa.cpfcnpj,pessoa.idSexo,pessoa.dataNascimentoAbertura,pessoa.fone1,pessoa.fone2,pessoa.email,pessoa.fotoId,pessoa.foto,dadosOAB.id,dadosOAB.ativo,dadosOAB.numero,dadosOAB.idUF,dadosOAB.nomeUF,dadosOAB.idTipoOAB';
     const expansion = 'pessoa,dadosOAB';
 
-    const userData = yield getLogin();
-
-    yield delay(200);
-
     yield put(AuthAction.contractsRequest());
 
+    yield put(UserActions.updatePicture());
 
-    if (userData.foto) {
-      yield put(UserActions.updatePicture(userData.foto));
-    }
-
-    const person = yield call(
-      Api.get,
-      `/core/v1/usuarios-clientes?campos=${fields}&expansao=${expansion}&IDs=${idUsuarioCliente}`
-    );
+    const person = yield call(Api.get, `/core/v1/usuarios-clientes?campos=${fields}&expansao=${expansion}&IDs=${idUsuarioCliente}`);
 
     // Request UF
     const uf = yield call(Api.get, `/core/v1/uf?ativo=true&campos=id,sigla,nome&registrosPorPagina=-1`);
@@ -55,9 +43,6 @@ export function* getPerson() {
 
 export function* updateProfile({ param }) {
   try {
-    yield getLogin();
-    yield delay(300);
-
     const { extensao, foto } = param;
 
     const data = {
@@ -73,7 +58,7 @@ export function* updateProfile({ param }) {
       data
     );
 
-    yield AsyncStorage.setItem('@Advise:avatar', foto);
+    yield AsyncStorage.setItem(AVATAR, foto);
 
     yield put(ToastNotifyActions.toastNotifyShow('Sucesso ao atualizar sua foto', false));
   } catch (err) {
@@ -86,14 +71,11 @@ export function* updateProfile({ param }) {
   }
 }
 
-export function* updatePicture({ param }) {
-  // try {
-  yield put(UserActions.updatePicture(param));
-  // } catch (err) {
-  //   // yield put(
-  //   //   // ToastNotifyActions.toastNotifyShow(err.response.data.status.erros[0].mensagem,true);
-  //   // );
-  // }
+export function* updatePicture() {
+
+  const foto = yield AsyncStorage.getItem(AVATAR);
+
+  yield put(UserActions.updatePictureSuccess(foto));
 }
 
 export function* updatePerson({ param }) {
@@ -109,9 +91,6 @@ export function* updatePerson({ param }) {
         id: userInfo.idUsuarioCliente,
       }]
     };
-
-    yield getLogin();
-    yield delay(300);
 
     yield call(
       Api.put,

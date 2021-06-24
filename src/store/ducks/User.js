@@ -5,7 +5,8 @@ const { Types, Creators } = createActions({
   personRequest: [null],
   personSuccess: ['data', 'uf', 'types'],
   personEdit: ['param'],
-  updatePicture: ['picture'],
+  updatePicture: null,
+  updatePictureSuccess: ['picture'],
   personUpdate: ['param'],
   personUpdateSuccess: null,
   changePasswordRequest: ['param'],
@@ -22,10 +23,13 @@ export const INITIAL_STATE = Immutable({
   ufs: [],
   typesOAB: [],
   loading: false,
+  loadingPicture: false
 });
 
-export const updatePicture = (state, { picture }) => state.merge({
-  picture: picture,
+export const updatePicture = state => state.merge({ loadingPicture: true });
+
+export const updatePictureSuccess = (state, { picture }) => state.merge({
+  picture,
   data: {
     ...state.data,
     foto: picture
@@ -62,6 +66,7 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.PERSON_REQUEST]: PersonRequest,
   [Types.PERSON_SUCCESS]: PersonSuccess,
   [Types.UPDATE_PICTURE]: updatePicture,
+  [Types.UPDATE_PICTURE_SUCCESS]: updatePictureSuccess,
   [Types.PERSON_EDIT]: PersonEdit,
   [Types.PERSON_UPDATE]: PersonUpdate,
   [Types.PERSON_UPDATE_SUCCESS]: PersonUpdateSuccess,
