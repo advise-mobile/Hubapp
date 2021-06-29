@@ -35,6 +35,22 @@ const Help = props => {
           <Infos>
             <Description>Em caso de dúvida, entre em contato com a nossa equipe de suporte pelos canais abaixo.</Description>
 
+            <Subtitle>Fale com a gente</Subtitle>
+            <OptionButton onPress={() => props.navigation.navigate('Chat')}>
+              <Option>
+                <Icon name={"chat"} size={22} color={colors.advise} />
+                <OptionText>Chat em tempo real</OptionText>
+              </Option>
+            </OptionButton>
+
+            <Subtitle>Email</Subtitle>
+            <OptionButton onPress={() => Linking.openURL('mailto:atendimento@advise.com.br')}>
+              <Option>
+                <Icon name={"email"} size={22} color={colors.advise} />
+                <OptionText>atendimento@advise.com.br</OptionText>
+              </Option>
+            </OptionButton>
+
             <Subtitle>Capitais e regiões metropolitanas</Subtitle>
             <OptionButton onPress={() => Linking.openURL('tel:40033196')}>
               <Option>
@@ -48,14 +64,6 @@ const Help = props => {
               <Option>
                 <Icon name={"phone"} size={22} color={colors.advise} />
                 <OptionText>0800 500 9926</OptionText>
-              </Option>
-            </OptionButton>
-
-            <Subtitle>Email</Subtitle>
-            <OptionButton onPress={() => Linking.openURL('mailto:atendimento@advise.com.br')}>
-              <Option>
-                <Icon name={"email"} size={22} color={colors.advise} />
-                <OptionText>atendimento@advise.com.br</OptionText>
               </Option>
             </OptionButton>
           </Infos>

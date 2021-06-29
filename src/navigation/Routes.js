@@ -23,6 +23,7 @@ import Client from '../pages/Client';
 import Blank from '../pages/Blank';
 
 import Account from '../pages/Account';
+import Chat from '../pages/Account/Chat';
 import Notifications from '../pages/Account/Notifications';
 import Pushs from '../pages/Account/Notifications/Pushs';
 import Emails from '../pages/Account/Notifications/Emails';
@@ -82,6 +83,7 @@ const AccountScreens = () => (
     <AccountStack.Screen name="Notifications" component={Notifications} />
     <AccountStack.Screen name="Pushs" component={Pushs} />
     <AccountStack.Screen name="Emails" component={Emails} />
+    <AccountStack.Screen name="Chat" component={Chat} />
   </AccountStack.Navigator>
 );
 
