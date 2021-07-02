@@ -60,12 +60,25 @@ export default Filters = forwardRef((props, ref) => {
     //   "diario": data[props.filters[customField?.name]] || selectedCustom
     // });
 
-    setTimeout(() => props.submit({
-      "DataMovimentoFim": data.DataMovimentoFim || maxDate ? FormatFullDateEN(maxDate) : null,
-      "DataMovimentoInicio": data.DataMovimentoInicio || minDate ? FormatFullDateEN(minDate) : null,
-      "Lido": radio_props[situation].value,
-      "diario": data[props.filters[customField?.name]] || selectedCustom
-    }), 500);
+    if (customField) {
+
+      const submit = {
+        "DataMovimentoFim": data.DataMovimentoFim || maxDate ? FormatFullDateEN(maxDate) : null,
+        "DataMovimentoInicio": data.DataMovimentoInicio || minDate ? FormatFullDateEN(minDate) : null,
+        "Lido": radio_props[situation].value
+      };
+
+      submit[customField.name] = data[props.filters[customField?.name]] || selectedCustom;
+
+      setTimeout(() => props.submit(submit), 500);
+
+    } else {
+      setTimeout(() => props.submit({
+        "DataMovimentoFim": data.DataMovimentoFim || maxDate ? FormatFullDateEN(maxDate) : null,
+        "DataMovimentoInicio": data.DataMovimentoInicio || minDate ? FormatFullDateEN(minDate) : null,
+        "Lido": radio_props[situation].value
+      }), 500);
+    }
   };
 
   const radio_props = [

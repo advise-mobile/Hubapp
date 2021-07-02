@@ -45,6 +45,17 @@ function getFilterString(filters) {
   return `&${result.slice(0, -1)}`;
 }
 
+// const userInfo = yield getLoggedUser();
+
+// const query = `idCliente=${userInfo.idCliente}&idPalavraChave=${params.idPalavraChave}&idUsuarioCliente=${userInfo.idUsuarioCliente}`;
+
+// const { data } = yield call(
+//   Api.get,
+//   `/core/v1/pesquisa-publicacao/diarios-palavra-chave?${query}`
+// );
+
+// const diaries = data.itens.sort((a, b) => (a.nome > b.nome) ? 1 : ((b.nome > a.nome) ? -1 : 0));
+
 export function* getDiaries({ params }) {
   try {
     const userInfo = yield getLoggedUser();

@@ -130,9 +130,9 @@ export default Movements = props => {
   }, [trigger, filters]);
 
   useEffect(() => {
-    const custom = (folder.idTipoPasta == -2) ? { title: 'Diários', name: 'diario', data: diaries } : { title: 'Tribunais', name: 'IdsOrgaosJudiciarios', data: tribunals.map(tribunal => { return { nome: tribunal.nomeOrgaoJudiciario, id: tribunal.idOrgaoJudiciario } }) };
+    const custom = (folder.idTipoPasta == -2) ? { title: 'Diários', name: 'IdsDiarios', data: diaries } : { title: 'Tribunais', name: 'IdsOrgaosJudiciarios', data: tribunals.map(tribunal => { return { nome: tribunal.nomeOrgaoJudiciario, id: tribunal.idOrgaoJudiciario } }) };
     setFormattedData(custom);
-  }, [props, tribunals, folder]);
+  }, [props, tribunals, folder, diaries]);
 
 
   const refresh = useCallback(() => {
