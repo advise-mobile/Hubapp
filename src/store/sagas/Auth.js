@@ -40,7 +40,9 @@ export function* login(action) {
       [EXPIRES_TOKEN, expires.toString()]
     ]);
 
-    yield delay(300);
+    if (response.data.access_token) {
+      Api.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
+    }
 
     const contracts = yield call(Api.get, '/core/v1/contratos?campos=idSituacaoContrato,convenioOAB&registrosPorPagina=-1');
 

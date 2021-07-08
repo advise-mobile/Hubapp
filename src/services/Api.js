@@ -25,51 +25,115 @@ export async function getUrl() {
   return urlStorage ? urlStorage : DEV_URL;
 };
 
-api.interceptors.request.use(async config => {
-  const TOKEN_URL = `/login/v1/token`;
+let isRefreshing = false;
+let failedQueue = [];
 
-  const { url } = config;
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  })
+  
+  failedQueue = [];
+}
 
-  if (url === TOKEN_URL) return Promise.resolve(config);
+api.interceptors.response.use(function (response) {
+  return response;
+}, async function (error) {
 
-  const expires = new Date(await AsyncStorage.getItem(EXPIRES_TOKEN));
-  const now = new Date();
+  const originalRequest = error.config;
 
-  let token = await AsyncStorage.getItem(TOKEN);
+  if (error.response.status === 401 && !originalRequest._retry) {
 
-  if (expires < now) {
-    const data = await getAccessToken();
+    if (isRefreshing) {
+      return new Promise(function(resolve, reject) {
+        failedQueue.push({resolve, reject})
+      }).then(token => {
+        originalRequest.headers['Authorization'] = 'Bearer ' + token;
+        return axios(originalRequest);
+      }).catch(err => {
+        return Promise.reject(err);
+      })
+    }
 
-    token = data.access_token;
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+    const refreshToken = await AsyncStorage.getItem(REFRESH_TOKEN);
+
+    const userData = {
+      refresh_token: refreshToken,
+      grant_type: 'refresh_token',
+    };
+
+    return new Promise(function (resolve, reject) {
+
+      axios.post(`${BASE_URL}/login/v1/refresh-token`, userData).then(async ({ data }) => {
+
+        const expires = new Date(data['.expires']);
+
+        await AsyncStorage.setItem(TOKEN, data.access_token);
+        await AsyncStorage.setItem(REFRESH_TOKEN, data.refresh_token);
+        await AsyncStorage.setItem(EXPIRES_TOKEN, expires.toString());
+
+
+        if (data.foto) {
+          await AsyncStorage.setItem(AVATAR, data.foto);
+        }
+        
+        api.defaults.headers.common['Authorization'] = 'Bearer ' + data.access_token;
+        originalRequest['Authorization'] = `Bearer ${data.access_token}`;
+
+        processQueue(null, data.access_token);
+        resolve(axios(originalRequest));
+
+      }).catch(async () => {
+
+        const loginObject = await AsyncStorage.getItem('@loginObject');
+        
+        const credentials = JSON.parse(loginObject);
+
+        const accessData = {
+          username: credentials.username,
+          password: credentials.password,
+          grant_type: 'password',
+          access_type: '94be650011cf412ca906fc335f615cdc'
+        };
+        
+        axios.post(`${BASE_URL}/login/v1/token`, accessData).then(async ({ data }) => {
+
+          const expires = new Date(data['.expires']);
+
+          await AsyncStorage.setItem(TOKEN, data.access_token);
+          await AsyncStorage.setItem(REFRESH_TOKEN, data.refresh_token);
+          await AsyncStorage.setItem(EXPIRES_TOKEN, expires.toString());
+
+          if (data.foto) {
+            await AsyncStorage.setItem(AVATAR, data.foto);
+          }
+
+          api.defaults.headers.common['Authorization'] = 'Bearer ' + data.access_token;
+          originalRequest['Authorization'] = `Bearer ${data.access_token}`;
+
+          processQueue(null, data.access_token);
+          resolve(axios(originalRequest));
+
+        }).catch((err) => {
+          processQueue(err, null);
+          reject(err);
+        });
+
+      }).finally(() => { isRefreshing = false });
+
+    });
+  } else {
+    return Promise.reject(error);
   }
 
-  const headers = { Authorization: `bearer ${token}` };
-
-  if (token != null)
-    config.headers = headers;
-
-  return Promise.resolve(config);
-},
-  (error) => Promise.reject(error)
-);
-
-// api.interceptors.response.use(undefined, async (error) => {
-//   const originalRequest = error.config;
-//   const { status } = error.response;
-
-//   if (status !== 401)
-//     return Promise.reject(error);
-
-//   const accessToken = await getLogin();
-
-//   if (accessToken === '') {
-//     return Promise.reject(error);
-//   }
-
-//   originalRequest.headers.Authorization = `bearer ${accessToken}`;
-
-//   return axios.request(originalRequest);
-// });
+});
 
 export async function changeAmbient() {
   if (!__DEV__) return;

@@ -428,7 +428,7 @@ export default Emails = props => {
                     outputRange: [0, 500],
                   })
                 }}>
-                  <Options style={{ height: 90 }}>
+                  <Options style={{ height: 105 }}>
                     <RadioForm animation={true} style={{ flex: 1 }}>
                       <Option as={RadioButton}>
                         <RadioButtonInput
