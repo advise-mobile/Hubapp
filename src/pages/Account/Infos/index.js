@@ -38,7 +38,7 @@ import {
 
 import { FormatDateBR, FormatFullDateEN } from 'helpers/DateFunctions';
 import { disableNotificationDevice } from 'helpers/Pushs';
-import { TOKEN, REFRESH_TOKEN, EXPIRES_TOKEN, AVATAR, PERMISSIONS } from 'helpers/StorageKeys';
+import { TOKEN, REFRESH_TOKEN, EXPIRES_TOKEN, AVATAR, PERMISSIONS, ACCEPT_TERMS } from 'helpers/StorageKeys';
 
 export default Infos = props => {
   const [scene, setScene] = useState('user');
@@ -110,7 +110,7 @@ export default Infos = props => {
           dispatch(AuthAction.logoutRequest());
         })
         .finally(() => {
-          AsyncStorage.multiRemove([TOKEN, REFRESH_TOKEN, EXPIRES_TOKEN, AVATAR, PERMISSIONS], () => {
+          AsyncStorage.multiRemove([TOKEN, REFRESH_TOKEN, EXPIRES_TOKEN, AVATAR, PERMISSIONS, ACCEPT_TERMS], () => {
             props.navigation.dispatch(StackActions.push('Login'));
             // props.navigation.navigate('Login');
           });

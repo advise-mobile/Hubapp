@@ -6,6 +6,7 @@ const PERMISSIONS = '@Advise:permissions';
 const PUSH = '@Advise:pushHash';
 const VERSION = '@Advise:version';
 const INTRO = '@Advise:intro';
+const ACCEPT_TERMS = '@Advise:acceptTerms';
 
 export {
   TOKEN,
@@ -15,5 +16,6 @@ export {
   PERMISSIONS,
   PUSH,
   VERSION,
-  INTRO
+  INTRO,
+  ACCEPT_TERMS
 };

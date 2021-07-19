@@ -14,7 +14,7 @@ import { CustomerTypes } from 'store/ducks/Customer';
 import { JurisprudenceTypes } from 'store/ducks/Jurisprudence';
 
 /* Saga */
-import { login, logout, forgot, contracts } from './Auth';
+import { login, logout, forgot, contracts, acceptTermsUse } from './Auth';
 import { getPerson, changePassword, updatePerson, updateProfile, updatePicture } from './User';
 import { getCustomer } from './Customer';
 import { getFolderKeywords } from './FolderKeywords';
@@ -57,6 +57,7 @@ export default function* rootSaga() {
     // takeLatest(AuthTypes.LOGOUT_REQUEST, logout),
     takeLatest(AuthTypes.FORGOT_REQUEST, forgot),
     takeLatest(AuthTypes.CONTRACTS_REQUEST, contracts),
+    takeLatest(AuthTypes.TERMS_USE_REQUEST, acceptTermsUse),
 
     // User
     takeLatest(UserTypes.PERSON_REQUEST, getPerson),

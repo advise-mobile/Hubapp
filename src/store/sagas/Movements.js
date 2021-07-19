@@ -45,32 +45,16 @@ function getFilterString(filters) {
   return `&${result.slice(0, -1)}`;
 }
 
-// const userInfo = yield getLoggedUser();
-
-// const query = `idCliente=${userInfo.idCliente}&idPalavraChave=${params.idPalavraChave}&idUsuarioCliente=${userInfo.idUsuarioCliente}`;
-
-// const { data } = yield call(
-//   Api.get,
-//   `/core/v1/pesquisa-publicacao/diarios-palavra-chave?${query}`
-// );
-
-// const diaries = data.itens.sort((a, b) => (a.nome > b.nome) ? 1 : ((b.nome > a.nome) ? -1 : 0));
-
 export function* getDiaries({ params }) {
   try {
-    const userInfo = yield getLoggedUser();
-    const query = `campos=diario&FlListarVariacoes=true&idCliente=${userInfo.idCliente}&idPalavraChave=${params.idPalavraChave}&idUsuarioCliente=${userInfo.idUsuarioCliente}`;
+    const query = `IdsPalavraChave=${params.idPalavraChave}`;
 
     const { data } = yield call(
       Api.get,
-      `/core/v1/pesquisa-publicacao/consultar?${query}`
+      `/core/v1/diarios/usuario-grupo?${query}`
     );
 
-    const searchPublications = data.itens[0].listaPesqPublicUsuarioCliente;
-
-    const diaries = removeDuplicateById(searchPublications.map(searchActive => searchActive.diario), 'id').sort((a, b) => (a.nome > b.nome) ? 1 : ((b.nome > a.nome) ? -1 : 0));
-
-    // const diaries = searchPublications.filter(search => search.flAtivo).map(searchActive => searchActive.diario).sort((a, b) => (a.nome > b.nome) ? 1 : ((b.nome > a.nome) ? -1 : 0));
+    const diaries = data.itens.sort((a, b) => (a.nomeDiario > b.nomeDiario) ? 1 : ((b.nomeDiario > a.nomeDiario) ? -1 : 0));
 
     yield put(MovementsTypes.diariesSuccess(diaries));
     return;

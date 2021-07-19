@@ -88,6 +88,7 @@ export default function Login(props) {
   const login = useSelector((state) => state.auth.data);
   const isAuthorized = useSelector((state) => state.auth.isAuthorized);
   const loading = useSelector((state) => state.auth.loading);
+  const acceptTerms = useSelector(state => state.auth.acceptTerms);
 
   const dispatch = useDispatch();
 
@@ -156,7 +157,12 @@ export default function Login(props) {
     if (login.access_token !== null) {
       registerNotification();
 
-      props.navigation.dispatch(StackActions.push('App'))
+      if (!acceptTerms) {
+        props.navigation.dispatch(StackActions.push('TermsUse'));
+      } else {
+        props.navigation.dispatch(StackActions.push('App'));
+      }
+
     }
   }, [isAuthorized, login]);
 

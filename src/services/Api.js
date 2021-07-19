@@ -25,6 +25,34 @@ export async function getUrl() {
   return urlStorage ? urlStorage : DEV_URL;
 };
 
+// api.interceptors.request.use(async config => {
+//   const TOKEN_URL = `/login/v1/token`;
+  
+//   const { url } = config;
+
+//   if (url === TOKEN_URL) return Promise.resolve(config);
+
+//   const expires = new Date(await AsyncStorage.getItem(EXPIRES_TOKEN));
+//   const now = new Date();
+
+//   let token = await AsyncStorage.getItem(TOKEN);
+
+//   if (expires < now) {
+//     const data = await getAccessToken();
+
+//     token = data.access_token;
+//   }
+
+//   const headers = { Authorization: `bearer ${token}` };
+
+//   if (token != null)
+//     config.headers = headers;
+
+//   return Promise.resolve(config);
+// },
+//   (error) => Promise.reject(error)
+// );
+
 let isRefreshing = false;
 let failedQueue = [];
 

@@ -40,6 +40,7 @@ import Deadlines from '../pages/Deadlines';
 import DeadlinesDetails from '../pages/Deadlines/Details';
 
 import Initial from '../pages/Initial';
+import TermsUse from '../pages/TermsUse';
 
 import { colors } from 'assets/styles';
 
@@ -148,6 +149,7 @@ const AppScreens = () => (
 const MainScreens = () => (
   <MainStack.Navigator headerMode="none" screenOptions={{ gestureEnabled: false }}>
     <MainStack.Screen name="Initial" component={Initial} />
+    <MainStack.Screen name="TermsUse" component={TermsUse} />
     <MainStack.Screen name="Intro" component={Intro} />
     <MainStack.Screen name="Login" component={Login} />
     <MainStack.Screen name="Forgot" component={Forgot} />

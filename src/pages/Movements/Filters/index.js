@@ -68,7 +68,7 @@ export default Filters = forwardRef((props, ref) => {
         "Lido": radio_props[situation].value
       };
 
-      submit[customField.name] = data[props.filters[customField?.name]] || selectedCustom;
+      submit[customField.name] = data[customField.name] || null;
 
       setTimeout(() => props.submit(submit), 500);
 

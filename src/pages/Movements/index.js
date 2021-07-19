@@ -130,7 +130,7 @@ export default Movements = props => {
   }, [trigger, filters]);
 
   useEffect(() => {
-    const custom = (folder.idTipoPasta == -2) ? { title: 'Diários', name: 'IdsDiarios', data: diaries } : { title: 'Tribunais', name: 'IdsOrgaosJudiciarios', data: tribunals.map(tribunal => { return { nome: tribunal.nomeOrgaoJudiciario, id: tribunal.idOrgaoJudiciario } }) };
+    const custom = (folder.idTipoPasta == -2) ? { title: 'Diários', name: 'IdsDiarios', data: diaries.map(diarie => { return { nome: diarie.nomeDiario, id: diarie.idDiario } }) } : { title: 'Tribunais', name: 'IdsOrgaosJudiciarios', data: tribunals.map(tribunal => { return { nome: tribunal.nomeOrgaoJudiciario, id: tribunal.idOrgaoJudiciario } }) };
     setFormattedData(custom);
   }, [props, tribunals, folder, diaries]);
 
@@ -418,6 +418,7 @@ export default Movements = props => {
                 ListFooterComponent={renderFooter}
                 renderHiddenItem={renderHiddenItem}
                 keyExtractor={(item, _) => item.id.toString()}
+                removeClippedSubviews={true}
               /> :
               <NotFound>
                 <Image source={notFound} />

@@ -3,7 +3,7 @@ import Immutable from 'seamless-immutable';
 
 const { Types, Creators } = createActions({
   loginRequest: ['email', 'password'],
-  loginSuccess: ['data', 'convenio', 'active'],
+  loginSuccess: ['data', 'convenio', 'active', 'acceptTerms'],
   loginFailure: null,
   logoutRequest: null,
   logoutSuccess: ['data'],
@@ -14,6 +14,8 @@ const { Types, Creators } = createActions({
   forgotFailure: null,
   contractsRequest: null,
   contractsSuccess: ['convenio', 'active'],
+  termsUseRequest: ['acceptTerms'],
+  termsUseSuccess: ['acceptTerms'],
 });
 
 export const AuthTypes = Types;
@@ -27,6 +29,8 @@ export const INITIAL_STATE = Immutable({
   loading: false,
   convenio: false,
   active: true,
+  acceptTerms: false,
+  loadingAcceptTerms: false,
   sended: false,
 });
 
@@ -46,6 +50,7 @@ export const LoginSuccess = (state, action) => state.merge({
   loading: false,
   convenio: action.convenio,
   active: action.active,
+  acceptTerms: action.acceptTerms
 });
 
 export const LoginFailure = (state) =>
@@ -91,6 +96,18 @@ export const ContractsSuccess = (state, action) => state.merge({
   active: action.active,
 });
 
+// Terms Use
+
+export const TermsUseRequest = (state) => state.merge({
+  loadingAcceptTerms: true,
+});
+
+export const TermsUseSuccess = (state, action) => state.merge({
+  acceptTerms: action.acceptTerms,
+  loadingAcceptTerms: false,
+});
+
+
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.LOGIN_REQUEST]: LoginRequest,
   [Types.LOGIN_SUCCESS]: LoginSuccess,
@@ -107,4 +124,7 @@ export const reducer = createReducer(INITIAL_STATE, {
 
   [Types.CONTRACTS_REQUEST]: ContractsRequest,
   [Types.CONTRACTS_SUCCESS]: ContractsSuccess,
+
+  [Types.TERMS_USE_REQUEST]: TermsUseRequest,
+  [Types.TERMS_USE_SUCCESS]: TermsUseSuccess,
 });
