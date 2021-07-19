@@ -309,8 +309,6 @@ const TermsUse = props => {
   const onMomentumScrollEnd = (event) => {
     const realSizeScroll =  event.nativeEvent.layoutMeasurement.height + event.nativeEvent.contentOffset.y;
 
-    console.log(realSizeScroll, event.nativeEvent.contentSize.height, parseInt(event.nativeEvent.contentSize.height) - 10);
-
     if (parseInt(realSizeScroll) > (parseInt(event.nativeEvent.contentSize.height) - 10)) {
       setDisabledCheck(false);
     }
