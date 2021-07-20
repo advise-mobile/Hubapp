@@ -11,7 +11,6 @@ const TermsUse = props => {
 
   const dispatch = useDispatch();
 
-  const [disabledCheck, setDisabledCheck] = useState(true);
   const [acceptCheck, setAcceptCheck] = useState(false);
 
   const acceptTerms = useSelector(state => state.auth.acceptTerms);
@@ -306,13 +305,13 @@ const TermsUse = props => {
     dispatch(AuthActions.termsUseRequest(true));
   }
 
-  const onMomentumScrollEnd = (event) => {
-    const realSizeScroll =  event.nativeEvent.layoutMeasurement.height + event.nativeEvent.contentOffset.y;
+  // const onMomentumScrollEnd = (event) => {
+  //   const realSizeScroll =  event.nativeEvent.layoutMeasurement.height + event.nativeEvent.contentOffset.y;
 
-    if (parseInt(realSizeScroll) > (parseInt(event.nativeEvent.contentSize.height) - 10)) {
-      setDisabledCheck(false);
-    }
-  }
+  //   if (parseInt(realSizeScroll) > (parseInt(event.nativeEvent.contentSize.height) - 10)) {
+  //     setDisabledCheck(false);
+  //   }
+  // }
   
   useEffect(() => {
     
@@ -333,7 +332,7 @@ const TermsUse = props => {
       <S.Container>
         <S.ContentWrapper>
           <S.Title> Termos de uso </S.Title>
-          <S.TextWrapper onMomentumScrollEnd={onMomentumScrollEnd}>
+          <S.TextWrapper>
             {data.header}
             {data.definitions}
             {data.intro}
@@ -361,7 +360,6 @@ const TermsUse = props => {
               onFillColor={colors.primary}
               onTintColor={colors.primary}
               style={{ width: 18, height: 18, marginRight: 12 }}
-              disabled={disabledCheck}
             />
           </S.AcceptTermsWrapper>
           <S.AcceptButton onPress={handleAccept} activeOpacity={0.7} disabled={disabledButton || loadingAcceptTerms} >
