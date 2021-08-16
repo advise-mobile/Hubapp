@@ -34,35 +34,38 @@ const TextWrapper = styled.ScrollView`
   margin-left: ${metrics.baseMargin * 1.6};
   margin-right: ${metrics.baseMargin * 1.6};
   border-radius: ${metrics.baseRadius};
-  background-color: rgba(245, 245, 245, 1);
+  background-color: ${colors.realWhite};
   border-width: ${1};
-  border-color: rgba(189, 189, 189, 1);
+  border-color: ${colors.darkGray};
   flex: 1;
 `;
 
 const TermsText = styled.Text`
   font-family: ${fonts.circularStdBook};
-  color: rgba(0, 0, 0, 0.6);
+  color: ${colors.primary};
   font-size: ${fonts.regular};
 `;
 
 const TermsTextBold = styled.Text`
   font-family: ${fonts.circularStdBold};
-  color: rgba(0,0,0,0.6);
+  color: ${colors.primary};
   font-size: ${fonts.regular};
+  margin-top: 16px;
 `;
 
 const TermsTextUnderline = styled.Text`
   font-family: ${fonts.circularStdBook};
-  color: rgba(0,0,0,0.6);
   font-size: ${fonts.regular};
+  color: ${colors.primary};
   text-decoration: underline;
+  text-decoration-color: ${colors.primary};
+  margin: 8px 0;
 `;
 
 const AcceptTermsWrapper = styled.View`
   height: 48px;
   margin-top: ${metrics.baseMargin * 1.6};
-  background-color: ${colors.yellowLight};
+  background-color: ${props => props.scheme === 'dark' ? colors.grayLighter : colors.yellowLight};
   padding-top: ${metrics.baseMargin * 1.2};
   padding-bottom: ${metrics.baseMargin * 1.2};
   padding-left: ${metrics.baseMargin * 2.4};
@@ -77,7 +80,7 @@ const AcceptText = styled.Text`
 `;
 
 const AcceptButton = styled.TouchableOpacity`
-  background-color: ${ ({ disabled }) => disabled ? colors.disabled : colors.backgroundButton};
+  background-color: ${({ disabled }) => disabled ? colors.disabled : colors.backgroundButton};
   margin-top: ${metrics.baseMargin * 2.4};
   margin-bottom: ${metrics.baseMargin * 2.4};
   margin-left: ${metrics.baseMargin * 2.4};
@@ -94,14 +97,14 @@ const AcceptButtonText = styled.Text`
   font-family: ${fonts.circularStdBold};
 `;
 
-export { 
+export {
   Container,
   ContentWrapper,
   Title,
   TextWrapper,
   TermsText,
   TermsTextBold,
-  TermsTextUnderline ,
+  TermsTextUnderline,
   AcceptTermsWrapper,
   AcceptText,
   AcceptButton,

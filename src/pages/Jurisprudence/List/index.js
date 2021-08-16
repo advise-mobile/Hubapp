@@ -152,7 +152,7 @@ export default function jurisprudenceList(props) {
         type: null,
       }],
       groups: [{
-        label: 'Todos as áreas',
+        label: 'Todas as áreas',
         value: 0,
       }],
     };
@@ -197,7 +197,7 @@ export default function jurisprudenceList(props) {
     if (filtersData.listaGrupo) {
       const groups = filtersData.listaGrupo.map(group => {
         return {
-          label: group.nome != 'undefined' ? capitalize(group.nome) : 'Sem área definida',
+          label: group.nome != 'undefined' ? capitalize(group.nome) : 'Outros',
           value: group.nome
         }
       });

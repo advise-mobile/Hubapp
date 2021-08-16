@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import MovementsActions from 'store/ducks/Movements';
 import MovementActions from 'store/ducks/Movement';
-import ProcessActions from 'store/ducks/Process';
 import FolderKeywordsActions from 'store/ducks/FolderKeywords';
 import FolderProcessesActions from 'store/ducks/FolderProcesses';
 
@@ -14,6 +13,8 @@ import Header from 'components/Header';
 import Spinner from 'components/Spinner';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+import Api from 'services/Api';
 
 import { colors } from 'assets/styles';
 import {
@@ -37,9 +38,11 @@ import { FormatDateBR } from 'helpers/DateFunctions';
 import { MaskCnj } from 'helpers/Mask';
 
 export default MovementDetail = props => {
-  const [movement] = useState(props.route.params.movement);
+  const [idMovProcessoCliente] = useState(props.route.params.idMovProc);
+  const [movementType] = useState(props.route.params.movementType);
+  const [movement, setMovement] = useState(props.route.params.movement);
+  const [loadingDetails, setLoading] = useState(true);
 
-  const details = useSelector(state => state.process.data);
   const loading = useSelector(state => state.process.loading);
 
   const menuRef = useRef(null);
@@ -57,170 +60,177 @@ export default MovementDetail = props => {
     <Menu
       ref={menuRef}
       movement={movement}
+      type={movementType}
       openEmail={() => emailRef.current?.open()}
-    />, [movement]);
+    />, [movement, movementType]);
 
   useEffect(() => {
-    if (!movement.lido) {
-      dispatch(
-        MovementActions.movementReadRequest({
-          id: movement.id,
-          idMovProcessoCliente: movement.idMovProcessoCliente,
-          movementType: 'marcar',
-        })
-      );
+    const endpoint = (movementType === -1) ? 'andamentos' : 'publicacoes';
 
-      dispatch(
-        MovementsActions.toggleAsRead({
-          movementId: movement.id,
-          read: true
-        })
-      );
+    Api.get(`/core/v1/detalhes-movimentacoes/${endpoint}?IDs=${movement.idMovProcessoCliente}&campos=*&registrosPorPagina=-1`).then(({ data }) => {
+      const move = data.itens[0];
 
-      if (movement.movimento.idTipoMovProcesso == -1) {
+      if (!movement.lido) {
         dispatch(
-          FolderProcessesActions.folderProcessesRequest({
-            filters: {},
-            page: 1,
-            perPage: 20,
+          MovementActions.movementReadRequest({
+            id: movement.id,
+            idMovProcessoCliente: movement.idMovProcessoCliente,
+            movementType: 'marcar',
           })
         );
-      } else {
+
         dispatch(
-          FolderKeywordsActions.folderKeywordsRequest({
-            filters: {},
-            page: 1,
-            perPage: 20,
+          MovementsActions.toggleAsRead({
+            movementId: movement.id,
+            read: true
           })
         );
+
+        if (movementType === -1) {
+          dispatch(
+            FolderProcessesActions.folderProcessesRequest({
+              filters: {},
+              page: 1,
+              perPage: 20,
+            })
+          );
+        } else {
+          dispatch(
+            FolderKeywordsActions.folderKeywordsRequest({
+              filters: {},
+              page: 1,
+              perPage: 20,
+            })
+          );
+        }
       }
-    }
 
-    if (movement.movimento.idTipoMovProcesso == -1) {
-      dispatch(
-        ProcessActions.processRequest({
-          movementId: movement.movimento.id
-        })
-      );
-    }
+      setMovement(move);
+    }).finally(() => {
+      setLoading(false);
+    });
+
+    return;
   }, []);
 
   const renderProcesses = useCallback(() => (
     <Movement key={3}>
       <MovementTags>
-        {details.dataDisponibilizacaoSemHora && (
+        {movement.dataDisponibilizacaoSemHora && (
           <Tag background={colors.gray}>
-            <TagText>Andamento realizado em: {details.dataDisponibilizacaoSemHora}</TagText>
+            <TagText>Andamento realizado em: {movement.dataDisponibilizacaoSemHora}</TagText>
           </Tag>
         )}
-        {details.fonte && (
+        {movement.fonte && (
           <Tag background={colors.gray}>
-            <TagText>{details.fonte}</TagText>
+            <TagText>{movement.fonte}</TagText>
           </Tag>
         )}
-        {details.identificador && (
+        {movement.identificador && (
           <Tag background={colors.gray}>
-            <TagText>{details.identificador}</TagText>
+            <TagText>{movement.identificador}</TagText>
           </Tag>
         )}
 
       </MovementTags>
-      {details.pasta && (
+      {movement.pasta && (
         <ProcessNumber>
-          <ProcessNumberText>Proc.: {details.pasta}</ProcessNumberText>
+          <ProcessNumberText>Proc.: {movement.pasta}</ProcessNumberText>
         </ProcessNumber>
       )}
-      <MovementContent>{details.descricaoAndamento}</MovementContent>
+      <MovementContent>{movement.descricaoAndamento}</MovementContent>
 
     </Movement>
   ));
 
   const renderPublication = useCallback(() => {
-    const { publicacao } = movement.movimento;
+    console.log(movement);
 
     return (
       <Movement>
         <MovementTags>
-          {publicacao.dataDivulgacaoDiarioEdicao && (
+          {movement.dataDivulgacaoFormatada && (
             <Tag background={colors.gray}>
-              <TagText>Disponibilização em: {FormatDateBR(publicacao.dataDivulgacaoDiarioEdicao)}</TagText>
+              <TagText>Disponibilização em: {movement.dataDivulgacaoFormatada}</TagText>
             </Tag>
           )}
 
-          {publicacao.dataPublicacaoDiarioEdicao && (
+          {movement.dataPublicacaoFormatada && (
             <Tag background={colors.gray}>
-              <TagText>Publicação em: {FormatDateBR(publicacao.dataPublicacaoDiarioEdicao)}</TagText>
+              <TagText>Publicação em: {movement.dataPublicacaoFormatada}</TagText>
             </Tag>
           )}
 
-          {publicacao.varaDescricao && (
+          {movement.varaDescricao && (
             <Tag background={colors.gray}>
-              <TagText>{publicacao.varaDescricao}</TagText>
+              <TagText>Vara: {movement.varaDescricao}</TagText>
             </Tag>
           )}
 
-          {publicacao.cidadeComarcaDescricao && (
+          {movement.cidadeComarcaDescricao && (
             <Tag background={colors.gray}>
-              <TagText>{publicacao.cidadeComarcaDescricao}</TagText>
+              <TagText>Comarca: {movement.cidadeComarcaDescricao}</TagText>
             </Tag>
           )}
 
-          {publicacao.cadernoDescricao && (
+          {movement.cadernoDescricao && (
             <Tag background={colors.gray}>
-              <TagText>{publicacao.cadernoDescricao}</TagText>
+              <TagText>Caderno: {movement.cadernoDescricao}</TagText>
             </Tag>
           )}
 
-          {publicacao.descricaoCadernoDiario && (
+          {movement.edicaoDiario > 0 && (
             <Tag background={colors.gray}>
-              <TagText>{publicacao.descricaoCadernoDiario}</TagText>
+              <TagText>Edição do diário: {movement.edicaoDiario || 0}</TagText>
             </Tag>
           )}
 
-          {(publicacao.paginaInicial > 0 && publicacao.paginaFinal > 0) && (
+          {(movement.paginaInicial > 0 && movement.paginaFinal > 0) && (
             <Tag background={colors.gray}>
-              <TagText>{publicacao.paginaInicial || 0} a {publicacao.paginaFinal || 0}</TagText>
+              <TagText>Páginas: {movement.paginaInicial || 0} a {movement.paginaFinal || 0}</TagText>
             </Tag>
           )}
 
         </MovementTags>
 
-        {publicacao.processosPublicacoes ?
+        {movement.processoPublicacao ?
           <>
-            {(publicacao.processosPublicacoes.length > 0) ?
+            {(movement.processoPublicacao.length > 0) ?
               <ProcessNumber>
-                <ProcessNumberText>Proc.: {MaskCnj(publicacao.processosPublicacoes[0].numeroProcesso)}</ProcessNumberText>
+                <ProcessNumberText>Proc.: {MaskCnj(movement.processoPublicacao[0].numeroProcesso)}</ProcessNumberText>
               </ProcessNumber>
               : <ProcessNumber>
                 <ProcessNumberText color={colors.red}>Proc.: Não identificado</ProcessNumberText>
-                <MaterialIcons name="add-circle-outline" size={20} color={colors.red} onPress={() => console.log('teste')} />
+                <MaterialIcons name="add-circle-outline" size={20} color={colors.red} />
               </ProcessNumber>}
           </> :
           <ProcessNumber>
             <ProcessNumberText color={colors.red}>Proc.: Não identificado</ProcessNumberText>
-            <MaterialIcons name="add-circle-outline" size={20} color={colors.red} onPress={() => console.log('teste')} />
+            <MaterialIcons name="add-circle-outline" size={20} color={colors.red} />
           </ProcessNumber>
         }
 
-        <MovementContent>{publicacao.conteudo}</MovementContent>
-        <MovementDispatch>{publicacao.despacho}</MovementDispatch>
+        <MovementContent>{movement.conteudo}</MovementContent>
+        <MovementDispatch>{movement.despacho}</MovementDispatch>
       </Movement>
-    )
+    );
   });
 
   return (
     <Container>
       <Warp>
-        {movement.movimento.idTipoMovProcesso == -1 ? loading ? <Spinner /> : ([
-          <Header title={details.orgaoJudiciario} back={() => props.navigation.goBack()} customActions={customActions} key={1} />,
-          renderProcesses()
-        ]) : ([
-          <Header title={movement.movimento.publicacao.descricaoDiario} back={() => props.navigation.goBack()} customActions={customActions} key={0} />,
-          renderPublication()
-        ])}
+        {loadingDetails ? <Spinner /> :
+          movementType === -1 ? ([
+            <Header title={movement.orgaoJudiciario} back={() => props.navigation.goBack()} customActions={customActions} key={1} />,
+            renderProcesses()
+          ]) : ([
+            <Header title={movement.diarioDescricao} back={() => props.navigation.goBack()} customActions={customActions} key={0} />,
+            renderPublication()
+          ])
+        }
       </Warp>
       {renderMenu}
-      <Email ref={emailRef} movement={movement} />
+      <Email ref={emailRef} movement={movement} idMovProc={idMovProcessoCliente} />
     </Container>
   );
 }

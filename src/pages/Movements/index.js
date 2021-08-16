@@ -18,16 +18,14 @@ import Email from './Email';
 
 import { FormatDateInFull, FormatDateBR } from 'helpers/DateFunctions';
 
+import Api from 'services/Api';
+
 import { colors } from 'assets/styles';
 import { Container, Warp, Actions, ActionButton } from 'assets/styles/general';
+
 import {
   Heading,
   FolderTitle,
-  FolderSelected,
-  FolderSelectedTitle,
-  FolderSelectedTitleHighlight,
-  FolderSelectedActions,
-  FolderSelectedActionButton,
   BackButton,
   Movement,
   MovementHeader,
@@ -42,6 +40,12 @@ import {
   NotFoundText,
   NotFoundDescription,
 } from './styles';
+
+// FolderSelected,
+// FolderSelectedTitle,
+// FolderSelectedTitleHighlight,
+// FolderSelectedActions,
+// FolderSelectedActionButton,
 
 import { MaskCnj } from 'helpers/Mask';
 
@@ -67,8 +71,8 @@ export default Movements = props => {
 
   const [folder] = useState(props.route.params.item);
 
-  const [selecteds, setSelecteds] = useState(0);
-  const [selectAll, setSelectedAll] = useState(selecteds > 0 ? true : false);
+  // const [selecteds, setSelecteds] = useState(0);
+  // const [selectAll, setSelectedAll] = useState(selecteds > 0 ? true : false);
   const [trigger, setTrigger] = useState(false);
 
   const [currentMove, setCurrentMove] = useState(movements[0]);
@@ -81,8 +85,8 @@ export default Movements = props => {
     dispatch(
       MovementsActions.movementsRequest({
         filters,
-        page: currentPage,
-        perPage: 20,
+        page: 1,
+        perPage: 50,
         folderId: folder.id
       })
     );
@@ -107,26 +111,11 @@ export default Movements = props => {
     dispatch(
       MovementsActions.movementsRequest({
         filters,
-        page: currentPage, perPage: 20,
+        page: currentPage,
+        perPage: 50,
         folderId: folder.id
       })
     );
-
-    // if (currentPage > 1) return;
-
-    // if (folder.idTipoPasta == -2)
-    //   dispatch(
-    //     MovementsActions.diariesRequest({
-    //       idPalavraChave: folder.idPalavraChave
-    //     })
-    //   );
-    // else
-    //   dispatch(
-    //     MovementsActions.tribunalsRequest({
-    //       processNumber: folder.numeroProcesso
-    //     })
-    //   );
-
   }, [trigger, filters]);
 
   useEffect(() => {
@@ -140,28 +129,12 @@ export default Movements = props => {
       MovementsActions.movementsRefresh({
         filters,
         page: 1,
-        perPage: 20,
+        perPage: 50,
         folderId: folder.id,
         refreshing: true,
       })
     );
   }, [filters, folder]);
-
-  const toggleCheck = useCallback((item, checked) => {
-    item.checked = checked;
-
-    const selectedItems = checked ? selecteds + 1 : selecteds - 1;
-
-    setSelecteds(selectedItems);
-  });
-
-  const toggleCheckAll = useCallback(check => {
-    setSelectedAll(check);
-
-    dispatch(MovementsActions.toggleMovements(check));
-
-    setSelecteds(check ? movements.length : 0);
-  });
 
 
   const onEndReached = useCallback(() => {
@@ -192,31 +165,34 @@ export default Movements = props => {
   });
 
   const share = useCallback(({ item }) => {
-    const { movimento } = item;
+    const endpoint = (item.idTipoMovProcesso == -1) ? 'andamentos' : 'publicacoes';
 
-    if (item.movimento.idTipoMovProcesso == -1) {
-      const { andamentoProcesso } = movimento;
+    Api.get(`/core/v1/detalhes-movimentacoes/${endpoint}?IDs=${item.idMovProcessoCliente}&campos=*&registrosPorPagina=-1`).then(({ data }) => {
 
-      const messageShare = `${andamentoProcesso.siglaOrgaoJudiriario}, ${FormatDateInFull(andamentoProcesso.dataHoraAndamentoProcesso)} \n\n${andamentoProcesso.descricaoAndamento}`;
+      const movimento = data.itens[0];
 
-      const infoShare = `\n\n\nFonte: ${andamentoProcesso.nomeFontePesquisa}\nIdentificador: ${andamentoProcesso.identificadorClasseFonteProcesso}`;
+      if (item.idTipoMovProcesso == -1) {
+        const messageShare = `${movimento.orgaoJudiciario}, ${movimento.dataDisponibilizacaoSemHora || ''} \n\n${movimento.descricaoAndamento}`;
 
-      Share({
-        message: messageShare + infoShare,
-        title: 'Processo',
-      });
-    } else {
-      const { publicacao } = movimento;
+        const infoShare = `\n\n\nFonte: ${movimento.fonte}\nIdentificador: ${movimento.identificadorClasseFonteProcesso || 'Não informado'}`;
 
-      const messageShare = `${publicacao.descricaoDiario}, ${FormatDateInFull(publicacao.dataPublicacaoDiarioEdicao)} \n\n${publicacao.conteudo} \n\n${publicacao.despacho}`;
+        Share({
+          message: messageShare + infoShare,
+          title: 'Processo',
+        });
+      } else {
+        const messageShare = `${movimento.diarioDescricao}, ${movimento.dataPublicacaoFormatada} \n\n${movimento.conteudo} \n\n${movimento.despacho}`;
 
-      const infoShare = `\n\n\nCaderno: ${publicacao.descricaoCadernoDiario}\nVara: ${publicacao.varaDescricao}\nComarca: ${publicacao.cidadeComarcaDescricao}\nPágina: ${publicacao.paginaInicial} e ${publicacao.paginaFinal}`;
+        const infoShare = `\n\n\nCaderno: ${movimento.cadernoDescricao}\nVara: ${movimento.varaDescricao}\nComarca: ${movimento.cidadeComarcaDescricao}\nPágina: ${movimento.paginaInicial} a ${movimento.paginaFinal}`;
 
-      Share({
-        message: messageShare + infoShare,
-        title: 'Publicação',
-      });
-    }
+        Share({
+          message: messageShare + infoShare,
+          title: 'Publicação',
+        });
+      }
+    })
+
+    return;
 
   });
 
@@ -231,7 +207,7 @@ export default Movements = props => {
 
   const renderFilters = useMemo(() => <Filters ref={filtersRef} customField={formattedData} submit={data => handleSubmit(data)} filters={filters} />, [formattedData]);
 
-  const renderEmail = useMemo(() => <Email ref={emailRef} movement={currentMove} />, [currentMove]);
+  const renderEmail = useMemo(() => <Email ref={emailRef} movement={currentMove} idMovProc={currentMove?.idMovProcessoCliente || null} />, [currentMove]);
 
   const openFilters = () => filtersRef.current?.open();
 
@@ -239,20 +215,6 @@ export default Movements = props => {
     setCurrentMove(item);
 
     emailRef.current?.open();
-  });
-
-  const renderMovementTitle = useCallback(movement => {
-    let title = FormatDateBR(movement.dataHoraMovimento);
-
-    let { andamentoProcesso } = movement;
-
-    if (movement.idTipoMovProcesso == -1) {
-      title += ' - ' + andamentoProcesso.siglaOrgaoJudiriario;
-      if (andamentoProcesso.nomeFontePesquisa) title += ' - ' + andamentoProcesso.nomeFontePesquisa;
-    } else
-      title += ' - ' + movement.publicacao.descricaoCadernoDiario;
-
-    return title;
   });
 
   const renderHiddenItem = useCallback(data => (
@@ -263,12 +225,6 @@ export default Movements = props => {
       <ActionButton onPress={() => handleEmail(data)}>
         <MaterialIcons name="mail" size={24} color={colors.fadedBlack} />
       </ActionButton>
-      {/* <ActionButton onPress={() => console.log('clicked')}>
-        <MaterialIcons name="get-app" size={24} color={colors.fadedBlack} />
-      </ActionButton>
-      <ActionButton onPress={() => console.log('clicked')}>
-        <MaterialIcons name="delete" size={24} color={colors.fadedBlack} />
-      </ActionButton> */}
       <ActionButton onPress={() => share(data)}>
         <MaterialIcons name="share" size={24} color={colors.fadedBlack} />
       </ActionButton>
@@ -278,66 +234,49 @@ export default Movements = props => {
   const renderItem = ({ item }) => (
     <Movement>
       <MovementHeader>
-        {/* <CheckBox
-          lineWidth={1.5}
-          boxType={'square'}
-          value={item.checked}
-          onValueChange={newValue => toggleCheck(item, newValue)}
-          animationDuration={0.2}
-          tintColor={colors.primary}
-          tintColors={{ true: colors.primary }}
-          onCheckColor={colors.white}
-          onFillColor={colors.primary}
-          onTintColor={colors.primary}
-          style={{ width: 18, height: 18, marginRight: 12 }}
-        /> */}
-        <MovementHeading numberOfLines={1} onPress={() => props.navigation.navigate('MovementDetail', { movement: item })} underlayColor={colors.white} activeOpacity={1} read={item.lido}>{renderMovementTitle(item.movimento)}</MovementHeading>
+        <MovementHeading numberOfLines={1} onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso, idMovProc: item.idMovProcessoCliente })} underlayColor={colors.white} activeOpacity={1} read={item.lido}>{item.title}</MovementHeading>
         <MovementAction onPress={() => openRow(item.id)}>
           <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
         </MovementAction>
       </MovementHeader>
-      {item.movimento.andamentoProcesso && (
-        <MovementResume numberOfLines={2} onPress={() => props.navigation.navigate('MovementDetail', { movement: item })} underlayColor={colors.white} activeOpacity={1}>{item.movimento.andamentoProcesso.resumo}</MovementResume>
-      )}
-      {item.movimento.publicacao?.resumo && (
-        <MovementResume numberOfLines={2} onPress={() => props.navigation.navigate('MovementDetail', { movement: item })} underlayColor={colors.white} activeOpacity={1}>{item.movimento.publicacao?.resumo}</MovementResume>
-      )}
-      <MovementTags onPress={() => props.navigation.navigate('MovementDetail', { movement: item })} underlayColor={colors.white} activeOpacity={1}>
-        {item.movimento.idTipoMovProcesso === -1 &&
+      <MovementResume numberOfLines={2} onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso, idMovProc: item.idMovProcessoCliente })} underlayColor={colors.white} activeOpacity={1}>{item.resumo}</MovementResume>
+
+      <MovementTags onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso })} underlayColor={colors.white} activeOpacity={1}>
+        {item.idTipoMovProcesso === -1 &&
           <>
             <Tag background={item.lido ? colors.gray : colors.amber}>
               <TagText>Andamento</TagText>
             </Tag>
-            {item.movimento.andamentoProcesso &&
+            {item.numeroProcesso &&
               <Tag background={colors.gray}>
                 <TagText>
-                  Proc.: {MaskCnj(item.movimento.andamentoProcesso.numeroProcesso)}
+                  Proc.: {item.numeroProcesso}
                 </TagText>
               </Tag>}
           </>
         }
 
-        {item.movimento.idTipoMovProcesso === -2 &&
+        {item.idTipoMovProcesso === -2 &&
           <>
             <Tag background={item.lido ? colors.gray : colors.amber}>
-              <TagText>Publicado em: {FormatDateBR(item.movimento.publicacao.dataPublicacaoDiarioEdicao)}</TagText>
+              <TagText>Publicado em: {item.dataPublicacao}</TagText>
             </Tag>
 
-            {item.movimento.publicacao.palavrasChaves.map(keyword =>
+            {item.palavrasChaves.map(keyword =>
               keyword.idPalavraChavePrincipal === undefined &&
               <Tag background={keyword.palavraChave == folder.nome ? colors.green : colors.gray} key={keyword.id}>
                 <TagText>{keyword.palavraChave}</TagText>
               </Tag>
             )}
-            {item.movimento.publicacao.processosPublicacoes.length === 0 ?
+            {item.numeroProcesso ?
               <Tag background={colors.gray}>
-                <TagText>Proc.: Não identificado</TagText>
+                <TagText>
+                  Proc.: {MaskCnj(item.numeroProcesso)}
+                </TagText>
               </Tag>
               :
               <Tag background={colors.gray}>
-                <TagText>
-                  Proc.: {MaskCnj(item.movimento.publicacao.processosPublicacoes[0].numeroProcesso)}
-                </TagText>
+                <TagText>Proc.: Não identificado</TagText>
               </Tag>
             }
           </>
@@ -346,57 +285,19 @@ export default Movements = props => {
     </Movement>
   );
 
-  const renderFooter = useCallback(() => {
-    if (!loading) return null;
-
-    return <Spinner />;
-  });
+  const renderFooter = useCallback(() => loading && <Spinner />);
 
   return (
     <Container>
       <Warp>
-        {/* <Header title='Movimentações' add={() => { }} edit={() => { }} filter={() => openFilters()} /> */}
         <Header title='Movimentações' filter={() => openFilters()} />
-        {selecteds == 0 ? (
-          <Heading>
-            <BackButton onPress={() => props.navigation.goBack()}>
-              <MaterialIcons name="arrow-back" size={20} color={colors.fadedBlack} />
-            </BackButton>
-            <FolderTitle>{MaskCnj(folder.nome)}</FolderTitle>
-          </Heading>
-        ) : (
-          <Heading>
-            <FolderSelected>
-              {/* <CheckBox
-                  lineWidth={1.5}
-                  boxType={'square'}
-                  value={selectAll}
-                  onValueChange={newValue => toggleCheckAll(newValue)}
-                  animationDuration={0.2}
-                  tintColors={{ true: colors.primary }}
-                  tintColor={colors.primary}
-                  onCheckColor={colors.white}
-                  onFillColor={colors.primary}
-                  onTintColor={colors.primary}
-                  style={{ width: 18, height: 18, marginRight: 12, marginVertical: 1 }}
-                /> */}
-              <FolderSelectedTitle>
-                <FolderSelectedTitleHighlight>Selecionado {selecteds}</FolderSelectedTitleHighlight> de {movements.length} publicações
-              </FolderSelectedTitle>
-              <FolderSelectedActions>
-                {/* <FolderSelectedActionButton onPress={() => console.log('clicked')}>
-                    <MaterialIcons name="preview" size={22} color={colors.fadedBlack} />
-                  </FolderSelectedActionButton> */}
-                <FolderSelectedActionButton onPress={() => console.log('clicked')}>
-                  <MaterialIcons name="mail" size={22} color={colors.fadedBlack} />
-                </FolderSelectedActionButton>
-                <FolderSelectedActionButton onPress={() => console.log('clicked')}>
-                  <MaterialIcons name="delete" size={22} color={colors.fadedBlack} />
-                </FolderSelectedActionButton>
-              </FolderSelectedActions>
-            </FolderSelected>
-          </Heading>
-        )}
+        <Heading>
+          <BackButton onPress={() => { setCurrentPage(1); props.navigation.goBack(); }}>
+            <MaterialIcons name="arrow-back" size={20} color={colors.fadedBlack} />
+          </BackButton>
+          <FolderTitle>{MaskCnj(folder.nome)}</FolderTitle>
+        </Heading>
+
         {loading && currentPage == 1 ? <Spinner /> :
           <>
             {movements.length > 0 ?
@@ -413,12 +314,14 @@ export default Movements = props => {
                 renderItem={renderItem}
                 previewOpenValue={-150}
                 previewOpenDelay={2000}
-                // rightOpenValue={-260}
                 onEndReached={onEndReached}
                 ListFooterComponent={renderFooter}
                 renderHiddenItem={renderHiddenItem}
                 keyExtractor={(item, _) => item.id.toString()}
                 removeClippedSubviews={true}
+                maxToRenderPerBatch={5}
+                updateCellsBatchingPeriod={100}
+                initialNumToRender={20}
               /> :
               <NotFound>
                 <Image source={notFound} />
@@ -434,3 +337,95 @@ export default Movements = props => {
     </Container>
   );
 }
+
+
+// {selecteds == 0 ? (
+//   <Heading>
+//     <BackButton onPress={() => props.navigation.goBack()}>
+//       <MaterialIcons name="arrow-back" size={20} color={colors.fadedBlack} />
+//     </BackButton>
+//     <FolderTitle>{MaskCnj(folder.nome)}</FolderTitle>
+//   </Heading>
+// ) : (
+//   <Heading>
+//     <FolderSelected>
+//       <FolderSelectedTitle>
+//         <FolderSelectedTitleHighlight>Selecionado {selecteds}</FolderSelectedTitleHighlight> de {movements.length} publicações
+//       </FolderSelectedTitle>
+//       <FolderSelectedActions>
+//         {/* <FolderSelectedActionButton onPress={() => console.log('clicked')}>
+//             <MaterialIcons name="preview" size={22} color={colors.fadedBlack} />
+//           </FolderSelectedActionButton> */}
+//         <FolderSelectedActionButton onPress={() => console.log('clicked')}>
+//           <MaterialIcons name="mail" size={22} color={colors.fadedBlack} />
+//         </FolderSelectedActionButton>
+//         <FolderSelectedActionButton onPress={() => console.log('clicked')}>
+//           <MaterialIcons name="delete" size={22} color={colors.fadedBlack} />
+//         </FolderSelectedActionButton>
+//       </FolderSelectedActions>
+//     </FolderSelected>
+//   </Heading>
+// )}
+/* <CheckBox
+                  lineWidth={1.5}
+                  boxType={'square'}
+                  value={selectAll}
+                  onValueChange={newValue => toggleCheckAll(newValue)}
+                  animationDuration={0.2}
+                  tintColors={{ true: colors.primary }}
+                  tintColor={colors.primary}
+                  onCheckColor={colors.white}
+                  onFillColor={colors.primary}
+                  onTintColor={colors.primary}
+                  style={{ width: 18, height: 18, marginRight: 12, marginVertical: 1 }}
+                /> */
+/* <ActionButton onPress={() => console.log('clicked')}>
+        <MaterialIcons name="get-app" size={24} color={colors.fadedBlack} />
+      </ActionButton>
+      <ActionButton onPress={() => console.log('clicked')}>
+        <MaterialIcons name="delete" size={24} color={colors.fadedBlack} />
+      </ActionButton> */
+
+/* {<CheckBox
+          lineWidth={1.5}
+          boxType={'square'}
+          value={item.checked}
+          onValueChange={newValue => toggleCheck(item, newValue)}
+          animationDuration={0.2}
+          tintColor={colors.primary}
+          tintColors={{ true: colors.primary }}
+          onCheckColor={colors.white}
+          onFillColor={colors.primary}
+          onTintColor={colors.primary}
+          style={{ width: 18, height: 18, marginRight: 12 }}
+        />} */
+
+// const toggleCheck = useCallback((item, checked) => {
+//   item.checked = checked;
+
+//   const selectedItems = checked ? selecteds + 1 : selecteds - 1;
+
+//   setSelecteds(selectedItems);
+// });
+
+// const toggleCheckAll = useCallback(check => {
+//   setSelectedAll(check);
+
+//   dispatch(MovementsActions.toggleMovements(check));
+
+//   setSelecteds(check ? movements.length : 0);
+// });
+
+// const renderMovementTitle = useCallback(movement => {
+//   let title = FormatDateBR(movement.dataHoraMovimento);
+
+//   let { andamentoProcesso } = movement;
+
+//   if (movement.idTipoMovProcesso == -1) {
+//     title += ' - ' + movimento.siglaOrgaoJudiriario;
+//     if (movimento.nomeFontePesquisa) title += ' - ' + movimento.nomeFontePesquisa;
+//   } else
+//     title += ' - ' + movement.publicacao.descricaoCadernoDiario;
+
+//   return title;
+// });

@@ -34,22 +34,26 @@ export function* login(action) {
       Api.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
     }
 
-    const contracts = yield call(Api.get, '/core/v1/contratos?campos=idSituacaoContrato,convenioOAB&registrosPorPagina=-1');
+    const contracts = yield call(Api.get, '/core/v2/contratos?campos=idSituacaoContrato,convenioOAB&contratosAderidos=true&registrosPorPagina=-1');
 
     const { idCliente, idUsuarioCliente } = jwtDecode(response.data.access_token);
 
     const isConvenio = contracts.data.itens.some(contract => contract.convenioOAB);
 
-    const activePlan = contracts.data.itens.some(contract => contract.idSituacaoContrato == -1);
+    const activeContract = contracts.data.itens.some(contract => contract.idSituacaoContrato == -1);
 
-    let active = activePlan;
+    let active = activeContract;
 
     if (isConvenio) {
-      const situation = yield call(Api.get, `/core/v1/clientes?IDs=${idCliente}&campos=planosVinculados.idSituacaoClienteXPlano+&expansao=planosVinculados&registrosPorPagina=-1`);
+      const anotherContract = contracts.data.itens.some(contract => contract.idSituacaoContrato == -1 && !contract.convenioOAB);
 
-      const adheredPlan = situation.data.itens[0].planosVinculados.some(plan => (plan.idSituacaoClienteXPlano === -1));
+      if (!anotherContract) {
+        const situation = yield call(Api.get, `/core/v1/clientes?IDs=${idCliente}&campos=planosVinculados.idSituacaoClienteXPlano+&expansao=planosVinculados&registrosPorPagina=-1`);
 
-      active = adheredPlan && activePlan;
+        const adheredContract = situation.data.itens[0].planosVinculados.some(plan => (plan.idSituacaoClienteXPlano === -1));
+
+        active = adheredContract && activeContract;
+      }
     }
 
     const { data: { itens } } = yield call(Api.get, `/core/v1/usuarios-clientes?IDs=${idUsuarioCliente}&campos=aceitaTermosUso&registrosPorPagina=-1`);
@@ -127,7 +131,7 @@ export function* forgot(action) {
 
 export function* contracts() {
   try {
-    const contracts = yield call(Api.get, '/core/v1/contratos?campos=idSituacaoContrato,convenioOAB&registrosPorPagina=-1');
+    const contracts = yield call(Api.get, '/core/v2/contratos?campos=idSituacaoContrato,convenioOAB&contratosAderidos=true&registrosPorPagina=-1');
 
     const token = contracts.config.headers.Authorization.replace("bearer ", "");
 
@@ -135,16 +139,20 @@ export function* contracts() {
 
     const isConvenio = contracts.data.itens.some(contract => contract.convenioOAB);
 
-    const activePlan = contracts.data.itens.some(contract => contract.idSituacaoContrato == -1);
+    const activeContract = contracts.data.itens.some(contract => contract.idSituacaoContrato == -1);
 
-    let active = activePlan;
+    let active = activeContract;
 
     if (isConvenio) {
-      const situation = yield call(Api.get, `/core/v1/clientes?IDs=${idCliente}&campos=planosVinculados.idSituacaoClienteXPlano+&expansao=planosVinculados&registrosPorPagina=-1`);
+      const anotherContract = contracts.data.itens.some(contract => contract.idSituacaoContrato == -1 && !contract.convenioOAB);
 
-      const adheredPlan = situation.data.itens[0].planosVinculados.some(plan => (plan.idSituacaoClienteXPlano === -1));
+      if (!anotherContract) {
+        const situation = yield call(Api.get, `/core/v1/clientes?IDs=${idCliente}&campos=planosVinculados.idSituacaoClienteXPlano+&expansao=planosVinculados&registrosPorPagina=-1`);
 
-      active = adheredPlan && activePlan;
+        const adheredContract = situation.data.itens[0].planosVinculados.some(plan => (plan.idSituacaoClienteXPlano === -1));
+
+        active = adheredContract && activeContract;
+      }
     }
 
     yield put(AuthActions.contractsSuccess(isConvenio, active));
@@ -152,7 +160,7 @@ export function* contracts() {
     // yield put(ToastNotifyActions.toastNotifyShow('Não conseguimos verificar o seu contrato. Por favor tente novamente!', true));
   }
 }
-   
+
 export function* acceptTermsUse({ acceptTerms }) {
 
   const { idUsuarioCliente } = yield getLoggedUser();
@@ -167,7 +175,7 @@ export function* acceptTermsUse({ acceptTerms }) {
   };
 
   try {
-    const { data: { status }} = yield call(Api.put, '/core/v1/usuarios-clientes', data);
+    const { data: { status } } = yield call(Api.put, '/core/v1/usuarios-clientes', data);
 
     if (status.codigo === 200) {
       yield AsyncStorage.setItem(ACCEPT_TERMS, JSON.stringify(true));

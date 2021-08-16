@@ -5,8 +5,8 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios --simulator='Simulador 2'",
-    "android:build": "cd android && ./gradlew assembleRelease && cd ..",
-    "android:test": "cd android && ./gradlew assembleDebug && cd ..",
+    "android:build": "cd android && ./gradlew clean && ./gradlew bundleRelease && cd ..",
+    "android:test": "cd android && ./gradlew clean && ./gradlew assembleRelease && cd ..",
     "start": "react-native start --reset-cache",
     "test": "jest",
     "lint": "eslint ."

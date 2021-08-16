@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, Appearance } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import AuthActions from '../../store/ducks/Auth'
@@ -8,7 +8,7 @@ import { colors } from '../../assets/styles'
 import * as S from './styles';
 
 const TermsUse = props => {
-
+  const colorScheme = Appearance.getColorScheme();
   const dispatch = useDispatch();
 
   const [acceptCheck, setAcceptCheck] = useState(false);
@@ -107,7 +107,7 @@ const TermsUse = props => {
           O “Advise Start” contempla  contempla o módulo “Movimentações” e dentro dele estão inclusos os serviços de “Publicações” (Publicações Jurídicas) e “Processos” (Andamentos Processuais); tem ainda como diferencial os módulos “Pessoas”, “Prazos”, “Financeiro” e “Jurisprudência”. {`\n`}
           Para o serviço de “Publicações” o Usuário poderá receber as publicações disponibilizadas nos Diários de Justiça e Oficiais que forem contratados, de acordo com as limitações do seu plano, podendo realizar uma nova contratação caso necessite de uma quantidade maior de processos. {`\n`}
           O serviço de ”Processos” se refere às atualizações dos processos previamente cadastrados pelo Usuário, observadas as restrições do plano contratado, cabendo ao Usuário informar o número do processo e demais informações relevantes, podendo realizar uma nova contratação caso necessite modificar o seu plano. {`\n`}
-          No Módulo “Pessoas”, o Usuário pode gerenciar informações como nome, telefone, e-mail e outras definições acerca de seus clientes. {`\n`} 
+          No Módulo “Pessoas”, o Usuário pode gerenciar informações como nome, telefone, e-mail e outras definições acerca de seus clientes. {`\n`}
           No Módulo “Prazos”, na qual o Usuário poderá gerenciar os prazos processuais de forma eficaz. {`\n`}
           O Usuário poderá cadastrar tarefas em geral e compromissos diversos como prazos, reuniões, audiências, entre outros. Estes compromissos poderão ser sincronizados à conta Google do Usuário. A sincronização com o Google Agenda poderá ser ativada e desativada sempre que o Usuário desejar. Além disso, neste módulo, o Usuário poderá visualizar os compromissos a partir dos filtros: a vencer, vencidos, importantes e concluídos. {`\n`}
           A Advise não se responsabiliza por eventual falha no envio de alertas e o Usuário tem ciência de que será necessário checar os alertas sempre pelo aplicativo e/ou site. {`\n`}
@@ -262,7 +262,7 @@ const TermsUse = props => {
         <S.TermsText>
           Caso ocorra, por algum motivo, qualquer insatisfação com nossos serviços, solicitamos que entre em contato através de qualquer meio de comunicação que disponibilizamos, a fim de dirimir toda e qualquer dúvida, e/ou aborrecimento.
         </S.TermsText>
-      </> 
+      </>
     ),
     license: (
       <>
@@ -275,7 +275,7 @@ const TermsUse = props => {
           O Advise “Inbox”, “Start” e "Hub desenvolvidos pela Advise não são em hipótese alguma vendido, sendo somente licenciados para uso do Usuário. {`\n`}
           Eventual infração aos direitos autorais implicará em indenização na forma da lei pelos danos causados, seja ela realizada diretamente pelo Usuário, seja ela realizada por qualquer de seus prepostos, terceiros ou qualquer pessoa que tiver acesso ao Advise “Inbox”, “Start” e "Hub” por meio do Usuário.
         </S.TermsText>
-      </> 
+      </>
     ),
     foro: (
       <>
@@ -285,7 +285,7 @@ const TermsUse = props => {
         <S.TermsText>
           As partes elegem o Foro da Comarca de Londrina, Estado do Paraná para solucionar qualquer disputa, reivindicação ou controvérsia que surja em relação ao presente termo, bem como quaisquer disputas, reivindicações não contratuais que surjam em virtude de, ou em relação a eles.
         </S.TermsText>
-      </> 
+      </>
     ),
     customerService: (
       <>
@@ -297,7 +297,7 @@ const TermsUse = props => {
           A utilização do sistema implica em plena aceitação dos termos aqui previstos. {`\n`}
           Agradecemos pela leitura do nosso Termo de Uso. Esperamos que o Usuário aproveite nossa plataforma jurídica! {`\n`}
         </S.TermsText>
-      </> 
+      </>
     )
   }
 
@@ -312,9 +312,9 @@ const TermsUse = props => {
   //     setDisabledCheck(false);
   //   }
   // }
-  
+
   useEffect(() => {
-    
+
     const checkAcceptTerms = () => {
       if (acceptTerms) {
         props.navigation.dispatch(StackActions.push('App'));
@@ -328,7 +328,7 @@ const TermsUse = props => {
   const disabledButton = useMemo(() => !acceptCheck, [acceptCheck]);
 
   return (
-    <View style={{flex: 1}} >
+    <View style={{ flex: 1 }} >
       <S.Container>
         <S.ContentWrapper>
           <S.Title> Termos de uso </S.Title>
@@ -347,8 +347,8 @@ const TermsUse = props => {
             {data.foro}
             {data.customerService}
           </S.TextWrapper>
-          <S.AcceptTermsWrapper>
-            <S.TermsText>Li e aceito os Termos de Uso.</S.TermsText>
+          <S.AcceptTermsWrapper scheme={colorScheme}>
+            <S.TermsText color={colors.white}>Li e aceito os Termos de Uso.</S.TermsText>
             <CheckBox
               lineWidth={1.5}
               boxType={'square'}

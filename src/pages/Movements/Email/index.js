@@ -1,7 +1,6 @@
 import React, { forwardRef, useState, useCallback, useEffect } from 'react';
 
 import Modal from 'components/Modal';
-import Spinner from 'components/Spinner';
 
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -23,6 +22,7 @@ export default EmailModal = forwardRef((props, ref) => {
 
   const [email, setEmail] = useState('');
   const [movement, setMovement] = useState(props.movement);
+  const [idMovProc] = useState(props.idMovProc);
   const [emailErr, setError] = useState(false);
 
   const sending = useSelector(state => state.movements.sending);
@@ -40,7 +40,7 @@ export default EmailModal = forwardRef((props, ref) => {
     dispatch(
       MovementsActions.movementsEmailRequest({
         destinatarios: email.split(";"),
-        idsMovimentos: movement.idMovProcessoCliente,
+        idsMovimentos: idMovProc,
       })
     );
 

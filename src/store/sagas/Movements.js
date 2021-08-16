@@ -1,13 +1,12 @@
 import Api from 'services/Api';
 import { call, put, delay } from 'redux-saga/effects';
-import { getLoggedUser } from 'helpers/Permissions';
 
 import AuthAction from 'store/ducks/Auth';
 import MovementsTypes from 'store/ducks/Movements';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import UserActions from 'store/ducks/User';
-
-import { removeDuplicateById } from 'helpers/ArrayUtils';
+import { FormatDateInFull, FormatDateBR } from 'helpers/DateFunctions';
+import { MaskCnj } from 'helpers/Mask';
 
 // import moment from 'moment';
 
@@ -111,12 +110,81 @@ export function* getMovements({ params }) {
 
     data.itens.map(movement => movement.checked = false);
 
+    const optmizedMovements = data.itens.map(movement => {
+      const {
+        id,
+        lido,
+        idMovProcessoCliente,
+        movimento: {
+          dataHoraMovimento,
+          idTipoMovProcesso,
+          andamentoProcesso,
+          publicacao,
+        }
+      } = movement;
+
+      const formatedDate = FormatDateBR(dataHoraMovimento);
+
+      let optmizedMovement = {
+        id,
+        lido,
+        idTipoMovProcesso,
+        idMovProcessoCliente,
+      }
+
+      if (andamentoProcesso) {
+
+        const {
+          siglaOrgaoJudiriario,
+          nomeFontePesquisa,
+          resumo,
+          numeroProcesso,
+        } = andamentoProcesso;
+
+        optmizedMovement = {
+          ...optmizedMovement,
+          resumo,
+          numeroProcesso: MaskCnj(numeroProcesso),
+          title: `${formatedDate} - ${siglaOrgaoJudiriario} - ${nomeFontePesquisa && nomeFontePesquisa}`,
+        };
+
+      }
+
+      if (publicacao) {
+
+        const {
+          resumo,
+          descricaoCadernoDiario,
+          dataPublicacaoDiarioEdicao,
+          palavrasChaves,
+          processosPublicacoes,
+        } = publicacao;
+
+        const dataPublicacao = FormatDateBR(dataPublicacaoDiarioEdicao);
+
+        optmizedMovement = {
+          ...optmizedMovement,
+          resumo,
+          dataPublicacao,
+          palavrasChaves,
+          title: `${formatedDate} - ${descricaoCadernoDiario}`,
+        };
+
+        if (processosPublicacoes?.length > 0) {
+          optmizedMovement.numeroProcesso = MaskCnj(processosPublicacoes[0].numeroProcesso);
+        }
+
+      }
+
+      return optmizedMovement;
+    });
+
     const endReached = data.itens.length == 0;
 
     if (refreshing)
-      yield put(MovementsTypes.movementsRefreshSuccess({ ...data, endReached }, params.page));
+      yield put(MovementsTypes.movementsRefreshSuccess(optmizedMovements, params.page, endReached));
     else
-      yield put(MovementsTypes.movementsSuccess({ ...data, endReached }, params.page));
+      yield put(MovementsTypes.movementsSuccess(optmizedMovements, params.page, endReached));
 
     return;
   } catch (err) {
@@ -147,7 +215,7 @@ export function* sendMovementsEmail({ param }) {
       yield put(MovementsTypes.movementsEmailFailure());
       yield put(
         ToastNotifyActions.toastNotifyShow(
-          'Não foi possível movimento o prazo por email.',
+          'Não foi possível enviar o movimento por email.',
           true
         )
       );

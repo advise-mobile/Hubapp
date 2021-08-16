@@ -27,7 +27,7 @@ export async function getUrl() {
 
 // api.interceptors.request.use(async config => {
 //   const TOKEN_URL = `/login/v1/token`;
-  
+
 //   const { url } = config;
 
 //   if (url === TOKEN_URL) return Promise.resolve(config);
@@ -64,7 +64,7 @@ const processQueue = (error, token = null) => {
       prom.resolve(token);
     }
   })
-  
+
   failedQueue = [];
 }
 
@@ -77,8 +77,8 @@ api.interceptors.response.use(function (response) {
   if (error.response.status === 401 && !originalRequest._retry) {
 
     if (isRefreshing) {
-      return new Promise(function(resolve, reject) {
-        failedQueue.push({resolve, reject})
+      return new Promise(function (resolve, reject) {
+        failedQueue.push({ resolve, reject })
       }).then(token => {
         originalRequest.headers['Authorization'] = 'Bearer ' + token;
         return axios(originalRequest);
@@ -111,7 +111,7 @@ api.interceptors.response.use(function (response) {
         if (data.foto) {
           await AsyncStorage.setItem(AVATAR, data.foto);
         }
-        
+
         api.defaults.headers.common['Authorization'] = 'Bearer ' + data.access_token;
         originalRequest['Authorization'] = `Bearer ${data.access_token}`;
 
@@ -121,7 +121,7 @@ api.interceptors.response.use(function (response) {
       }).catch(async () => {
 
         const loginObject = await AsyncStorage.getItem('@loginObject');
-        
+
         const credentials = JSON.parse(loginObject);
 
         const accessData = {
@@ -130,7 +130,7 @@ api.interceptors.response.use(function (response) {
           grant_type: 'password',
           access_type: '94be650011cf412ca906fc335f615cdc'
         };
-        
+
         axios.post(`${BASE_URL}/login/v1/token`, accessData).then(async ({ data }) => {
 
           const expires = new Date(data['.expires']);

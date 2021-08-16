@@ -1,57 +1,174 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 
-import { WebView } from 'react-native-webview';
-
-import Header from 'components/Header';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 import { Container, Warp } from 'assets/styles/general';
 
 export default function Blank(props) {
-  const webRef = useRef();
-  // const modalizeRef = useRef(null);
+  const listRef = useRef();
 
-  // const onOpen = () => {
-  //   modalizeRef.current?.open();
-  // };
+  const [listData, setListData] = useState(
+    Array(150)
+      .fill('')
+      .map((_, i) => ({ key: `${i}`, text: `item #${i}` }))
+  );
 
-  const handleChange = ({ url }) => {
-    if (!url) return;
+  const [listView, setListView] = useState(listData.slice(0, 50));
+  const [endReached, setEndReached] = useState(false);
+  const [firstIndex, setFirstIndex] = useState(0);
+  const [lastIndex, setLastIndex] = useState(50);
 
-    console.log(url);
-
-    if (url.includes("Ticket") || url.includes("https://www.movidesk.com/?origin=chat"))
-      webRef.current?.stopLoading();
-
-    return;
+  const closeRow = (rowMap, rowKey) => {
+    if (rowMap[rowKey]) {
+      rowMap[rowKey].closeRow();
+    }
   };
 
+  const deleteRow = (rowMap, rowKey) => {
+    closeRow(rowMap, rowKey);
+    const newData = [...listData];
+    const prevIndex = listData.findIndex(item => item.key === rowKey);
+    newData.splice(prevIndex, 1);
+    setListView(newData);
+  };
+
+  const onRowDidOpen = rowKey => {
+    console.log('This row opened', rowKey);
+  };
+
+  const renderItem = data => (
+    <TouchableHighlight
+      onPress={() => console.log('You touched me')}
+      style={styles.rowFront}
+      underlayColor={'#AAA'}
+    >
+      <View>
+        <Text>I am {data.item.text} in a SwipeListView</Text>
+      </View>
+    </TouchableHighlight>
+  );
+
+  const renderHiddenItem = (data, rowMap) => (
+    <View style={styles.rowBack}>
+      <Text>Left</Text>
+      <TouchableOpacity
+        style={[styles.backRightBtn, styles.backRightBtnLeft]}
+        onPress={() => closeRow(rowMap, data.item.key)}
+      >
+        <Text style={styles.backTextWhite}>Close</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.backRightBtn, styles.backRightBtnRight]}
+        onPress={() => deleteRow(rowMap, data.item.key)}
+      >
+        <Text style={styles.backTextWhite}>Delete</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const buildList = useCallback(() => {
+    const max = (lastIndex > listData.length) ? null : lastIndex;
+
+    setListView(listData.slice(firstIndex, max));
+  }, [listData, firstIndex, lastIndex])
+
+  const loadMore = useCallback(() => {
+    console.log('endReached');
+
+    if (endReached) return;
+
+    setFirstIndex(firstIndex + 20);
+    setLastIndex(lastIndex + 20);
+
+    buildList();
+
+    setEndReached(lastIndex + 20 >= listData.length);
+  }, [listData, firstIndex, lastIndex, endReached]);
+
+  // const scroll = ({ nativeEvent }) => {
+  // console.log(nativeEvent);
+  // }
+
+  const checkScroll = useCallback(({ yScrollOffset }) => {
+    if (yScrollOffset > 10 || firstIndex == 0) return;
+
+    setFirstIndex(firstIndex - 20);
+    setLastIndex(lastIndex - 20);
+
+    buildList();
+
+    setEndReached(lastIndex + 20 >= listData.length);
+  }, [firstIndex, lastIndex]);
 
   return (
     <Container>
       <Warp>
-        <Header title={'Fale com nossos atendentes'} back={() => props.navigation.goBack()} lower={true} />
-        <WebView
-          ref={webRef}
-          thirdPartyCookiesEnabled={true}
-          bounces={false}
-          style={{ flex: 1 }}
-          onNavigationStateChange={handleChange}
-          source={{
-            uri: `https://chat.movidesk.com/ChatWidget/Landing/3D19AFACA8374B6C95695470713BBAF9`,
-          }}
-          automaticallyAdjustContentInsets={false}
+        <SwipeListView
+          ref={listRef}
+          scrollEventThrottle={0}
+          data={listView}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          leftOpenValue={75}
+          rightOpenValue={-150}
+          previewRowKey={'0'}
+          previewOpenValue={-40}
+          previewOpenDelay={3000}
+          onRowDidOpen={onRowDidOpen}
+          onEndReached={() => loadMore()}
+          onEndReachedThreshold={0.1}
+          onMomentumScrollEnd={() => checkScroll(listRef.current)}
         />
       </Warp>
-      {/* <TouchableOpacity onPress={onOpen}>
-        <Text>Open the modal</Text>
-      </TouchableOpacity> */}
-
-      {/* <HTML source={{ html: htmlContent }} contentWidth={contentWidth} style={{ background: 'red', flex: 1 }} /> */}
-      {/*
-      <Modalize ref={modalizeRef}
-
-        adjustToContentHeight={true}
-      ><Text>...your content</Text></Modalize> */}
     </Container>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  backTextWhite: {
+    color: '#FFF',
+  },
+  rowFront: {
+    alignItems: 'center',
+    backgroundColor: '#CCC',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    justifyContent: 'center',
+    height: 50,
+  },
+  rowBack: {
+    alignItems: 'center',
+    backgroundColor: '#DDD',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 15,
+  },
+  backRightBtn: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: 75,
+  },
+  backRightBtnLeft: {
+    backgroundColor: 'blue',
+    right: 75,
+  },
+  backRightBtnRight: {
+    backgroundColor: 'red',
+    right: 0,
+  },
+});

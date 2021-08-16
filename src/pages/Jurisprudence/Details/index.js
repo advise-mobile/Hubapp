@@ -36,6 +36,8 @@ export default function jurisprudenceDetails(props) {
     title: (htmlAttribs, children, convertedCSSStyles, passProps) => <Title key={Math.random()}>{children}</Title>,
   };
 
+  const capitalize = useCallback(s => s.replace(/(?:^|\s|["'([{])+\S/g, l => l.toUpperCase()), []);
+
   const openModal = () => optionsRef.current?.open();
 
   const openEmail = () => emailRef.current?.open();
@@ -79,7 +81,7 @@ export default function jurisprudenceDetails(props) {
 
             {jurisprudence.grupo ? jurisprudence.grupo.map((group, i) =>
               <Tag key={6 + i}>
-                <TagText>{group}</TagText>
+                <TagText>{group === 'undefined' ? 'Outros' : capitalize(group)}</TagText>
               </Tag>
             ) : null}
           </Tags>

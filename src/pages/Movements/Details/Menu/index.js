@@ -4,10 +4,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Modal from 'components/Modal';
 import { Share } from 'components/Share';
 
-import { useDispatch } from 'react-redux';
-
 import { FormatDateInFull } from 'helpers/DateFunctions';
-
 
 import { colors } from 'assets/styles';
 import {
@@ -20,61 +17,28 @@ import {
 } from './styles';
 
 export default Menu = forwardRef((props, ref) => {
-  const dispatch = useDispatch();
-
   const [movement, setMovement] = useState(props.movement);
+  const [type, setType] = useState(props.type);
 
-  useEffect(() => setMovement(props.movement), [props]);
-
-  // const markAsRead = useCallback(() => {
-  //   const { concluido, id, idAgenda } = deadline;
-
-  //   dispatch(
-  //     DeadlinesActions.deadlinesMarkAsConcluded({
-  //       concluido: !concluido,
-  //       id,
-  //       idAgenda,
-  //     })
-  //   );
-
-  //   setTimeout(() => closeModal(), 500);
-  // }, [props]);
-
-  // const markAsImportant = useCallback(() => {
-  //   const { importante, id, idAgenda } = deadline;
-
-  //   dispatch(
-  //     DeadlinesActions.deadlinesMarkAsImportant({
-  //       importante: !importante,
-  //       id,
-  //       idAgenda,
-  //     })
-  //   );
-
-  //   setTimeout(() => closeModal(), 500);
-  // }, []);
-
+  useEffect(() => {
+    setMovement(props.movement);
+    setType(props.type)
+  }, [props]);
 
   const share = useCallback(() => {
-    const { movimento } = movement;
+    if (type == -1) {
+      const messageShare = `${movement.orgaoJudiciario}, ${movement.dataDisponibilizacaoSemHora || ''} \n\n${movement.descricaoAndamento}`;
 
-    if (movimento.idTipoMovProcesso == -1) {
-      const { andamentoProcesso } = movimento;
-
-      const messageShare = `${andamentoProcesso.siglaOrgaoJudiriario}, ${FormatDateInFull(andamentoProcesso.dataHoraAndamentoProcesso)} \n\n${andamentoProcesso.descricaoAndamento}`;
-
-      const infoShare = `\n\n\nFonte: ${andamentoProcesso.nomeFontePesquisa}\nIdentificador: ${andamentoProcesso.identificadorClasseFonteProcesso}`;
+      const infoShare = `\n\n\nFonte: ${movement.fonte}\nIdentificador: ${movement.identificadorClasseFonteProcesso || 'Não informado'}`;
 
       Share({
         message: messageShare + infoShare,
         title: 'Processo',
       });
     } else {
-      const { publicacao } = movimento;
+      const messageShare = `${movement.diarioDescricao}, ${movement.dataPublicacaoFormatada} \n\n${movement.conteudo} \n\n${movement.despacho}`;
 
-      const messageShare = `${publicacao.descricaoDiario}, ${FormatDateInFull(publicacao.dataPublicacaoDiarioEdicao)} \n\n${publicacao.conteudo} \n\n${publicacao.despacho}`;
-
-      const infoShare = `\n\n\nCaderno: ${publicacao.descricaoCadernoDiario}\nVara: ${publicacao.varaDescricao}\nComarca: ${publicacao.cidadeComarcaDescricao}\nPágina: ${publicacao.paginaInicial} e ${publicacao.paginaFinal}`;
+      const infoShare = `\n\n\nCaderno: ${movement.cadernoDescricao}\nVara: ${movement.varaDescricao}\nComarca: ${movement.cidadeComarcaDescricao}\nPágina: ${movement.paginaInicial} a ${movement.paginaFinal}`;
 
       Share({
         message: messageShare + infoShare,

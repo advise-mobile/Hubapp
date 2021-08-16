@@ -1,15 +1,11 @@
 import { Share } from 'react-native';
 
-const ShareCustom = ({ message, url = '', title, dialogTitle = '' }) =>
+const ShareCustom = ({ message, title }) =>
   Share.share(
     {
       message,
-      url,
       title,
     },
-    {
-      dialogTitle,
-    }
   );
 
 export { ShareCustom as Share };

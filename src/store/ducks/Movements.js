@@ -6,9 +6,9 @@ const { Types, Creators } = createActions({
   diariesRequest: ['params'],
   diariesSuccess: ['data'],
   movementsRefresh: ['params'],
-  movementsRefreshSuccess: ['data'],
+  movementsRefreshSuccess: ['data', 'page', 'endReached'],
   movementsRequest: ['params'],
-  movementsSuccess: ['data', 'page'],
+  movementsSuccess: ['data', 'page', 'endReached'],
   toggleAsRead: ['params'],
   toggleMovements: ['checked'],
   tribunalsRequest: ['params'],
@@ -40,9 +40,9 @@ export const refreshRequest = state => state.merge({ refreshing: true });
 
 export const refreshSuccess = (state, action) => state.merge({
   refreshing: false,
-  data: action.data.itens,
+  data: action.data,
   page: action.page,
-  endReached: action.data.endReached,
+  endReached: action.endReached,
 });
 
 export const request = (state) => state.merge({
@@ -52,9 +52,9 @@ export const request = (state) => state.merge({
 });
 
 export const success = (state, action) => state.merge({
-  data: action.page === 1 ? action.data.itens : [...state.data, ...action.data.itens],
+  data: action.page === 1 ? action.data : [...state.data, ...action.data],
   page: action.page,
-  endReached: action.data.endReached,
+  endReached: action.endReached,
   loading: false,
   loadingMore: false,
 });
