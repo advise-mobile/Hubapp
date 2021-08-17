@@ -207,12 +207,14 @@ export default Movements = props => {
 
   const renderFilters = useMemo(() => <Filters ref={filtersRef} customField={formattedData} submit={data => handleSubmit(data)} filters={filters} />, [formattedData]);
 
-  const renderEmail = useMemo(() => <Email ref={emailRef} movement={currentMove} idMovProc={currentMove?.idMovProcessoCliente || null} />, [currentMove]);
+  const renderEmail = useMemo(() => <Email ref={emailRef} movement={currentMove} />, [currentMove]);
 
   const openFilters = () => filtersRef.current?.open();
 
   const handleEmail = useCallback(({ item }) => {
     setCurrentMove(item);
+
+    console.log(item);
 
     emailRef.current?.open();
   });
@@ -234,12 +236,12 @@ export default Movements = props => {
   const renderItem = ({ item }) => (
     <Movement>
       <MovementHeader>
-        <MovementHeading numberOfLines={1} onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso, idMovProc: item.idMovProcessoCliente })} underlayColor={colors.white} activeOpacity={1} read={item.lido}>{item.title}</MovementHeading>
+        <MovementHeading numberOfLines={1} onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso })} underlayColor={colors.white} activeOpacity={1} read={item.lido}>{item.title}</MovementHeading>
         <MovementAction onPress={() => openRow(item.id)}>
           <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
         </MovementAction>
       </MovementHeader>
-      <MovementResume numberOfLines={2} onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso, idMovProc: item.idMovProcessoCliente })} underlayColor={colors.white} activeOpacity={1}>{item.resumo}</MovementResume>
+      <MovementResume numberOfLines={2} onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso })} underlayColor={colors.white} activeOpacity={1}>{item.resumo}</MovementResume>
 
       <MovementTags onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso })} underlayColor={colors.white} activeOpacity={1}>
         {item.idTipoMovProcesso === -1 &&

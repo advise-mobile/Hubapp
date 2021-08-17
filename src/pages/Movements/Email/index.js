@@ -22,12 +22,11 @@ export default EmailModal = forwardRef((props, ref) => {
 
   const [email, setEmail] = useState('');
   const [movement, setMovement] = useState(props.movement);
-  const [idMovProc] = useState(props.idMovProc);
   const [emailErr, setError] = useState(false);
 
   const sending = useSelector(state => state.movements.sending);
 
-  useEffect(() => { setMovement(props.movement); }, [props]);
+  useEffect(() => { setMovement(props.movement) }, [props]);
 
   const sendEmail = useCallback(() => {
     setError(!validate(email) || email.length < 1);
@@ -40,7 +39,7 @@ export default EmailModal = forwardRef((props, ref) => {
     dispatch(
       MovementsActions.movementsEmailRequest({
         destinatarios: email.split(";"),
-        idsMovimentos: idMovProc,
+        idsMovimentos: movement.idMovProcessoCliente || null,
       })
     );
 

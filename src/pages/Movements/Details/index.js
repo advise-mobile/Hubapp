@@ -67,6 +67,8 @@ export default MovementDetail = props => {
   useEffect(() => {
     const endpoint = (movementType === -1) ? 'andamentos' : 'publicacoes';
 
+    const { idMovProcessoCliente } = movement;
+
     Api.get(`/core/v1/detalhes-movimentacoes/${endpoint}?IDs=${movement.idMovProcessoCliente}&campos=*&registrosPorPagina=-1`).then(({ data }) => {
       const move = data.itens[0];
 
@@ -105,7 +107,7 @@ export default MovementDetail = props => {
         }
       }
 
-      setMovement(move);
+      setMovement({ ...move, idMovProcessoCliente });
     }).finally(() => {
       setLoading(false);
     });
@@ -143,78 +145,74 @@ export default MovementDetail = props => {
     </Movement>
   ));
 
-  const renderPublication = useCallback(() => {
-    console.log(movement);
+  const renderPublication = useCallback(() => (
+    <Movement>
+      <MovementTags>
+        {movement.dataDivulgacaoFormatada && (
+          <Tag background={colors.gray}>
+            <TagText>Disponibilização em: {movement.dataDivulgacaoFormatada}</TagText>
+          </Tag>
+        )}
 
-    return (
-      <Movement>
-        <MovementTags>
-          {movement.dataDivulgacaoFormatada && (
-            <Tag background={colors.gray}>
-              <TagText>Disponibilização em: {movement.dataDivulgacaoFormatada}</TagText>
-            </Tag>
-          )}
+        {movement.dataPublicacaoFormatada && (
+          <Tag background={colors.gray}>
+            <TagText>Publicação em: {movement.dataPublicacaoFormatada}</TagText>
+          </Tag>
+        )}
 
-          {movement.dataPublicacaoFormatada && (
-            <Tag background={colors.gray}>
-              <TagText>Publicação em: {movement.dataPublicacaoFormatada}</TagText>
-            </Tag>
-          )}
+        {movement.varaDescricao && (
+          <Tag background={colors.gray}>
+            <TagText>Vara: {movement.varaDescricao}</TagText>
+          </Tag>
+        )}
 
-          {movement.varaDescricao && (
-            <Tag background={colors.gray}>
-              <TagText>Vara: {movement.varaDescricao}</TagText>
-            </Tag>
-          )}
+        {movement.cidadeComarcaDescricao && (
+          <Tag background={colors.gray}>
+            <TagText>Comarca: {movement.cidadeComarcaDescricao}</TagText>
+          </Tag>
+        )}
 
-          {movement.cidadeComarcaDescricao && (
-            <Tag background={colors.gray}>
-              <TagText>Comarca: {movement.cidadeComarcaDescricao}</TagText>
-            </Tag>
-          )}
+        {movement.cadernoDescricao && (
+          <Tag background={colors.gray}>
+            <TagText>Caderno: {movement.cadernoDescricao}</TagText>
+          </Tag>
+        )}
 
-          {movement.cadernoDescricao && (
-            <Tag background={colors.gray}>
-              <TagText>Caderno: {movement.cadernoDescricao}</TagText>
-            </Tag>
-          )}
+        {movement.edicaoDiario > 0 && (
+          <Tag background={colors.gray}>
+            <TagText>Edição do diário: {movement.edicaoDiario || 0}</TagText>
+          </Tag>
+        )}
 
-          {movement.edicaoDiario > 0 && (
-            <Tag background={colors.gray}>
-              <TagText>Edição do diário: {movement.edicaoDiario || 0}</TagText>
-            </Tag>
-          )}
+        {(movement.paginaInicial > 0 && movement.paginaFinal > 0) && (
+          <Tag background={colors.gray}>
+            <TagText>Páginas: {movement.paginaInicial || 0} a {movement.paginaFinal || 0}</TagText>
+          </Tag>
+        )}
 
-          {(movement.paginaInicial > 0 && movement.paginaFinal > 0) && (
-            <Tag background={colors.gray}>
-              <TagText>Páginas: {movement.paginaInicial || 0} a {movement.paginaFinal || 0}</TagText>
-            </Tag>
-          )}
+      </MovementTags>
 
-        </MovementTags>
+      {movement.processoPublicacao ?
+        <>
+          {(movement.processoPublicacao.length > 0) ?
+            <ProcessNumber>
+              <ProcessNumberText>Proc.: {MaskCnj(movement.processoPublicacao[0].numeroProcesso)}</ProcessNumberText>
+            </ProcessNumber>
+            : <ProcessNumber>
+              <ProcessNumberText color={colors.red}>Proc.: Não identificado</ProcessNumberText>
+              <MaterialIcons name="add-circle-outline" size={20} color={colors.red} />
+            </ProcessNumber>}
+        </> :
+        <ProcessNumber>
+          <ProcessNumberText color={colors.red}>Proc.: Não identificado</ProcessNumberText>
+          <MaterialIcons name="add-circle-outline" size={20} color={colors.red} />
+        </ProcessNumber>
+      }
 
-        {movement.processoPublicacao ?
-          <>
-            {(movement.processoPublicacao.length > 0) ?
-              <ProcessNumber>
-                <ProcessNumberText>Proc.: {MaskCnj(movement.processoPublicacao[0].numeroProcesso)}</ProcessNumberText>
-              </ProcessNumber>
-              : <ProcessNumber>
-                <ProcessNumberText color={colors.red}>Proc.: Não identificado</ProcessNumberText>
-                <MaterialIcons name="add-circle-outline" size={20} color={colors.red} />
-              </ProcessNumber>}
-          </> :
-          <ProcessNumber>
-            <ProcessNumberText color={colors.red}>Proc.: Não identificado</ProcessNumberText>
-            <MaterialIcons name="add-circle-outline" size={20} color={colors.red} />
-          </ProcessNumber>
-        }
-
-        <MovementContent>{movement.conteudo}</MovementContent>
-        <MovementDispatch>{movement.despacho}</MovementDispatch>
-      </Movement>
-    );
-  });
+      <MovementContent>{movement.conteudo}</MovementContent>
+      <MovementDispatch>{movement.despacho}</MovementDispatch>
+    </Movement>
+  ));
 
   return (
     <Container>
@@ -230,7 +228,7 @@ export default MovementDetail = props => {
         }
       </Warp>
       {renderMenu}
-      <Email ref={emailRef} movement={movement} idMovProc={idMovProcessoCliente} />
+      <Email ref={emailRef} movement={{ ...movement, idMovProcessoCliente: movement.id }} />
     </Container>
   );
 }
