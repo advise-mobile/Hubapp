@@ -99,8 +99,6 @@ export function* getMovements({ params }) {
 
     yield put(AuthAction.contractsRequest());
 
-    yield delay(200);
-
     yield put(UserActions.updatePicture());
 
     let { data } = yield call(

@@ -64,6 +64,8 @@ export default MovementDetail = props => {
       openEmail={() => emailRef.current?.open()}
     />, [movement, movementType]);
 
+  const renderEmail = useMemo(() => <Email ref={emailRef} movement={{ ...movement, idMovProcessoCliente: movement.idMovProcessoCliente }} />, [movement]);
+
   useEffect(() => {
     const endpoint = (movementType === -1) ? 'andamentos' : 'publicacoes';
 
@@ -76,7 +78,7 @@ export default MovementDetail = props => {
         dispatch(
           MovementActions.movementReadRequest({
             id: movement.id,
-            idMovProcessoCliente: movement.idMovProcessoCliente,
+            idMovProcessoCliente,
             movementType: 'marcar',
           })
         );
@@ -108,9 +110,7 @@ export default MovementDetail = props => {
       }
 
       setMovement({ ...move, idMovProcessoCliente });
-    }).finally(() => {
-      setLoading(false);
-    });
+    }).finally(() => setLoading(false));
 
     return;
   }, []);
@@ -228,7 +228,7 @@ export default MovementDetail = props => {
         }
       </Warp>
       {renderMenu}
-      <Email ref={emailRef} movement={{ ...movement, idMovProcessoCliente: movement.id }} />
+      {renderEmail}
     </Container>
   );
 }

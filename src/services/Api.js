@@ -186,7 +186,6 @@ export async function getLogin() {
 
 export async function getAccessToken() {
   const refreshToken = await AsyncStorage.getItem(REFRESH_TOKEN);
-
   const userData = {
     refresh_token: refreshToken,
     grant_type: 'refresh_token',

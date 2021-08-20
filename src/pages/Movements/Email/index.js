@@ -1,5 +1,7 @@
 import React, { forwardRef, useState, useCallback, useEffect } from 'react';
 
+import useDebouncedEffect from 'use-debounced-effect';
+
 import Modal from 'components/Modal';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -26,7 +28,9 @@ export default EmailModal = forwardRef((props, ref) => {
 
   const sending = useSelector(state => state.movements.sending);
 
-  useEffect(() => { setMovement(props.movement) }, [props]);
+  useEffect(() => { setMovement(props.movement); }, [props]);
+
+  useDebouncedEffect(() => setError(!validate(email) || email.length < 1), 200, [email]);
 
   const sendEmail = useCallback(() => {
     setError(!validate(email) || email.length < 1);
@@ -75,11 +79,9 @@ export default EmailModal = forwardRef((props, ref) => {
           placeholder='Informe um email'
           placeholderTextColor={colors.grayLight}
           value={email}
-          onChangeText={typedEmail => {
-            setEmail(typedEmail);
-            setError(!validate(email) || email.length < 1);
-          }}
+          onChangeText={setEmail}
           onSubmitEditing={sendEmail}
+          keyboardType='email-address'
           returnKeyType='send'
         />
       </Content>

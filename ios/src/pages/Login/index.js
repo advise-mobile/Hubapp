@@ -72,7 +72,7 @@ export default function Login(props) {
   const [disabled, setDisabled] = useState(false);
   const [countAmbient, setCountAmbient] = useState(0);
   const [ambient, setAmbient] = useState('TESTE');
-  
+
   const [loadingIndicator, setLoadingIndicator] = useState(true);
 
   const login = useSelector((state) => state.auth.data);
@@ -172,7 +172,7 @@ export default function Login(props) {
     let counter = countAmbient + 1;
 
     if (counter >= 5) {
-      changeAmbient().then(environment => setAmbient(environment)); 
+      changeAmbient().then(environment => setAmbient(environment));
       setCountAmbient(0);
 
       return;
@@ -194,86 +194,86 @@ export default function Login(props) {
         {/* {loadingIndicator ? (
           <Spinner />
         ) : ( */}
-          <Warp>
-            <Logo source={logoImage} resizeMode="contain"  />
-            {__DEV__ && (
-             <BadgeRed onPress={__DEV__ && incrementChangeAmbient}>
+        <Warp>
+          <Logo source={logoImage} resizeMode="contain" />
+          {__DEV__ && (
+            <BadgeRed onPress={__DEV__ && incrementChangeAmbient}>
               <BadgeRedText>VERSÃO DE {ambient}</BadgeRedText>
             </BadgeRed>
-            )}
-            <Form>
-              <InputGroup>
-                <InputGroupPrepend>
-                  <Icon
-                    name="mail"
-                    size={23}
-                    style={[
-                      emptyEmail === true ? style.hasIconError : style.hasIcon,
-                    ]}
-                  />
-                </InputGroupPrepend>
-                <Input
-                  placeholder="E-mail"
-                  placeholderTextColor={[
-                    emptyEmail === true ? colors.red : colors.grayLight,
-                  ]}
-                  value={email}
-                  onChangeText={handleEmailChange}
-                  autoCapitalize="none"
-                  autoCorrect={false}
+          )}
+          <Form>
+            <InputGroup>
+              <InputGroupPrepend>
+                <Icon
+                  name="mail"
+                  size={23}
                   style={[
-                    emptyEmail === true ? style.hasError : style.hasSuccess,
+                    emptyEmail === true ? style.hasIconError : style.hasIcon,
                   ]}
                 />
-                {!!emptyEmail && (
-                  <InputHelpText>Este campo é obrigatório.</InputHelpText>
-                )}
-              </InputGroup>
-              <InputGroup>
-                <InputGroupPrepend>
-                  <Icon
-                    name="lock"
-                    size={23}
-                    style={[
-                      emptyPassword === true
-                        ? style.hasIconError
-                        : style.hasIcon,
-                    ]}
-                  />
-                </InputGroupPrepend>
-                <Input
-                  placeholder="Senha"
-                  placeholderTextColor={[
-                    emptyPassword === true ? colors.red : colors.primary,
-                  ]}
-                  value={password}
-                  onChangeText={handlePasswordChange}
-                  onSubmitEditing={handleLoginPress}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  returnKeyType="send"
-                  secureTextEntry
+              </InputGroupPrepend>
+              <Input
+                placeholder="E-mail"
+                placeholderTextColor={[
+                  emptyEmail === true ? colors.red : colors.grayLight,
+                ]}
+                value={email}
+                onChangeText={handleEmailChange}
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={[
+                  emptyEmail === true ? style.hasError : style.hasSuccess,
+                ]}
+              />
+              {!!emptyEmail && (
+                <InputHelpText>Este campo é obrigatório.</InputHelpText>
+              )}
+            </InputGroup>
+            <InputGroup>
+              <InputGroupPrepend>
+                <Icon
+                  name="lock"
+                  size={23}
                   style={[
-                    emptyPassword === true ? style.hasError : style.hasSuccess,
+                    emptyPassword === true
+                      ? style.hasIconError
+                      : style.hasIcon,
                   ]}
                 />
-                {!!emptyPassword && (
-                  <InputHelpText>Este campo é obrigatório.</InputHelpText>
-                )}
-              </InputGroup>
-              <Button onPress={handleLoginPress} disabled={disabled}>
-                {loading ? (
-                  <ActivityIndicator size="small" color={colors.white} />
-                ) : (
-                  <ButtonText>Acessar conta</ButtonText>
-                )}
-              </Button>
-            </Form>
-            <ForgotText>Esqueceu sua senha de acesso?</ForgotText>
-            <ForgotLink onPress={handleForgotPress}>
-              <ForgotLinkText>OBTENHA AJUDA PARA REDEFINIR</ForgotLinkText>
-            </ForgotLink>
-          </Warp>
+              </InputGroupPrepend>
+              <Input
+                placeholder="Senha"
+                placeholderTextColor={[
+                  emptyPassword === true ? colors.red : colors.primary,
+                ]}
+                value={password}
+                onChangeText={handlePasswordChange}
+                onSubmitEditing={handleLoginPress}
+                autoCapitalize="none"
+                autoCorrect={false}
+                returnKeyType="send"
+                secureTextEntry
+                style={[
+                  emptyPassword === true ? style.hasError : style.hasSuccess,
+                ]}
+              />
+              {!!emptyPassword && (
+                <InputHelpText>Este campo é obrigatório.</InputHelpText>
+              )}
+            </InputGroup>
+            <Button onPress={handleLoginPress} disabled={disabled}>
+              {loading ? (
+                <ActivityIndicator size="small" color={colors.white} />
+              ) : (
+                <ButtonText>Acessar conta</ButtonText>
+              )}
+            </Button>
+          </Form>
+          <ForgotText>Esqueceu sua senha de acesso?</ForgotText>
+          <ForgotLink onPress={handleForgotPress}>
+            <ForgotLinkText>OBTENHA AJUDA PARA REDEFINIR</ForgotLinkText>
+          </ForgotLink>
+        </Warp>
         {/* )} */}
       </Container>
     </KeyboardAvoidingView>
