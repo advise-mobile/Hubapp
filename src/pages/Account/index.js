@@ -9,6 +9,7 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 
 import Infos from './Infos';
 import Notifications from './Notifications';
+import Payments from './Payments';
 import Help from './Help';
 
 export default Account = props => {
@@ -30,7 +31,8 @@ export default Account = props => {
     <ScrollableTabView ref={scrollRef} initialPage={0} renderTabBar={() => <CustomScrollableTabBar />} onChangeTab={tab => setSelectedTab(tab.i)}>
       <Infos tabLabel='Informações' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 0} />
       <Notifications tabLabel='Notificações' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 1} />
-      <Help tabLabel='Ajuda' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 2} />
+      <Payments tabLabel='Central de Pagamentos' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 2} />
+      <Help tabLabel='Ajuda' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 3} />
 
     </ScrollableTabView >, [selectedTab]);
 
