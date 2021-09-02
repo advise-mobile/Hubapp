@@ -1,24 +1,32 @@
 import React, { useState, useRef, useCallback, useEffect, createRef, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Appearance } from 'react-native';
+import { Appearance, Animated, Platform, PermissionsAndroid } from 'react-native';
+
+import RNFetchBlob from 'rn-fetch-blob'
+import Toast from 'react-native-simple-toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import MovementsActions from 'store/ducks/Movements';
 import MovementActions from 'store/ducks/Movement';
+import ToastNotifyActions from 'store/ducks/ToastNotify';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-// import CheckBox from '@react-native-community/checkbox';
 import { SwipeListView } from 'react-native-swipe-list-view';
+// import CheckBox from '@react-native-community/checkbox';
+
+import { TOKEN } from 'helpers/StorageKeys';
+
+import Api, { BASE_URL, getLogin } from 'services/Api';
 
 import Header from 'components/Header';
 import Spinner from 'components/Spinner';
 import { Share } from 'components/Share';
 
-import Filters from './Filters';
-import Email from './Email';
-
-import { FormatDateInFull, FormatDateBR } from 'helpers/DateFunctions';
-
-import Api from 'services/Api';
+import Filters from './Modals/Filters';
+import Email from './Modals/Email';
+import Confirmation from './Modals/Confirmation';
+import AddDeadline from './Modals/AddDeadline';
+import MarkAsRead  from './Modals/MarkAsRead';
 
 import { colors } from 'assets/styles';
 import { Container, Warp, Actions, ActionButton } from 'assets/styles/general';
@@ -49,7 +57,11 @@ import {
 
 import { MaskCnj } from 'helpers/Mask';
 
+const movementsRef = {};
+
 const colorScheme = Appearance.getColorScheme();
+
+const dirs = RNFetchBlob.fs.dirs;
 
 const notFound = (colorScheme == 'dark') ? require('assets/images/not_found/movements_white.png') : require('assets/images/not_found/movements.png');
 
@@ -57,11 +69,18 @@ export default Movements = props => {
   const listRef = useRef(null);
   const emailRef = useRef(null);
   const filtersRef = useRef(null);
+  const confirmationRef = useRef(null);
+  const deadlineRef = useRef(null);
+  const markasreadRef = useRef(null);
 
   const [filters, setFilters] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
 
-  const movements = useSelector(state => state.movements.data);
+  const movements = useSelector(state => state.movements.data.map(movement => {
+    if (!movementsRef[movement.id]) movementsRef[movement.id] = new Animated.Value(1);
+
+    return movement;
+  }));
   const endReached = useSelector(state => state.movements.endReached);
   const loading = useSelector(state => state.movements.loading);
   const loadingMore = useSelector(state => state.movements.loadingMore);
@@ -71,21 +90,22 @@ export default Movements = props => {
 
   const [folder] = useState(props.route.params.item);
 
+  const [downloading, setDownloading] = useState(false);
+  const [trigger, setTrigger] = useState(false);
+  const [currentMove, setCurrentMove] = useState(movements[0]);
+  const [formattedData, setFormattedData] = useState({});
   // const [selecteds, setSelecteds] = useState(0);
   // const [selectAll, setSelectedAll] = useState(selecteds > 0 ? true : false);
-  const [trigger, setTrigger] = useState(false);
-
-  const [currentMove, setCurrentMove] = useState(movements[0]);
-
-  const [formattedData, setFormattedData] = useState({});
 
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (loadingMore || loading) return;
+
     dispatch(
       MovementsActions.movementsRequest({
         filters,
-        page: 1,
+        page: currentPage,
         perPage: 50,
         folderId: folder.id
       })
@@ -103,27 +123,32 @@ export default Movements = props => {
           processNumber: folder.numeroProcesso
         })
       );
-  }, [])
-
-  useEffect(() => {
-    if (loadingMore) return;
-
-    dispatch(
-      MovementsActions.movementsRequest({
-        filters,
-        page: currentPage,
-        perPage: 50,
-        folderId: folder.id
-      })
-    );
   }, [trigger, filters]);
+
+  // useEffect(() => {
+  //   if (loadingMore || loading) return;
+  //   console.error(`xablau`);
+
+  //   dispatch(
+  //     MovementsActions.movementsRequest({
+  //       filters,
+  //       page: currentPage,
+  //       perPage: 50,
+  //       folderId: folder.id
+  //     })
+  //   );
+  // }, [trigger, filters]);
 
   useEffect(() => {
     const custom = (folder.idTipoPasta == -2) ? { title: 'Diários', name: 'IdsDiarios', data: diaries.map(diarie => { return { nome: diarie.nomeDiario, id: diarie.idDiario } }) } : { title: 'Tribunais', name: 'IdsOrgaosJudiciarios', data: tribunals.map(tribunal => { return { nome: tribunal.nomeOrgaoJudiciario, id: tribunal.idOrgaoJudiciario } }) };
     setFormattedData(custom);
   }, [props, tribunals, folder, diaries]);
 
+  useEffect(() => movements.forEach((move, i) => {
+    if (!movementsRef[move.id]) movementsRef[move.id] = new Animated.Value(1);
+  }), [movements]);
 
+  /** LIST */
   const refresh = useCallback(() => {
     dispatch(
       MovementsActions.movementsRefresh({
@@ -145,6 +170,8 @@ export default Movements = props => {
     setTrigger(!trigger);
   }, [currentPage, loadingMore, trigger]);
 
+  /** Actions */
+  /** MARCAR COMO LIDA */
   const toggleAsRead = useCallback(({ item }) => {
     dispatch(
       MovementActions.movementReadRequest({
@@ -164,7 +191,10 @@ export default Movements = props => {
     closeOpenedRow(item.id);
   });
 
+  /** COMPARTILHAR */
   const share = useCallback(({ item }) => {
+    setCurrentMove(item);
+
     const endpoint = (item.idTipoMovProcesso == -1) ? 'andamentos' : 'publicacoes';
 
     Api.get(`/core/v1/detalhes-movimentacoes/${endpoint}?IDs=${item.idMovProcessoCliente}&campos=*&registrosPorPagina=-1`).then(({ data }) => {
@@ -188,7 +218,7 @@ export default Movements = props => {
         Share({
           message: messageShare + infoShare,
           title: 'Publicação',
-        });
+        }, () => handleMarkAsRead(item));
       }
     })
 
@@ -196,96 +226,215 @@ export default Movements = props => {
 
   });
 
-  const openRow = useCallback(key => !listRef.current._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-150) : closeOpenedRow(key), [listRef]);
+  /** CRIAR PRAZO */
+  const handleDeadline = useCallback(({ item }) => {
+    setCurrentMove(item);
+
+    deadlineRef.current?.open();
+  }, []);
+
+  /** EMAIL */
+  const handleEmail = useCallback(({ item }) => {
+    setCurrentMove(item);
+
+    emailRef.current?.open();
+  });
+
+  /** MARCAR COMO LIDA */
+  const handleMarkAsRead = useCallback(move => {
+    if (!move.lido) markasreadRef.current?.open();
+  }, []);
+
+  /** DOWNLOAD */
+  const requestPermission = useCallback(async () => {
+    try {
+      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+    }
+
+    return false;
+  });
+
+  const downloadMovement = useCallback(async ({ item }) => {
+    const havePermission = Platform.OS == 'ios' || await requestPermission();
+
+    if (!havePermission) {
+      setDownloading(false);
+    }
+
+    await getLogin();
+
+    const token = await AsyncStorage.getItem(TOKEN);
+
+    setDownloading(true);
+
+    Toast.show(`Download ${item.idTipoMovProcesso === -1 ? 'do andamento' : 'da publicação'} iniciado, por favor, aguarde.`);
+
+    const path = (Platform.OS == 'ios') ? dirs.DocumentDir + `/${Date.now()}.pdf` : dirs.DCIMDir + `/${Date.now()}.pdf`
+
+    RNFetchBlob.config({
+      fileCache: true,
+      path: path,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        mediaScannable: true,
+        description: `${item.idTipoMovProcesso === -1 ? 'Andamento disponibilizado' : 'Publicação disponibilizada'} via Advise Hub App`,
+        path: dirs.DCIMDir + `/${Date.now()}.pdf`,
+      }
+    })
+      .fetch('GET', `${BASE_URL}/core/v1/movimentos-download?ids=${item.idMovProcessoCliente}&tipoArquivo=pdf`, {
+        Authorization: `Bearer ${token}`
+      })
+      .then(res => {
+        dispatch(ToastNotifyActions.toastNotifyShow(`${item.idTipoMovProcesso === -1 ? 'Andamento baixado' : 'Publicação baixada'} com sucesso!`, false));
+
+        handleMarkAsRead(item);
+
+        if (Platform.OS === "ios") {
+          RNFetchBlob.fs.writeFile(path, res.data, 'base64');
+          RNFetchBlob.ios.openDocument(path);
+        }
+      })
+      .catch(() => dispatch(ToastNotifyActions.toastNotifyShow(`Erro ao baixar ${item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'}, tente novamente mais tarde.`, true)))
+      .finally(() => setDownloading(false));
+  }, []);
+
+  /** DELEÇÃO */
+  const handleDelete = useCallback(({ item }) => {
+    setCurrentMove(item);
+
+    confirmationRef.current?.open();
+  });
+
+  const removeFromList = useCallback((id) => {
+    if (movementsRef[id]) {
+      Animated.timing(movementsRef[id], {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [movementsRef]);
+
+  const openRow = useCallback(key => !listRef.current._rows[key].isOpen ? listRef.current._rows[key].manuallySwipeRow(-300) : closeOpenedRow(key), [listRef]);
 
   const closeOpenedRow = useCallback(key => listRef.current._rows[key].closeRow());
+
+  /** FILTERS */
+  const openFilters = () => filtersRef.current?.open();
 
   const handleSubmit = useCallback(data => {
     setCurrentPage(1);
     setFilters(data);
   }, []);
 
+
+  /** RENDER MODALS */
   const renderFilters = useMemo(() => <Filters ref={filtersRef} customField={formattedData} submit={data => handleSubmit(data)} filters={filters} />, [formattedData]);
 
-  const renderEmail = useMemo(() => <Email ref={emailRef} movement={currentMove} />, [currentMove]);
+  const renderEmail = useMemo(() => <Email ref={emailRef} movement={currentMove} onConfirm={() => handleMarkAsRead(currentMove)} />, [currentMove]);
 
-  const openFilters = () => filtersRef.current?.open();
+  const renderConfirmation = useMemo(() => <Confirmation ref={confirmationRef} movement={currentMove} remove={id => removeFromList(id)} />, [currentMove]);
 
-  const handleEmail = useCallback(({ item }) => {
-    setCurrentMove(item);
+  const renderAddDeadline = useMemo(() => <AddDeadline ref={deadlineRef} movement={currentMove} />, [currentMove]);
 
-    console.log(item);
+  const renderMarkAsRead = useMemo(() => <MarkAsRead ref={markasreadRef} movement={currentMove} onConfirm={closeOpenedRow} />, [currentMove]);
 
-    emailRef.current?.open();
-  });
-
+  /** RENDERS */
   const renderHiddenItem = useCallback(data => (
-    <Actions>
+    <Actions as={Animated.View} style={{
+      overflow: 'hidden',
+      maxHeight: movementsRef[data.item.id].interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 500],
+      })
+    }}>
       <ActionButton onPress={() => toggleAsRead(data)}>
         <MaterialIcons name={data.item.lido ? "visibility-off" : "visibility"} size={24} color={colors.fadedBlack} />
+      </ActionButton>
+      <ActionButton onPress={() => handleDeadline(data)}>
+        <MaterialIcons name="event" size={24} color={colors.fadedBlack} />
       </ActionButton>
       <ActionButton onPress={() => handleEmail(data)}>
         <MaterialIcons name="mail" size={24} color={colors.fadedBlack} />
       </ActionButton>
+      <ActionButton onPress={() => !downloading && downloadMovement(data)}>
+        {downloading ? <Spinner height={24} /> : <MaterialIcons name="file-download" size={24} color={colors.fadedBlack} />}
+      </ActionButton>
       <ActionButton onPress={() => share(data)}>
         <MaterialIcons name="share" size={24} color={colors.fadedBlack} />
+      </ActionButton>
+      <ActionButton onPress={() => handleDelete(data)}>
+        <MaterialIcons name="delete" size={24} color={colors.fadedBlack} />
       </ActionButton>
     </Actions>
   ));
 
-  const renderItem = ({ item }) => (
-    <Movement>
-      <MovementHeader>
-        <MovementHeading numberOfLines={1} onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso })} underlayColor={colors.white} activeOpacity={1} read={item.lido}>{item.title}</MovementHeading>
-        <MovementAction onPress={() => openRow(item.id)}>
-          <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
-        </MovementAction>
-      </MovementHeader>
-      <MovementResume numberOfLines={2} onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso })} underlayColor={colors.white} activeOpacity={1}>{item.resumo}</MovementResume>
+  const renderItem = useCallback(({ item }) => (
+    <Animated.View style={{
+      overflow: 'hidden',
+      maxHeight: movementsRef[item.id].interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 500],
+      })
+    }}>
+      <Movement>
+        <MovementHeader>
+          <MovementHeading numberOfLines={1} onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso })} underlayColor={colors.white} activeOpacity={1} read={item.lido}>{item.title}</MovementHeading>
+          <MovementAction onPress={() => openRow(item.id)}>
+            <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
+          </MovementAction>
+        </MovementHeader>
+        <MovementResume numberOfLines={2} onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso })} underlayColor={colors.white} activeOpacity={1}>{item.resumo}</MovementResume>
 
-      <MovementTags onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso })} underlayColor={colors.white} activeOpacity={1}>
-        {item.idTipoMovProcesso === -1 &&
-          <>
-            <Tag background={item.lido ? colors.gray : colors.amber}>
-              <TagText>Andamento</TagText>
-            </Tag>
-            {item.numeroProcesso &&
-              <Tag background={colors.gray}>
-                <TagText>
-                  Proc.: {item.numeroProcesso}
-                </TagText>
-              </Tag>}
-          </>
-        }
+        <MovementTags onPress={() => props.navigation.navigate('MovementDetail', { movement: item, movementType: item.idTipoMovProcesso })} underlayColor={colors.white} activeOpacity={1}>
+          {item.idTipoMovProcesso === -1 &&
+            <>
+              <Tag background={item.lido ? colors.gray : colors.amber}>
+                <TagText>Andamento</TagText>
+              </Tag>
+              {item.numeroProcesso &&
+                <Tag background={colors.gray}>
+                  <TagText>
+                    Proc.: {item.numeroProcesso}
+                  </TagText>
+                </Tag>}
+            </>
+          }
 
-        {item.idTipoMovProcesso === -2 &&
-          <>
-            <Tag background={item.lido ? colors.gray : colors.amber}>
-              <TagText>Publicado em: {item.dataPublicacao}</TagText>
-            </Tag>
+          {item.idTipoMovProcesso === -2 &&
+            <>
+              <Tag background={item.lido ? colors.gray : colors.amber}>
+                <TagText>Publicado em: {item.dataPublicacao}</TagText>
+              </Tag>
 
-            {item.palavrasChaves.map(keyword =>
-              keyword.idPalavraChavePrincipal === undefined &&
-              <Tag background={keyword.palavraChave == folder.nome ? colors.green : colors.gray} key={keyword.id}>
-                <TagText>{keyword.palavraChave}</TagText>
-              </Tag>
-            )}
-            {item.numeroProcesso ?
-              <Tag background={colors.gray}>
-                <TagText>
-                  Proc.: {MaskCnj(item.numeroProcesso)}
-                </TagText>
-              </Tag>
-              :
-              <Tag background={colors.gray}>
-                <TagText>Proc.: Não identificado</TagText>
-              </Tag>
-            }
-          </>
-        }
-      </MovementTags>
-    </Movement>
-  );
+              {item.palavrasChaves.map(keyword =>
+                keyword.idPalavraChavePrincipal === undefined &&
+                <Tag background={keyword.palavraChave == folder.nome ? colors.green : colors.gray} key={keyword.id}>
+                  <TagText>{keyword.palavraChave}</TagText>
+                </Tag>
+              )}
+              {item.numeroProcesso ?
+                <Tag background={colors.gray}>
+                  <TagText>
+                    Proc.: {MaskCnj(item.numeroProcesso)}
+                  </TagText>
+                </Tag>
+                :
+                <Tag background={colors.gray}>
+                  <TagText>Proc.: Não identificado</TagText>
+                </Tag>
+              }
+            </>
+          }
+        </MovementTags>
+      </Movement>
+    </Animated.View>
+  ), [movements]);
 
   const renderFooter = useCallback(() => loading && <Spinner />);
 
@@ -310,12 +459,13 @@ export default Movements = props => {
                 data={movements}
                 disableRightSwipe
                 previewRowKey={'2'}
-                rightOpenValue={-150}
-                stopRightSwipe={-150}
+                rightOpenValue={-300}
+                stopRightSwipe={-300}
                 closeOnRowOpen={false}
                 renderItem={renderItem}
-                previewOpenValue={-150}
+                previewOpenValue={-300}
                 previewOpenDelay={2000}
+                useNativeDriver={false}
                 onEndReached={onEndReached}
                 ListFooterComponent={renderFooter}
                 renderHiddenItem={renderHiddenItem}
@@ -335,6 +485,9 @@ export default Movements = props => {
         }
         {renderFilters}
         {renderEmail}
+        {renderConfirmation}
+        {renderAddDeadline}
+        {renderMarkAsRead}
       </Warp>
     </Container>
   );

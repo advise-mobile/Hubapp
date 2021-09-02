@@ -3,14 +3,20 @@ import Immutable from 'seamless-immutable';
 
 const { Types, Creators } = createActions({
   clearMovements: null,
+
   diariesRequest: ['params'],
   diariesSuccess: ['data'],
+
   movementsRefresh: ['params'],
   movementsRefreshSuccess: ['data', 'page', 'endReached'],
   movementsRequest: ['params'],
   movementsSuccess: ['data', 'page', 'endReached'],
   toggleAsRead: ['params'],
   toggleMovements: ['checked'],
+  deleteMovement: ['params'],
+  deleteMovementProceeded: null,
+  deleteMovementFromList: ['params'],
+
   tribunalsRequest: ['params'],
   tribunalsSuccess: ['data'],
 
@@ -34,6 +40,7 @@ export const INITIAL_STATE = Immutable({
   endReached: false,
   havePermission: false,
   sending: false,
+  deleting: false,
 });
 
 export const refreshRequest = state => state.merge({ refreshing: true });
@@ -95,6 +102,14 @@ export const toggleAsRead = (state, action) => {
   });
 };
 
+export const deleteMovementRequest = state => state.merge({ deleting: true });
+
+export const deleteMovementProceeded = state => state.merge({ deleting: false });
+
+export const deleteMovementFromList = (state, { params }) => state.merge({
+  data: state.data.filter(move => move.id !== params.id)
+});
+
 export const diariesRequest = (state, action) => state.merge({
   loading: true,
 });
@@ -102,7 +117,6 @@ export const diariesRequest = (state, action) => state.merge({
 export const diariesSuccess = (state, action) => {
   return state.merge({
     diaries: action.data,
-    loading: false,
   })
 };
 
@@ -113,7 +127,6 @@ export const tribunalsRequest = state => state.merge({
 export const tribunalsSuccess = (state, action) => {
   return state.merge({
     tribunals: action.data,
-    loading: false,
   })
 };
 
@@ -129,6 +142,9 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.MOVEMENTS_REFRESH]: refreshRequest,
   [Types.MOVEMENTS_REFRESH_SUCCESS]: refreshSuccess,
   [Types.CLEAR_MOVEMENTS]: clear,
+  [Types.DELETE_MOVEMENT]: deleteMovementRequest,
+  [Types.DELETE_MOVEMENT_PROCEEDED]: deleteMovementProceeded,
+  [Types.DELETE_MOVEMENT_FROM_LIST]: deleteMovementFromList,
   [Types.DIARIES_REQUEST]: diariesRequest,
   [Types.DIARIES_SUCCESS]: diariesSuccess,
   [Types.TRIBUNALS_REQUEST]: tribunalsRequest,

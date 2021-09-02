@@ -2,9 +2,8 @@ import React, { forwardRef, useState, useCallback, useEffect } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Modal from 'components/Modal';
+import Spinner from 'components/Spinner';
 import { Share } from 'components/Share';
-
-import { FormatDateInFull } from 'helpers/DateFunctions';
 
 import { colors } from 'assets/styles';
 import {
@@ -48,18 +47,25 @@ export default Menu = forwardRef((props, ref) => {
 
   });
 
+  const download = useCallback(() => {
+    if (props.isDownloading) return;
 
-  // const openEdit = useCallback(() => {
-  //   closeModal();
+    closeModal();
 
-  //   setTimeout(() => props.openEdit(), 200);
-  // })
+    setTimeout(() => props.download(movement), 200);
+  }, [props.isDownloading, movement]);
 
-  // const openConfirmation = useCallback(() => {
-  //   closeModal();
+  const openDeadline = useCallback(() => {
+    closeModal();
 
-  //   setTimeout(() => props.openConfirmation(), 200);
-  // })
+    setTimeout(() => props.openDeadline(), 200);
+  });
+
+  const openConfirmation = useCallback(() => {
+    closeModal();
+
+    setTimeout(() => props.openConfirmation(), 200);
+  });
 
   const openEmail = useCallback(() => {
     closeModal();
@@ -80,18 +86,26 @@ export default Menu = forwardRef((props, ref) => {
   return (
     <Modal ref={ref} title="O que deseja?" footer={footer()}>
       <Content>
+        <Item onPress={() => openDeadline()}>
+          <MaterialIcons name={'event'} size={22} color={colors.fadedBlack} />
+          <ItemText>Cadastrar prazo</ItemText>
+        </Item>
         <Item onPress={() => openEmail()}>
           <MaterialIcons name={'mail'} size={22} color={colors.fadedBlack} />
           <ItemText>Enviar por email</ItemText>
+        </Item>
+        <Item onPress={() => download()}>
+          {props.isDownloading ? <Spinner height={22} /> : <MaterialIcons name={'file-download'} size={22} color={colors.fadedBlack} />}
+          <ItemText>Baixar movimentação</ItemText>
         </Item>
         <Item onPress={() => share()}>
           <MaterialIcons name={'share'} size={22} color={colors.fadedBlack} />
           <ItemText>Compartilhar</ItemText>
         </Item>
-        {/* <Item onPress={() => openConfirmation()}>
+        <Item onPress={() => openConfirmation()}>
           <MaterialIcons name={'delete'} size={22} color={colors.fadedBlack} />
           <ItemText>Excluir</ItemText>
-        </Item> */}
+        </Item>
       </Content>
     </Modal>
   );

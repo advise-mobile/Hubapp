@@ -28,8 +28,11 @@ import {
 } from './styles';
 
 export default Options = forwardRef((props, ref) => {
+  const term = props.term;
   const jurisprudence = props.jurisprudence;
+
   const [downloading, setDownloading] = useState(false);
+
   const dirs = RNFetchBlob.fs.dirs;
   const dispatch = useDispatch();
 
@@ -52,6 +55,15 @@ export default Options = forwardRef((props, ref) => {
   });
 
   const download = useCallback(async () => {
+    const params = {
+      CodEmenta: jurisprudence.codEmenta,
+      NumeroRecursos: jurisprudence.numeroRecurso,
+      termo: term,
+      tipoArquivo: 'pdf'
+    };
+
+    const queryParams = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+
     const havePermission = Platform.OS == 'ios' || requestPermission();
 
     if (!havePermission) {
@@ -68,40 +80,34 @@ export default Options = forwardRef((props, ref) => {
 
     Toast.show('Download da jurisprudência iniciado, por favor, aguarde.');
 
+    const path = (Platform.OS == 'ios') ? dirs.DocumentDir + `/${Date.now()}.pdf` : dirs.DCIMDir + `/${Date.now()}.pdf`;
+
     RNFetchBlob.config({
       fileCache: true,
-      path: (Platform.OS == 'ios') ? dirs.DocumentDir + `/${Date.now()}.zip` : dirs.DCIMDir + `/${Date.now()}.zip`,
+      path: path,
       addAndroidDownloads: {
         useDownloadManager: true,
         notification: true,
         mediaScannable: true,
-        mime: 'application/zip',
-        description: 'Jurisprudência baixada com sucesso!',
-        path: dirs.DCIMDir + `/${Date.now()}.zip`,
+        description: 'Jurisprudência disponibilizada via Advise Hub App!',
+        path: dirs.DCIMDir + `/${Date.now()}.pdf`,
       }
     })
-      .fetch('GET', `${BASE_URL}/core/v1/jurisprudencia-integras?linkIntegra=${jurisprudence.linkIntegra}`, {
+      .fetch('GET', `${BASE_URL}/core/v1/jurisprudencias-download?${queryParams}`, {
         Authorization: `Bearer ${token}`
       })
-      .then(() => {
-        dispatch(
-          ToastNotifyActions.toastNotifyShow(
-            'Jurisprudência baixada com sucesso!',
-            false
-          )
-        );
+      .then(res => {
+        dispatch(ToastNotifyActions.toastNotifyShow('Jurisprudência baixada com sucesso!', false));
+
+        if (Platform.OS === "ios") {
+          RNFetchBlob.fs.writeFile(path, res.data, 'base64');
+          RNFetchBlob.ios.openDocument(path);
+        }
       })
-      .catch((err) => {
-        dispatch(
-          ToastNotifyActions.toastNotifyShow(
-            'Erro ao baixar Jurisprudência, tente novamente mais tarde.',
-            true
-          )
-        );
-      })
+      .catch(() => dispatch(ToastNotifyActions.toastNotifyShow('Erro ao baixar Jurisprudência, tente novamente mais tarde.', true)))
       .finally(() => {
         setDownloading(false);
-        // ref.current?.close();
+        ref.current?.close();
       });
   }, [jurisprudence]);
 
@@ -157,7 +163,7 @@ export default Options = forwardRef((props, ref) => {
       <Content>
         <Option onPress={() => download()} disabled={downloading}>
           {downloading ? <Spinner height='auto' size={22} /> : <MaterialIcons name="get-app" size={24} color={colors.fadedBlack} />}
-          <OptionText>Baixar íntegra</OptionText>
+          <OptionText>Baixar jurisprudência</OptionText>
         </Option>
         <Option onPress={() => quote()}>
           <MaterialIcons name="format-quote" size={24} color={colors.fadedBlack} />

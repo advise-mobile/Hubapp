@@ -8,6 +8,8 @@ import UserActions from 'store/ducks/User';
 import { FormatDateInFull, FormatDateBR } from 'helpers/DateFunctions';
 import { MaskCnj } from 'helpers/Mask';
 
+import { getLoggedUser } from 'helpers/Permissions';
+
 // import moment from 'moment';
 
 // const selectedKeywords = filters.keywords;
@@ -113,6 +115,7 @@ export function* getMovements({ params }) {
         id,
         lido,
         idMovProcessoCliente,
+        idPastaUsuarioCliente,
         movimento: {
           dataHoraMovimento,
           idTipoMovProcesso,
@@ -128,6 +131,7 @@ export function* getMovements({ params }) {
         lido,
         idTipoMovProcesso,
         idMovProcessoCliente,
+        idPastaUsuarioCliente
       }
 
       if (andamentoProcesso) {
@@ -214,6 +218,32 @@ export function* sendMovementsEmail({ param }) {
       yield put(
         ToastNotifyActions.toastNotifyShow(
           'Não foi possível enviar o movimento por email.',
+          true
+        )
+      );
+    }
+  }
+}
+
+export function* deleteMovement({ params }) {
+  try {
+    const { idUsuarioCliente } = yield getLoggedUser();
+
+    const data = [{ ...params, idUsuarioCliente }];
+
+    yield call(Api.put, `/core/v1/pastas-usuarios-clientes/desvincular-movimento`, data);
+
+    yield put(ToastNotifyActions.toastNotifyShow('Movimentação excluída com sucesso!', false));
+    yield put(MovementsTypes.deleteMovementProceeded());
+  } catch (err) {
+    console.error(err);
+
+    const { status } = err.response;
+    if (status !== 401) {
+      yield put(MovementsTypes.deleteMovementProceeded());
+      yield put(
+        ToastNotifyActions.toastNotifyShow(
+          'Não foi possível excluir o movimento.',
           true
         )
       );

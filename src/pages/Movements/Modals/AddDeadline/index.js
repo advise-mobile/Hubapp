@@ -1,17 +1,20 @@
 import React, { forwardRef, useState, useCallback, useRef, useEffect } from 'react';
-import { KeyboardAvoidingView } from 'react-native';
+
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import CheckBox from '@react-native-community/checkbox';
 import moment from 'moment';
 
+import { useForm, Controller, reset } from "react-hook-form";
+import { useSelector, useDispatch } from 'react-redux';
+
+import Api from 'services/Api';
+
+import { getLoggedUser } from 'helpers/Permissions';
 import { FormatFullDateEN } from 'helpers/DateFunctions';
 
 import Modal from 'components/Modal';
 import Spinner from 'components/Spinner';
 import Datepicker from 'components/DatePicker';
-
-import { useForm, Controller, reset } from "react-hook-form";
-import { useSelector, useDispatch } from 'react-redux';
 
 import DeadlinesActions from 'store/ducks/Deadlines';
 
@@ -39,7 +42,7 @@ import {
   Column,
 } from './styles';
 
-export default Add = forwardRef((props, ref) => {
+export default AddDeadline = forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const { control, handleSubmit } = useForm();
 
@@ -47,7 +50,9 @@ export default Add = forwardRef((props, ref) => {
   const loadingTypes = useSelector(state => state.deadlines.loadingTypes);
   const processing = useSelector(state => state.deadlines.processing);
 
-
+  //Props
+  const [movement, setMovement] = useState(props.movement);
+  const [idAgenda, setIdAgenda] = useState(0);
   //Refs
   const titleRef = useRef(null);
   const locationRef = useRef(null);
@@ -57,7 +62,6 @@ export default Add = forwardRef((props, ref) => {
   const [currentType, setCurrentType] = useState(null);
   const [allDay, setAllDay] = useState(false);
   const [date, setDate] = useState(null);
-  const [idAgenda, setIdAgenda] = useState(props.idAgenda);
   const [hour, setHour] = useState(null);
   const [location, setLocation] = useState('');
   const [observation, setObservation] = useState('');
@@ -76,8 +80,6 @@ export default Add = forwardRef((props, ref) => {
     'hora': setHourError
   });
 
-  const onAdd = props.onAdd;
-
   const hidePicker = () => setViewPicker(false);
 
   // const defaultValues = {
@@ -89,7 +91,19 @@ export default Add = forwardRef((props, ref) => {
   //   observacao: '',
   // }
 
-  useEffect(() => setIdAgenda(props.idAgenda), [props]);
+  useEffect(() => {
+    getIdAgenda();
+
+    dispatch(DeadlinesActions.deadlinesTypesRequest());
+  }, []);
+
+  useEffect(() => setMovement(props.movement), [props]);
+
+  const getIdAgenda = useCallback(() => {
+    getLoggedUser().then(user =>
+      Api.get(`/core/v1/agendas?campos=*&idUsuarioCliente=${user.idUsuarioCliente}`).then(({ data }) => setIdAgenda(data.itens[0]?.id || 0))
+    )
+  }, []);
 
   const handleConfirm = date => {
     const hour = moment(date).format('HH:mm');
@@ -111,6 +125,7 @@ export default Add = forwardRef((props, ref) => {
     setCurrentType(null);
     setDate(null);
     setHour(null);
+    getIdAgenda();
 
     setTitleError(false);
     setDateError(false);
@@ -152,12 +167,16 @@ export default Add = forwardRef((props, ref) => {
       localizacao: localizacao || '',
       diaInteiro: diaInteiro || false,
       idTipoEventoAgenda: type.id || null,
+      idsMovProcessosVinculados: [
+        {
+          idMovProcessoCliente: movement.idMovProcessoCliente
+        }
+      ]
     }];
 
     dispatch(DeadlinesActions.deadlinesAdd(itens));
 
     setTimeout(() => closeModal(), 500);
-    setTimeout(() => onAdd(), 1000);
 
     // resetValues();
   };

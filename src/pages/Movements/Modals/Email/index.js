@@ -47,7 +47,9 @@ export default EmailModal = forwardRef((props, ref) => {
       })
     );
 
-    setTimeout(() => closeModal(), 1000);
+    setTimeout(() => closeModal(), 500);
+
+    setTimeout(() => props.onConfirm(), 500);
   }, [email, emailErr, movement]);
 
   const closeModal = useCallback(() => {
@@ -70,7 +72,7 @@ export default EmailModal = forwardRef((props, ref) => {
   );
 
   return (
-    <Modal ref={ref} title="Enviar por email" footer={footer()}>
+    <Modal ref={ref} title="Enviar por email" footer={footer()} onClose={() => setEmail('')}>
       <Content>
         <Email
           error={emailErr}

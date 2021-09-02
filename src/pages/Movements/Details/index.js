@@ -1,27 +1,32 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import { Platform, PermissionsAndroid } from 'react-native';
 
-import { useSelector, useDispatch } from 'react-redux';
+import RNFetchBlob from 'rn-fetch-blob'
+import Toast from 'react-native-simple-toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { TOKEN } from 'helpers/StorageKeys';
+
+import Api, { BASE_URL, getLogin } from 'services/Api';
+
 import MovementsActions from 'store/ducks/Movements';
 import MovementActions from 'store/ducks/Movement';
 import FolderKeywordsActions from 'store/ducks/FolderKeywords';
 import FolderProcessesActions from 'store/ducks/FolderProcesses';
+import ToastNotifyActions from 'store/ducks/ToastNotify';
 
 import Menu from './Menu';
-import Email from '../Email';
+import Email from '../Modals/Email';
+import Confirmation from '../Modals/Confirmation';
 
 import Header from 'components/Header';
 import Spinner from 'components/Spinner';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import Api from 'services/Api';
-
 import { colors } from 'assets/styles';
-import {
-  Container,
-  Warp,
-  HeaderAction,
-} from 'assets/styles/general';
+import { Container, Warp, HeaderAction } from 'assets/styles/general';
 
 import {
   Movement,
@@ -34,39 +39,27 @@ import {
   MovementDispatch,
 } from './styles';
 
-import { FormatDateBR } from 'helpers/DateFunctions';
 import { MaskCnj } from 'helpers/Mask';
 
 export default MovementDetail = props => {
-  const [idMovProcessoCliente] = useState(props.route.params.idMovProc);
   const [movementType] = useState(props.route.params.movementType);
   const [movement, setMovement] = useState(props.route.params.movement);
+  const [moveReference, setMoveReference] = useState(null);
   const [loadingDetails, setLoading] = useState(true);
-
-  const loading = useSelector(state => state.process.loading);
+  const [downloading, setDownloading] = useState(false);
 
   const menuRef = useRef(null);
   const emailRef = useRef(null);
+  const deadlineRef = useRef(null);
+  const confirmationRef = useRef(null);
 
   const dispatch = useDispatch();
 
-  const customActions = useMemo(() => (
-    <HeaderAction>
-      <MaterialIcons name={'more-vert'} size={20} color={colors.fadedBlack} onPress={() => menuRef.current?.open()} />
-    </HeaderAction>
-  ), []);
-
-  const renderMenu = useMemo(() =>
-    <Menu
-      ref={menuRef}
-      movement={movement}
-      type={movementType}
-      openEmail={() => emailRef.current?.open()}
-    />, [movement, movementType]);
-
-  const renderEmail = useMemo(() => <Email ref={emailRef} movement={{ ...movement, idMovProcessoCliente: movement.idMovProcessoCliente }} />, [movement]);
+  const dirs = RNFetchBlob.fs.dirs;
 
   useEffect(() => {
+    setMoveReference(movement);
+
     const endpoint = (movementType === -1) ? 'andamentos' : 'publicacoes';
 
     const { idMovProcessoCliente } = movement;
@@ -115,6 +108,95 @@ export default MovementDetail = props => {
     return;
   }, []);
 
+  const requestPermission = useCallback(async () => {
+    try {
+      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+    }
+
+    return false;
+  });
+
+  const downloadMovement = useCallback(async item => {
+    const havePermission = Platform.OS == 'ios' || await requestPermission();
+
+    if (!havePermission)
+      setDownloading(false);
+
+    await getLogin();
+
+    const token = await AsyncStorage.getItem(TOKEN);
+
+    setDownloading(true);
+
+    Toast.show(`Download ${item.idTipoMovProcesso === -1 ? 'do andamento' : 'da publicação'} iniciado, por favor, aguarde.`);
+
+    const path = (Platform.OS == 'ios') ? dirs.DocumentDir + `/${Date.now()}.pdf` : dirs.DCIMDir + `/${Date.now()}.pdf`;
+
+    RNFetchBlob.config({
+      fileCache: true,
+      path: path,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        mediaScannable: true,
+        description: `${item.idTipoMovProcesso === -1 ? 'Andamento disponibilizado' : 'Publicação disponibilizada'} via Advise Hub App`,
+        path: dirs.DCIMDir + `/${Date.now()}.pdf`,
+      }
+    })
+      .fetch('GET', `${BASE_URL}/core/v1/movimentos-download?ids=${item.idMovProcessoCliente}&tipoArquivo=pdf`, {
+        Authorization: `Bearer ${token}`
+      })
+      .then(res => {
+        dispatch(ToastNotifyActions.toastNotifyShow(`${item.idTipoMovProcesso === -1 ? 'Andamento baixado' : 'Publicação baixada'} com sucesso!`, false));
+
+        if (Platform.OS === "ios") {
+          RNFetchBlob.fs.writeFile(path, res.data, 'base64');
+          RNFetchBlob.ios.openDocument(path);
+        }
+      })
+      .catch(err => {
+        dispatch(ToastNotifyActions.toastNotifyShow(`Erro ao baixar ${item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'}, tente novamente mais tarde.`, true));
+
+        console.error(err);
+      })
+      .finally(() => setDownloading(false));
+  }, [moveReference]);
+
+  const customActions = useMemo(() => (
+    <HeaderAction>
+      <MaterialIcons name={'more-vert'} size={20} color={colors.fadedBlack} onPress={() => menuRef.current?.open()} />
+    </HeaderAction>
+  ), []);
+
+  const renderMenu = useMemo(() => <Menu
+    ref={menuRef}
+    movement={movement}
+    type={movementType}
+    openEmail={() => emailRef.current?.open()}
+    openConfirmation={() => confirmationRef.current?.open()}
+    openDeadline={() => deadlineRef.current?.open()}
+    download={move => downloadMovement(move)}
+    isDownloading={downloading}
+  />, [movement, movementType, downloading]);
+
+  const renderEmail = useMemo(() => <Email ref={emailRef} movement={{ ...movement, idMovProcessoCliente: movement.idMovProcessoCliente }} />, [movement]);
+
+  const renderConfirmation = useMemo(() => <Confirmation ref={confirmationRef} movement={moveReference} remove={id => removeFromList(id)} />, [moveReference]);
+
+  const renderAddDeadline = useMemo(() => <AddDeadline ref={deadlineRef} movement={moveReference} />, [moveReference]);
+
+  const removeFromList = useCallback(() => {
+    const move = props.route.params.movement;
+
+    dispatch(MovementsActions.deleteMovementFromList({ id: move.id }));
+
+    props.navigation.goBack();
+  }, [props]);
+
   const renderProcesses = useCallback(() => (
     <Movement key={3}>
       <MovementTags>
@@ -125,12 +207,12 @@ export default MovementDetail = props => {
         )}
         {movement.fonte && (
           <Tag background={colors.gray}>
-            <TagText>{movement.fonte}</TagText>
+            <TagText>Fonte: {movement.fonte}</TagText>
           </Tag>
         )}
         {movement.identificador && (
           <Tag background={colors.gray}>
-            <TagText>{movement.identificador}</TagText>
+            <TagText>Identificador: {movement.identificador}</TagText>
           </Tag>
         )}
 
@@ -209,8 +291,8 @@ export default MovementDetail = props => {
         </ProcessNumber>
       }
 
-      <MovementContent>{movement.conteudo}</MovementContent>
-      <MovementDispatch>{movement.despacho}</MovementDispatch>
+      <MovementContent>{movement.despacho}</MovementContent>
+      <MovementDispatch>{movement.conteudo}</MovementDispatch>
     </Movement>
   ));
 
@@ -229,6 +311,8 @@ export default MovementDetail = props => {
       </Warp>
       {renderMenu}
       {renderEmail}
+      {renderConfirmation}
+      {renderAddDeadline}
     </Container>
   );
 }

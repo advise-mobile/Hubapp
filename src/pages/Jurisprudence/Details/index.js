@@ -87,7 +87,7 @@ export default function jurisprudenceDetails(props) {
           </Tags>
           {renderJurisprudence}
         </Content>
-        <Options ref={optionsRef} jurisprudence={jurisprudence} openEmail={openEmail} />
+        <Options ref={optionsRef} jurisprudence={jurisprudence} term={term} openEmail={openEmail} />
         <Email ref={emailRef} jurisprudence={jurisprudence} term={term} />
       </Warp>
     </Container>

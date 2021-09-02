@@ -36,6 +36,7 @@ export default Modal = forwardRef((props, ref) => {
       disableScrollIfPossible={false}
       keyboardAvoidingOffset={40}
       avoidKeyboard={true}
+      onClose={props.onClose}
     // FooterComponent={renderFooter}
     // keyboardAvoidingBehavior='height'
     // avoidKeyboardLikeIOS

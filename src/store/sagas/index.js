@@ -20,7 +20,7 @@ import { getCustomer } from './Customer';
 import { getFolderKeywords } from './FolderKeywords';
 import { getFolderProcesses } from './FolderProcesses';
 import { getMovement, movementRead } from './Movement';
-import { getMovements, getDiaries, getTribunals, sendMovementsEmail } from './Movements';
+import { getMovements, getDiaries, getTribunals, sendMovementsEmail, deleteMovement } from './Movements';
 import { getProcess } from './Process';
 import { getPeople } from './People';
 import {
@@ -83,6 +83,7 @@ export default function* rootSaga() {
     takeLatest(MovementsTypes.DIARIES_REQUEST, getDiaries),
     takeLatest(MovementsTypes.TRIBUNALS_REQUEST, getTribunals),
     takeLatest(MovementsTypes.MOVEMENTS_EMAIL_REQUEST, sendMovementsEmail),
+    takeLatest(MovementsTypes.DELETE_MOVEMENT, deleteMovement),
 
     takeLatest(ProcessTypes.PROCESS_REQUEST, getProcess),
 

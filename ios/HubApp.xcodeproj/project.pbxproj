@@ -558,13 +558,13 @@
 				CODE_SIGN_ENTITLEMENTS = HubApp/HubApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 23;
 				DEVELOPMENT_TEAM = DF8CC9QK2Y;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = HubApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1.8;
+				MARKETING_VERSION = 1.1.9;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -590,12 +590,12 @@
 				CODE_SIGN_ENTITLEMENTS = HubAppRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 23;
 				DEVELOPMENT_TEAM = DF8CC9QK2Y;
 				INFOPLIST_FILE = HubApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1.8;
+				MARKETING_VERSION = 1.1.9;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -624,14 +624,14 @@
 				CODE_SIGN_ENTITLEMENTS = OneSignalNotificationServiceExtension/OneSignalNotificationServiceExtensionDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 23;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = DF8CC9QK2Y;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.1.8;
+				MARKETING_VERSION = 1.1.9;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.advise.hub.OneSignalNotificationServiceExtension;
@@ -659,14 +659,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 23;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = DF8CC9QK2Y;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.1.8;
+				MARKETING_VERSION = 1.1.9;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.advise.hub.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";

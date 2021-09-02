@@ -106,12 +106,12 @@ export default function DeadlinesDetails(props) {
         )}
         {movement.fonte && (
           <Tag background={colors.gray}>
-            <TagText>{movement.fonte}</TagText>
+            <TagText>Fonte: {movement.fonte}</TagText>
           </Tag>
         )}
         {movement.identificador && (
           <Tag background={colors.gray}>
-            <TagText>{movement.identificador}</TagText>
+            <TagText>Identificador: {movement.identificador}</TagText>
           </Tag>
         )}
 
@@ -144,19 +144,19 @@ export default function DeadlinesDetails(props) {
 
         {publicacao.varaDescricao && (
           <Tag background={colors.gray} key={3}>
-            <TagText>{publicacao.varaDescricao}</TagText>
+            <TagText>Vara: {publicacao.varaDescricao}</TagText>
           </Tag>
         )}
 
         {publicacao.cidadeComarcaDescricao && (
           <Tag background={colors.gray} key={4}>
-            <TagText>{publicacao.cidadeComarcaDescricao}</TagText>
+            <TagText>Comarca: {publicacao.cidadeComarcaDescricao}</TagText>
           </Tag>
         )}
 
         {publicacao.cadernoDescricao && (
           <Tag background={colors.gray} key={5}>
-            <TagText>{publicacao.cadernoDescricao}</TagText>
+            <TagText>Caderno: {publicacao.cadernoDescricao}</TagText>
           </Tag>
         )}
 
@@ -166,9 +166,15 @@ export default function DeadlinesDetails(props) {
           </Tag>
         )}
 
+        {publicacao.edicaoDiario > 0 && (
+          <Tag background={colors.gray} key={7}>
+            <TagText>Edição do diário: {publicacao.edicaoDiario || 0}</TagText>
+          </Tag>
+        )}
+
         {(publicacao.paginaInicial > 0 && publicacao.paginaFinal > 0) && (
-          <Tag background={colors.gray}>
-            <TagText>{publicacao.paginaInicial || 0} a {publicacao.paginaFinal || 0}</TagText>
+          <Tag background={colors.gray} key={8}>
+            <TagText>Páginas: {publicacao.paginaInicial || 0} a {publicacao.paginaFinal || 0}</TagText>
           </Tag>
         )}
 
@@ -185,8 +191,8 @@ export default function DeadlinesDetails(props) {
           {/* <MaterialIcons name="add-circle-outline" size={20} color={colors.red} onPress={() => console.log('teste')} /> */}
         </ProcessNumber>
       )}
-      <MovementContent>{publicacao.conteudo}</MovementContent>
-      <MovementDispatch>{publicacao.despacho}</MovementDispatch>
+      <MovementContent>{publicacao.despacho}</MovementContent>
+      <MovementDispatch>{publicacao.conteudo}</MovementDispatch>
     </Movement>
   ), []);
 
@@ -200,7 +206,7 @@ export default function DeadlinesDetails(props) {
           <Label>Tipo</Label>
           <Value>{deadline.tipoEventoAgenda}</Value>
           <Label>Localização</Label>
-          <Value>{deadline.localizacao || '-'}</Value>
+          <Value>{deadline.localizacao}</Value>
           <Label>Observações</Label>
           <Value>{deadline.observacao || '-'}</Value>
           {movement}
