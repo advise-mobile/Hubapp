@@ -155,7 +155,7 @@ export default function Login(props) {
     dispatch(UserActions.updatePicture());
 
     if (login.access_token !== null) {
-      registerNotification();
+      await registerNotification();
 
       if (!acceptTerms) {
         props.navigation.dispatch(StackActions.push('TermsUse'));

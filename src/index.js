@@ -11,6 +11,7 @@ import Routes from './navigation/Routes';
 import StatusBar from './components/StatusBar';
 import ToastNotify from './components/ToastNotify';
 
+import env from 'services/env';
 
 LogBox.ignoreLogs([
   "Can't perform a React state update on an unmounted component",
@@ -22,7 +23,10 @@ const App = () => {
   const colorScheme = Appearance.getColorScheme();
   const barStyle = colorScheme === 'dark' ? 'light-content' : 'dark-content';
 
-  useEffect(() => { SplashScreen.hide(); }, []);
+  useEffect(() => {
+    OneSignal.setAppId(env.oneSignalId);
+    SplashScreen.hide(); 
+  }, []);
 
   return (
     <Provider store={store}>
