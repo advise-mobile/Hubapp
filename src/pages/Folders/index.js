@@ -83,7 +83,7 @@ export default function Folders(props) {
   const notFound = (colorScheme == 'dark') ? require('assets/images/not_found/movements_white.png') : require('assets/images/not_found/movements.png');
 
   const dispatch = useDispatch();
-  const threshold = 0;
+  const threshold = 0.5;
 
   useEffect(() => {
     props.navigation.addListener('beforeRemove', (e) => {
@@ -126,13 +126,14 @@ export default function Folders(props) {
     setTriggerKeywordRequest(!triggerKeywordRequest);
   }, []);
 
-  const onProcessesEndReached = useCallback(() => {
-    if (endProcessesReached) return;
+  const onProcessesEndReached = () => {
 
-    setCurrentProcessesPage(currentProcessesPage + 1);
+    if (endProcessesReached || loadingProcesses) return;
 
-    setTriggerProcessesRequest(!triggerProcessesRequest);
-  }, []);
+    setCurrentProcessesPage(prev => prev + 1);
+
+    setTriggerProcessesRequest(prev => !prev);
+  };
 
   const renderKeywordsNotFound = useCallback(() => (
     <>
