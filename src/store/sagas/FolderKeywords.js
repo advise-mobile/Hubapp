@@ -38,7 +38,7 @@ export function* getFolderKeywords(action) {
       `/core/v1/pastas-usuarios-clientes?${query}&${paginator}&${queryFilters}`
     );
 
-    const endReached = data.itens.length == 0;
+    const endReached = data.itens.length < perPage;
 
     const movementsNotRead = endReached ? 0 : data.itens.map(folder => folder.totalNaoLidas).reduce((a, b) => a + b, 0);
 

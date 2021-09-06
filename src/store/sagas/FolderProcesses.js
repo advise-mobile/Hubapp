@@ -35,7 +35,7 @@ export function* getFolderProcesses(action) {
       `/core/v1/pastas-usuarios-clientes?${query}&${paginator}&${queryFilters}`
     );
 
-    const endReached = data.itens.length < 20;
+    const endReached = data.itens.length < perPage;
 
     const movementsNotRead = data.itens.map(folder => folder.totalNaoLidas).reduce((a, b) => a + b, 0);
 

@@ -118,13 +118,13 @@ export default function Folders(props) {
     )
   }, [processFilters, triggerProcessesRequest]);
 
-  const onKeywordsEndReached = useCallback(() => {
-    if (endKeywordsReached) return;
+  const onKeywordsEndReached = () => {
+    if (endKeywordsReached || loadingKeywords) return;
 
-    setCurrentKeywordsPage(currentKeywordsPage + 1);
+    setCurrentKeywordsPage(prev => prev + 1);
 
-    setTriggerKeywordRequest(!triggerKeywordRequest);
-  }, []);
+    setTriggerKeywordRequest(prev => !prev);
+  };
 
   const onProcessesEndReached = () => {
 
