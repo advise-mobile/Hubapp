@@ -271,6 +271,8 @@ export default Movements = props => {
 
     setDownloading(true);
 
+    setCurrentMove(item);
+
     Toast.show(`Download ${item.idTipoMovProcesso === -1 ? 'do andamento' : 'da publicação'} iniciado, por favor, aguarde.`);
 
     const path = (Platform.OS == 'ios') ? dirs.DocumentDir + `/${Date.now()}.pdf` : dirs.DCIMDir + `/${Date.now()}.pdf`
@@ -291,6 +293,8 @@ export default Movements = props => {
       })
       .then(res => {
         dispatch(ToastNotifyActions.toastNotifyShow(`${item.idTipoMovProcesso === -1 ? 'Andamento baixado' : 'Publicação baixada'} com sucesso!`, false));
+
+        setCurrentMove(item);
 
         handleMarkAsRead(item);
 
