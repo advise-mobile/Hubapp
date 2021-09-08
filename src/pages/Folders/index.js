@@ -118,22 +118,22 @@ export default function Folders(props) {
     )
   }, [processFilters, triggerProcessesRequest]);
 
-  const onKeywordsEndReached = () => {
+  const onKeywordsEndReached = useCallback(() => {
     if (endKeywordsReached || loadingKeywords) return;
 
     setCurrentKeywordsPage(prev => prev + 1);
 
     setTriggerKeywordRequest(prev => !prev);
-  };
+  }, [endKeywordsReached, loadingKeywords]);
 
-  const onProcessesEndReached = () => {
+  const onProcessesEndReached = useCallback(() => {
 
     if (endProcessesReached || loadingProcesses) return;
 
     setCurrentProcessesPage(prev => prev + 1);
 
     setTriggerProcessesRequest(prev => !prev);
-  };
+  }, [endProcessesReached, loadingProcesses]);
 
   const renderKeywordsNotFound = useCallback(() => (
     <>

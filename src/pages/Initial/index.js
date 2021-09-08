@@ -29,7 +29,7 @@ const Initial = props => {
     const token = await AsyncStorage.getItem(TOKEN);
     const acceptTerms = await AsyncStorage.getItem(ACCEPT_TERMS);
 
-    dispatch(AuthActions.termsUseSuccess(JSON.parse(acceptTerms)));
+    dispatch(AuthActions.termsUseSuccess(JSON.parse(acceptTerms), false));
 
     if (!intro) {
       props.navigation.navigate('Intro');

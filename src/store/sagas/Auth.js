@@ -7,8 +7,8 @@ import ToastNotifyActions from 'store/ducks/ToastNotify';
 
 import jwtDecode from 'jwt-decode';
 
-import { REFRESH_TOKEN, TOKEN, EXPIRES_TOKEN, ACCEPT_TERMS } from 'helpers/StorageKeys';
-import { getLoggedUser } from 'helpers/Permissions'
+import { REFRESH_TOKEN, TOKEN, EXPIRES_TOKEN, ACCEPT_TERMS, AVATAR, PERMISSIONS } from 'helpers/StorageKeys';
+import { getLoggedUser } from 'helpers/Permissions';
 
 export function* login(action) {
   const { email, password } = action;
@@ -175,19 +175,29 @@ export function* acceptTermsUse({ acceptTerms }) {
   };
 
   try {
-    const { data: { status } } = yield call(Api.put, '/core/v1/usuarios-clientes', data);
+    const { data: { status } } = yield call(Api.put, '/core/v1/usuarios-clientes', data, { redirectLogin: true });
 
     if (status.codigo === 200) {
       yield AsyncStorage.setItem(ACCEPT_TERMS, JSON.stringify(true));
-      yield put(AuthActions.termsUseSuccess(true));
+      yield put(AuthActions.termsUseSuccess(true, false));
 
       return;
     }
 
-    yield put(AuthActions.termsUseSuccess(false));
     yield put(ToastNotifyActions.toastNotifyShow('Ocorreu uma falha ao aceitar os termos de uso. Por favor tente novamente!', true));
+    yield redirectToLogin(true);
   } catch (err) {
-    yield put(AuthActions.termsUseSuccess(false));
+
     yield put(ToastNotifyActions.toastNotifyShow('Ocorreu uma falha ao aceitar os termos de uso. Por favor tente novamente!', true));
+    
+    const { redirectLogin } = err.config;
+
+    yield redirectToLogin(!!redirectLogin);
   }
+}
+
+function* redirectToLogin(redirect) {
+  yield put(AuthActions.logoutRequest());
+  yield AsyncStorage.multiRemove([TOKEN, REFRESH_TOKEN, EXPIRES_TOKEN, AVATAR, PERMISSIONS, ACCEPT_TERMS]);
+  yield put(AuthActions.termsUseSuccess(false, redirect));
 }

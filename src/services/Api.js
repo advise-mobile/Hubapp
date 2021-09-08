@@ -74,6 +74,8 @@ api.interceptors.response.use(function (response) {
 
   const originalRequest = error.config;
 
+  const { redirectLogin } = originalRequest;
+
   if (error.response.status === 401 && !originalRequest._retry) {
 
     if (isRefreshing) {
@@ -119,6 +121,11 @@ api.interceptors.response.use(function (response) {
         resolve(axios(originalRequest));
 
       }).catch(async () => {
+  
+        if (redirectLogin) {
+          reject(error);
+          return;
+        };
 
         const loginObject = await AsyncStorage.getItem('@loginObject');
 

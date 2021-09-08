@@ -1,10 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { View, Appearance } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import AuthActions from '../../store/ducks/Auth'
 import CheckBox from '@react-native-community/checkbox';
-import { colors } from '../../assets/styles'
+import { colors } from '../../assets/styles';
 import * as S from './styles';
 
 const TermsUse = props => {
@@ -15,6 +15,7 @@ const TermsUse = props => {
 
   const acceptTerms = useSelector(state => state.auth.acceptTerms);
   const loadingAcceptTerms = useSelector(state => state.auth.loadingAcceptTerms);
+  const redirect = useSelector(state => state.auth.redirect);
 
   const data = {
     header: (
@@ -313,17 +314,28 @@ const TermsUse = props => {
   //   }
   // }
 
-  useEffect(() => {
+  const checkRedirect = useCallback(() => {
 
-    const checkAcceptTerms = () => {
-      if (acceptTerms) {
-        props.navigation.dispatch(StackActions.push('App'));
-      }
-    };
+    if (!!redirect) {
+      dispatch(AuthActions.termsUseSuccess(false, false));
+      props.navigation.dispatch(StackActions.replace('Login'));
+      return;
+    }
 
-    checkAcceptTerms();
+  }, [redirect]);
+
+  const checkAcceptTerms = useCallback(() => {
+
+    if (acceptTerms) {
+      props.navigation.dispatch(StackActions.push('App'));
+    }
 
   }, [acceptTerms]);
+
+  useEffect(() => {
+    checkRedirect();
+    checkAcceptTerms();
+  }, [acceptTerms, redirect]);
 
   const disabledButton = useMemo(() => !acceptCheck, [acceptCheck]);
 

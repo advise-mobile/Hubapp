@@ -15,7 +15,7 @@ const { Types, Creators } = createActions({
   contractsRequest: null,
   contractsSuccess: ['convenio', 'active'],
   termsUseRequest: ['acceptTerms'],
-  termsUseSuccess: ['acceptTerms'],
+  termsUseSuccess: ['acceptTerms', 'redirect'],
 });
 
 export const AuthTypes = Types;
@@ -30,6 +30,7 @@ export const INITIAL_STATE = Immutable({
   convenio: false,
   active: true,
   acceptTerms: false,
+  redirect: false,
   loadingAcceptTerms: false,
   sended: false,
 });
@@ -104,6 +105,7 @@ export const TermsUseRequest = (state) => state.merge({
 
 export const TermsUseSuccess = (state, action) => state.merge({
   acceptTerms: action.acceptTerms,
+  redirect: action.redirect,
   loadingAcceptTerms: false,
 });
 
