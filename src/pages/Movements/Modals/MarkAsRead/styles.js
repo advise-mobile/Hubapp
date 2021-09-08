@@ -37,7 +37,7 @@ const Submit = styled.TouchableOpacity`
 `;
 
 const SubmitText = styled.Text`
-  color: #fff;
+  color: ${colors.white};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;
