@@ -112,10 +112,31 @@ export default Options = forwardRef((props, ref) => {
   }, [jurisprudence]);
 
   const quote = useCallback(() => {
-    let quoteText = `${jurisprudence.titulo}\n`;
-    quoteText += `(${jurisprudence.siglaTribunal} - ${jurisprudence.ementa})\n\n`;
-    quoteText += `(${jurisprudence.siglaTribunal} ${jurisprudence.diario} - ${jurisprudence.tipoRecurso}: ${jurisprudence.numeroRecurso},`;
-    quoteText += `Relator: ${jurisprudence.nomeRelator.toUpperCase()}, Data de Publicação: ${FormatDateBR(jurisprudence.dataPublicacao)})`;
+
+    const { 
+      titulo, 
+      siglaTribunal, 
+      ementa, 
+      diario, 
+      tipoRecurso, 
+      numeroRecurso, 
+      nomeRelator, 
+      dataPublicacao, 
+      dataJulgamento 
+    } = jurisprudence;
+
+    const formattedDate = dataPublicacao ? 
+      `Data de Publicação: ${FormatDateBR(dataPublicacao)}`
+      :
+      dataJulgamento ? 
+      `Data de Julgamento: ${FormatDateBR(dataJulgamento)}`
+      :
+      `Data de Publicação: Não informado`;
+
+    let quoteText = `${titulo}\n`;
+    quoteText += `(${siglaTribunal} - ${ementa})\n\n`;
+    quoteText += `(${siglaTribunal} ${diario} - ${tipoRecurso}: ${numeroRecurso},`;
+    quoteText += `Relator: ${nomeRelator.toUpperCase()}, ${formattedDate})`;
 
     Clipboard.setString(quoteText);
 
@@ -130,17 +151,43 @@ export default Options = forwardRef((props, ref) => {
   }, [jurisprudence]);
 
   const share = useCallback(() => {
-    let text = '';
-    text += `${capitalize(jurisprudence.nomeTribunal)}\n\n`;
-    text += `${jurisprudence.dataPublicacao && 'Data de publicação: ' + FormatDateBR(jurisprudence.dataPublicacao)}\n`;
-    text += `${jurisprudence.numeroRecurso && 'Recurso: ' + jurisprudence.numeroRecurso}\n`;
-    text += `${jurisprudence.nomeRelator && 'Relator: ' + jurisprudence.nomeRelator}\n`;
-    text += `${jurisprudence.orgaoJulgador && 'Órgão julgador: ' + jurisprudence.orgaoJulgador}\n`;
-    text += `${jurisprudence.grupo && 'Grupos: ' + jurisprudence.grupo.join(", ")}\n`;
-    text += `\n${jurisprudence.titulo && jurisprudence.titulo}\n`;
-    text += `${jurisprudence.ementa && jurisprudence.ementa}\n`;
 
-    const title = capitalize(jurisprudence.nomeTribunal);
+    const { 
+      titulo, 
+      nomeTribunal,
+      ementa,
+      grupo, 
+      numeroRecurso, 
+      nomeRelator, 
+      orgaoJulgador,
+      dataPublicacao, 
+      dataJulgamento 
+    } = jurisprudence;
+
+    const formattedDate = dataPublicacao ? 
+      `Data de Publicação: ${FormatDateBR(dataPublicacao)}`
+      :
+      dataJulgamento ? 
+      `Data de Julgamento: ${FormatDateBR(dataJulgamento)}`
+      :
+      `Data de Publicação: Não informado`;
+    
+    const formattedGroup = grupo.length > 1 ? 
+      grupo.join(", ") 
+      : 
+      grupo[0] !== 'undefined' ? grupo[0] : 'Outros';
+
+    let text = '';
+    text += `${capitalize(nomeTribunal)}\n\n`;
+    text += `${formattedDate}\n`;
+    text += `${numeroRecurso && 'Recurso: ' + numeroRecurso}\n`;
+    text += `${nomeRelator && 'Relator: ' + nomeRelator}\n`;
+    text += `${orgaoJulgador && 'Órgão julgador: ' + orgaoJulgador}\n`;
+    text += `Grupos: ${formattedGroup}\n`;
+    text += `\n${titulo && titulo}\n`;
+    text += `${ementa && ementa}\n`;
+
+    const title = capitalize(nomeTribunal);
 
     ref.current?.close();
 

@@ -5,8 +5,6 @@ import HTML from "react-native-render-html";
 
 import moment from 'moment';
 
-import { FormatDateBR } from 'helpers/DateFunctions';
-
 import Header from 'components/Header';
 
 import Options from './Options';
@@ -21,7 +19,8 @@ import {
   TagText,
   Title,
   Description,
-  Mark
+  Mark,
+  Div
 } from './styles';
 
 export default function jurisprudenceDetails(props) {
@@ -34,6 +33,7 @@ export default function jurisprudenceDetails(props) {
     mark: (htmlAttribs, children, convertedCSSStyles, passProps) => <Mark key={Math.random()}>{children}</Mark>,
     description: (htmlAttribs, children, convertedCSSStyles, passProps) => <Description key={Math.random()}>{children}</Description>,
     title: (htmlAttribs, children, convertedCSSStyles, passProps) => <Title key={Math.random()}>{children}</Title>,
+    div: (htmlAttribs, children, convertedCSSStyles, passProps) => <Div key={Math.random()}>{children}</Div>,
   };
 
   const capitalize = useCallback(s => s.replace(/(?:^|\s|["'([{])+\S/g, l => l.toUpperCase()), []);
@@ -61,7 +61,17 @@ export default function jurisprudenceDetails(props) {
             {jurisprudence.dataPublicacao ?
               <Tag key={1}>
                 <TagText>Data de publicação: {moment(jurisprudence.dataPublicacao, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}</TagText>
-              </Tag> : null}
+              </Tag> 
+              :
+              jurisprudence.dataJulgamento ?
+                <Tag key={1}>
+                  <TagText>Data de julgamento: {moment(jurisprudence.dataJulgamento, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}</TagText>
+                </Tag> 
+                : 
+                <Tag key={1}>
+                  <TagText>Data de publicação: Não informado</TagText>
+                </Tag> 
+            }
             {jurisprudence.descricaoArea ?
               <Tag key={2}>
                 <TagText>{jurisprudence.descricaoArea}</TagText>
