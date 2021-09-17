@@ -121,7 +121,7 @@ api.interceptors.response.use(function (response) {
         resolve(axios(originalRequest));
 
       }).catch(async () => {
-  
+
         if (redirectLogin) {
           reject(error);
           return;
