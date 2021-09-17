@@ -80,6 +80,13 @@ const Description = styled.Text`
   line-height: 24px;
 `;
 
+const Div = styled.Text`
+  font-size: ${fonts.small};
+  color: ${colors.grayDarker};
+  font-family: ${fonts.circularStdBook};
+  line-height: 24px;
+`;
+
 const Mark = styled.Text`
   font-size: ${fonts.small};
   color: rgba(0, 0, 0, .8);
@@ -129,5 +136,6 @@ export {
   NotFound,
   Image,
   NotFoundText,
-  NotFoundDescription
+  NotFoundDescription,
+  Div
 };

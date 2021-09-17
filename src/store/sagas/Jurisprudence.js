@@ -9,7 +9,7 @@ function getFilterString(filters) {
 
   if (!filters) result;
 
-  Object.keys(filters).map(key => result += (filters[key] != null && filters[key] != 0) && `${key}=${filters[key]}&` || '');
+  Object.keys(filters).map(key => result += (filters[key] != null && filters[key] !== 0) && `${key}=${filters[key]}&` || '');
 
   return result.slice(0, -1);
 }

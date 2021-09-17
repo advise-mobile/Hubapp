@@ -1,7 +1,6 @@
-import React, { forwardRef, useState, useCallback } from 'react';
+import React, { forwardRef, useState, useCallback, useMemo } from 'react';
 
 import Modal from 'components/Modal';
-import Spinner from 'components/Spinner';
 
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -23,7 +22,6 @@ export default Options = forwardRef((props, ref) => {
   const [term] = useState(props.term);
   const [jurisprudence] = useState(props.jurisprudence);
   const sending = useSelector(state => state.jurisprudence.sending);
-  const [emailErr, setError] = useState(false);
   const dispatch = useDispatch();
 
   const footer = () => (
@@ -38,9 +36,7 @@ export default Options = forwardRef((props, ref) => {
   );
 
   const sendEmail = useCallback(() => {
-    setError(!validate(email) || email.length < 1);
-
-    if (emailErr) return;
+    if (!validate) return;
 
     dispatch(
       JurisprudenceActions.jurisprudenceEmailRequest({
@@ -52,7 +48,7 @@ export default Options = forwardRef((props, ref) => {
     );
 
     setTimeout(() => closeModal(), 1000);
-  }, [email, emailErr]);
+  }, [email]);
 
   const closeModal = useCallback(() => {
     setEmail('');
@@ -60,23 +56,19 @@ export default Options = forwardRef((props, ref) => {
     ref.current?.close();
   }, []);
 
-
-  const validate = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validate = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), [email]);
 
   return (
     <Modal ref={ref} title="Enviar por email" footer={footer()}>
       <Content>
         <Email
-          error={emailErr}
+          error={!validate || email.length < 1}
           autoCorrect={false}
           autoCapitalize='none'
           placeholder='Informe um email'
           placeholderTextColor={colors.grayLight}
           value={email}
-          onChangeText={typedEmail => {
-            setEmail(typedEmail);
-            setError(!validate(email) || email.length < 1);
-          }}
+          onChangeText={setEmail}
           onSubmitEditing={sendEmail}
           returnKeyType='search'
         />

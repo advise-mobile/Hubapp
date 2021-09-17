@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useEffect, useCallback } from 'react';
+import React, { forwardRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { useForm, Controller } from "react-hook-form";
@@ -16,7 +16,7 @@ import {
 } from "./styles";
 
 export default Filters = forwardRef((props, ref) => {
-  const { control, handleSubmit, setValue, getValues } = useForm();
+  const { control, handleSubmit, setValue } = useForm();
   const [data, setData] = useState(props.data);
   const [selectedTypeLabel, setSelectedTypeLabel] = useState();
   const [selectedType, setSelectedType] = useState(props.filters.all);
@@ -26,11 +26,6 @@ export default Filters = forwardRef((props, ref) => {
   const [selectedTribunal, setSelectedTribunal] = useState(props.filters.tribunal);
 
   useEffect(() => {
-    setValue("all", selectedType);
-    setValue("ano", selectedYear);
-    setValue("grupo", selectedArea);
-    setValue("integra", selectedQuote);
-    setValue("tribunal", selectedTribunal);
 
     setData(props.data);
 
@@ -39,7 +34,7 @@ export default Filters = forwardRef((props, ref) => {
     if (key > 0) setSelectedTypeLabel(props.data.types[key]);
   }, [props]);
 
-  const countFilters = useCallback(() => [selectedType, selectedYear, selectedArea, selectedQuote, selectedTribunal].filter(state => state != null && state != 0 && state != undefined).length, [selectedType, selectedYear, selectedArea, selectedQuote, selectedTribunal]);
+  const countFilters = useMemo(() => [selectedType, selectedYear, selectedArea, selectedQuote, selectedTribunal].filter(state => state != null && state !== 0 && state != undefined).length, [selectedType, selectedYear, selectedArea, selectedQuote, selectedTribunal]);
 
   const clearFilters = useCallback(() => {
     setSelectedQuote(undefined);
@@ -68,13 +63,13 @@ export default Filters = forwardRef((props, ref) => {
   );
 
   return (
-    <Modal ref={ref} footer={footer()} title="Filtros" filters={countFilters()} clear={clearFilters} >
+    <Modal ref={ref} footer={footer()} title="Filtros" filters={countFilters} clear={clearFilters} >
       <Row>
         <Title>Ano</Title>
         <Controller
           name='ano'
           control={control}
-          defaultValue={0}
+          defaultValue={selectedYear || 0}
           rules={{ required: false }}
           render={({ onChange }) => (
             <RNPickerSelect
@@ -94,7 +89,7 @@ export default Filters = forwardRef((props, ref) => {
         <Controller
           name='all'
           control={control}
-          defaultValue={0}
+          defaultValue={selectedType || 0}
           rules={{ required: false }}
           render={({ onChange }) => (
             <RNPickerSelect
@@ -115,7 +110,7 @@ export default Filters = forwardRef((props, ref) => {
           <Controller
             name='tribunal'
             control={control}
-            defaultValue={null}
+            defaultValue={selectedTribunal || null}
             rules={{ required: false }}
             render={({ onChange }) => (
               <RNPickerSelect
@@ -136,7 +131,7 @@ export default Filters = forwardRef((props, ref) => {
         <Controller
           name='grupo'
           control={control}
-          defaultValue={null}
+          defaultValue={selectedArea || null}
           rules={{ required: false }}
           render={({ onChange }) => (
             <RNPickerSelect
@@ -156,7 +151,7 @@ export default Filters = forwardRef((props, ref) => {
         <Controller
           name='integra'
           control={control}
-          defaultValue={0}
+          defaultValue={typeof selectedQuote === 'boolean' ? String(selectedQuote) : 0}
           rules={{ required: false }}
           render={({ onChange }) => (
             <RNPickerSelect

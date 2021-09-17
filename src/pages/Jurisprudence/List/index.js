@@ -8,8 +8,6 @@ import moment from 'moment';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HTML from "react-native-render-html";
 
-import { FormatDateBR } from 'helpers/DateFunctions';
-
 import Header from 'components/Header';
 import Spinner from 'components/Spinner';
 
@@ -32,6 +30,7 @@ import {
   Image,
   NotFoundText,
   NotFoundDescription,
+  Div,
 } from './styles';
 
 import Filters from './Filters';
@@ -60,16 +59,24 @@ export default function jurisprudenceList(props) {
     description: (htmlAttribs, children, convertedCSSStyles, passProps) => <Description key={Math.random()} numberOfLines={7}>{children}</Description>,
     mark: (htmlAttribs, children, convertedCSSStyles, passProps) => (<Mark key={Math.random()}>{children}</Mark>),
     title: (htmlAttribs, children, convertedCSSStyles, passProps) => (<Title key={Math.random()}>{children}</Title>),
+    div: (htmlAttribs, children, convertedCSSStyles, passProps) => (<Div key={Math.random()}>{children}</Div>),
   };
 
   const dispatch = useDispatch();
 
   useEffect(() => {
+
+    const { all, tribunal, ...allfilters } = filters;
+
     dispatch(
       JurisprudenceActions.jurisprudenceRequest({
         term: term,
         page: page,
-        filters: filters,
+        filters: {
+          ...allfilters,
+          all,
+          tribunal: !!tribunal ? tribunal : all,
+        },
       })
     )
   }, [props, searchedTerm, trigger, filters]);
@@ -103,7 +110,6 @@ export default function jurisprudenceList(props) {
   });
 
   const refresh = useCallback(() => {
-    setFilters({});
     setPage(1);
     setTrigger(!trigger);
   });
@@ -114,13 +120,33 @@ export default function jurisprudenceList(props) {
     </HeaderAction>
   ));
 
-  const renderItem = ({ item }) => (
-    <Jurisprudence key={item.codEmenta} onPress={() => props.navigation.navigate('JurisprudenceDetail', { jurisprudence: item, term })}>
-      <Tribunal>{item.nomeTribunal}</Tribunal>
-      <PublicationDate>Data de publicação: {moment(item.dataPublicacao, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}</PublicationDate>
-      <HTML source={{ html: `<title>${item.tituloMarcado || item.titulo}</title><description>${item.ementaMarcada?.join("").split('\u0000').join('') || item.ementa}</description>` }} renderers={renderers} ignoredTags={['strong']} />
-    </Jurisprudence>
-  );
+  const renderItem = ({ item }) => {
+
+    const { dataPublicacao, dataJulgamento, codEmenta, nomeTribunal } = item;
+
+    return (
+      <Jurisprudence key={codEmenta} onPress={() => props.navigation.navigate('JurisprudenceDetail', { jurisprudence: item, term })}>
+        <Tribunal>{nomeTribunal}</Tribunal>
+        {
+          dataPublicacao ?
+            <PublicationDate>
+              Data de publicação: {moment(dataPublicacao, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}
+            </PublicationDate>
+          :
+          dataJulgamento ? 
+            <PublicationDate>
+              Data de julgamento: {moment(dataJulgamento, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}
+            </PublicationDate>
+          :
+            <PublicationDate>
+              Data de publicação: Não informado
+            </PublicationDate>
+        }
+        <HTML source={{ html: `<title>${item.tituloMarcado || item.titulo}</title><description>${item.ementaMarcada?.join("").split('\u0000').join('') || item.ementa}</description>` }} renderers={renderers} ignoredTags={['strong']} />
+      </Jurisprudence>
+    )
+
+  }
 
   const renderHeader = useCallback(() =>
     <RegistersBar>
@@ -211,7 +237,7 @@ export default function jurisprudenceList(props) {
   const renderFilters = useMemo(() => {
     const newFilters = makeFiltersData();
     return <Filters ref={filtersRef} filters={filters} data={newFilters} submit={data => handleSubmit(data)} />
-  }, [jurisprudences, filtersData]);
+  }, [filters, filtersData, jurisprudences]);
 
 
   return (

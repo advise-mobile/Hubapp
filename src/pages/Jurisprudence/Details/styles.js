@@ -49,6 +49,13 @@ const Mark = styled.Text`
   background-color: ${colors.yellowLight};
 `;
 
+const Div = styled.Text`
+  font-size: ${fonts.small};
+  color: ${colors.grayDarker};
+  font-family: ${fonts.circularStdBook};
+  line-height: 24px;
+`;
+
 export {
   Content,
   Tags,
@@ -57,4 +64,5 @@ export {
   Title,
   Description,
   Mark,
+  Div,
 }
