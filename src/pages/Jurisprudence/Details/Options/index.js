@@ -5,8 +5,8 @@ import Clipboard from '@react-native-community/clipboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNFetchBlob from 'rn-fetch-blob'
 import Toast from 'react-native-simple-toast';
+import moment from 'moment';
 
-import { FormatDateBR } from 'helpers/DateFunctions';
 import { TOKEN } from 'helpers/StorageKeys';
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
@@ -126,10 +126,10 @@ export default Options = forwardRef((props, ref) => {
     } = jurisprudence;
 
     const formattedDate = dataPublicacao ? 
-      `Data de Publicação: ${FormatDateBR(dataPublicacao)}`
+      `Data de Publicação: ${moment(dataPublicacao, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}`
       :
       dataJulgamento ? 
-      `Data de Julgamento: ${FormatDateBR(dataJulgamento)}`
+      `Data de Julgamento: ${moment(dataJulgamento, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}`
       :
       `Data de Publicação: Não informado`;
 
@@ -165,10 +165,10 @@ export default Options = forwardRef((props, ref) => {
     } = jurisprudence;
 
     const formattedDate = dataPublicacao ? 
-      `Data de Publicação: ${FormatDateBR(dataPublicacao)}`
+      `Data de Publicação: ${moment(dataPublicacao, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}`
       :
       dataJulgamento ? 
-      `Data de Julgamento: ${FormatDateBR(dataJulgamento)}`
+      `Data de Julgamento: ${moment(dataJulgamento, 'YYYY-MM-DDTHH:mm').format('DD/MM/YYYY')}`
       :
       `Data de Publicação: Não informado`;
     
