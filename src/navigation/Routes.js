@@ -3,24 +3,23 @@
 // import { createStackNavigator } from 'react-navigation-stack';
 import React from 'react';
 
-import { Platform } from 'react-native';
+import {Platform} from 'react-native';
 
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {createStackNavigator} from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import { navigationRef } from 'navigation/NavigationService';
+import {navigationRef} from 'navigation/NavigationService';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import UserIcon from 'components/UserIcon';
 import CustomIcon from 'components/CustomIcon';
 
-import Intro from '../pages/Intro';
-import Login from '../pages/Login';
-import Forgot from '../pages/Forgot';
-import Client from '../pages/Client';
-import Blank from '../pages/Blank';
+import Intro from 'pages/Intro';
+import Login from 'pages/Login';
+import Forgot from 'pages/Forgot';
+import Client from 'pages/Client';
 
 import Account from '../pages/Account';
 import Chat from '../pages/Account/Chat';
@@ -42,126 +41,137 @@ import DeadlinesDetails from '../pages/Deadlines/Details';
 import Initial from '../pages/Initial';
 import TermsUse from '../pages/TermsUse';
 
-import { colors } from 'assets/styles';
+import {colors} from 'assets/styles';
 
-import { PermissionsGroups } from 'helpers/Permissions';
+import {PermissionsGroups} from 'helpers/Permissions';
 
 const MainStack = createStackNavigator();
 
 const TabsStack = createBottomTabNavigator();
 
-
 const FoldersStack = createStackNavigator();
 const FoldersScreens = () => (
-  <FoldersStack.Navigator headerMode="none">
-    <FoldersStack.Screen name="Folders" component={Folders} />
-    <FoldersStack.Screen name="Movements" component={Movements} />
-    <FoldersStack.Screen name="MovementDetail" component={MovementDetail} />
-  </FoldersStack.Navigator>
+	<FoldersStack.Navigator headerMode="none">
+		<FoldersStack.Screen name="Folders" component={Folders} />
+		<FoldersStack.Screen name="Movements" component={Movements} />
+		<FoldersStack.Screen name="MovementDetail" component={MovementDetail} />
+	</FoldersStack.Navigator>
 );
 
 const DeadlinesStack = createStackNavigator();
 const DeadlinesScreens = () => (
-  <DeadlinesStack.Navigator headerMode="none">
-    <DeadlinesStack.Screen name="Deadlines" component={Deadlines} />
-    <DeadlinesStack.Screen name="DeadlinesDetails" component={DeadlinesDetails} />
-  </DeadlinesStack.Navigator>
+	<DeadlinesStack.Navigator headerMode="none">
+		<DeadlinesStack.Screen name="Deadlines" component={Deadlines} />
+		<DeadlinesStack.Screen name="DeadlinesDetails" component={DeadlinesDetails} />
+	</DeadlinesStack.Navigator>
 );
 
 const JurisprudenceStack = createStackNavigator();
 const JurisprudenceScreens = () => (
-  <JurisprudenceStack.Navigator headerMode="none">
-    <JurisprudenceStack.Screen name="Jurisprudence" component={Jurisprudence} />
-    <JurisprudenceStack.Screen name="JurisprudenceList" component={JurisprudenceList} />
-    <JurisprudenceStack.Screen name="JurisprudenceDetail" component={JurisprudenceDetail} />
-  </JurisprudenceStack.Navigator>
+	<JurisprudenceStack.Navigator headerMode="none">
+		<JurisprudenceStack.Screen name="Jurisprudence" component={Jurisprudence} />
+		<JurisprudenceStack.Screen name="JurisprudenceList" component={JurisprudenceList} />
+		<JurisprudenceStack.Screen name="JurisprudenceDetail" component={JurisprudenceDetail} />
+	</JurisprudenceStack.Navigator>
 );
 
 const AccountStack = createStackNavigator();
 const AccountScreens = () => (
-  <AccountStack.Navigator headerMode="none">
-    <AccountStack.Screen name="Account" component={Account} />
-    <AccountStack.Screen name="Notifications" component={Notifications} />
-    <AccountStack.Screen name="Pushs" component={Pushs} />
-    <AccountStack.Screen name="Emails" component={Emails} />
-    <AccountStack.Screen name="Chat" component={Chat} />
-  </AccountStack.Navigator>
+	<AccountStack.Navigator headerMode="none">
+		<AccountStack.Screen name="Account" component={Account} />
+		<AccountStack.Screen name="Notifications" component={Notifications} />
+		<AccountStack.Screen name="Pushs" component={Pushs} />
+		<AccountStack.Screen name="Emails" component={Emails} />
+		<AccountStack.Screen name="Chat" component={Chat} />
+	</AccountStack.Navigator>
 );
 
 const AppScreens = () => (
-  <TabsStack.Navigator
-    initialRouteName="Folders"
-    tabBarOptions={{
-      showLabel: false,
-      scrollEnabled: true,
-      activeTintColor: colors.advise,
-      inactiveTintColor: colors.grayLight,
-      inactiveBackgroundColor: colors.white,
-      activeBackgroundColor: colors.white,
-      tabStyle: {
-        width: 60
-      },
-      style: {
-        backgroundColor: colors.white,
-        height: Platform.OS == 'android' ? 64 : 80,
-        paddingTop: Platform.OS == 'android' ? 0 : 8,
-        marginBottom: -2,
-      },
-    }}
-  >
-    {/* <TabsStack.Screen component={Blank} name="Blank" options={{
+	<TabsStack.Navigator
+		initialRouteName="Folders"
+		tabBarOptions={{
+			showLabel: false,
+			scrollEnabled: true,
+			activeTintColor: colors.advise,
+			inactiveTintColor: colors.grayLight,
+			inactiveBackgroundColor: colors.white,
+			activeBackgroundColor: colors.white,
+			tabStyle: {
+				width: 60,
+			},
+			style: {
+				backgroundColor: colors.white,
+				height: Platform.OS == 'android' ? 64 : 80,
+				paddingTop: Platform.OS == 'android' ? 0 : 8,
+				marginBottom: -2,
+			},
+		}}>
+		{/* <TabsStack.Screen component={Blank} name="Blank" options={{
       tabBarIcon: ({ color }) => (
         <CustomIcon group={PermissionsGroups.MOVEMENTS}>
           <FontAwesome name="bolt" size={23} color={color} />
         </CustomIcon>
       ),
     }} /> */}
-    <TabsStack.Screen component={FoldersScreens} name="Folders" options={{
-      tabBarIcon: ({ color }) => (
-        <CustomIcon group={PermissionsGroups.MOVEMENTS}>
-          <FontAwesome name="bolt" size={23} color={color} />
-        </CustomIcon>
-      ),
-    }} />
-    <TabsStack.Screen component={DeadlinesScreens} name="Deadlines" options={{
-      tabBarIcon: ({ color }) => (
-        <CustomIcon group={PermissionsGroups.SCHEDULE}>
-          <MaterialIcons name="event" size={25} color={color} />
-        </CustomIcon>
-      ),
-    }} />
-    <TabsStack.Screen component={JurisprudenceScreens} name="Jurisprudence" options={{
-      tabBarIcon: ({ color }) => (
-        <CustomIcon group={PermissionsGroups.JURISPRUDENCE}>
-          <MaterialIcons name="gavel" size={25} color={color} />
-        </CustomIcon>
-      ),
-    }} />
-    <TabsStack.Screen component={AccountScreens} name="Account" options={{
-      tabBarIcon: ({ color }) => (
-        <UserIcon color={color} />
-      ),
-    }} />
-  </TabsStack.Navigator>
+		<TabsStack.Screen
+			component={FoldersScreens}
+			name="Folders"
+			options={{
+				tabBarIcon: ({color}) => (
+					<CustomIcon group={PermissionsGroups.MOVEMENTS}>
+						<FontAwesome name="bolt" size={23} color={color} />
+					</CustomIcon>
+				),
+			}}
+		/>
+		<TabsStack.Screen
+			component={DeadlinesScreens}
+			name="Deadlines"
+			options={{
+				tabBarIcon: ({color}) => (
+					<CustomIcon group={PermissionsGroups.SCHEDULE}>
+						<MaterialIcons name="event" size={25} color={color} />
+					</CustomIcon>
+				),
+			}}
+		/>
+		<TabsStack.Screen
+			component={JurisprudenceScreens}
+			name="Jurisprudence"
+			options={{
+				tabBarIcon: ({color}) => (
+					<CustomIcon group={PermissionsGroups.JURISPRUDENCE}>
+						<MaterialIcons name="gavel" size={25} color={color} />
+					</CustomIcon>
+				),
+			}}
+		/>
+		<TabsStack.Screen
+			component={AccountScreens}
+			name="Account"
+			options={{
+				tabBarIcon: ({color}) => <UserIcon color={color} />,
+			}}
+		/>
+	</TabsStack.Navigator>
 );
 
-
 const MainScreens = () => (
-  <MainStack.Navigator headerMode="none" screenOptions={{ gestureEnabled: false }}>
-    <MainStack.Screen name="Initial" component={Initial} />
-    <MainStack.Screen name="TermsUse" component={TermsUse} />
-    <MainStack.Screen name="Intro" component={Intro} />
-    <MainStack.Screen name="Login" component={Login} />
-    <MainStack.Screen name="Forgot" component={Forgot} />
-    <MainStack.Screen name="Client" component={Client} />
-    <MainStack.Screen name="App" component={AppScreens} />
-  </MainStack.Navigator>
+	<MainStack.Navigator headerMode="none" screenOptions={{gestureEnabled: false}}>
+		<MainStack.Screen name="Initial" component={Initial} />
+		<MainStack.Screen name="TermsUse" component={TermsUse} />
+		<MainStack.Screen name="Intro" component={Intro} />
+		<MainStack.Screen name="Login" component={Login} />
+		<MainStack.Screen name="Forgot" component={Forgot} />
+		<MainStack.Screen name="Client" component={Client} />
+		<MainStack.Screen name="App" component={AppScreens} />
+	</MainStack.Navigator>
 );
 
 const Routes = () => (
-  <NavigationContainer ref={navigationRef}>
-    <MainScreens />
-  </NavigationContainer>
-)
+	<NavigationContainer ref={navigationRef}>
+		<MainScreens />
+	</NavigationContainer>
+);
 
 export default Routes;

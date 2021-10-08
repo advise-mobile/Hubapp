@@ -1,112 +1,114 @@
-import React, { forwardRef, useState, useCallback, useEffect } from 'react';
+import React, {forwardRef, useState, useCallback, useEffect} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Modal from 'components/Modal';
 import Spinner from 'components/Spinner';
-import { Share } from 'components/Share';
+import RNShareFile from 'react-native-share-pdf';
 
-import { colors } from 'assets/styles';
-import {
-  Footer,
-  Cancel,
-  CancelText,
-  Content,
-  Item,
-  ItemText,
-} from './styles';
+import {colors} from 'assets/styles';
+import {Footer, Cancel, CancelText, Content, Item, ItemText} from './styles';
 
 export default Menu = forwardRef((props, ref) => {
-  const [movement, setMovement] = useState(props.movement);
-  const [type, setType] = useState(props.type);
+	const [movement, setMovement] = useState(props.movement);
+	const [type, setType] = useState(props.type);
 
-  useEffect(() => {
-    setMovement(props.movement);
-    setType(props.type)
-  }, [props]);
+	useEffect(() => {
+		setMovement(props.movement);
+		setType(props.type);
+	}, [props]);
 
-  const share = useCallback(() => {
-    if (type == -1) {
-      const messageShare = `${movement.orgaoJudiciario}, ${movement.dataDisponibilizacaoSemHora || ''} \n\n${movement.descricaoAndamento}`;
+	const share = useCallback(async () => {
+		const {file, fileName} = await props.download(movement, true);
 
-      const infoShare = `\n\n\nFonte: ${movement.fonte}\nIdentificador: ${movement.identificadorClasseFonteProcesso || 'Não informado'}`;
+		const error = await RNShareFile.sharePDF(file, fileName);
 
-      Share({
-        message: messageShare + infoShare,
-        title: 'Processo',
-      });
-    } else {
-      const messageShare = `${movement.diarioDescricao}, ${movement.dataPublicacaoFormatada} \n\n${movement.conteudo} \n\n${movement.despacho}`;
+		if (error) console.error('error');
 
-      const infoShare = `\n\n\nCaderno: ${movement.cadernoDescricao}\nVara: ${movement.varaDescricao}\nComarca: ${movement.cidadeComarcaDescricao}\nPágina: ${movement.paginaInicial} a ${movement.paginaFinal}`;
+		// if (type == -1) {
+		//   const messageShare = `${movement.orgaoJudiciario}, ${movement.dataDisponibilizacaoSemHora || ''} \n\n${movement.descricaoAndamento}`;
 
-      Share({
-        message: messageShare + infoShare,
-        title: 'Publicação',
-      });
-    }
+		//   const infoShare = `\n\n\nFonte: ${movement.fonte}\nIdentificador: ${movement.identificadorClasseFonteProcesso || 'Não informado'}`;
 
-  });
+		//   Share({
+		//     message: messageShare + infoShare,
+		//     title: 'Processo',
+		//   });
+		// } else {
+		//   const messageShare = `${movement.diarioDescricao}, ${movement.dataPublicacaoFormatada} \n\n${movement.conteudo} \n\n${movement.despacho}`;
 
-  const download = useCallback(() => {
-    if (props.isDownloading) return;
+		//   const infoShare = `\n\n\nCaderno: ${movement.cadernoDescricao}\nVara: ${movement.varaDescricao}\nComarca: ${movement.cidadeComarcaDescricao}\nPágina: ${movement.paginaInicial} a ${movement.paginaFinal}`;
 
-    closeModal();
+		//   Share({
+		//     message: messageShare + infoShare,
+		//     title: 'Publicação',
+		//   });
+		// }
+	});
 
-    setTimeout(() => props.download(movement), 200);
-  }, [props.isDownloading, movement]);
+	const download = useCallback(() => {
+		if (props.isDownloading) return;
 
-  const openDeadline = useCallback(() => {
-    closeModal();
+		closeModal();
 
-    setTimeout(() => props.openDeadline(), 200);
-  });
+		setTimeout(() => props.download(movement), 200);
+	}, [props.isDownloading, movement]);
 
-  const openConfirmation = useCallback(() => {
-    closeModal();
+	const openDeadline = useCallback(() => {
+		closeModal();
 
-    setTimeout(() => props.openConfirmation(), 200);
-  });
+		setTimeout(() => props.openDeadline(), 200);
+	});
 
-  const openEmail = useCallback(() => {
-    closeModal();
+	const openConfirmation = useCallback(() => {
+		closeModal();
 
-    setTimeout(() => props.openEmail(), 200);
-  });
+		setTimeout(() => props.openConfirmation(), 200);
+	});
 
-  const closeModal = useCallback(() => ref.current?.close(), []);
+	const openEmail = useCallback(() => {
+		closeModal();
 
-  const footer = () => (
-    <Footer>
-      <Cancel onPress={() => closeModal()}>
-        <CancelText>Cancelar</CancelText>
-      </Cancel>
-    </Footer>
-  );
+		setTimeout(() => props.openEmail(), 200);
+	});
 
-  return (
-    <Modal ref={ref} title="O que deseja?" footer={footer()}>
-      <Content>
-        <Item onPress={() => openDeadline()}>
-          <MaterialIcons name={'event'} size={22} color={colors.fadedBlack} />
-          <ItemText>Cadastrar prazo</ItemText>
-        </Item>
-        <Item onPress={() => openEmail()}>
-          <MaterialIcons name={'mail'} size={22} color={colors.fadedBlack} />
-          <ItemText>Enviar por email</ItemText>
-        </Item>
-        <Item onPress={() => download()}>
-          {props.isDownloading ? <Spinner height={22} /> : <MaterialIcons name={'file-download'} size={22} color={colors.fadedBlack} />}
-          <ItemText>Baixar movimentação</ItemText>
-        </Item>
-        <Item onPress={() => share()}>
-          <MaterialIcons name={'share'} size={22} color={colors.fadedBlack} />
-          <ItemText>Compartilhar</ItemText>
-        </Item>
-        <Item onPress={() => openConfirmation()}>
-          <MaterialIcons name={'delete'} size={22} color={colors.fadedBlack} />
-          <ItemText>Excluir</ItemText>
-        </Item>
-      </Content>
-    </Modal>
-  );
+	const closeModal = useCallback(() => ref.current?.close(), []);
+
+	const footer = () => (
+		<Footer>
+			<Cancel onPress={() => closeModal()}>
+				<CancelText>Cancelar</CancelText>
+			</Cancel>
+		</Footer>
+	);
+
+	return (
+		<Modal ref={ref} title="O que deseja?" footer={footer()}>
+			<Content>
+				<Item onPress={() => openDeadline()}>
+					<MaterialIcons name={'event'} size={22} color={colors.fadedBlack} />
+					<ItemText>Cadastrar prazo</ItemText>
+				</Item>
+				<Item onPress={() => openEmail()}>
+					<MaterialIcons name={'mail'} size={22} color={colors.fadedBlack} />
+					<ItemText>Enviar por email</ItemText>
+				</Item>
+				<Item onPress={() => download()}>
+					{props.isDownloading ? (
+						<Spinner height={22} />
+					) : (
+						<MaterialIcons name={'file-download'} size={22} color={colors.fadedBlack} />
+					)}
+					<ItemText>Baixar movimentação</ItemText>
+				</Item>
+				<Item onPress={() => share()}>
+					<MaterialIcons name={'share'} size={22} color={colors.fadedBlack} />
+					<ItemText>Compartilhar</ItemText>
+				</Item>
+				<Item onPress={() => openConfirmation()}>
+					<MaterialIcons name={'delete'} size={22} color={colors.fadedBlack} />
+					<ItemText>Excluir</ItemText>
+				</Item>
+			</Content>
+		</Modal>
+	);
 });

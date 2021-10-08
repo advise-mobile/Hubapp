@@ -285,6 +285,10 @@ PODS:
     - React-Core
   - RNVectorIcons (7.1.0):
     - React
+  - Smartlook (1.7.10)
+  - smartlook-react-native-bridge (1.2.1):
+    - React
+    - Smartlook (>= 1.7.6)
   - Toast (4.0.0)
   - Yoga (1.14.0)
 
@@ -335,6 +339,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - smartlook-react-native-bridge (from `../node_modules/smartlook-react-native-wrapper`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -342,6 +347,7 @@ SPEC REPOS:
     - boost-for-react-native
     - OneSignal
     - OneSignalXCFramework
+    - Smartlook
     - Toast
 
 EXTERNAL SOURCES:
@@ -431,6 +437,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  smartlook-react-native-bridge:
+    :path: "../node_modules/smartlook-react-native-wrapper"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -481,6 +489,8 @@ SPEC CHECKSUMS:
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 2ad555d4d9fa10b91bb765ca07fe9b29d59573f0
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
+  Smartlook: 426f27016cd80753d244183b863a41e0ccc3a7bb
+  smartlook-react-native-bridge: 3743d44f2e774a4d83a5fa3af90421647b48701d
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
 

@@ -1,14 +1,9 @@
-import { Share } from 'react-native';
+import {Share} from 'react-native';
 
-const ShareCustom = async ({ message, title }, onShare) =>{
-  const res = await Share.share(
-    {
-      message,
-      title,
-    },
-  );
+const ShareCustom = async (data, onShare) => {
+	const res = await Share.share(data);
 
-  if (res.action == Share.sharedAction) onShare();
+	if (res.action == Share.sharedAction) onShare();
 };
 
-export { ShareCustom as Share };
+export {ShareCustom as Share};
