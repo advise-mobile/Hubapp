@@ -1,29 +1,29 @@
 import styled from 'styled-components';
-import { Platform } from 'react-native';
-import { fonts, colors, metrics } from 'assets/styles';
+import {Platform} from 'react-native';
+import {fonts, colors, metrics} from 'assets/styles';
 
 const Container = styled.View`
-  bottom: ${Platform.OS === 'android' ? metrics.baseMargin : metrics.baseMargin + 20};
-  position: absolute;
+	bottom: ${Platform.OS === 'android' ? metrics.baseMargin : metrics.baseMargin + 70};
+	position: absolute;
 `;
 
 const Notify = styled.View`
-  alignItems: center;
-  borderRadius: ${metrics.baseRadius};
-  flexDirection: row;
-  fontFamily: ${fonts.circularStdBold};
-  fontSize: ${fonts.big};
-  justifyContent: space-between;
-  left: ${metrics.baseMargin};
-  paddingHorizontal: 10;
-  paddingVertical: ${metrics.baseMargin + 5};
-  width: ${metrics.screenWidth - metrics.basePadding};
+	align-items: center;
+	border-radius: ${metrics.baseRadius};
+	flex-direction: row;
+	font-family: ${fonts.circularStdBold};
+	font-size: ${fonts.big};
+	justify-content: space-between;
+	left: ${metrics.baseMargin + 10};
+	padding-horizontal: 10;
+	padding-vertical: ${metrics.baseMargin + 5};
+	width: ${metrics.screenWidth - metrics.basePadding - 20};
 `;
 
 const NotifyMessage = styled.Text`
-  color: ${colors.white};
-  flex: 1;
-  marginLeft: 10;
+	color: #111111;
+	flex: 1;
+	margin-left: 10;
 `;
 
-export { Container, Notify, NotifyMessage };
+export {Container, Notify, NotifyMessage};

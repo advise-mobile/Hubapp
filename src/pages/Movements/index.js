@@ -596,9 +596,14 @@ export default Movements = props => {
 						}
 						underlayColor={colors.white}
 						activeOpacity={1}>
+						{!item.lido && (
+							<Tag background={colors.blue200}>
+								<TagText>{item.idTipoMovProcesso === -1 ? 'Não lido' : 'Não lida'}</TagText>
+							</Tag>
+						)}
 						{item.idTipoMovProcesso === -1 && (
 							<>
-								<Tag background={item.lido ? colors.gray : colors.amber}>
+								<Tag background={item.lido ? colors.gray : colors.orange200}>
 									<TagText>Andamento</TagText>
 								</Tag>
 								{item.numeroProcesso && (
@@ -620,7 +625,9 @@ export default Movements = props => {
 										keyword.idPalavraChavePrincipal === undefined && (
 											<Tag
 												background={
-													keyword.palavraChave == folder.nome ? colors.green : colors.gray
+													keyword.palavraChave == folder.nome && !item.lido
+														? colors.green
+														: colors.gray
 												}
 												key={keyword.id}>
 												<TagText>{keyword.palavraChave}</TagText>
