@@ -21,10 +21,16 @@ const Title = styled.Text`
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.bigger};
   margin-top: ${metrics.baseMargin * 1.6};
-  margin-bottom: ${metrics.baseMargin * 1.6};
-  margin-right: ${metrics.baseMargin * 2.4};
-  margin-left: ${metrics.baseMargin * 2.4};
+	text-align: center;
 `;
+
+export const Subtitle = styled.Text`
+	font-family: ${fonts.circularStdBold};
+	font-size: ${fonts.small};
+	text-decoration: underline;
+	margin-bottom: ${metrics.baseMargin * 1.6};
+	text-align: center;
+`
 
 const TextWrapper = styled.ScrollView`
   padding-top: ${metrics.basePadding / 2.5};
@@ -44,6 +50,7 @@ const TermsText = styled.Text`
   font-family: ${fonts.circularStdBook};
   color: ${colors.primary};
   font-size: ${fonts.regular};
+	text-align: justify;
 `;
 
 const TermsTextBold = styled.Text`
