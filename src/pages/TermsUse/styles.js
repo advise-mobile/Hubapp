@@ -16,6 +16,17 @@ const ContentWrapper = styled.View`
   border-radius: ${metrics.baseRadius};
 `;
 
+const TitleTerm = styled.Text`
+  color: ${colors.grayDarker};
+  font-family: ${fonts.circularStdBold};
+  font-size: ${fonts.bigger};
+  margin-top: ${metrics.baseMargin * 1.6};
+	text-align: left;
+  margin-left: 16px;
+  margin-bottom: 22px;
+`;
+
+
 const Title = styled.Text`
   color: ${colors.grayDarker};
   font-family: ${fonts.circularStdBold};
@@ -25,11 +36,14 @@ const Title = styled.Text`
 `;
 
 export const Subtitle = styled.Text`
-	font-family: ${fonts.circularStdBold};
+	font-family: ${fonts.circularStdBook};
 	font-size: ${fonts.small};
-	text-decoration: underline;
 	margin-bottom: ${metrics.baseMargin * 1.6};
-	text-align: center;
+	text-align: left;
+  margin-left: 16px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: rgba(0,0,0,0.87);
 `
 
 const TextWrapper = styled.ScrollView`
@@ -51,6 +65,8 @@ const TermsText = styled.Text`
   color: ${colors.primary};
   font-size: ${fonts.regular};
 	text-align: justify;
+  position: relative;
+  right: 90px;
 `;
 
 const TermsTextBold = styled.Text`
@@ -108,6 +124,7 @@ export {
   Container,
   ContentWrapper,
   Title,
+  TitleTerm,
   TextWrapper,
   TermsText,
   TermsTextBold,
