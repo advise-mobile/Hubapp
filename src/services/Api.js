@@ -6,7 +6,7 @@ const HOMOLOG_URL = 'https://homologacao-api.advise.com.br';
 const PROD_URL = 'https://api.advise.com.br';
 
 // let BASE_URL = getUrl();
-export const BASE_URL = PROD_URL;
+export const BASE_URL = HOMOLOG_URL;
 
 import {TOKEN, REFRESH_TOKEN, EXPIRES_TOKEN, AVATAR} from 'helpers/StorageKeys';
 // const TOKEN = '@Advise:token';
@@ -79,7 +79,7 @@ api.interceptors.response.use(
 
 		const {redirectLogin} = originalRequest;
 
-		if (error.response.status === 401 && !originalRequest._retry) {
+		if (error.response && error.response.status === 401 && !originalRequest._retry) {
 			if (isRefreshing) {
 				return new Promise(function (resolve, reject) {
 					failedQueue.push({resolve, reject});
