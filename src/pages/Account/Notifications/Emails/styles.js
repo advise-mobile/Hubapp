@@ -74,6 +74,17 @@ const ActionButton = styled.TouchableOpacity`
   padding: 8px 4px;
 `;
 
+const ButtonInfo = styled.Button`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 24px;
+  width: 1000px !important;
+  height: 40px;
+  background: #2D2D2D !important;
+  border-radius: 4px;
+`;
+
 export {
   List,
   ListItem,
@@ -85,5 +96,6 @@ export {
   Option,
   EmailsList,
   EmailContent,
-  ActionButton
+  ActionButton,
+  ButtonInfo
 }
