@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios --simulator='Simulador 2'",
+    "ios": "react-native run-ios --simulator='Simulator 2'",
     "android:build": "cd android && ./gradlew clean && ./gradlew bundleRelease && cd ..",
     "android:test": "cd android && ./gradlew clean && ./gradlew assembleRelease && cd ..",
     "start": "react-native start --reset-cache",
@@ -12,7 +12,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.13.2",
+    "@expo/match-media": "^0.4.0",
+    "@react-native-async-storage/async-storage": "^1.17.10",
     "@react-native-community/checkbox": "^0.5.6",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/datetimepicker": "^3.0.9",
@@ -44,6 +45,7 @@
     "react-native-reanimated": "^1.13.2",
     "react-native-remote-svg": "^2.0.6",
     "react-native-render-html": "^6.3.4",
+    "react-native-responsive-query": "^0.2.2",
     "react-native-safe-area-context": "^3.1.9",
     "react-native-screens": "^2.15.0",
     "react-native-scrollable-tab-view": "^1.0.0",
@@ -59,6 +61,7 @@
     "react-navigation-stack": "^2.10.1",
     "react-navigation-tabs": "^2.10.1",
     "react-redux": "^7.2.2",
+    "react-responsive": "^9.0.2",
     "reactotron-react-native": "^5.0.0",
     "reactotron-redux": "^3.1.3",
     "reactotron-redux-saga": "^4.2.3",

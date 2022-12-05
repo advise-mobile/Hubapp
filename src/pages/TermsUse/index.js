@@ -29,7 +29,7 @@ const TermsUse = props => {
 	const source = {
 		html: term.textoTermo
 	};
-	  
+
 
 	const handleAccept = () => {
 		dispatch(AuthActions.termsUseRequest(true));
@@ -65,12 +65,10 @@ const TermsUse = props => {
 				headers
 			})
 
-			console.log(data)
-
 			let res = data.itens.map(item => {
 				return item
 			})
-		
+
 			setTerm({
 				textoTermo: res[0].textoTermo,
 				dataHoraPublicacaoTermo: FormatDateBR(res[0].dataHoraPublicacaoTermo)
@@ -80,7 +78,7 @@ const TermsUse = props => {
 		getNewTermo()
 
 	}, [term])
-	
+
 
 	const disabledButton = useMemo(() => !acceptCheck, [acceptCheck]);
 
@@ -88,12 +86,15 @@ const TermsUse = props => {
 		<View style={{flex: 1}}>
 			<S.Container>
 				<S.ContentWrapper>
-					<S.TitleTerm>Termo de Uso</S.TitleTerm>
+					<S.TitleTerm>Termos de Uso</S.TitleTerm>
 					<S.Subtitle>Licença de uso de software</S.Subtitle>
 					<S.TextWrapper>
 						<RenderHtml
-							contentWidth={width}
+							contantWitdh={width}
 							source={source}
+							 tagsStyles={{div: {
+									color: colorScheme === 'dark' ? colors.greenLight : colors.darkGray
+							}}}
 						/>
 						<S.Title
 							style={{fontSize: 20, marginBottom: 28 }}
@@ -129,3 +130,4 @@ const TermsUse = props => {
 };
 
 export default TermsUse;
+

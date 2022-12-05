@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 import { metrics, fonts, colors } from 'assets/styles';
+import { Platform } from 'react-native';
 
 const Container = styled.View`
   flex: 1;
@@ -37,13 +38,12 @@ const Title = styled.Text`
 
 export const Subtitle = styled.Text`
 	font-family: ${fonts.circularStdBook};
-	font-size: ${fonts.small};
 	margin-bottom: ${metrics.baseMargin * 1.6};
 	text-align: left;
   margin-left: 16px;
   margin-bottom: 8px;
   font-size: 16px;
-  color: rgba(0,0,0,0.87);
+  color: ${colors.grayDarker};
 `
 
 const TextWrapper = styled.ScrollView`
@@ -57,7 +57,7 @@ const TextWrapper = styled.ScrollView`
   background-color: ${colors.realWhite};
   border-width: ${1};
   border-color: ${colors.darkGray};
-  flex: 1;
+ 	flex: 1
 `;
 
 const TermsText = styled.Text`
@@ -65,8 +65,7 @@ const TermsText = styled.Text`
   color: ${colors.primary};
   font-size: ${fonts.regular};
 	text-align: justify;
-  position: relative;
-  right: 90px;
+  margin-left: 8px
 `;
 
 const TermsTextBold = styled.Text`
@@ -88,13 +87,12 @@ const TermsTextUnderline = styled.Text`
 const AcceptTermsWrapper = styled.View`
   height: 48px;
   margin-top: ${metrics.baseMargin * 1.6};
-  background-color: ${props => props.scheme === 'dark' ? colors.grayLighter : colors.yellowLight};
+  background-color: ${props => props.scheme === 'dark' ? colors.grayLight : colors.yellowLight};
   padding-top: ${metrics.baseMargin * 1.2};
   padding-bottom: ${metrics.baseMargin * 1.2};
   padding-left: ${metrics.baseMargin * 2.4};
   padding-right: ${metrics.baseMargin * 2.4};
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
 `;
 

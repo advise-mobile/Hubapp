@@ -5,6 +5,7 @@ function colors() {
 
 	if (colorScheme === 'dark') {
 		return {
+		  mainWhite: "#ffffff",
 			white: '#111111',
 			realWhite: '#000',
 			darkGray: '#666666',
