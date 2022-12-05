@@ -93,7 +93,7 @@ const TermsUse = props => {
 							contantWitdh={width}
 							source={source}
 							 tagsStyles={{div: {
-									color: colorScheme === 'dark' ? colors.greenLight : colors.darkGray
+									color: props.scheme === 'dark' ? colors.white : colors.darkGray
 							}}}
 						/>
 						<S.Title

@@ -43,7 +43,7 @@ export const Subtitle = styled.Text`
   margin-left: 16px;
   margin-bottom: 8px;
   font-size: 16px;
-  color: ${colors.grayDarker};
+  color:  ${props => props.scheme === 'dark' ? colors.white: colors.darkGray};
 `
 
 const TextWrapper = styled.ScrollView`
