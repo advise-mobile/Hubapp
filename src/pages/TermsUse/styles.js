@@ -1,6 +1,8 @@
 import styled from 'styled-components/native';
 import { metrics, fonts, colors } from 'assets/styles';
-import { Platform } from 'react-native';
+import {Appearance} from 'react-native';
+
+const colorScheme = Appearance.getColorScheme();
 
 const Container = styled.View`
   flex: 1;
@@ -43,7 +45,7 @@ export const Subtitle = styled.Text`
   margin-left: 16px;
   margin-bottom: 8px;
   font-size: 16px;
-  color:  ${props => props.scheme === 'dark' ? colors.white: colors.darkGray};
+  color:  ${colorScheme === 'dark' ? colors.mainWhite : colors.darkGray};
 `
 
 const TextWrapper = styled.ScrollView`

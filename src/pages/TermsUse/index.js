@@ -30,7 +30,6 @@ const TermsUse = props => {
 		html: term.textoTermo
 	};
 
-
 	const handleAccept = () => {
 		dispatch(AuthActions.termsUseRequest(true));
 	};
@@ -59,8 +58,6 @@ const TermsUse = props => {
 			const token = await AsyncStorage.getItem(TOKEN);
 			const headers = { Authorization: `Bearer ${token}` };
 
-			console.log(headers.Authorization)
-
 			const { data } = await Axios.get(`${BASE_URL}/core/v1/termos/termo-uso-vigente`, {
 				headers
 			})
@@ -77,9 +74,10 @@ const TermsUse = props => {
 
 		getNewTermo()
 
-	}, [term])
+	}, [])
 
 
+	console.log(term.textoTermo)
 	const disabledButton = useMemo(() => !acceptCheck, [acceptCheck]);
 
 	return (
@@ -93,7 +91,7 @@ const TermsUse = props => {
 							contantWitdh={width}
 							source={source}
 							 tagsStyles={{div: {
-									color: props.scheme === 'dark' ? colors.white : colors.darkGray
+									color: colorScheme === 'dark' ? colors.mainWhite : colors.darkGray
 							}}}
 						/>
 						<S.Title

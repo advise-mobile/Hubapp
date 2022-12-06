@@ -229,7 +229,7 @@ export default Emails = props => {
 			});
 		} else {
 			newValues = data.map(action => {
-				if (action.idRegraAcaoEvento == -25) {
+				if (action.idRegraAcaoEvento == -24) {
 					action.update = true;
 					action.ativo = true;
 				}
@@ -479,7 +479,7 @@ export default Emails = props => {
 														buttonSize={12}
 														buttonOuterSize={18}
 													/>
-													
+													<View>
 													<TouchableOpacity onPress={()=> onPressShowTooltip()} style={styles.touchElement}>
 														{colorScheme === 'dark' ? (
 															<Image source={require('../../../../assets/images/icons/info_icon_white.png')} />
@@ -503,6 +503,7 @@ export default Emails = props => {
 														}}
 														onPress={value => handleNotificationMovements(-25, value)}
 													/>
+													</View>
 												</Option>
 												<Option as={RadioButton}>
 													<RadioButtonInput
@@ -518,6 +519,7 @@ export default Emails = props => {
 														buttonSize={12}
 														buttonOuterSize={18}
 													/>
+													<View>
 													<TouchableOpacity onPress={()=> onPressShowTooltip()} style={styles.touchElement2}>
 														{colorScheme === 'dark' ? (
 															<Image source={require('../../../../assets/images/icons/info_icon_white.png')} />
@@ -544,6 +546,7 @@ export default Emails = props => {
 														}}
 														onPress={value => handleNotificationMovements(-24, value)}
 													/>
+													</View>
 												</Option>
 											</RadioForm>
 										</Options>
@@ -813,12 +816,14 @@ const styles = StyleSheet.create({
 	touchElement: {
 		zIndex: 10,
 		position: 'absolute',
-		left: 90
+		right: -10,
+		top: -3
 	},
 	touchElement2: {
 		zIndex: 10,
-		position: 'relative',
-		left:20
+		position: 'absolute',
+		right: -10,
+		top: -3
 	},
 	viewOverlayElement: {
 		zIndex: 100,
