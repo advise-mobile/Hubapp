@@ -27,12 +27,6 @@ const slides = [
     title: 'Organize prazos',
     text: 'Gerencie seus prazos judiciais e compromissos no mesmo lugar. Tudo integrado à sua Google Agenda',
     image: require('assets/images/intro/2.jpg'),
-  },
-  {
-    key: 'three',
-    title: 'Jurisprudência',
-    text: 'Faça consultas no maior banco de Jurisprudência do Brasil. Dados atualizados diariamente',
-    image: require('assets/images/intro/3.jpg'),
   }
 ];
 

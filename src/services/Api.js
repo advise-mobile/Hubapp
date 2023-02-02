@@ -18,7 +18,7 @@ const api = axios.create({
 });
 
 export async function getUrl() {
-	if (!__DEV__) return PROD_URL;
+	if (!__DEV__) return 	DEV_URL;
 
 	const urlStorage = await AsyncStorage.getItem('@BaseUrl').then(urlStorage => {
 		return urlStorage;

@@ -1,4 +1,5 @@
 import {Appearance} from 'react-native';
+import { color } from 'react-native-reanimated';
 
 function colors() {
 	const colorScheme = Appearance.getColorScheme();
@@ -44,7 +45,7 @@ function colors() {
 			orange200: '#FFAB91',
 			toastError: '#FFCDD2',
 		};
-	}
+	} else if(colorScheme === 'light')
 
 	return {
 		white: '#fefefe',

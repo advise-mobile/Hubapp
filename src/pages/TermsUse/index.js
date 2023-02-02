@@ -30,8 +30,9 @@ const TermsUse = props => {
 		html: term.textoTermo
 	};
 
+
 	const handleAccept = () => {
-		dispatch(AuthActions.termsUseRequest(true));
+		dispatch(AuthActions.termsUseRequest(true))
 	};
 
 	const checkRedirect = useCallback(() => {
@@ -74,24 +75,29 @@ const TermsUse = props => {
 
 		getNewTermo()
 
-	}, [])
+	}, [term])
 
-
-	console.log(term.textoTermo)
 	const disabledButton = useMemo(() => !acceptCheck, [acceptCheck]);
 
 	return (
 		<View style={{flex: 1}}>
 			<S.Container>
-				<S.ContentWrapper>
+				<S.ContentWrapper scheme={colorScheme}>
 					<S.TitleTerm>Termos de Uso</S.TitleTerm>
 					<S.Subtitle>Licença de uso de software</S.Subtitle>
 					<S.TextWrapper>
-						<RenderHtml
+						<RenderHtml 
 							contantWitdh={width}
 							source={source}
-							 tagsStyles={{div: {
-									color: colorScheme === 'dark' ? colors.mainWhite : colors.darkGray
+							tagsStyles={{div: {
+								color: colorScheme === 'dark' ? colors.mainWhite : colors.darkGray
+							}, h3: {
+								marginBottom: '.1rem',
+								marginTop: -2
+							}, ol: {
+								paddingBottom: '2rem'
+							}, ul: {
+								paddingBottom: '2rem'
 							}}}
 						/>
 						<S.Title

@@ -40,7 +40,6 @@ import DeadlinesDetails from '../pages/Deadlines/Details';
 
 import Initial from '../pages/Initial';
 import TermsUse from '../pages/TermsUse';
-
 import {colors} from 'assets/styles';
 
 import {PermissionsGroups} from 'helpers/Permissions';
@@ -50,6 +49,7 @@ const MainStack = createStackNavigator();
 const TabsStack = createBottomTabNavigator();
 
 const FoldersStack = createStackNavigator();
+
 const FoldersScreens = () => (
 	<FoldersStack.Navigator headerMode="none">
 		<FoldersStack.Screen name="Folders" component={Folders} />
@@ -66,14 +66,14 @@ const DeadlinesScreens = () => (
 	</DeadlinesStack.Navigator>
 );
 
-const JurisprudenceStack = createStackNavigator();
+/*const JurisprudenceStack = createStackNavigator();
 const JurisprudenceScreens = () => (
 	<JurisprudenceStack.Navigator headerMode="none">
 		<JurisprudenceStack.Screen name="Jurisprudence" component={Jurisprudence} />
 		<JurisprudenceStack.Screen name="JurisprudenceList" component={JurisprudenceList} />
 		<JurisprudenceStack.Screen name="JurisprudenceDetail" component={JurisprudenceDetail} />
 	</JurisprudenceStack.Navigator>
-);
+);*/
 
 const AccountStack = createStackNavigator();
 const AccountScreens = () => (
@@ -135,7 +135,7 @@ const AppScreens = () => (
 				),
 			}}
 		/>
-		<TabsStack.Screen
+		{/*<TabsStack.Screen
 			component={JurisprudenceScreens}
 			name="Jurisprudence"
 			options={{
@@ -145,7 +145,7 @@ const AppScreens = () => (
 					</CustomIcon>
 				),
 			}}
-		/>
+		/>*/}
 		<TabsStack.Screen
 			component={AccountScreens}
 			name="Account"
@@ -156,21 +156,22 @@ const AppScreens = () => (
 	</TabsStack.Navigator>
 );
 
+
 const MainScreens = () => (
-	<MainStack.Navigator headerMode="none" screenOptions={{gestureEnabled: false}}>
-		<MainStack.Screen name="Initial" component={Initial} />
-		<MainStack.Screen name="TermsUse" component={TermsUse} />
-		<MainStack.Screen name="Intro" component={Intro} />
-		<MainStack.Screen name="Login" component={Login} />
-		<MainStack.Screen name="Forgot" component={Forgot} />
-		<MainStack.Screen name="Client" component={Client} />
-		<MainStack.Screen name="App" component={AppScreens} />
-	</MainStack.Navigator>
+		<MainStack.Navigator headerMode="none" screenOptions={{gestureEnabled: false}}>
+				<MainStack.Screen name="Initial" component={Initial} />
+				<MainStack.Screen name="TermsUse" component={TermsUse} />
+				<MainStack.Screen name="Intro" component={Intro} />
+				<MainStack.Screen name="Login" component={Login} />
+				<MainStack.Screen name="Forgot" component={Forgot} />
+				<MainStack.Screen name="Client" component={Client} />
+				<MainStack.Screen name="App" component={AppScreens} />
+		</MainStack.Navigator>
 );
 
 const Routes = () => (
 	<NavigationContainer ref={navigationRef}>
-		<MainScreens />
+				<MainScreens />
 	</NavigationContainer>
 );
 
