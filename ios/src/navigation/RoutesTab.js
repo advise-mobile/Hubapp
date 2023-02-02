@@ -37,7 +37,7 @@ const RoutesTab = createBottomTabNavigator(
         ),
       }),
     },
-    Jurisprudence: {
+    /*Jurisprudence: {
       screen: Jurisprudence,
       navigationOptions: () => ({
         tabBarLabel: 'Jurisprudência',
@@ -45,7 +45,7 @@ const RoutesTab = createBottomTabNavigator(
           <MaterialIcons name="gavel" size={25} color={tintColor} />
         ),
       }),
-    },
+    },*/
     Account: {
       screen: Account,
       navigationOptions: () => ({

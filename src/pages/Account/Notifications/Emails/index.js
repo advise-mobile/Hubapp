@@ -469,46 +469,6 @@ export default Emails = props => {
 													<RadioButtonInput
 														obj={{
 															label: 'Receber quatro vezes ao dia',
-															value: getActionValue(-25),
-														}}
-														isSelected={getActionValue(-25)}
-														onPress={value => handleNotificationMovements(-25, value)}
-														borderWidth={1}
-														buttonInnerColor={colors.primary}
-														buttonOuterColor={colors.primary}
-														buttonSize={12}
-														buttonOuterSize={18}
-													/>
-													<View>
-													<TouchableOpacity onPress={()=> onPressShowTooltip()} style={styles.touchElement}>
-														{colorScheme === 'dark' ? (
-															<Image source={require('../../../../assets/images/icons/info_icon_white.png')} />
-														) : (
-															<Image source={require('../../../../assets/images/icons/info_icon.png')} />
-														)}
-													</TouchableOpacity>
-													<RadioButtonLabel
-														obj={{
-															label: 'Receber quatro vezes ao dia',
-															value: getActionValue(-25),
-														}}
-														labelWrapStyle={{
-															flex: 2,
-														}}
-														labelStyle={{
-															color: colors.grayDarker,
-															fontFamily: fonts.circularStdBook,
-															fontSize: fonts.small,
-															paddingRight: 22,
-														}}
-														onPress={value => handleNotificationMovements(-25, value)}
-													/>
-													</View>
-												</Option>
-												<Option as={RadioButton}>
-													<RadioButtonInput
-														obj={{
-															label: 'Receber apenas uma vez ao final do dia',
 															value: getActionValue(-24),
 														}}
 														isSelected={getActionValue(-24)}
@@ -520,11 +480,51 @@ export default Emails = props => {
 														buttonOuterSize={18}
 													/>
 													<View>
+													<TouchableOpacity onPress={()=> onPressShowTooltip()} style={styles.touchElement}>
+														{colorScheme === 'dark' ? (
+															<Image source={require('assets/images/icons/info_icon_white.png')} />
+														) : (
+															<Image source={require('assets/images/icons/info_icon.png')} />
+														)}
+													</TouchableOpacity>
+													<RadioButtonLabel
+														obj={{
+															label: 'Receber quatro vezes ao dia',
+															value: getActionValue(-24),
+														}}
+														labelWrapStyle={{
+															flex: 2,
+														}}
+														labelStyle={{
+															color: colors.grayDarker,
+															fontFamily: fonts.circularStdBook,
+															fontSize: fonts.small,
+															paddingRight: 22,
+														}}
+														onPress={value => handleNotificationMovements(-24, value)}
+													/>
+													</View>
+												</Option>
+												<Option as={RadioButton}>
+													<RadioButtonInput
+														obj={{
+															label: 'Receber apenas uma vez ao final do dia',
+															value: getActionValue(-25),
+														}}
+														isSelected={getActionValue(-25)}
+														onPress={value => handleNotificationMovements(-25, value)}
+														borderWidth={1}
+														buttonInnerColor={colors.primary}
+														buttonOuterColor={colors.primary}
+														buttonSize={12}
+														buttonOuterSize={18}
+													/>
+													<View>
 													<TouchableOpacity onPress={()=> onPressShowTooltip()} style={styles.touchElement2}>
 														{colorScheme === 'dark' ? (
-															<Image source={require('../../../../assets/images/icons/info_icon_white.png')} />
+															<Image source={require('assets/images/icons/info_icon_white.png')} />
 														) : (
-															<Image source={require('../../../../assets/images/icons/info_icon.png')} />
+															<Image source={require('assets/images/icons/info_icon.png')} />
 														)}
 													</TouchableOpacity>
 
@@ -532,7 +532,7 @@ export default Emails = props => {
 														numberOfLines={1}
 														obj={{
 															label: 'Receber apenas uma vez ao final do dia',
-															value: getActionValue(-24),
+															value: getActionValue(-25),
 														}}
 														labelWrapStyle={{
 															flex: 2,
@@ -544,7 +544,7 @@ export default Emails = props => {
 															paddingLeft: 0,
 															paddingRight: 22
 														}}
-														onPress={value => handleNotificationMovements(-24, value)}
+														onPress={value => handleNotificationMovements(-25, value)}
 													/>
 													</View>
 												</Option>

@@ -11,7 +11,7 @@ const Container = styled.View`
 
 const ContentWrapper = styled.View`
   flex: 1;
-  background-color: ${colors.niceBackground};
+  background-color: ${props => props.scheme === 'dark' ? '#2D2D2D' : '#FFF'};
   margin-top: ${metrics.baseMargin * 3.6};
   margin-bottom: ${metrics.baseMargin * 3.6};
   margin-right: ${metrics.baseMargin * 1.6};
@@ -59,7 +59,7 @@ const TextWrapper = styled.ScrollView`
   background-color: ${colors.realWhite};
   border-width: ${1};
   border-color: ${colors.darkGray};
- 	flex: 1
+ 	flex: 1;
 `;
 
 const TermsText = styled.Text`
@@ -67,7 +67,7 @@ const TermsText = styled.Text`
   color: ${colors.primary};
   font-size: ${fonts.regular};
 	text-align: justify;
-  margin-left: 8px
+  margin-left: 8px;
 `;
 
 const TermsTextBold = styled.Text`

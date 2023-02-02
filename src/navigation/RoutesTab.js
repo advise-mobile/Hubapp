@@ -64,14 +64,14 @@ const RoutesTab = createBottomTabNavigator(
         ),
       }),
     },
-    Jurisprudence: {
+    /*Jurisprudence: {
       screen: Jurisprudence,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
           <MaterialIcons name="gavel" size={25} color={tintColor} />
         ),
       }),
-    },
+    },*/
     Account: {
       screen: Account,
       navigationOptions: () => ({

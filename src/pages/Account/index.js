@@ -11,8 +11,8 @@ import Infos from './Infos';
 import Notifications from './Notifications';
 import Payments from './Payments';
 import Help from './Help';
-
 export default Account = props => {
+
   const scrollRef = useRef();
 
   const [selectedTab, setSelectedTab] = useState(0);

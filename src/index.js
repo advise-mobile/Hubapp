@@ -23,6 +23,8 @@ const App = () => {
 	const colorScheme = Appearance.getColorScheme();
 	const barStyle = colorScheme === 'dark' ? 'light-content' : 'dark-content';
 
+	console.log(colorScheme)
+
 	useEffect(() => {
 		OneSignal.setAppId(env.oneSignalId);
 		SplashScreen.hide();
