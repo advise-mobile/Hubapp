@@ -441,7 +441,7 @@ export default function Deadlines(props) {
           <ReadButton concluded={item.concluido} onPress={() => markAsRead(item)}></ReadButton>
           <ListContainer>
             <ListHeader>
-              <ListSchedule expired={currentFilter == 'vencidos'}>{moment(item.dataHoraInicio).format('DD/MM/YYYY')} • {item.diaInteiro ? 'Dia inteiro' : moment(item.dataHoraInicio).format('HH:mm')}</ListSchedule>
+              <ListSchedule expired={currentFilter == 'vencidos'}>{moment(item.dataHoraInicio).format('DD/MM/YYYY')} • {item.diaInteiro ? 'Dia todo' : moment(item.dataHoraInicio).format('HH:mm')}</ListSchedule>
               <ListAction onPress={() => openRow(item.id)}>
                 <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
               </ListAction>
