@@ -449,7 +449,7 @@ export default function Deadlines(props) {
             <ListTitle expired={currentFilter == 'vencidos'}>{item.titulo}</ListTitle>
             <Badge type={currentFilter == 'vencidos' ? 0 : item.idPadraoTipoEventoAgenda}>
               <BadgeText expired={currentFilter == 'vencidos'}>{item.tipoEventoAgenda}</BadgeText>
-            </Badge>
+              </Badge>
 
             {item.importante &&
               <ImportantFlag onPress={() => !updating && markAsImportant(item)}>

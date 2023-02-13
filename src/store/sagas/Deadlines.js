@@ -28,7 +28,7 @@ export function* getDeadlines({ param }) {
 
     const filters = getFilters(param.filters);
 
-    const query = 'ativo=true&campos=*&ordenacao=+dataHoraInicio';
+    const query = 'ativo=true&campos=*&ordenacao=%2BdataHoraInicio';
     const paginator = `registrosPorPagina=${param.perPage}&paginaAtual=${param.page}&idUsuarioCliente=${user.idUsuarioCliente}`;
 
     const { data } = yield call(Api.get, `/core/v1/eventos-agenda?${query}&${paginator}${filters}`);
