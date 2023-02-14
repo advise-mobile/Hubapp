@@ -127,7 +127,7 @@ export default Edit = forwardRef((props, ref) => {
 
   const closeModal = useCallback(() => ref.current?.close(), []);
 
-  const onSubmit = ({ titulo, idAgenda, data, hora, observacao, localizacao, diaInteiro }) => {
+  const onSubmit = ({ titulo, idAgenda, data, hora, observacao, localizacao, diaInteiro, dataHoraUltAlteracao }) => {
 
     if (!currentType) {
       setTypesErr(true);
@@ -136,6 +136,8 @@ export default Edit = forwardRef((props, ref) => {
     }
 
     const dataHoraInicio = `${moment(data || new Date()).format('YYYY-MM-DD')}T${diaInteiro ? '09:30' : hora || hour}:00`;
+
+    //const dataHoraUltAlteracao = `${moment(data || new Date()).format('YYYY-MM-DD')}T${hora || hour}:00.000`;
 
     const dataHoraFim = diaInteiro ? moment(dataHoraInicio).format('YYYY-MM-DDT23:59:00') : moment(dataHoraInicio).add(1, 'hours').format('YYYY-MM-DDTH:mm:ss');
 
@@ -152,6 +154,7 @@ export default Edit = forwardRef((props, ref) => {
       idAgenda,
       dataHoraFim,
       dataHoraInicio,
+      dataHoraUltAlteracao,
       sincronizado: false,
       idRepetEventoAgenda: -1,
       idOpcaoLembreteAgenda: -1,

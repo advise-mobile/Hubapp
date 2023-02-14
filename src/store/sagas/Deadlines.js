@@ -27,8 +27,12 @@ export function* getDeadlines({ param }) {
     yield put(UserActions.updatePicture());
 
     const filters = getFilters(param.filters);
+   
+    var filteredParams = filters === "&concluido=true" ? "%2BdataHoraUltAlteracao" : "%2BdataHoraInicio"
 
-    const query = 'ativo=true&campos=*&ordenacao=%2BdataHoraInicio';
+    //const query = 'ativo=true&campos=*&ordenacao=%2BdataHoraInicio';
+    const query = `ativo=true&campos=*&ordenacao=${filteredParams}`;
+
     const paginator = `registrosPorPagina=${param.perPage}&paginaAtual=${param.page}&idUsuarioCliente=${user.idUsuarioCliente}`;
 
     const { data } = yield call(Api.get, `/core/v1/eventos-agenda?${query}&${paginator}${filters}`);
