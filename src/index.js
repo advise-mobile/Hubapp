@@ -3,6 +3,9 @@ import {LogBox, Appearance} from 'react-native';
 import OneSignal from 'react-native-onesignal';
 import SplashScreen from 'react-native-splash-screen';
 
+import  { lightTheme, darkTheme }  from './theme';
+import { ThemeProvider } from 'styled-components';
+
 import store from './store';
 import {Provider} from 'react-redux';
 
@@ -23,23 +26,28 @@ const App = () => {
 	const colorScheme = Appearance.getColorScheme();
 	const barStyle = colorScheme === 'dark' ? 'light-content' : 'dark-content';
 
-	console.log(colorScheme)
 
 	useEffect(() => {
 		OneSignal.setAppId(env.oneSignalId);
 		SplashScreen.hide();
 
 		Smartlook.setupAndStartRecording('446489ae4715d0f4b4a398f5abd7f2c2875723eb');
+
+		
 	}, []);
+
 
 	return (
 		<Provider store={store}>
-			<StatusBar
-				backgroundColor={colorScheme === 'dark' ? '#111111' : '#fff'}
-				barStyle={barStyle}
-			/>
-			<Routes />
-			<ToastNotify />
+			<ThemeProvider theme={colorScheme === 'dark' ? darkTheme : lightTheme}>
+				
+				<StatusBar
+					backgroundColor={colorScheme === 'dark' ? '#111111' : '#fff'}
+					barStyle={barStyle}
+				/>
+				<Routes />
+				<ToastNotify />
+			</ThemeProvider>
 		</Provider>
 	);
 };

@@ -30,17 +30,22 @@ import {
 	EmailsList,
 	EmailContent,
 	ActionButton,
-	ButtonInfo
+	ButtonInfo,
 } from './styles';
 
 import Add from './Modals/Add';
 import Confirmation from './Modals/Confirmation';
 import { useResponsiveQuery } from 'react-native-responsive-query';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default Emails = props => {
 	const addRef = useRef(null);
 	const confirmationRef = useRef(null);
-	const colorScheme = Appearance.getColorScheme();
+
+	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
 
 	const [userData, setUserData] = useState({});
 
@@ -480,29 +485,29 @@ export default Emails = props => {
 														buttonOuterSize={18}
 													/>
 													<View>
-													<TouchableOpacity onPress={()=> onPressShowTooltip()} style={styles.touchElement}>
-														{colorScheme === 'dark' ? (
-															<Image source={require('assets/images/icons/info_icon_white.png')} />
-														) : (
-															<Image source={require('assets/images/icons/info_icon.png')} />
-														)}
-													</TouchableOpacity>
-													<RadioButtonLabel
-														obj={{
-															label: 'Receber quatro vezes ao dia',
-															value: getActionValue(-24),
-														}}
-														labelWrapStyle={{
-															flex: 2,
-														}}
-														labelStyle={{
-															color: colors.grayDarker,
-															fontFamily: fonts.circularStdBook,
-															fontSize: fonts.small,
-															paddingRight: 22,
-														}}
-														onPress={value => handleNotificationMovements(-24, value)}
-													/>
+														<TouchableOpacity onPress={()=> onPressShowTooltip()} style={styles.touchElement}>
+															{colorUseTheme.name === 'dark' ? (
+																<Image source={require('assets/images/icons/info_icon_white.png')} />
+															) : (
+																<Image source={require('assets/images/icons/info_icon.png')} />
+															)}
+														</TouchableOpacity>
+														<RadioButtonLabel
+															obj={{
+																label: 'Receber quatro vezes ao dia',
+																value: getActionValue(-24),
+															}}
+															labelWrapStyle={{
+																flex: 2,
+															}}
+															labelStyle={{
+																color: colors.grayDarker,
+																fontFamily: fonts.circularStdBook,
+																fontSize: fonts.small,
+																paddingRight: 22,
+															}}
+															onPress={value => handleNotificationMovements(-24, value)}
+														/>
 													</View>
 												</Option>
 												<Option as={RadioButton}>
@@ -521,7 +526,7 @@ export default Emails = props => {
 													/>
 													<View>
 													<TouchableOpacity onPress={()=> onPressShowTooltip()} style={styles.touchElement2}>
-														{colorScheme === 'dark' ? (
+														{colorUseTheme.name === 'dark' ? (
 															<Image source={require('assets/images/icons/info_icon_white.png')} />
 														) : (
 															<Image source={require('assets/images/icons/info_icon.png')} />
@@ -817,13 +822,13 @@ const styles = StyleSheet.create({
 		zIndex: 10,
 		position: 'absolute',
 		right: -10,
-		top: -3
+		top: -3,
 	},
 	touchElement2: {
 		zIndex: 10,
 		position: 'absolute',
 		right: -10,
-		top: -3
+		top: -3,
 	},
 	viewOverlayElement: {
 		zIndex: 100,
