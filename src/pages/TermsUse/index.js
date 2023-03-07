@@ -1,5 +1,5 @@
 import React, {useState, useMemo, useEffect, useCallback} from 'react';
-import {View, Appearance} from 'react-native';
+import {View} from 'react-native';
 import {StackActions} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import AuthActions from '../../store/ducks/Auth';
@@ -14,9 +14,15 @@ import { useWindowDimensions } from 'react-native';
 import RenderHtml from 'react-native-render-html';
 import { FormatDateBR } from "../../helpers/DateFunctions"
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 const TermsUse = props => {
 	const { width } = useWindowDimensions();
-	const colorScheme = Appearance.getColorScheme();
+	
+	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+
 	const dispatch = useDispatch();
 
 	const [acceptCheck, setAcceptCheck] = useState(false);
@@ -82,7 +88,7 @@ const TermsUse = props => {
 	return (
 		<View style={{flex: 1}}>
 			<S.Container>
-				<S.ContentWrapper scheme={colorScheme}>
+				<S.ContentWrapper>
 					<S.TitleTerm>Termos de Uso</S.TitleTerm>
 					<S.Subtitle>Licença de uso de software</S.Subtitle>
 					<S.TextWrapper>
@@ -90,7 +96,7 @@ const TermsUse = props => {
 							contantWitdh={width}
 							source={source}
 							tagsStyles={{div: {
-								color: colorScheme === 'dark' ? colors.mainWhite : colors.darkGray
+								color: colorUseTheme.name === 'dark' ? colors.mainWhite : colors.darkGray
 							}, h3: {
 								marginBottom: '.1rem',
 								marginTop: -2
@@ -106,7 +112,7 @@ const TermsUse = props => {
 							Data de publicação: {term.dataHoraPublicacaoTermo}
 						</S.Title>
 					</S.TextWrapper>
-					<S.AcceptTermsWrapper scheme={colorScheme}>
+					<S.AcceptTermsWrapper>
 						<CheckBox
 							lineWidth={1.5}
 							boxType={'square'}

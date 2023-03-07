@@ -1,8 +1,5 @@
 import styled from 'styled-components/native';
 import { metrics, fonts, colors } from 'assets/styles';
-import {Appearance} from 'react-native';
-
-const colorScheme = Appearance.getColorScheme();
 
 const Container = styled.View`
   flex: 1;
@@ -11,7 +8,7 @@ const Container = styled.View`
 
 const ContentWrapper = styled.View`
   flex: 1;
-  background-color: ${props => props.scheme === 'dark' ? '#2D2D2D' : '#FFF'};
+  background-color: ${({ theme }) => theme.colors.niceBackground};
   margin-top: ${metrics.baseMargin * 3.6};
   margin-bottom: ${metrics.baseMargin * 3.6};
   margin-right: ${metrics.baseMargin * 1.6};
@@ -45,7 +42,7 @@ export const Subtitle = styled.Text`
   margin-left: 16px;
   margin-bottom: 8px;
   font-size: 16px;
-  color:  ${colorScheme === 'dark' ? colors.mainWhite : colors.darkGray};
+  color: ${({ theme }) => theme.name === 'dark' ? theme.colors.mainWhite : theme.colors.darkGray};
 `
 
 const TextWrapper = styled.ScrollView`
@@ -89,7 +86,7 @@ const TermsTextUnderline = styled.Text`
 const AcceptTermsWrapper = styled.View`
   height: 48px;
   margin-top: ${metrics.baseMargin * 1.6};
-  background-color: ${props => props.scheme === 'dark' ? colors.grayLight : colors.yellowLight};
+  background-color: ${({ theme }) => theme.name === 'dark' ? theme.colors.grayLight  : theme.colors.yellowLight};
   padding-top: ${metrics.baseMargin * 1.2};
   padding-bottom: ${metrics.baseMargin * 1.2};
   padding-left: ${metrics.baseMargin * 2.4};
