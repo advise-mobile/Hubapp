@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { metrics, fonts, colors } from 'assets/styles';
+import { metrics, fonts } from 'assets/styles';
 
 const Container = styled.View`
   flex: 1;
@@ -17,7 +17,7 @@ const ContentWrapper = styled.View`
 `;
 
 const TitleTerm = styled.Text`
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.bigger};
   margin-top: ${metrics.baseMargin * 1.6};
@@ -28,7 +28,7 @@ const TitleTerm = styled.Text`
 
 
 const Title = styled.Text`
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.bigger};
   margin-top: ${metrics.baseMargin * 1.6};
@@ -53,15 +53,15 @@ const TextWrapper = styled.ScrollView`
   margin-left: ${metrics.baseMargin * 1.6};
   margin-right: ${metrics.baseMargin * 1.6};
   border-radius: ${metrics.baseRadius};
-  background-color: ${colors.realWhite};
+  background-color: ${({ theme }) => theme.colors.realWhite};
   border-width: ${1};
-  border-color: ${colors.darkGray};
+  border-color: ${({ theme }) => theme.colors.grayDarker};
  	flex: 1;
 `;
 
 const TermsText = styled.Text`
   font-family: ${fonts.circularStdBook};
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-size: ${fonts.regular};
 	text-align: justify;
   margin-left: 8px;
@@ -69,7 +69,7 @@ const TermsText = styled.Text`
 
 const TermsTextBold = styled.Text`
   font-family: ${fonts.circularStdBold};
-  color: ${colors.primary};
+  color:  ${({ theme }) => theme.colors.primary}; 
   font-size: ${fonts.regular};
   margin-top: 16px;
 `;
@@ -77,9 +77,9 @@ const TermsTextBold = styled.Text`
 const TermsTextUnderline = styled.Text`
   font-family: ${fonts.circularStdBook};
   font-size: ${fonts.regular};
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary}; 
   text-decoration: underline;
-  text-decoration-color: ${colors.primary};
+  text-decoration-color: ${({ theme }) => theme.colors.primary}; 
   margin: 8px 0;
 `;
 
@@ -100,7 +100,7 @@ const AcceptText = styled.Text`
 `;
 
 const AcceptButton = styled.TouchableOpacity`
-  background-color: ${({ disabled }) => disabled ? colors.disabled : colors.backgroundButton};
+  background-color: ${({ disabled,theme }) => disabled ? theme.colors.disabled : theme.colors.backgroundButton};
   margin-top: ${metrics.baseMargin * 2.4};
   margin-bottom: ${metrics.baseMargin * 2.4};
   margin-left: ${metrics.baseMargin * 2.4};
@@ -112,7 +112,7 @@ const AcceptButton = styled.TouchableOpacity`
 `;
 
 const AcceptButtonText = styled.Text`
-  color: ${colors.white};
+  color: ${({ theme }) => theme.colors.white}; 
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;

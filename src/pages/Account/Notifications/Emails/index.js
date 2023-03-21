@@ -1,8 +1,9 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {RefreshControl, Animated, Switch, Platform, StyleSheet, TouchableOpacity, Text, Image, View, Pressable, Appearance} from 'react-native';
 
-import Header from 'components/Header';
+import HeaderGlobals from 'components/HeaderGlobals';
 import Spinner from 'components/Spinner';
+import { Container, Warp } from '../../../../assets/styles/global';
 
 import Api from 'services/Api';
 import {getLoggedUser, PermissionsGroups, checkPermission} from 'helpers/Permissions';
@@ -16,8 +17,7 @@ import RadioForm, {
 	RadioButtonLabel,
 } from 'react-native-simple-radio-button';
 
-import {fonts, colors} from 'assets/styles';
-import {Container, Warp} from 'assets/styles/general';
+import {fonts} from 'assets/styles';
 import {
 	List,
 	ListItem,
@@ -41,11 +41,13 @@ import { useResponsiveQuery } from 'react-native-responsive-query';
 import { useTheme } from 'styled-components';
 
 export default Emails = props => {
+	  
 	const addRef = useRef(null);
 	const confirmationRef = useRef(null);
 
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
 
 	const [userData, setUserData] = useState({});
 
@@ -66,8 +68,6 @@ export default Emails = props => {
 	const activeOptionsNoNewMovements = useRef(new Animated.Value(1)).current;
 	const activeOptionsProcesses = useRef(new Animated.Value(1)).current;
 	const [showTooltip, setShowTooltip] = useState(false)
-
-	
 	
 	useEffect(() => {
 		getLoggedUser().then(user => setUserData(user));
@@ -189,6 +189,8 @@ export default Emails = props => {
 		},
 		[data],
 	);
+
+	//vendastelecom@liggatelecom.com.br
 
 	const toggleCheck = useCallback(
 		id => {
@@ -421,7 +423,7 @@ export default Emails = props => {
 				</View>
 			)}
 			<Warp>
-				<Header
+				<HeaderGlobals
 					title={'Notificações de email'}
 					back={() => props.navigation.goBack()}
 					add={() => addRef.current?.open()}

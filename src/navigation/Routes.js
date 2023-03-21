@@ -44,6 +44,8 @@ import {colors} from 'assets/styles';
 
 import {PermissionsGroups} from 'helpers/Permissions';
 
+import { useTheme } from 'styled-components';
+
 const MainStack = createStackNavigator();
 
 const TabsStack = createBottomTabNavigator();
@@ -77,7 +79,7 @@ const JurisprudenceScreens = () => (
 
 const AccountStack = createStackNavigator();
 const AccountScreens = () => (
-	<AccountStack.Navigator headerMode="none">
+	<AccountStack.Navigator  headerMode="none">
 		<AccountStack.Screen name="Account" component={Account} />
 		<AccountStack.Screen name="Notifications" component={Notifications} />
 		<AccountStack.Screen name="Pushs" component={Pushs} />
@@ -87,20 +89,24 @@ const AccountScreens = () => (
 );
 
 const AppScreens = () => (
+	
+	// Variavel para usar o hook
+	colorUseTheme = useTheme(),
+
 	<TabsStack.Navigator
 		initialRouteName="Folders"
 		tabBarOptions={{
 			showLabel: false,
 			scrollEnabled: true,
-			activeTintColor: colors.advise,
-			inactiveTintColor: colors.grayLight,
-			inactiveBackgroundColor: colors.white,
-			activeBackgroundColor: colors.white,
+			activeTintColor: navigationRef.current.getCurrentRoute().name == 'Emails' ? colorUseTheme.colors.advise : colors.advise,
+			inactiveTintColor: navigationRef.current.getCurrentRoute().name == 'Emails' ? colorUseTheme.colors.grayLight  : colors.grayLight,
+			inactiveBackgroundColor: navigationRef.current.getCurrentRoute().name == 'Emails' ? colorUseTheme.colors.white  :  colors.white,
+			activeBackgroundColor: navigationRef.current.getCurrentRoute().name == 'Emails' ? colorUseTheme.colors.white  :  colors.white,
 			tabStyle: {
 				width: 60,
 			},
 			style: {
-				backgroundColor: colors.white,
+				backgroundColor:  navigationRef.current.getCurrentRoute().name == 'Emails' ? colorUseTheme.colors.white : colors.white,
 				height: Platform.OS == 'android' ? 64 : 80,
 				paddingTop: Platform.OS == 'android' ? 0 : 8,
 				marginBottom: -2,

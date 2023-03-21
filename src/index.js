@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {LogBox, Appearance} from 'react-native';
 import OneSignal from 'react-native-onesignal';
 import SplashScreen from 'react-native-splash-screen';
@@ -22,9 +22,25 @@ LogBox.ignoreLogs(["Can't perform a React state update on an unmounted component
 
 LogBox.ignoreAllLogs(true);
 
+
 const App = () => {
-	const colorScheme = Appearance.getColorScheme();
-	const barStyle = colorScheme === 'dark' ? 'light-content' : 'dark-content';
+	
+
+	let colorScheme = Appearance.getColorScheme();
+
+	const [theme, setTheme] = useState(colorScheme);
+
+	function updateTheme() {
+		 colorScheme = Appearance.getColorScheme();
+		 setTheme(colorScheme);
+	}
+
+	let barStyle = theme === 'dark' ? 'light-content' : 'dark-content';
+	
+	Appearance.addChangeListener(({colorScheme}) => {
+		updateTheme();
+	});
+	
 
 
 	useEffect(() => {
@@ -32,17 +48,16 @@ const App = () => {
 		SplashScreen.hide();
 
 		Smartlook.setupAndStartRecording('446489ae4715d0f4b4a398f5abd7f2c2875723eb');
-
 		
 	}, []);
 
 
 	return (
 		<Provider store={store}>
-			<ThemeProvider theme={colorScheme === 'dark' ? darkTheme : lightTheme}>
+			<ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
 				
 				<StatusBar
-					backgroundColor={colorScheme === 'dark' ? '#111111' : '#fff'}
+					backgroundColor={theme === 'dark' ? '#111111' : '#fff'}
 					barStyle={barStyle}
 				/>
 				<Routes />

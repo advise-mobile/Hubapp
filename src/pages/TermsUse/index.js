@@ -4,7 +4,6 @@ import {StackActions} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import AuthActions from '../../store/ducks/Auth';
 import CheckBox from '@react-native-community/checkbox';
-import {colors} from '../../assets/styles';
 import * as S from './styles';
 import {BASE_URL} from 'services/Api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -22,6 +21,7 @@ const TermsUse = props => {
 	
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
 
 	const dispatch = useDispatch();
 

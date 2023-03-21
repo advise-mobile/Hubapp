@@ -1,4 +1,5 @@
 {
   "name": "HubApp",
-  "displayName": "HubApp"
+  "displayName": "HubApp",
+  "userInterfaceSytle":"automatic"
 }

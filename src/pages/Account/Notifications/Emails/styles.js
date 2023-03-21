@@ -1,9 +1,11 @@
 import styled from 'styled-components/native';
 import { fonts, colors } from 'assets/styles';
 
+
+
 const List = styled.ScrollView`
   flex: 1;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   border-top-width: 1px;
   margin-top: 12px;
   border-top-color: ${colors.grayLighter};
@@ -11,7 +13,7 @@ const List = styled.ScrollView`
 
 const ListItem = styled.View`
   padding: 12px 24px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   border-bottom-width: 1px;
   border-bottom-color: ${colors.grayLighter};
 `;
@@ -25,16 +27,16 @@ const ListContent = styled.View`
 const ListText = styled.Text`
   font-family: ${fonts.circularStdBook};
   font-size: ${fonts.small};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   flex: 1;
   padding-right: 18px;
 `;
 
 const Title = styled.Text`
-  font-family: ${fonts.circularStdBold}
-  background-color: ${colors.white};
+  font-family: ${fonts.circularStdBold};
+  background-color: ${({ theme }) => theme.colors.white};
   font-size: ${fonts.regular};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   line-height: 24px;
 `;
 
@@ -99,5 +101,5 @@ export {
   EmailsList,
   EmailContent,
   ActionButton,
-  ButtonInfo
+  ButtonInfo,
 }
