@@ -5,7 +5,6 @@ import AppIntroSlider from 'react-native-app-intro-slider';
 // import jwtDecode from 'jwt-decode';
 // import OneSignal from 'react-native-onesignal';
 
-import { colors } from 'assets/styles';
 import { Container, Warp, Slide, Title, Icon, Image, Text, NextButton, ButtonText, SlideContainer } from './styles';
 // import env from 'services/env';
 
@@ -13,24 +12,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { TOKEN, INTRO } from 'helpers/StorageKeys';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 const icon = require('assets/images/icon.png');
 
 const slides = [
   {
     key: 'one',
     title: 'Unifique tarefas',
-    text: 'Tenha acesso às informações de todos os tribunais e órgãos oficiais do país em um mesmo lugar',
+    text: 'Tenha acesso às informações de todos os tribunais e órgãos oficiais do país em um mesmo lugar.',
     image: require('assets/images/intro/1.jpg'),
   },
   {
     key: 'two',
     title: 'Organize prazos',
-    text: 'Gerencie seus prazos judiciais e compromissos no mesmo lugar. Tudo integrado à sua Google Agenda',
+    text: 'Gerencie seus prazos judiciais e compromissos no mesmo lugar. Tudo integrado à sua Google Agenda.',
     image: require('assets/images/intro/2.jpg'),
   }
 ];
 
-const styles = StyleSheet.create({
+const stylesIntro = (colors) => StyleSheet.create({
   inactiveDot: {
     display: 'none',
     backgroundColor: colors.grayLighter,
@@ -53,6 +55,13 @@ const styles = StyleSheet.create({
 _keyExtractor = (item) => item.title;
 
 const Intro = props => {
+
+  // Variavel para usar o hook
+  const colorUseTheme = useTheme();
+  const { colors } = colorUseTheme;
+
+  const styles = stylesIntro(colors);
+
   const _renderItem = useCallback(({ item }) => (
     <Slide>
       <Icon source={icon} resizeMode="contain" style={styles.icon} />
