@@ -4,7 +4,8 @@ import { WebView } from 'react-native-webview';
 
 import Header from 'components/Header';
 
-import { Container, Warp } from 'assets/styles/general';
+import { Container, Warp } from 'assets/styles/global';
+
 
 export default function Chat(props) {
   const webRef = useRef();

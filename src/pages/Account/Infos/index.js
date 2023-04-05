@@ -15,8 +15,8 @@ import UserActions from 'store/ducks/User';
 import CustomerActions from 'store/ducks/Customer';
 import AuthAction from 'store/ducks/Auth';
 
-import { colors, fonts } from 'assets/styles';
-import { Container, Warp, HeaderAction } from 'assets/styles/general';
+import { fonts } from 'assets/styles';
+import { Container, Warp, HeaderAction } from 'assets/styles/global';
 import {
   PickerContainer,
   ProfileContainer,
@@ -40,8 +40,21 @@ import { FormatDateBR, FormatFullDateEN } from 'helpers/DateFunctions';
 import { disableNotificationDevice } from 'helpers/Pushs';
 import { TOKEN, REFRESH_TOKEN, EXPIRES_TOKEN, AVATAR, PERMISSIONS, ACCEPT_TERMS } from 'helpers/StorageKeys';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default Infos = props => {
-  const [scene, setScene] = useState('user');
+
+    	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
+  const pickerSelectStyles = stylesPickerSelectStyles(colors);
+
+  const scenePickerSelectStyles =  stylesScenePickerSelectStyles(colors);
+
+
+ const [scene, setScene] = useState('user');
   const [editMode, setEditMode] = useState(false);
   const loading = useSelector(state => state.user.loading);
   const userData = useSelector(state => state.user);
@@ -244,7 +257,7 @@ export default Infos = props => {
                     <Datepicker
                       enabled={editMode}
                       style={{ flex: 1 }}
-                      customStyles={DateStyle({ editable: editMode })}
+                      customStyles={DateStyle({ editable: editMode, colors:colors })}
                       date={FormatDateBR(userData.data.dataNascimentoAbertura)}
                       onDateChange={date => setUserData({ data: { ...userData.data, dataNascimentoAbertura: FormatFullDateEN(date) } })}
                     />
@@ -360,7 +373,7 @@ export default Infos = props => {
   );
 }
 
-const pickerSelectStyles = StyleSheet.create({
+const stylesPickerSelectStyles =  (colors) => StyleSheet.create({
   inputIOS: {
     fontSize: 14,
     color: colors.fadedBlack,
@@ -379,7 +392,7 @@ const pickerSelectStyles = StyleSheet.create({
   },
 });
 
-const scenePickerSelectStyles = StyleSheet.create({
+const stylesScenePickerSelectStyles = (colors) => StyleSheet.create({
   inputIOS: {
     fontSize: 16,
     color: colors.fadedBlack,

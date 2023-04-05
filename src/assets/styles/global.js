@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
 import styled from 'styled-components';
-import { metrics, fonts, colors } from './index';
+import { metrics, fonts } from './index';
 
 const Container = styled.SafeAreaView`
   background-color: ${({ theme }) => theme.colors.white};
@@ -72,7 +72,7 @@ const HeaderSubtitle = styled(HeaderTitle)`
 `;
 
 const HeaderButton = styled.TouchableOpacity`
-  background-color: ${(props) => props.background ? props.background : colors.darkGray};
+  background-color: ${(props) => props.background ? props.theme.colors.background : props.theme.colors.darkGray};
   border-radius: ${metrics.baseRadius};
   padding-horizontal: 15;
   padding-vertical: 7;
@@ -105,13 +105,13 @@ const Message = styled.View`
 `;
 
 const MessageTitle = styled.Text`
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.big};
 `;
 
 const MessageSubtitle = styled.Text`
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker}; 
   font-family: ${fonts.circularStdMedium};
   font-size: ${fonts.regular};
   line-height: 20px;
@@ -137,7 +137,7 @@ const Tabs = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  border-bottom-color: ${colors.grayLighter};
+  border-bottom-color:  ${({ theme }) => theme.colors.grayLighter};
   border-bottom-width: 1px;
 `;
 
@@ -149,14 +149,14 @@ const TabsButton = styled.TouchableOpacity`
 const TabsText = styled.Text`
   font-family: ${fonts.circularStdBook};
   font-size: ${(props) => (props.active ? fonts.big + 2 : fonts.regular)};
-  color: ${(props) => (props.active ? colors.primary : colors.inactive)};
+  color: ${(props) => (props.active ? props.theme.colors.primary : props.theme.colors.inactive)};
 `;
 
 const TabsActive = styled.View`
   width: ${(props) => (props.active ? 40 : 20)};
   height: 2px;
   margin-top: 4px;
-  background-color: ${(props) => props.active ? colors.primary : colors.inactive};
+  background-color: ${(props) => props.active ? props.theme.colors.primary : props.theme.colors.inactive};
 `;
 
 const Actions = styled.View`
@@ -168,13 +168,13 @@ const Actions = styled.View`
   flex-direction: row;
   padding-horizontal: 8px;
   border-bottom-width: 1px;
-  background: ${colors.white};
-  border-bottom-color: ${colors.grayLighter};
+  background:  ${({ theme }) => theme.colors.white}; 
+  border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const ActionButton = styled.TouchableOpacity`
   padding: 12px;
-  background: ${colors.white}
+  background:${({ theme }) => theme.colors.white}; 
 `;
 
 export {

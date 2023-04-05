@@ -3,7 +3,7 @@ import { fonts } from 'assets/styles';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: #fefefe;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const Warp = styled.View`
@@ -22,7 +22,7 @@ const HeaderLogo = styled.View`
 
 const Slide = styled.View`
     flex: 1;
-    background-color: #fefefe;
+    background-color: ${({ theme }) => theme.colors.white};
     align-items: center;
     justify-content: center;
 `;
@@ -34,7 +34,7 @@ const Image = styled.Image`
 const Title = styled.Text`
     font-size: 24px;
     font-family: ${fonts.circularStdBold};
-    color: #2D2D2D;
+    color:${({ theme }) => theme.colors.niceBackground};
     margin-bottom: 16px;
     text-align: center;
 `;
@@ -42,14 +42,14 @@ const Title = styled.Text`
 const Text = styled.Text`
     font-size: 16px;
     font-family: ${fonts.circularStdMedium};
-    color: #2D2D2D;
+    color:${({ theme }) => theme.colors.niceBackground};
     text-align: center;
     max-width: 75%;
     margin-bottom: 16px;
 `;
 
 const NextButton = styled.View`
-  background: #2D2D2D;
+  background:${({ theme }) => theme.colors.niceBackground};
   padding: 16px;
   border-radius: 4px;
 
@@ -58,7 +58,7 @@ const NextButton = styled.View`
 const ButtonText = styled.Text`
     font-size: 16px;
     font-family: ${fonts.circularStdMedium};
-    color: #fefefe;
+    color: ${({ theme }) => theme.colors.white};
     text-align: center;
 `;
 

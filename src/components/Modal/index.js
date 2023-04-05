@@ -1,10 +1,18 @@
 import React, {forwardRef, useCallback} from 'react';
-import {StyleSheet} from 'react-native';
 import {Modalize} from 'react-native-modalize';
-import {colors} from 'assets/styles';
+// import {colors} from 'assets/styles';
 import {Container, Title, Header, Footer, ClearFilters, ClearText} from './styles';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
+
 export default Modal = forwardRef((props, ref) => {
+
+	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
 	const renderHeader = useCallback(
 		() => (
 			<Header>
@@ -24,7 +32,10 @@ export default Modal = forwardRef((props, ref) => {
 		<Modalize
 			ref={ref}
 			adjustToContentHeight={true}
-			modalStyle={styles.modal}
+			modalStyle={{
+				backgroundColor: colors.white,
+				maxHeight: 50,
+			}}
 			childrenStyle={{maxHeight: 400}}
 			HeaderComponent={renderHeader}
 			handlePosition="inside"
@@ -44,11 +55,4 @@ export default Modal = forwardRef((props, ref) => {
 			</Container>
 		</Modalize>
 	);
-});
-
-const styles = StyleSheet.create({
-	modal: {
-		backgroundColor: colors.white,
-		maxHeight: 50,
-	},
 });

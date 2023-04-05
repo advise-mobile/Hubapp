@@ -11,16 +11,16 @@ const Cancel = styled.TouchableOpacity`
   flex: 1;
   padding: 7px;
   margin-right: 12px;
-  background: ${colors.white};
+  background: ${({ theme }) => theme.colors.white};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color: ${colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const CancelText = styled.Text`
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;
@@ -28,16 +28,16 @@ const CancelText = styled.Text`
 const Submit = styled.TouchableOpacity`
   flex: 1;
   padding: 8px;
-  background: ${colors.primary};
+  background: ${({ theme }) => theme.colors.primary};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color: ${colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const SubmitText = styled.Text`
-  color: ${colors.white};
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;
@@ -54,12 +54,14 @@ const Input = styled.TextInput`
   padding-bottom: 4px;
   border-bottom-width: 1px;
   display: ${props => props.disabled ? 'none' : 'flex'};
-  color: ${props => props.error ? colors.red : colors.grayLight};
-  border-bottom-color: ${props => props.error ? colors.redLight : colors.grayLighter};
+  color: ${props => props.error ? props.theme.colors.red : props.theme.colors.grayLight};
+  border-bottom-color: ${props => props.error ? props.theme.colors.redLight : props.theme.colors.grayLighter};
+
+  
 `;
 
 const Description = styled.Text`
-  color: ${colors.grayLight};
+  color: ${({ theme }) => theme.colors.grayLight};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
   text-align: center;

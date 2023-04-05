@@ -1,14 +1,14 @@
 import styled from 'styled-components/native';
-import { fonts, colors } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 const PickerContainer = styled.View`
   padding: 12px 24px;
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.grayLighter};
+  border-bottom-color: ${({ theme }) => theme.colors.grayLighter}; 
 `;
 
 const Picker = styled.Text`
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   font-size: ${fonts.big};
   font-family: ${fonts.circularStdBook}
 `;
@@ -26,7 +26,7 @@ const ProfileImageContainer = styled.View`
 `;
 
 const ProfileImageButton = styled.TouchableOpacity`
-  background-color: ${props => props.active ? colors.white : colors.iconGray};
+  background-color: ${props => props.active ? props.theme.colors.white : props.theme.colors.iconGray};
   border-radius: 50;
 `;
 
@@ -46,7 +46,7 @@ const InfoContainer = styled.View`
 `;
 
 const InfoTitle = styled.Text`
-  color: ${colors.grayDarker};
+  color:  ${({ theme }) => theme.colors.grayDarker};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBold};
   margin-right: 12;
@@ -56,22 +56,22 @@ const InfoCustomValue = styled.View`
   flex: 1;
   flex-direction: row;
   border-bottom-width: 1px;
-  border-bottom-color: ${props => props.editable ? colors.grayLighter : colors.white};
+  border-bottom-color: ${props => props.editable ? props.theme.colors.grayLighter : props.theme.colors.white};
 `;
 
 const InfoValue = styled.TextInput`
   padding: 0;
   height: 20px;
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBook};
   border-bottom-width: 1px;
-  border-bottom-color: ${props => props.editable ? colors.grayLighter : colors.white};
+  border-bottom-color: ${props => props.editable ? props.theme.colors.grayLighter : props.theme.colors.white};
   flex: 1;
 `;
 
 const InfoText = styled.Text`
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBook};
   flex-wrap: wrap;
@@ -90,7 +90,7 @@ const InfoLink = styled.TouchableOpacity`
 `;
 
 const InfoLinkText = styled.Text`
-  color: ${colors.forgetLink};
+  color: ${({ theme }) => theme.colors.forgetLink};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBook};
 `;
@@ -104,7 +104,7 @@ const ButtonLogout = styled.TouchableOpacity`
 const LogoutText = styled.Text`
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBold};
-  color: ${colors.red};
+  color: ${({ theme }) => theme.colors.red};
 `;
 
 
@@ -117,17 +117,17 @@ const DateStyle = (props) => {
       paddingBottom: 0,
       borderWidth: 0,
       borderBottomWidth: 1,
-      borderBottomColor: props.editable ? colors.grayLighter : colors.white,
+      borderBottomColor: props.editable ? props.colors.grayLighter : props.colors.white,
       flexDirection: 'row',
       justifyContent: 'flex-start',
     },
     disabled: {
-      backgroundColor: colors.white,
+      backgroundColor: props.colors.white,
     },
     dateText: {
       marginTop: 2,
       fontSize: 13,
-      color: colors.fadedBlack,
+      color: props.colors.fadedBlack,
       fontFamily: fonts.circularStdBook,
     },
   });

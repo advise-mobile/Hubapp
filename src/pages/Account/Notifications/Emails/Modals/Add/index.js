@@ -11,7 +11,9 @@ import Api from 'services/Api';
 import Modal from 'components/Modal';
 import Spinner from 'components/Spinner';
 
-import { colors } from 'assets/styles';
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 import {
   Footer,
   Cancel,
@@ -24,6 +26,11 @@ import {
 } from './styles';
 
 export default Add = forwardRef((props, ref) => {
+
+  	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+  
   const dispatch = useDispatch();
 
   const [userData, setUserData] = useState({});

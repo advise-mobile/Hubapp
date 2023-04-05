@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { fonts, colors } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 const Footer = styled.View`
   flex-direction: row;
@@ -11,16 +11,16 @@ const Cancel = styled.TouchableOpacity`
   flex: 1;
   padding: 7px;
   margin-right: 12px;
-  background: ${colors.white};
+  background: ${({ theme }) => theme.colors.white};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color: ${colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const CancelText = styled.Text`
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;
@@ -28,12 +28,12 @@ const CancelText = styled.Text`
 const Submit = styled.TouchableOpacity`
   flex: 1;
   padding: 8px;
-  background: ${colors.red};
+  background: ${({ theme }) => theme.colors.red};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color: ${colors.red};
+  border-color: ${({ theme }) => theme.colors.red};
 `;
 
 const SubmitText = styled.Text`
@@ -47,7 +47,7 @@ const Content = styled.View`
 `;
 
 const Message = styled.Text`
-  color: ${colors.grayLight};
+  color: ${({ theme }) => theme.colors.grayLight};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
   text-align: center;

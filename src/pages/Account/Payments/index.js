@@ -3,9 +3,7 @@ import { Linking } from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { colors } from 'assets/styles';
-
-import { Container, Warp } from 'assets/styles/general';
+import { Container, Warp } from 'assets/styles/global';
 import {
   Content,
   Title,
@@ -14,7 +12,16 @@ import {
   Info
 } from './styles';
 
-export default Payments = () => (
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
+export default Payments = () => {
+  
+  // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
+  return(
   <Container>
     <Warp>
       <Content onPress={() => Linking.openURL('https://pagamentos.advise.com.br/')}>
@@ -30,4 +37,4 @@ export default Payments = () => (
       </Content>
     </Warp>
   </Container>
-);
+)};

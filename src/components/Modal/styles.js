@@ -1,9 +1,9 @@
 import styled from 'styled-components/native';
-import {fonts, colors} from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 const Container = styled.View`
 	padding: 0 24px;
-	background-color: ${colors.white};
+	background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const Header = styled.View`
@@ -17,11 +17,11 @@ const Title = styled.Text`
 	font-family: ${fonts.circularStdBold};
 	text-align: center;
 	font-size: ${fonts.big};
-	color: ${colors.primary};
+	color: ${({ theme }) => theme.colors.primary};
 `;
 
 const Footer = styled.View`
-	background-color: ${colors.white};
+	background-color: ${({ theme }) => theme.colors.white};
 	padding: 24px 0;
 `;
 
@@ -35,7 +35,7 @@ const ClearFilters = styled.TouchableOpacity`
 
 const ClearText = styled.Text`
 	font-size: ${fonts.smaller};
-	color: ${colors.grayLight};
+	color:  ${({ theme }) => theme.colors.grayLight};
 	font-family: ${fonts.circularStdBold};
 `;
 

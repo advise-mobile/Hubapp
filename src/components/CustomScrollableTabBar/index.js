@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 const PropTypes = require('prop-types');
 
-import { colors } from 'assets/styles';
 const createReactClass = require('create-react-class');
 
 
@@ -19,7 +18,8 @@ import { TabsContainer, Tabs, Tab, TabButton, TabText, UndelineTab } from './sty
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 
-const CustomScrollableTabBar = createReactClass({
+
+const CustomScrollableTabBar =  createReactClass({
   propTypes: {
     goToPage: PropTypes.func,
     activeTab: PropTypes.number,
@@ -38,6 +38,8 @@ const CustomScrollableTabBar = createReactClass({
     underlineStyle: ViewPropTypes.style,
     onScroll: PropTypes.func,
   },
+
+
 
   getDefaultProps() {
     return {
@@ -139,6 +141,9 @@ const CustomScrollableTabBar = createReactClass({
     // const textFontSize = isTabActive ? fonts.big + 2 : fonts.regular;
     // const fontWeight = isTabActive ? 'bold' : 'normal';
 
+    const { theme } = this.props;
+    const styles = stylesCustomScrollableTabBar(theme.colors);
+
     return (
       <TabButton
         key={`${name}_${page}`}
@@ -163,6 +168,10 @@ const CustomScrollableTabBar = createReactClass({
   },
 
   render() {
+// Get it from props
+  const { theme } = this.props;
+  const styles = stylesCustomScrollableTabBar(theme.colors);
+  
     const dynamicTabUnderline = {
       left: this.state._leftTabUnderline,
       width: this.state._widthTabUnderline,
@@ -217,7 +226,7 @@ const CustomScrollableTabBar = createReactClass({
 
 module.exports = CustomScrollableTabBar;
 
-const styles = StyleSheet.create({
+const stylesCustomScrollableTabBar =  (colors) => StyleSheet.create({
   tab: {
     height: 49,
     alignItems: 'center',

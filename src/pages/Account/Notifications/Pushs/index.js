@@ -12,8 +12,11 @@ import useDebouncedEffect from 'use-debounced-effect';
 import { getLoggedUser } from 'helpers/Permissions';
 import { getNotificationSettings, changeNotificationSettings } from 'helpers/Pushs';
 
-import { colors } from 'assets/styles';
-import { Container, Warp } from 'assets/styles/general';
+import { Container, Warp } from 'assets/styles/global';
+
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 import {
   List,
   ListItem,
@@ -24,6 +27,11 @@ import {
 } from './styles';
 
 export default Pushs = props => {
+
+    	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const [userData, setUserData] = useState({});
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -38,7 +46,7 @@ export default Pushs = props => {
       if (settings.length < 1) {
         dispatch(ToastNotifyActions.toastNotifyShow('Erro ao buscar as configuração de notificações.', true));
 
-        setTimeout(() => props.navigation.goBack(), 500);
+        //setTimeout(() => props.navigation.goBack(), 500);
 
         return;
       }

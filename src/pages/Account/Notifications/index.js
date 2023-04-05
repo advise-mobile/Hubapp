@@ -5,8 +5,7 @@ import { getLoggedUser, PermissionsGroups, checkPermission } from 'helpers/Permi
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { colors } from 'assets/styles';
-import { Container, Warp } from 'assets/styles/general';
+import { Container, Warp } from 'assets/styles/global';
 import {
   List,
   ListItem,
@@ -17,7 +16,15 @@ import {
 
 import Blocked from 'pages/Blocked';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default Notifications = props => {
+
+  	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const [userData, setUserData] = useState({});
   const [permissionPublications, setPermissionPublications] = useState(false);
   const [permissionProcesses, setPermissionProcesses] = useState(false);

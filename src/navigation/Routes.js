@@ -98,15 +98,15 @@ const AppScreens = () => (
 		tabBarOptions={{
 			showLabel: false,
 			scrollEnabled: true,
-			activeTintColor: navigationRef.current.getCurrentRoute().name == 'Emails' ? colorUseTheme.colors.advise : colors.advise,
-			inactiveTintColor: navigationRef.current.getCurrentRoute().name == 'Emails' ? colorUseTheme.colors.grayLight  : colors.grayLight,
-			inactiveBackgroundColor: navigationRef.current.getCurrentRoute().name == 'Emails' ? colorUseTheme.colors.white  :  colors.white,
-			activeBackgroundColor: navigationRef.current.getCurrentRoute().name == 'Emails' ? colorUseTheme.colors.white  :  colors.white,
+			activeTintColor:  colorUseTheme.colors.advise,
+			inactiveTintColor:  colorUseTheme.colors.grayLight,
+			inactiveBackgroundColor:  colorUseTheme.colors.white ,
+			activeBackgroundColor:  colorUseTheme.colors.white ,
 			tabStyle: {
 				width: 60,
 			},
 			style: {
-				backgroundColor:  navigationRef.current.getCurrentRoute().name == 'Emails' ? colorUseTheme.colors.white : colors.white,
+				backgroundColor:  colorUseTheme.colors.white,
 				height: Platform.OS == 'android' ? 64 : 80,
 				paddingTop: Platform.OS == 'android' ? 0 : 8,
 				marginBottom: -2,

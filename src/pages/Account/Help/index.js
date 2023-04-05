@@ -16,8 +16,11 @@ import {
   AttendanceText,
 } from './styles';
 
-import { Container, Warp } from 'assets/styles/general';
-import { colors } from 'assets/styles';
+import { Container, Warp } from 'assets/styles/global';
+
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+  
 
 const Help = props => {
 
@@ -27,6 +30,9 @@ const Help = props => {
     props.setCustomActions(null);
   }, [props.selected]);
 
+  // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
 
   return (
     <Container>

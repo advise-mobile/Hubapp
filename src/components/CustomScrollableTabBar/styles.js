@@ -4,13 +4,13 @@ import { colors, fonts } from 'assets/styles';
 const TabsContainer = styled.View`
   height: 50;
   border-bottom-Width: 1;
-  border-bottom-color: ${colors.grayLighter};
+  border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const Tabs = styled.View`
   height: 49;
   padding-bottom: 12px;
-  background: ${colors.white};
+  background: ${({ theme }) => theme.colors.white};
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
@@ -28,7 +28,7 @@ const TabButton = styled.TouchableOpacity``;
 const TabText = styled.Text`
   font-family: ${fonts.circularStdMedium};
   font-size: ${(props) => (props.active ? fonts.big + 2 : fonts.regular)};
-  color: ${(props) => (props.active ? colors.primary : colors.inactive)};
+  color: ${(props) => (props.active ? props.theme.colors.primary : props.theme.colors.inactive)};
 `;
 
 const UndelineTab = styled.View`
@@ -37,7 +37,7 @@ const UndelineTab = styled.View`
   height: 2;
   left: 0;
   right: 0;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   bottom: 15;
 `;
 
