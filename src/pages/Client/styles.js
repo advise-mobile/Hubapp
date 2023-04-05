@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fonts, colors } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 const Content = styled.ScrollView`
 
@@ -7,7 +7,7 @@ const Content = styled.ScrollView`
 
 const ContentRow = styled.View`
   padding: 12px 24px;
-  border-bottom-color: ${colors.grayLighter};
+  border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
   border-bottom-width: 1px;
 `;
 
@@ -21,7 +21,7 @@ const Heading = styled.View`
 const Title = styled.Text`
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.regular};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
 `;
 
 const Button = styled.TouchableOpacity`
@@ -31,7 +31,7 @@ const Button = styled.TouchableOpacity`
 
 const Description = styled.Text`
   font-size: ${fonts.regular};
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   font-family: ${fonts.circularStdBook};
   line-height: ${fonts.big + 3};
   margin-bottom: 12px;
@@ -49,7 +49,7 @@ const OptionButton = styled.TouchableOpacity`
 
 const OptionText = styled.Text`
   font-size: ${fonts.small};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdBook};
   margin-left: 12px;
 `;
@@ -57,7 +57,7 @@ const OptionText = styled.Text`
 const ModalContent = styled.View`
   top: ${props => props.device == 'ios' ? '80px' : 0};
   border-radius: 4px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const Infos = styled.KeyboardAvoidingView`
@@ -74,13 +74,13 @@ const ModalHeading = styled.View`
 const ModalTitle = styled.Text`
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.big};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
 `;
 
 const ModalSubtitle = styled.Text`
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.regular};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   padding-vertical: 8px;
   margin-top: 8px;
 `;
@@ -91,7 +91,7 @@ const ModalOptionButton = styled.TouchableOpacity`
 
 const ModalOptionText = styled.Text`
   margin-left: 12px;
-  color: ${colors.adviseDarker};
+  color: ${({ theme }) => theme.colors.adviseDarker};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
 `;
@@ -99,18 +99,18 @@ const ModalOptionText = styled.Text`
 const Attendance = styled.View`
   padding-top: 16px;
   border-top-width: 1px;
-  border-top-color: ${colors.grayLighter};
+  border-top-color: ${({ theme }) => theme.colors.grayLighter};
   padding: 16px 24px 24px 24px;
 `;
 
 const AttendanceTitle = styled.Text`
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;
 
 const AttendanceText = styled.Text`
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBook};
 `;
@@ -125,7 +125,7 @@ const HelpText = styled.Text`
   flex: 1;
   padding-top: 12px;
   font-size: ${fonts.small};
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   font-family: ${fonts.circularStdBook};
 `;
 
@@ -135,12 +135,12 @@ const Row = styled.View`
   flex-direction: column;
   border-bottom-width: 1px;
   display: ${props => props.disabled ? 'none' : 'flex'};
-  border-bottom-color: ${props => props.error ? colors.redLight : colors.grayLighter};
+  border-bottom-color: ${props => props.error ? props.theme.colors.redLight : props.theme.colors.grayLighter};
 `;
 
 const Label = styled.Text`
   padding: 12px 24px;
-  color: ${props => props.error ? colors.red : colors.primary};
+  color: ${props => props.error ? props.theme.colors.red : props.theme.colors.primary};
   font-size: ${fonts.regular - 2};
   font-family: ${fonts.circularStdBold};
 `;
@@ -149,7 +149,7 @@ const Input = styled.TextInput`
   padding-horizontal: 24px;
   padding-bottom: 12px;
   padding-top: 0;
-  color: ${props => props.error ? colors.red : colors.grayLight};
+  color: ${props => props.error ? props.theme.colors.red : props.theme.colors.grayLight};
   font-size: ${fonts.regular - 2};
   font-family: ${fonts.circularStdBook};
 `;
@@ -157,7 +157,7 @@ const Input = styled.TextInput`
 const Submit = styled.TouchableOpacity`
   margin-top: 24px;
   padding: 8px;
-  background: ${props => props.disabled ? colors.disabled : colors.primary};
+  background: ${props => props.disabled ? props.theme.colors.disabled : props.theme.colors.primary};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
@@ -166,7 +166,7 @@ const Submit = styled.TouchableOpacity`
 `;
 
 const SubmitText = styled.Text`
-  color: ${props => props.sending ? colors.disabledText : colors.white};
+  color: ${props => props.sending ? props.theme.colors.disabledText : props.theme.colors.white};
   font-size: ${fonts.regular - 2};
   font-family: ${fonts.circularStdBold};
 `;
@@ -185,14 +185,14 @@ const Image = styled.Image`
 const SuccessTitle = styled.Text`
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.big + 2};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   margin-bottom: 8px;
 `;
 
 const SuccessDescription = styled.Text`
   font-family: ${fonts.circularStdBook};
   font-size: ${fonts.regular};
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   text-align: center;
 `;
 

@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import { fonts, colors, metrics } from 'assets/styles';
+import { fonts, colors } from 'assets/styles';
 
 const Content = styled.SafeAreaView`
   align-items: center;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   flex: 1;
   marginHorizontal: 40px;
   justify-content: center;
@@ -20,7 +20,7 @@ const Icon = styled.Image`
 `;
 
 const Title = styled.Text`
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdBold};
   fontSize: ${fonts.big + 4};
   line-height: 24px;
@@ -30,7 +30,7 @@ const Title = styled.Text`
 `;
 
 const Description = styled.Text`
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
   margin-top: 12px;
@@ -52,24 +52,24 @@ const InputGroup = styled.View`
 const Label = styled.Text`
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBold};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   line-height: 24px;
   margin-bottom: 4px;
 `;
 
 const Input = styled.TextInput`
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   border-radius: 4;
   border-width: 0.5;
-  border-color: ${props => props.error ? colors.red : colors.grayLight};
-  color: ${colors.grayDarker};
+  border-color: ${props => props.error ? props.theme.colors.red : props.theme.colors.grayLight};
+  color:  ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdMedium};
   font-size: 16;
   padding: 10px;
 `;
 
 const InputHelpText = styled.Text`
-  color: ${colors.red};
+  color:  ${({ theme }) => theme.colors.red};
   font-size: ${fonts.smaller}
   margin-bottom: 15;
   align-self: flex-start;
@@ -77,14 +77,14 @@ const InputHelpText = styled.Text`
 
 const Button = styled.TouchableOpacity`
   align-self: stretch;
-  background-color: ${colors.primary};
+  background-color:  ${({ theme }) => theme.colors.primary};
   border-radius: 4;
   marginVertical: 24px;
   padding: 12px;
 `;
 
 const ButtonText = styled.Text`
-  color: ${colors.white};
+  color: ${({ theme }) => theme.colors.white};
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.regular};
   textAlign: center;
@@ -93,7 +93,7 @@ const ButtonText = styled.Text`
 const LogintLink = styled.TouchableOpacity``;
 
 const LoginLinkText = styled.Text`
-  color: ${colors.forgetLink};
+  color: ${({ theme }) => theme.colors.forgetLink};
   font-family: ${fonts.circularStdBold};
   fontSize: ${fonts.regular};
 `;

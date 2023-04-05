@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { ActivityIndicator, Appearance } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 
 import AuthAction from 'store/ducks/Auth';
 
-import { colors } from 'assets/styles';
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
 
-import { Container, Warp } from 'assets/styles/general';
+import { Container, Warp } from 'assets/styles/global';
 
 import {
   Content,
@@ -27,6 +28,11 @@ import {
 } from './styles';
 
 const Forgot = props => {
+
+  // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const loading = useSelector(state => state.auth.loading);
   const sended = useSelector(state => state.auth.sended);
 
@@ -34,10 +40,10 @@ const Forgot = props => {
   const [emptyEmail, setEmptyEmail] = useState(false);
   const [disabled, setDisabled] = useState(false);
   // const [sended, setSended] = useState(false);
-  const colorScheme = Appearance.getColorScheme();
+  
   // const logoImage = require('assets/images/logo.png');
-  const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_hub_branca.png') : require('assets/images/logo_hub.png');
-  const sendedIcon = (colorScheme == 'dark') ? require('assets/images/icons/email_white.png') : require('assets/images/icons/email.png');
+  const logoImage = (colorUseTheme.name == 'dark') ? require('assets/images/logo_hub_branca.png') : require('assets/images/logo_hub.png');
+  const sendedIcon = (colorUseTheme.name == 'dark') ? require('assets/images/icons/email_white.png') : require('assets/images/icons/email.png');
 
   const [emailError, setEmailError] = useState(false);
 

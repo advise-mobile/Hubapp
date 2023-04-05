@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {StyleSheet, KeyboardAvoidingView, Keyboard, Platform, Appearance} from 'react-native';
+import {StyleSheet, KeyboardAvoidingView, Keyboard, Platform} from 'react-native';
 
 // import jwtDecode from 'jwt-decode';
 
@@ -18,7 +18,9 @@ import Spinner from 'components/Spinner';
 import {registerNotification} from 'helpers/Pushs';
 import {AVATAR, TOKEN, REFRESH_TOKEN} from 'helpers/StorageKeys';
 
-import {colors} from 'assets/styles';
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 import {
 	Container,
 	Warp,
@@ -39,7 +41,7 @@ import {
 	AnotherOption,
 } from './styles';
 
-const style = StyleSheet.create({
+const stylesLogin = (colors) => StyleSheet.create({
 	hasIcon: {
 		color: colors.fadedBlack,
 		paddingTop: 7,
@@ -64,6 +66,13 @@ const style = StyleSheet.create({
 });
 
 export default function Login(props) {
+
+	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+	const style = stylesLogin(colors);
+
+
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [disabled, setDisabled] = useState(false);
@@ -86,10 +95,7 @@ export default function Login(props) {
 
 	const dispatch = useDispatch();
 
-	const colorScheme = Appearance.getColorScheme();
-
-	const logoImage =
-		colorScheme == 'dark'
+	const logoImage = colorUseTheme.name === 'dark'
 			? require('assets/images/logo_hub_branca.png')
 			: require('assets/images/logo_hub.png');
 

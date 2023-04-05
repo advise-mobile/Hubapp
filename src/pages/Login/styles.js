@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import { metrics, fonts, colors } from 'assets/styles';
+import { metrics, fonts } from 'assets/styles';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const Warp = styled.View`
@@ -39,7 +39,7 @@ const InputGroup = styled.View``;
 
 const InputGroupPrepend = styled.View`
   background-color: transparent;
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   height: 49px;
   left: ${metrics.basePadding};
   padding: 5px;
@@ -49,7 +49,7 @@ const InputGroupPrepend = styled.View`
 
 const InputGroupAppend = styled.TouchableOpacity`
   background-color: transparent;
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   height: 49px;
   right: ${metrics.basePadding};
   padding: 5px;
@@ -60,10 +60,10 @@ const InputGroupAppend = styled.TouchableOpacity`
 const Input = styled.TextInput`
   align-self: stretch;
   margin-horizontal: 20px;
-  background-color: ${colors.niceBackground};
+  background-color: ${({ theme }) => theme.colors.niceBackground};
   border-radius: ${metrics.baseRadius};
   border-width: 0.5px;
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-family: ${fonts.circularStdBook};
   font-size: ${fonts.regular};
   padding: 10px;
@@ -76,7 +76,7 @@ const Input = styled.TextInput`
 `;
 
 const InputHelpText = styled.Text`
-  color: ${colors.red};
+  color: ${({ theme }) => theme.colors.red};
   font-size: ${fonts.smaller};
   margin-bottom: 15px;
   margin-horizontal: 20;
@@ -85,7 +85,7 @@ const InputHelpText = styled.Text`
 
 const Button = styled.TouchableOpacity`
   align-self: stretch;
-  background-color: ${colors.backgroundButton};
+  background-color: ${({ theme }) => theme.colors.backgroundButton};
   border-radius: 4px;
   margin: 20px;
   margin-horizontal: 20px;
@@ -97,14 +97,14 @@ const Button = styled.TouchableOpacity`
 `;
 
 const ButtonText = styled.Text`
-  color: ${colors.white};
+  color: ${({ theme }) => theme.colors.white};
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.big};
   text-align: center;
 `;
 
 const ForgotText = styled.Text`
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-family: ${fonts.circularStdMedium};
   font-size: ${fonts.regular};
   margin-top: 10px;
@@ -118,7 +118,7 @@ const ForgotLink = styled.TouchableOpacity`
 const ForgotLinkText = styled.Text`
   font-family: ${fonts.circularStdMedium};
   font-size: ${fonts.regular};
-  color: ${colors.forgetLink};
+  color: ${({ theme }) => theme.colors.forgetLink};
   font-weight: bold;
 `;
 
@@ -133,23 +133,23 @@ const Badge = styled.TouchableOpacity`
 `;
 
 const BadgeText = styled.Text`
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.big};
   text-align: center;
 `;
 
 const BadgeRed = styled(Badge)`
-  background-color: ${colors.red};
+  background-color: ${({ theme }) => theme.colors.red};
 `;
 
 const BadgeRedText = styled(BadgeText)`
-  color: ${colors.white};
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${fonts.tiny};
 `;
 
 const AnotherOption = styled.View`
-  background-color: ${colors.disabled};
+  background-color: ${({ theme }) => theme.colors.disabled};
   height: 1px;
   margin: 24px 0 24px 0;
   width: 300px;
@@ -161,9 +161,9 @@ const AnotherOptionText = styled.Text`
   width: 75px;
   text-align: center;
   position: absolute;
-  color: ${colors.fadedBlack};
+  color:  ${({ theme }) => theme.colors.fadedBlack};
   font-size: ${fonts.regular};
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   font-family: ${fonts.circularStdBold};
 `;
 

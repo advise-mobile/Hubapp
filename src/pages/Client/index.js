@@ -42,14 +42,19 @@ import {
   SuccessDescription,
 } from './styles';
 
-import { Container, Warp } from 'assets/styles/general';
-import { colors } from 'assets/styles';
+import { Container, Warp } from 'assets/styles/global';
 
-const colorScheme = Appearance.getColorScheme();
 
-const image = (colorScheme == 'dark') ? require('assets/images/icons/email_white.png') : require('assets/images/icons/email.png');
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
 
 const Client = props => {
+  // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
+  const image = (colorUseTheme.name == 'dark') ? require('assets/images/icons/email_white.png') : require('assets/images/icons/email.png');
+
   const { control, handleSubmit } = useForm();
 
   const nameRef = useRef(null);

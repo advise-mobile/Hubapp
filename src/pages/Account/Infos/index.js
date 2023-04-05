@@ -108,7 +108,7 @@ export default Infos = props => {
         <MaterialIcons name={editMode ? "check" : "edit"} size={20} color={colors.fadedBlack} onPress={() => editMode ? editUserData(userData) : setEditMode(!editMode)} />
       </HeaderAction >
     );
-  }, [editMode, userData]);
+  }, [editMode, userData,colors]);
 
   useEffect(() => {
     dispatch(UserActions.personRequest());
