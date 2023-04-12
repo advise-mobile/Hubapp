@@ -1,17 +1,17 @@
 import styled from 'styled-components';
-import {fonts, colors} from 'assets/styles';
+import {fonts} from 'assets/styles';
 
 const Scene = styled.ScrollView`
 	flex: 1;
-	background-color: ${colors.white};
+	background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const Card = styled.TouchableOpacity`
 	margin: 12px;
-	background-color: ${colors.white};
+	background-color: ${({ theme }) => theme.colors.white};
 	border-radius: 4px;
 	border-width: 1px;
-	border-color: ${colors.grayLighter};
+	border-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const CardInfos = styled.View`
@@ -22,7 +22,7 @@ const CardInfos = styled.View`
 `;
 
 const CardCounter = styled.Text`
-	color: ${colors.advise};
+	color: ${({ theme }) => theme.colors.advise};
 	font-size: ${fonts.larger};
 	font-family: ${fonts.circularStdBlack};
 `;
@@ -34,14 +34,14 @@ const CardContainer = styled.View`
 
 const CardDescription = styled.Text`
 	font-size: ${fonts.small};
-	color: ${colors.grayDarker};
+	color:  ${({ theme }) => theme.colors.grayDarker};
 	font-family: ${fonts.circularStdMedium};
 	line-height: ${fonts.bigger};
 `;
 
 const CardSubtitle = styled.Text`
 	font-size: ${fonts.small};
-	color: ${colors.grayLight};
+	color: ${({ theme }) => theme.colors.grayLight};
 	font-family: ${fonts.circularStdMedium};
 	line-height: ${fonts.bigger};
 `;
@@ -55,7 +55,7 @@ const Illustration = styled.Image`
 const Heading = styled.Text`
 	line-height: ${fonts.bigger};
 	font-size: ${fonts.regular};
-	color: ${colors.grayDarker};
+	color: ${({ theme }) => theme.colors.grayDarker};
 	padding: 0 24px;
 	margin-bottom: 12px;
 	font-family: ${fonts.circularStdMedium};
@@ -71,14 +71,14 @@ const ListItem = styled.TouchableOpacity`
 	align-items: center;
 	justify-content: space-between;
 	border-bottom-width: 1px;
-	border-bottom-color: ${colors.grayLighter};
+	border-bottom-color:  ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const ListItemText = styled.Text`
 	font-size: ${fonts.small};
 	font-family: ${fonts.circularStdMedium};
 	flex: 1;
-	color: ${colors.grayLight};
+	color:  ${({ theme }) => theme.colors.grayLight};
 `;
 
 const ListItemCounterContainer = styled.View`
@@ -87,7 +87,7 @@ const ListItemCounterContainer = styled.View`
 	border-radius: 50px;
 	align-items: center;
 	justify-content: center;
-	background-color: ${colors.blue200};
+	background-color: ${({ theme }) => theme.colors.blue200};
 `;
 
 const ListItemCounterText = styled.Text`
@@ -97,9 +97,9 @@ const ListItemCounterText = styled.Text`
 const SearchBar = styled.View`
 	flex-direction: row;
 	border-top-width: 1px;
-	border-top-color: ${colors.grayLighter};
+	border-top-color:  ${({ theme }) => theme.colors.grayLighter};
 	border-bottom-width: 1px;
-	border-bottom-color: ${colors.grayLighter};
+	border-bottom-color: ${({ theme }) => theme.colors.grayLighter}; 
 `;
 
 const SearchInput = styled.TextInput`
@@ -107,7 +107,7 @@ const SearchInput = styled.TextInput`
 	font-family: ${fonts.circularStdMedium};
 	padding: 12px 24px;
 	flex: 1;
-	color: ${colors.grayLight};
+	color: ${({ theme }) => theme.colors.grayLight};
 `;
 
 const SearchButton = styled.TouchableOpacity`
@@ -134,13 +134,13 @@ const Image = styled.Image`
 
 const NotFoundText = styled.Text`
 	font-size: ${fonts.big};
-	color: ${colors.grayDarker};
+	color:  ${({ theme }) => theme.colors.grayDarker};
 	font-family: ${fonts.circularStdBold};
 	margin-bottom: 8px;
 `;
 
 const NotFoundDescription = styled.Text`
-	color: ${colors.grayLight};
+	color: ${({ theme }) => theme.colors.grayLight};
 	font-size: ${fonts.regular};
 	font-family: ${fonts.circularStdBook};
 `;

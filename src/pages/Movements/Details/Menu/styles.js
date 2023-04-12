@@ -11,16 +11,16 @@ const Cancel = styled.TouchableOpacity`
   flex: 1;
   padding: 7px;
   margin-right: 12px;
-  background: ${colors.white};
+  background: ${({ theme }) => theme.colors.white};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color: ${colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const CancelText = styled.Text`
-  color: ${colors.primary};
+  color:  ${({ theme }) => theme.colors.primary};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;
@@ -35,13 +35,13 @@ const Item = styled.TouchableOpacity`
   padding: 12px 24px;
   align-items: center;
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.grayLighter};
+  border-bottom-color:  ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const ItemText = styled.Text`
   font-family: ${fonts.circularStdBook};
   font-size: ${fonts.small};
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   margin-left: 12px;
 `;
 

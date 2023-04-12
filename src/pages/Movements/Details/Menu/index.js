@@ -5,10 +5,19 @@ import Modal from 'components/Modal';
 import Spinner from 'components/Spinner';
 import RNShareFile from 'react-native-share-pdf';
 
-import {colors} from 'assets/styles';
 import {Footer, Cancel, CancelText, Content, Item, ItemText} from './styles';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
+
 export default Menu = forwardRef((props, ref) => {
+
+
+	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
 	const [movement, setMovement] = useState(props.movement);
 	const [type, setType] = useState(props.type);
 
@@ -57,7 +66,7 @@ export default Menu = forwardRef((props, ref) => {
 		closeModal();
 
 		setTimeout(() => props.openDeadline(), 200);
-	});
+	},[colors]);
 
 	const openConfirmation = useCallback(() => {
 		closeModal();

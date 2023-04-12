@@ -29,8 +29,8 @@ import Confirmation from './Modals/Confirmation';
 import AddDeadline from './Modals/AddDeadline';
 import MarkAsRead from './Modals/MarkAsRead';
 
-import {colors} from 'assets/styles';
-import {Container, Warp, Actions, ActionButton} from 'assets/styles/general';
+import {Container, Warp, Actions, ActionButton} from 'assets/styles/global';
+
 
 import {
 	Heading,
@@ -58,18 +58,25 @@ import {
 
 import {MaskCnj} from 'helpers/Mask';
 
-const movementsRef = {};
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
 
-const colorScheme = Appearance.getColorScheme();
+const movementsRef = {};
 
 const dirs = RNFetchBlob.fs.dirs;
 
-const notFound =
-	colorScheme == 'dark'
+
+export default Movements = props => {
+
+	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
+
+	const notFound = colorUseTheme.name === 'dark'
 		? require('assets/images/not_found/movements_white.png')
 		: require('assets/images/not_found/movements.png');
 
-export default Movements = props => {
 	const listRef = useRef(null);
 	const emailRef = useRef(null);
 	const filtersRef = useRef(null);

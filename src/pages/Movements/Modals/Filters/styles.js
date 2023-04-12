@@ -1,16 +1,15 @@
 import styled from 'styled-components/native';
-import { fonts, colors } from 'assets/styles';
-import { StyleSheet } from 'react-native';
+import { fonts } from 'assets/styles';
 
 const Title = styled.Text`
   font-size: ${fonts.big};
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-family: ${fonts.circularStdBold};
 `;
 
 const Label = styled.Text`
   font-size: ${fonts.small};
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-family: ${fonts.circularStdBold};
   padding-bottom: 4px;
 `;
@@ -26,14 +25,14 @@ const Column = styled.View`
 
 const Submit = styled.TouchableOpacity`
   padding: 8px;
-  background: ${colors.primary};
+  background: ${({ theme }) => theme.colors.primary};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
 `;
 
 const SubmitText = styled.Text`
-  color: ${colors.white};
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBold};
 `;
@@ -46,14 +45,6 @@ const RBRow = styled.View`
   padding: 8px 0;
 `;
 
-const RBLabel = StyleSheet.create({
-  label: {
-    'color': colors.grayDarker,
-    'fontFamily': fonts.circularStdBook,
-    'fontSize': fonts.regular,
-  }
-});
-
 export {
   Title,
   Label,
@@ -61,6 +52,5 @@ export {
   Column,
   Submit,
   SubmitText,
-  RBRow,
-  RBLabel
+  RBRow
 };

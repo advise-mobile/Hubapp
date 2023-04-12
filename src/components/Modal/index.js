@@ -1,6 +1,6 @@
 import React, {forwardRef, useCallback} from 'react';
 import {Modalize} from 'react-native-modalize';
-// import {colors} from 'assets/styles';
+
 import {Container, Title, Header, Footer, ClearFilters, ClearText} from './styles';
 
 // Add Hook UseTheme para pegar o tema global addicionado

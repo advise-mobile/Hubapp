@@ -25,8 +25,7 @@ import Spinner from 'components/Spinner';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import {colors} from 'assets/styles';
-import {Container, Warp, HeaderAction} from 'assets/styles/general';
+import {Container, Warp, HeaderAction} from 'assets/styles/global';
 
 import {
 	Movement,
@@ -41,7 +40,16 @@ import {
 
 import {MaskCnj} from 'helpers/Mask';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default MovementDetail = props => {
+
+	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
+
 	const [movementType] = useState(props.route.params.movementType);
 	const [movement, setMovement] = useState(props.route.params.movement);
 	const [moveReference, setMoveReference] = useState(null);
@@ -231,7 +239,7 @@ export default MovementDetail = props => {
 				/>
 			</HeaderAction>
 		),
-		[],
+		[colors],
 	);
 
 	const renderMenu = useMemo(
@@ -273,7 +281,7 @@ export default MovementDetail = props => {
 
 	const renderAddDeadline = useMemo(
 		() => <AddDeadline ref={deadlineRef} movement={moveReference} />,
-		[moveReference],
+		[moveReference,colors],
 	);
 
 	const removeFromList = useCallback(() => {

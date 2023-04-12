@@ -15,14 +15,15 @@ import HasNotPermission from 'components/HasNotPermission';
 
 import Blocked from 'pages/Blocked';
 
-import { colors } from 'assets/styles';
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
 
 import { MaskCnj } from 'helpers/Mask';
 
 import {
   Container,
   Warp,
-} from 'assets/styles/general';
+} from 'assets/styles/global';
 
 import {
   Card,
@@ -50,6 +51,10 @@ export default function Folders(props) {
   // const add = () => { console.log("add") };
   // const edit = () => { console.log("edit") };
 
+    // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const [filters, setFilters] = useState();
   const [processFilters, setProcessFilters] = useState();
   const [keywordSearch, setKeywordSearch] = useState('');
@@ -76,11 +81,9 @@ export default function Folders(props) {
 
   const active = useSelector(state => state.auth.active);
 
-  const colorScheme = Appearance.getColorScheme();
+  const image = (colorUseTheme.name == 'dark') ? require('assets/images/permissions/folders_white.png') : require('assets/images/permissions/folders.png');
 
-  const image = (colorScheme == 'dark') ? require('assets/images/permissions/folders_white.png') : require('assets/images/permissions/folders.png');
-
-  const notFound = (colorScheme == 'dark') ? require('assets/images/not_found/movements_white.png') : require('assets/images/not_found/movements.png');
+  const notFound = (colorUseTheme.name == 'dark') ? require('assets/images/not_found/movements_white.png') : require('assets/images/not_found/movements.png');
 
   const dispatch = useDispatch();
   const threshold = 0.5;

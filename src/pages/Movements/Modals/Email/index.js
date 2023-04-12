@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import MovementsActions from 'store/ducks/Movements';
 
-import { colors } from 'assets/styles';
 import {
   Footer,
   Cancel,
@@ -19,7 +18,15 @@ import {
   Email,
 } from './styles';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default EmailModal = forwardRef((props, ref) => {
+
+   	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');

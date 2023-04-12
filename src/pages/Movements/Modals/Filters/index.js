@@ -11,7 +11,7 @@ import Datepicker from 'components/DatePicker';
 
 import { FormatFullDateEN, FormatDateBR } from 'helpers/DateFunctions';
 
-import { colors, fonts } from 'assets/styles';
+import { fonts } from 'assets/styles';
 import {
   Title,
   Label,
@@ -20,10 +20,18 @@ import {
   Submit,
   SubmitText,
   RBRow,
-  RBLabel
 } from "./styles";
 
+
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default Filters = forwardRef((props, ref) => {
+
+       	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const { control, handleSubmit } = useForm();
   const [situation, setSituation] = useState(props.filters.Lido || 0);
   const [customField, setCustomFields] = useState(props.customField);
@@ -102,6 +110,9 @@ export default Filters = forwardRef((props, ref) => {
       }
     });
 
+    const pickerSelectStyles = stylePickerSelectStyles(colors);
+
+
     return (
       <>
         <Row>
@@ -138,6 +149,8 @@ export default Filters = forwardRef((props, ref) => {
     </Submit>
   );
 
+  const RBLabel = stylesRBLabel(colors);
+
   return (
     <Modal ref={ref} footer={footer()} title="Filtros" filters={countFilters()} clear={clearFilters}>
       <Row>
@@ -154,7 +167,7 @@ export default Filters = forwardRef((props, ref) => {
               <Datepicker
                 date={minDate}
                 enabled={true}
-                customStyles={DateStyle}
+                //customStyles={DateStyle}
                 title="dd/mm/aaaa"
                 style={{ maxWidth: 100 }}
                 maxDate={maxDate || undefined}
@@ -173,7 +186,7 @@ export default Filters = forwardRef((props, ref) => {
               <Datepicker
                 date={maxDate}
                 enabled={true}
-                customStyles={DateStyle}
+                // customStyles={DateStyle}
                 title="dd/mm/aaaa"
                 style={{ maxWidth: 100 }}
                 minDate={minDate || undefined}
@@ -229,7 +242,7 @@ export default Filters = forwardRef((props, ref) => {
   );
 });
 
-const pickerSelectStyles = StyleSheet.create({
+const stylePickerSelectStyles =  (colors) => StyleSheet.create({
   inputIOS: {
     fontSize: 16,
     // minWidth: 350,
@@ -251,25 +264,10 @@ const pickerSelectStyles = StyleSheet.create({
   },
 });
 
-const DateStyle = {
-  dateInput: {
-    flex: 1,
-    marginTop: 2,
-    height: 20,
-    paddingBottom: 0,
-    borderWidth: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grayLighter,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  disabled: {
-    backgroundColor: colors.white,
-  },
-  dateText: {
-    marginTop: 2,
-    fontSize: 16,
-    color: colors.grayDarker,
-    fontFamily: fonts.circularStdBook,
+const stylesRBLabel =  (colors) => StyleSheet.create({
+  label: {
+    'color':  colors.grayDarker,
+    'fontFamily': fonts.circularStdBook,
+    'fontSize': fonts.regular,
   }
-};
+});

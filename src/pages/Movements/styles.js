@@ -4,14 +4,14 @@ import { fonts, colors, metrics } from 'assets/styles';
 const Heading = styled.View`
   align-items: center;
   flex-direction: row;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   padding: 12px 18px;
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.grayLighter};
+  border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const FolderTitle = styled.Text`
-  color: ${colors.grayDarker};
+  color:  ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdMedium};
   font-size: ${fonts.regular};
 `;
@@ -22,13 +22,13 @@ const FolderSelected = styled.View`
 `;
 
 const FolderSelectedTitleHighlight = styled.Text`
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdMedium};
   font-size: ${fonts.small};
 `;
 
 const FolderSelectedTitle = styled.Text`
-  color: ${colors.grayLight};
+  color: ${({ theme }) => theme.colors.grayLight};
   font-family: ${fonts.circularStdMedium};
   font-size: ${fonts.small};
   flex: 1;
@@ -54,10 +54,10 @@ const BackButton = styled.TouchableOpacity`
 `;
 
 const Movement = styled.View`
-  background-color: ${colors.white};
+  background-color:  ${({ theme }) => theme.colors.white};
   padding: 12px 18px;
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.grayLighter};
+  border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const MovementHeader = styled.View`
@@ -68,14 +68,14 @@ const MovementHeader = styled.View`
 `;
 
 const MovementHeading = styled.Text`
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-family: ${props => props.read ? fonts.circularStdBook : fonts.circularStdBold};
   font-size: 16px;
   flex: 1;
 `;
 
 const MovementResume = styled.Text`
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBook};
 `;
@@ -120,13 +120,13 @@ const Image = styled.Image`
 
 const NotFoundText = styled.Text`
   font-size: ${fonts.big};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdBold};
   margin-bottom: 8px;
 `;
 
 const NotFoundDescription = styled.Text`
-  color: ${colors.grayLight};
+  color:  ${({ theme }) => theme.colors.grayLight};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
 `;

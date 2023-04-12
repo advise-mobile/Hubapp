@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { fonts, colors } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 
 
@@ -8,14 +8,14 @@ const List = styled.ScrollView`
   background-color: ${({ theme }) => theme.colors.white};
   border-top-width: 1px;
   margin-top: 12px;
-  border-top-color: ${colors.grayLighter};
+  border-top-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const ListItem = styled.View`
   padding: 12px 24px;
   background-color: ${({ theme }) => theme.colors.white};
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.grayLighter};
+  border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const ListContent = styled.View`

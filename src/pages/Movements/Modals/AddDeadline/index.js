@@ -18,7 +18,6 @@ import Datepicker from 'components/DatePicker';
 
 import DeadlinesActions from 'store/ducks/Deadlines';
 
-import { colors } from 'assets/styles';
 import {
   Footer,
   Cancel,
@@ -42,7 +41,15 @@ import {
   Column,
 } from './styles';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default AddDeadline = forwardRef((props, ref) => {
+
+  	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const dispatch = useDispatch();
   const { control, handleSubmit } = useForm();
 
@@ -95,7 +102,7 @@ export default AddDeadline = forwardRef((props, ref) => {
     getIdAgenda();
 
     dispatch(DeadlinesActions.deadlinesTypesRequest());
-  }, []);
+  }, [colors]);
 
   useEffect(() => setMovement(props.movement), [props]);
 
@@ -292,13 +299,15 @@ export default AddDeadline = forwardRef((props, ref) => {
               <Datepicker
                 date={date}
                 enabled={true}
+                error={dateErr}
+
                 title="Selecione uma data"
                 style={{
                   flexGrow: 1,
                   maxWidth: 200,
                   height: 22
                 }}
-                customStyles={DateStyle({ error: dateErr })}
+                //customStyles={DateStyle({ error: dateErr,colors:colors,theme:colorUseTheme.name})}
                 onDateChange={date => { setDate(date); setDateError(date.length > 0); onChange(FormatFullDateEN(date)) }}
               />
             )}>

@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { colors, fonts } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 const Tabs = styled.View`
   height: 54;
   margin-horizontal: 36px;
-  background: ${colors.white};
+  background: ${({ theme }) => theme.colors.white};
   overflow: scroll;
   flex-direction: row;
   justify-content: center;
@@ -25,7 +25,7 @@ const TabButton = styled.TouchableOpacity`
 const TabText = styled.Text`
   font-family: ${(props) => (props.active ? fonts.circularStdBold : fonts.circularStdBook)};
   font-size: ${(props) => (props.active ? fonts.big + 2 : fonts.regular)};
-  color: ${(props) => (props.active ? colors.primary : colors.inactive)};
+  color: ${(props) => (props.active ? props.theme.colors.primary : props.theme.colors.inactive)};
 `;
 
 const UndelineTab = styled.View`
@@ -34,7 +34,7 @@ const UndelineTab = styled.View`
   height: 2;
   left: 0;
   right: 0;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};;
   bottom: 12;
   margin-horizontal: ${props => props.marginSize / 2};
 `;

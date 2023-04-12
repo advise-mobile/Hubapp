@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import { fonts, colors, metrics } from 'assets/styles';
 
 const Movement = styled.ScrollView`
-  background-color: ${colors.white};
+  background-color:   ${({ theme }) => theme.colors.white};
   padding: 12px 10px 48px 12px;
 `;
 
@@ -34,7 +34,7 @@ const ProcessNumber = styled.View`
 const ProcessNumberText = styled.Text`
   font-family: ${fonts.circularStdBlack};
   font-size: ${fonts.big};
-  color: ${props => props.color || colors.grayDarker};
+  color: ${props => props.color || props.theme.colors.grayDarker};
   margin-right: 14;
   margin-left: 8px;
 `;
@@ -45,7 +45,7 @@ const MovementContent = styled.Text`
   line-height: ${fonts.big + 5};
   margin-bottom: 24;
   margin-horizontal: 8px;
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 const MovementDispatch = styled.Text`
@@ -54,7 +54,7 @@ const MovementDispatch = styled.Text`
   line-height: ${fonts.big + 5};
   margin-horizontal: 8px;
   margin-bottom: 24;
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
 `;
 
 export {

@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import Spinner from 'components/Spinner';
-import { Container, Warp } from 'assets/styles/general';
+import { Container, Warp } from 'assets/styles/global';
 
 import { registerNotification } from 'helpers/Pushs';
 import { TOKEN, INTRO, ACCEPT_TERMS } from 'helpers/StorageKeys';
