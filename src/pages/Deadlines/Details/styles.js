@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { colors, fonts } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 const Content = styled.ScrollView`
   padding: 12px 24px;
@@ -8,25 +8,25 @@ const Content = styled.ScrollView`
 const Label = styled.Text`
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.regular};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   padding: 12px 0;
 `;
 
 const Value = styled.Text`
   font-family: ${fonts.circularStdBook};
   font-size: ${fonts.regular};
-  color: ${colors.grayLight};
+  color: ${({ theme }) => theme.colors.grayLight};
   padding: 12px 0;
 `;
 
 const Movement = styled.View`
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const MovementTitle = styled.Text`
   font-family: ${fonts.circularStdBold};
   font-size: ${fonts.bigger};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   padding-vertical: 12px;
 `;
 

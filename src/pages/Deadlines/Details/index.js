@@ -11,7 +11,6 @@ import Email from '../Modals/Email';
 import Confirmation from '../Modals/Confirmation';
 
 import Header from 'components/Header';
-import Spinner from 'components/Spinner';
 
 import { MaskCnj } from 'helpers/Mask';
 import { FormatDateInFull } from 'helpers/DateFunctions';
@@ -26,8 +25,7 @@ import {
   MovementDispatch,
 } from 'pages/Movements/Details/styles';
 
-import { colors } from 'assets/styles';
-import { Container, Warp, HeaderAction } from 'assets/styles/general';
+import { Container, Warp, HeaderAction } from 'assets/styles/global';
 import {
   Content,
   Label,
@@ -36,7 +34,15 @@ import {
   MovementTitle,
 } from './styles';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default function DeadlinesDetails(props) {
+
+  // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const menuRef = useRef(null);
   const editRef = useRef(null);
   const emailRef = useRef(null);

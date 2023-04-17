@@ -8,11 +8,17 @@ import {
   AddIcon
 } from './styles';
 
-import { colors } from 'assets/styles';
-
 import { PermissionsGroups, checkPermission } from 'helpers/Permissions';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 const CustomIcon = props => {
+
+   	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+  
   const active = useSelector(state => state.auth.active);
   const [permission, setPermission] = useState(true);
 

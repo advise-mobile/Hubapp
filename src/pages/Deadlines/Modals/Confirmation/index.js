@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import DeadlinesActions from 'store/ducks/Deadlines';
 
-import { colors } from 'assets/styles';
 import {
   Footer,
   Cancel,
@@ -18,7 +17,16 @@ import {
   Message
 } from './styles';
 
+
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default Confirmation = forwardRef((props, ref) => {
+
+    // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const dispatch = useDispatch();
 
   const [deadline, setDeadline] = useState(props.deadline);

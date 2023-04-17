@@ -7,10 +7,9 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 
-import {colors} from 'assets/styles';
 import {Container, Notify, NotifyMessage} from './styles';
 
-const styles = StyleSheet.create({
+const stylesToastNotify  =  (colors) => StyleSheet.create({
 	hasError: {
 		backgroundColor: colors.toastError,
 	},
@@ -35,7 +34,13 @@ class ToastNotify extends Component {
 		}
 	};
 
+	
+    
+
 	render() {
+
+		const { theme } = this.props;
+		const styles = stylesToastNotify(theme.colors);
 		const {show, message, error} = this.props.toastNotify;
 
 		return (

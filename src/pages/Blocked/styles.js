@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fonts, colors } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 const Logo = styled.Image`
   width: 200px;
@@ -12,7 +12,7 @@ const Container = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const BlockedContainer = styled.View`
@@ -32,14 +32,14 @@ const Image = styled.Image`
 const Title = styled.Text`
   text-align: center;
   margin-bottom: 8px;
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-size: ${fonts.big + 2};
   font-family: ${fonts.circularStdBold};
 `;
 
 const Description = styled.Text`
   text-align: center;
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   font-size: ${fonts.regular};
   line-height: ${fonts.bigger};
   font-family: ${fonts.circularStdBook};
@@ -50,7 +50,7 @@ const PaymentContainer = styled.View`
   max-width: 350px;
   padding: 30px 12px;
   border-radius: 4px;
-  background-color: ${colors.trueGray};
+  background-color: ${({ theme }) => theme.colors.trueGray};
 `;
 
 const PaymentImage = styled.Image`
@@ -60,7 +60,7 @@ const PaymentImage = styled.Image`
 
 const PaymentDescription = styled.Text`
   text-align: center;
-  color: ${colors.fadedBlack};
+  color: ${({ theme }) => theme.colors.fadedBlack};
   font-size: ${fonts.regular};
   line-height: ${fonts.bigger};
   font-family: ${fonts.circularStdBook};
@@ -69,13 +69,13 @@ const PaymentDescription = styled.Text`
 
 
 const PaymentButton = styled.TouchableOpacity`
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   padding: 12px 20px;
   border-radius: 4px;
 `;
 
 const PaymentButtonText = styled.Text`
-  color: ${colors.white};
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBold};
 `;

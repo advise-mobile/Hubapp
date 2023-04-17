@@ -1,9 +1,9 @@
 import styled from 'styled-components/native';
-import { fonts, colors } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: #fefefe;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const Warp = styled.View`
@@ -14,10 +14,10 @@ const Warp = styled.View`
 `;
 
 const ListItem = styled.TouchableHighlight`
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   padding: 12px 24px;
   border-bottom-width: 1px;
-  border-bottom-color: #e5e5e5;
+  border-bottom-color: ${({ theme }) => theme.colors.white};
 `;
 
 const ListContainer = styled.View`
@@ -62,7 +62,7 @@ const Badge = styled.View`
   padding: 2px 8px;
   border-radius: 17px;
   background-color: ${(props) =>
-    props.ativo ? colors.greenLight : colors.gray};
+    props.ativo ? props.theme.colors.greenLight : props.theme.colors.gray};
   margin-top: 8px;
   margin-right: 8px;
 `;
@@ -74,7 +74,7 @@ const BadgeText = styled.Text`
 
 const Markers = styled.FlatList`
   padding: 12px 12px 12px 24px;
-  background: ${colors.white};
+  background: ${({ theme }) => theme.colors.white};
   overflow: scroll;
 `;
 
@@ -86,7 +86,7 @@ const MarkersButton = styled.TouchableOpacity`
 const MarkersText = styled.Text`
   font-family: ${fonts.circularStdBook};
   font-size: ${(props) => (props.active ? fonts.big + 2 : fonts.regular)};
-  color: ${(props) => (props.active ? colors.primary : colors.inactive)};
+  color: ${(props) => (props.active ? props.theme.colors.primary : props.theme.colors.inactive)};
 `;
 
 const MarkersActive = styled.View`
@@ -94,7 +94,7 @@ const MarkersActive = styled.View`
   height: 2px;
   margin-top: 4px;
   background-color: ${(props) =>
-    props.active ? colors.primary : colors.inactive};
+    props.active ? props.theme.colors.primary : props.theme.colors.inactive};
 `;
 
 export {

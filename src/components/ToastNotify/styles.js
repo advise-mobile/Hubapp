@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import {Platform} from 'react-native';
-import {fonts, colors, metrics} from 'assets/styles';
+import {fonts, metrics} from 'assets/styles';
 
 const Container = styled.View`
 	bottom: ${Platform.OS === 'android' ? metrics.baseMargin : metrics.baseMargin + 70};

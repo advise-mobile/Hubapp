@@ -1,5 +1,4 @@
 import React, { forwardRef, useState, useCallback, useRef, useEffect } from 'react';
-import { KeyboardAvoidingView } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import CheckBox from '@react-native-community/checkbox';
 import moment from 'moment';
@@ -15,7 +14,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import DeadlinesActions from 'store/ducks/Deadlines';
 
-import { colors } from 'assets/styles';
 import {
   Footer,
   Cancel,
@@ -33,13 +31,20 @@ import {
   ReadBox,
   MarkAsRead,
   MarkAsReadText,
-  DateStyle,
   Hour,
   HourText,
   Column,
 } from './styles';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default Add = forwardRef((props, ref) => {
+
+  // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const dispatch = useDispatch();
   const { control, handleSubmit } = useForm();
 
@@ -273,13 +278,13 @@ export default Add = forwardRef((props, ref) => {
               <Datepicker
                 date={date}
                 enabled={true}
+                error={dateErr}
                 title="Selecione uma data"
                 style={{
                   flexGrow: 1,
                   maxWidth: 200,
                   height: 22
                 }}
-                customStyles={DateStyle({ error: dateErr })}
                 onDateChange={date => { setDate(date); setDateError(date.length > 0); onChange(FormatFullDateEN(date)) }}
               />
             )}>

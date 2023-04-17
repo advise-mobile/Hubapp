@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linking, Appearance } from 'react-native';
+import { Linking } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import {
@@ -16,13 +16,21 @@ import {
   PaymentButtonText
 } from './styles';
 
-const colorScheme = Appearance.getColorScheme();
 
-const blockedImage = (colorScheme == 'dark') ? require('assets/images/blocked_white.png') : require('assets/images/blocked.png');
-const paymentImage = (colorScheme == 'dark') ? require('assets/images/pagamentos_white.png') : require('assets/images/pagamentos.png');
 // const logoImage = (colorScheme == 'dark') ? require('assets/images/logo_hub_branca.png') : require('assets/images/logo_hub.png');
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
+
 const Blocked = props => {
+  
+    	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+
+  const blockedImage = (colorUseTheme.name == 'dark') ? require('assets/images/blocked_white.png') : require('assets/images/blocked.png');
+  const paymentImage = (colorUseTheme.name == 'dark') ? require('assets/images/pagamentos_white.png') : require('assets/images/pagamentos.png');
+
   const convenio = useSelector(state => state.auth.convenio);
 
   return (

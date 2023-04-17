@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fonts, colors } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 export const Content = styled.View`
   width: 100%;
@@ -21,27 +21,27 @@ export const TextBody = styled.Text`
   font-size: 16px;
   line-height: 24px;
   font-family: ${fonts.circularStdBook};
-  color: rgba(0, 0, 0, 0.6);
+  color: ${({ theme }) => theme.colors.fadedWhite};
   align-items: center;
   justify-content: center;
   align-self: center;
   text-align: center;
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const TextTitle = styled.Text`
   font-size: 20px;
   line-height: 24px;
-  color: rgba(0, 0, 0, 0.87);
+  color:  ${({ theme }) => theme.colors.grayDarker};  
   font-family: ${fonts.circularStdBold};
   text-align: center;
   margin-bottom: 20px;
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const Tag = styled.View`
   text-align: center;
-  background: #f5f5f5;
+  background: ${({ theme }) => theme.colors.white};
   padding: 2px 8px;
   border-radius: 100px;
   margin-bottom: 20px;

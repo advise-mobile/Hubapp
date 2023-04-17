@@ -18,8 +18,6 @@ export default function Chat(props) {
   const handleChange = ({ url }) => {
     if (!url) return;
 
-    console.log(url);
-
     if (url.includes("Ticket") || url.includes("https://www.movidesk.com/?origin=chat"))
       webRef.current?.stopLoading();
 

@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { fonts, colors } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 const Footer = styled.View`
   flex-direction: row;
@@ -11,16 +11,16 @@ const Cancel = styled.TouchableOpacity`
   flex: 1;
   padding: 7px;
   margin-right: 12px;
-  background: ${colors.white};
+  background: ${({ theme }) => theme.colors.white};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color: ${colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const CancelText = styled.Text`
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;
@@ -28,16 +28,16 @@ const CancelText = styled.Text`
 const Submit = styled.TouchableOpacity`
   flex: 1;
   padding: 8px;
-  background: ${colors.primary};
+  background: ${({ theme }) => theme.colors.primary};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color: ${colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const SubmitText = styled.Text`
-  color: ${colors.white};
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;
@@ -48,7 +48,7 @@ const Content = styled.View`
 
 const Title = styled.Text`
   font-size: ${fonts.big};
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-family: ${fonts.circularStdBold};
   flex-grow: 1;
   padding-bottom: 12px;
@@ -56,7 +56,7 @@ const Title = styled.Text`
 
 const Label = styled.Text`
   font-size: ${fonts.small};
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-family: ${fonts.circularStdBold};
   padding-bottom: 4px;
 `;
@@ -77,7 +77,7 @@ const Badges = styled.View`
 `;
 
 const Badge = styled.TouchableOpacity`
-  background: ${props => props.error ? colors.redLight : props.active ? colors.grayDarker : colors.gray};
+  background: ${props => props.error ? props.theme.colors.redLight : props.active ? props.theme.colors.grayDarker : props.theme.colors.gray};
   border-radius: 16;
   padding: 4px 8px;
   margin-right: 8px;
@@ -86,7 +86,7 @@ const Badge = styled.TouchableOpacity`
 
 const BadgeText = styled.Text`
   font-family: ${fonts.circularStdBold};
-  color: ${props => props.error ? colors.red : props.active ? colors.white : 'rgba(0, 0, 0, 0.38)'};
+  color: ${props => props.error ? props.theme.colors.red : props.active ? props.theme.colors.white : 'rgba(0, 0, 0, 0.38)'};
   font-size: ${fonts.smaller};
 `;
 
@@ -114,7 +114,7 @@ const ClearFilters = styled.TouchableOpacity`
 
 const ClearText = styled.Text`
   font-size: ${fonts.smaller};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdBold};
 `;
 

@@ -11,8 +11,6 @@ import Header from 'components/Header';
 import UserIcon from 'components/UserIcon';
 import Spinner from 'components/Spinner';
 
-import { colors } from 'assets/styles';
-
 import { Container, Warp, Actions, ActionButton } from 'assets/styles/general';
 
 import {
@@ -32,7 +30,15 @@ import {
   MarkersActive
 } from './styles';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default People = (props) => {
+
+    	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const [filters, setFilters] = useState();
   const [currentMarker, setCurrentMarker] = useState(0);
 
@@ -168,13 +174,13 @@ export default People = (props) => {
   ), [currentMarker]);
 
   const teste = useCallback(() => {
-    console.log('reached');
+    //console.log('reached');
   });
 
   const toggleCheck = useCallback((item, checked) => {
     item.checked = checked;
 
-    console.log(item);
+    //console.log(item);
   });
 
   const keyExtractor = (item, _) => item.idPessoaCliente.toString();

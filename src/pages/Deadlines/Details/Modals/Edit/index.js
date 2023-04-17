@@ -15,7 +15,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import DeadlinesActions from 'store/ducks/Deadlines';
 
-import { colors } from 'assets/styles';
 import {
   Footer,
   Cancel,
@@ -33,13 +32,21 @@ import {
   ReadBox,
   MarkAsRead,
   MarkAsReadText,
-  DateStyle,
   Hour,
   HourText,
   Column,
 } from './styles';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
+
 export default Edit = forwardRef((props, ref) => {
+
+    // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const dispatch = useDispatch();
   const { control, handleSubmit } = useForm();
 
@@ -278,7 +285,7 @@ export default Edit = forwardRef((props, ref) => {
                   maxWidth: 200,
                   height: 22
                 }}
-                customStyles={DateStyle}
+                
                 onDateChange={date => { setDate(date), onChange(FormatFullDateEN(date)) }}
               />
             )}>

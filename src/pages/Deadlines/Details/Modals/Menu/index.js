@@ -2,7 +2,7 @@ import React, { forwardRef, useState, useCallback, useEffect } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Modal from 'components/Modal';
-import Spinner from 'components/Spinner';
+
 import { Share } from 'components/Share';
 
 import { getLoggedUser } from 'helpers/Permissions';
@@ -13,7 +13,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import DeadlinesActions from 'store/ducks/Deadlines';
 
-import { colors } from 'assets/styles';
 import {
   Footer,
   Cancel,
@@ -23,7 +22,16 @@ import {
   ItemText,
 } from './styles';
 
+
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default Menu = forwardRef((props, ref) => {
+
+    // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const dispatch = useDispatch();
 
   const [deadline, setDeadline] = useState(props.deadline);

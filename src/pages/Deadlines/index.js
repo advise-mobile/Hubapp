@@ -28,7 +28,6 @@ import Confirmation from './Modals/Confirmation';
 import Blocked from 'pages/Blocked';
 
 import {
-  theme,
   Badge,
   BadgeText,
   Filters,
@@ -54,8 +53,8 @@ import {
   ImportantFlag
 } from './styles';
 
-import { colors } from 'assets/styles';
-import { Container, Warp, Actions, ActionButton } from 'assets/styles/general';
+import {  fonts } from 'assets/styles';
+import { Container, Warp, Actions, ActionButton } from 'assets/styles/global';
 
 LocaleConfig.locales['br'] = {
   formatAccessibilityLabel: "dddd d 'of' MMMM 'of' yyyy",
@@ -69,12 +68,6 @@ LocaleConfig.locales['br'] = {
 LocaleConfig.defaultLocale = 'br';
 
 const rowTranslateAnimatedValues = {};
-
-const colorScheme = Appearance.getColorScheme();
-
-const notFound = (colorScheme == 'dark') ? require('assets/images/not_found/deadlines_white.png') : require('assets/images/not_found/deadlines.png');
-
-const image = (colorScheme == 'dark') ? require('assets/images/permissions/deadlines_white.png') : require('assets/images/permissions/deadlines.png');
 
 const filters = [{
   id: 'a-vencer',
@@ -108,7 +101,64 @@ const filters = [{
   }
 }];
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default function Deadlines(props) {
+
+  // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
+  const theme = {
+    backgroundColor: colors.white,
+    calendarBackground: colors.white,
+    // arrows
+    arrowColor: colors.grayDarker,
+    arrowStyle: { padding: 0 },
+    // month
+    monthTextColor: colors.grayDarker,
+    textMonthFontSize: fonts.big,
+    textMonthFontFamily: fonts.circularStdBold,
+    // day names
+    textSectionTitleColor: colors.grayDarker,
+    textDayHeaderFontSize: fonts.small,
+    textDayHeaderFontFamily: fonts.circularStdBook,
+    // dates
+    dayTextColor: colors.grayDarker,
+    textDayFontSize: fonts.big,
+    textDayFontFamily: fonts.circularStdMedium,
+    textDayStyle: { marginTop: Platform.OS === 'android' ? 2 : 4 },
+    // selected date
+    selectedDayBackgroundColor: colors.grayDarker,
+    selectedDayTextColor: colors.white,
+    // disabled date
+    textDisabledColor: colors.grayLighter,
+    // dot (marked date)
+    dotColor: colors.grayDarker,
+    selectedDotColor: colors.white,
+    disabledDotColor: colors.grayLighter,
+    dotStyle: { marginTop: -1 },
+    todayTextColor: colors.advise,
+    'stylesheet.day.basic': {
+      selected: {
+        borderRadius: 0,
+        backgroundColor: colors.primary,
+      },
+      base: {
+        width: 32,
+        height: 32,
+        alignItems: 'center',
+        // borderWidth: 1,
+        // padding: 8,
+      }
+    }
+  };
+
+  const notFound = (colorUseTheme.name == 'dark') ? require('assets/images/not_found/deadlines_white.png') : require('assets/images/not_found/deadlines.png');
+
+  const image = (colorUseTheme.name == 'dark') ? require('assets/images/permissions/deadlines_white.png') : require('assets/images/permissions/deadlines.png');
+
   const addRef = useRef(null);
   const listRef = useRef(null);
   const editRef = useRef(null);

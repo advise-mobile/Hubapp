@@ -1,50 +1,7 @@
 import styled from 'styled-components';
-import { colors, fonts } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
-const theme = {
-  backgroundColor: colors.white,
-  calendarBackground: colors.white,
-  // arrows
-  arrowColor: colors.grayDarker,
-  arrowStyle: { padding: 0 },
-  // month
-  monthTextColor: colors.grayDarker,
-  textMonthFontSize: fonts.big,
-  textMonthFontFamily: fonts.circularStdBold,
-  // day names
-  textSectionTitleColor: colors.grayDarker,
-  textDayHeaderFontSize: fonts.small,
-  textDayHeaderFontFamily: fonts.circularStdBook,
-  // dates
-  dayTextColor: colors.grayDarker,
-  textDayFontSize: fonts.big,
-  textDayFontFamily: fonts.circularStdMedium,
-  textDayStyle: { marginTop: Platform.OS === 'android' ? 2 : 4 },
-  // selected date
-  selectedDayBackgroundColor: colors.grayDarker,
-  selectedDayTextColor: colors.white,
-  // disabled date
-  textDisabledColor: colors.grayLighter,
-  // dot (marked date)
-  dotColor: colors.grayDarker,
-  selectedDotColor: colors.white,
-  disabledDotColor: colors.grayLighter,
-  dotStyle: { marginTop: -1 },
-  todayTextColor: colors.advise,
-  'stylesheet.day.basic': {
-    selected: {
-      borderRadius: 0,
-      backgroundColor: colors.primary,
-    },
-    base: {
-      width: 32,
-      height: 32,
-      alignItems: 'center',
-      // borderWidth: 1,
-      // padding: 8,
-    }
-  }
-};
+
 
 const Badge = styled.View`
   border-radius: 22;
@@ -63,7 +20,7 @@ const Badge = styled.View`
       case -6: return '#E6EE9C'; //diligence
       case -7: return '#F48FB1'; //reminders
 
-      default: return colors.red; //others
+      default: return props.theme.colors.red; //others
     }
   }}
 `;
@@ -79,14 +36,14 @@ const ReadButton = styled.TouchableOpacity`
   height: 18px;
   border-radius: 18px;
   border-width: ${props => props.concluded ? 6 : 1};
-  border-color: ${colors.primary}
+  border-color: ${({ theme }) => theme.colors.primary};
   margin-top: 8px;
   margin-right: 8px;
 `;
 
 const Filters = styled.FlatList`
   padding: 12px 24px;
-  background: ${colors.white};
+  background: ${({ theme }) => theme.colors.white};
   overflow: scroll;
   max-height: 54px;
   margin-right: 12px;
@@ -100,14 +57,14 @@ const FiltersButton = styled.TouchableOpacity`
 const FiltersText = styled.Text`
   font-family: ${(props) => (props.active ? fonts.circularStdBold : fonts.circularStdBook)};
   font-size: ${(props) => (props.active ? fonts.big + 2 : fonts.regular)};
-  color: ${(props) => (props.active ? colors.primary : colors.inactive)};
+  color: ${(props) => (props.active ? props.theme.colors.primary : props.theme.colors.inactive)};
 `;
 
 const FiltersActive = styled.View`
   width: ${(props) => (props.active ? 40 : 20)};
   height: 2px;
   margin-top: 4px;
-  background-color: ${(props) => props.active ? colors.primary : colors.grayLight};
+  background-color: ${(props) => props.active ? props.theme.colors.primary : props.theme.colors.grayLight};
 `;
 
 const Agenda = styled.View`
@@ -115,10 +72,10 @@ const Agenda = styled.View`
 `;
 
 const ListItem = styled.TouchableHighlight`
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
   padding: 12px 24px 16px 24px;
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.grayLighter};
+  border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const ListGrid = styled.View`
@@ -133,10 +90,10 @@ const ListContainer = styled.View`
 const ListTitle = styled.Text`
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
-  color: ${props => props.expired ? colors.red : colors.grayDarker};
+  color: ${props => props.expired ? props.theme.colors.red : props.theme.colors.grayDarker};
 `;
 const ListSchedule = styled.Text`
-  color: ${props => props.expired ? colors.red : colors.grayDarker};
+  color: ${props => props.expired ? props.theme.colors.red : props.theme.colors.grayDarker};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBold};
   flex: 1;
@@ -167,13 +124,13 @@ const Image = styled.Image`
 
 const NotFoundText = styled.Text`
   font-size: ${fonts.big};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdBold};
   margin-bottom: 8px;
 `;
 
 const NotFoundDescription = styled.Text`
-  color: ${colors.grayLight};
+  color: ${({ theme }) => theme.colors.grayLight};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
 `;
@@ -183,23 +140,23 @@ const CreateNew = styled.TouchableOpacity`
   padding: 8px 0;
   margin-top: 24px;
   border-radius: 4px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const CreateNewText = styled.Text`
   font-family: ${fonts.circularStdBold};
-  color: ${colors.white};
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${fonts.small};
   text-align: center;
 `;
 
 const Content = styled.View`
   flex: 1;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const ImportantFlag = styled.TouchableOpacity`
-  background: ${colors.white};
+  background: ${({ theme }) => theme.colors.white};
   position: absolute;
   bottom: 0;
   right: 0;
@@ -208,7 +165,6 @@ const ImportantFlag = styled.TouchableOpacity`
 `;
 
 export {
-  theme,
   Badge,
   BadgeText,
   Filters,

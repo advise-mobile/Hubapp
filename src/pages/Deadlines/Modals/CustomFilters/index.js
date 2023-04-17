@@ -9,7 +9,6 @@ import Datepicker from 'components/DatePicker';
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from 'react-redux';
 
-import { fonts, colors } from 'assets/styles';
 import {
   Footer,
   Cancel,
@@ -27,7 +26,15 @@ import {
   FormControl,
 } from './styles';
 
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
 export default CustomFilters = forwardRef((props, ref) => {
+
+      // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+
   const { control, handleSubmit } = useForm();
 
   const types = useSelector(state => state.deadlines.types);
@@ -103,7 +110,6 @@ export default CustomFilters = forwardRef((props, ref) => {
                   <Datepicker
                     date={minDate}
                     enabled={true}
-                    customStyles={DateStyle}
                     title="dd/mm/aaaa"
                     style={{ maxWidth: 100 }}
                     maxDate={maxDate || undefined}
@@ -122,7 +128,6 @@ export default CustomFilters = forwardRef((props, ref) => {
                   <Datepicker
                     date={maxDate}
                     enabled={true}
-                    customStyles={DateStyle}
                     title="dd/mm/aaaa"
                     style={{ maxWidth: 100 }}
                     minDate={minDate || undefined}
@@ -147,25 +152,3 @@ export default CustomFilters = forwardRef((props, ref) => {
 });
 
 
-const DateStyle = {
-  dateInput: {
-    flex: 1,
-    marginTop: 2,
-    height: 20,
-    paddingBottom: 0,
-    borderWidth: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grayLighter,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  disabled: {
-    backgroundColor: colors.white,
-  },
-  dateText: {
-    marginTop: 2,
-    fontSize: 16,
-    color: colors.grayDarker,
-    fontFamily: fonts.circularStdBook,
-  }
-};

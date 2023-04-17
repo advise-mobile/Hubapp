@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { fonts, colors } from 'assets/styles';
+import { fonts } from 'assets/styles';
 
 const Footer = styled.View`
   flex-direction: row;
@@ -11,16 +11,16 @@ const Cancel = styled.TouchableOpacity`
   flex: 1;
   padding: 7px;
   margin-right: 12px;
-  background: ${colors.white};
+  background: ${({ theme }) => theme.colors.white};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color: ${colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const CancelText = styled.Text`
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;
@@ -28,16 +28,16 @@ const CancelText = styled.Text`
 const Submit = styled.TouchableOpacity`
   flex: 1;
   padding: 8px;
-  background: ${colors.primary};
+  background: ${({ theme }) => theme.colors.primary};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color: ${colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const SubmitText = styled.Text`
-  color: ${colors.white};
+  color: ${({ theme }) => theme.colors.white};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBold};
 `;
@@ -48,7 +48,7 @@ const Content = styled.View`
 
 const Input = styled.TextInput`
   flex: 1;
-  color: ${props => props.error ? colors.red : colors.grayLight};
+  color: ${props => props.error ? props.theme.colors.red : props.theme.colors.grayLight};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
   height: 20px;
@@ -57,7 +57,7 @@ const Input = styled.TextInput`
 
 const TextArea = styled.TextInput`
   height: 80px;
-  color: ${props => props.error ? colors.red : colors.grayLight};
+  color: ${props => props.error ? props.theme.colors.red : props.theme.colors.grayLight};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
 `;
@@ -68,12 +68,12 @@ const Row = styled.View`
   flex-direction: row;
   border-bottom-width: 1px;
   display: ${props => props.disabled ? 'none' : 'flex'};
-  border-bottom-color: ${props => props.error ? colors.redLight : colors.grayLighter};
+  border-bottom-color: ${props => props.error ? props.theme.colors.redLight : props.theme.colors.grayLighter};
 `;
 
 const Label = styled.Text`
   margin-right: 12;
-  color: ${colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBold};
 `;
@@ -85,7 +85,7 @@ const Badges = styled.View`
 `;
 
 const Badge = styled.TouchableOpacity`
-  background: ${props => props.error ? colors.redLight : props.active ? colors.grayDarker : colors.gray};
+  background: ${props => props.error ? props.theme.colors.redLight : props.active ? props.theme.colors.grayDarker : props.theme.colors.gray};
   border-radius: 16;
   padding: 4px 8px;
   margin-right: 8px;
@@ -94,7 +94,7 @@ const Badge = styled.TouchableOpacity`
 
 const BadgeText = styled.Text`
   font-family: ${fonts.circularStdBold};
-  color: ${props => props.error ? colors.red : props.active ? colors.white : 'rgba(0, 0, 0, 0.38)'};
+  color: ${props => props.error ? props.theme.colors.red : props.active ? props.theme.colors.white : 'rgba(0, 0, 0, 0.38)'};
   font-size: ${fonts.smaller};
 `;
 
@@ -109,34 +109,16 @@ const MarkAsRead = styled.TouchableOpacity``;
 
 const MarkAsReadText = styled.Text`
   font-family: ${fonts.circularStdBook};
-  color: ${colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-size: ${fonts.regular};
 `;
 
-const DateStyle = {
-  dateInput: {
-    flex: 1,
-    height: 20,
-    paddingBottom: 0,
-    borderWidth: 0,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  disabled: {
-    backgroundColor: colors.white,
-  },
-  dateText: {
-    fontSize: 16,
-    color: colors.grayDarker,
-    fontFamily: fonts.circularStdBook,
-  }
-};
 
 
 const Hour = styled.TouchableOpacity``;
 
 const HourText = styled.Text`
-  color: ${colors.grayLight};
+  color: ${({ theme }) => theme.colors.grayLight};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
 `;
@@ -161,7 +143,6 @@ export {
   ReadBox,
   MarkAsRead,
   MarkAsReadText,
-  DateStyle,
   Hour,
   HourText,
   TextArea,
