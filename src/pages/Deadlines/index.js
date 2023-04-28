@@ -173,11 +173,16 @@ export default function Deadlines(props) {
   const loading = useSelector(state => state.deadlines.loading);
   const updating = useSelector(state => state.deadlines.updating);
   const deleting = useSelector(state => state.deadlines.deleting);
-  const data = useSelector(state => state.deadlines.data.map(prazo => {
+
+  const dataAll = useSelector(state => state.deadlines.data.map(prazo => {
     rowTranslateAnimatedValues[prazo.id] = new Animated.Value(1);
 
     return prazo;
   }));
+
+  const data = [...dataAll].sort((a,b) => a.dataHoraInicio > b.dataHoraInicio   ? -1 : 1)
+                            .sort((c) =>  c.dataHoraInicio > c.dataHoraInicio && c.diaInteiro === true  ? 1 : -1);
+
 
   const [currentIdUpdate, setCurrentIdUpdate] = useState(null);
   const [customFilters, setCustomFilters] = useState({});

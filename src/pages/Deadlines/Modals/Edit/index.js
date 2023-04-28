@@ -175,7 +175,7 @@ export default Edit = forwardRef((props, ref) => {
     let values = {};
 
     Object.keys(allValues).map(key => {
-      if (allValues[key]) {
+      if (allValues[key] !== undefined) {
         values[key] = allValues[key];
       }
     });
