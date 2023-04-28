@@ -70,8 +70,9 @@ export default function Folders(props) {
   const [searchedProcess, setSearchedProcess] = useState(false);
 
   const folderKeywords = useSelector(state => state.folderKeywords.data);
-  const endKeywordsReached = useSelector(state => state.folderKeywords.endReached);
   const loadingKeywords = useSelector(state => state.folderKeywords.loading);
+  const endKeywordsReached = useSelector(state => state.folderKeywords.endReached);
+  
   const totalKeywordsNotRead = useSelector(state => state.folderKeywords.totalNotRead);
 
   const folderProcesses = useSelector(state => state.folderProcesses.data);
@@ -148,7 +149,7 @@ export default function Folders(props) {
         </NotFound>
       }
     </>
-  ), [loadingKeywords]);
+  ), [loadingKeywords,notFound]);
 
   const renderProcessesNotFound = useCallback(() => (
     <>
@@ -160,7 +161,7 @@ export default function Folders(props) {
         </NotFound>
       }
     </>
-  ), [loadingProcesses]);
+  ), [loadingProcesses,notFound]);
 
   const renderKeywordsHeader = () => (
     <>

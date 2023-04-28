@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Animated, Appearance, View } from 'react-native';
+import { Animated} from 'react-native';
 import moment from 'moment';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -179,6 +179,7 @@ export default function Deadlines(props) {
     return prazo;
   }));
 
+  const [currentIdUpdate, setCurrentIdUpdate] = useState(null);
   const [customFilters, setCustomFilters] = useState({});
   const [currentDeadline, setCurrentDeadline] = useState(data[0]);
   const [currentFilter, setCurrentFilter] = useState('a-vencer');
@@ -423,6 +424,7 @@ export default function Deadlines(props) {
 
   const markAsImportant = useCallback(deadline => {
     const { importante, id, idAgenda } = deadline;
+    setCurrentIdUpdate(id)
 
     dispatch(
       DeadlinesActions.deadlinesMarkAsImportant({
@@ -466,9 +468,12 @@ export default function Deadlines(props) {
       <ActionButton onPress={() => handleEmail(item)}>
         <MaterialIcons name="mail" size={24} color={colors.fadedBlack} />
       </ActionButton>
-      <ActionButton onPress={() => !updating && markAsImportant(item)}>
-        {updating ? <Spinner height='auto' /> : <MaterialIcons name="flag" size={24} color={item.importante ? colors.blueImportant : colors.fadedBlack} />}
-      </ActionButton>
+      {!item.importante && 
+        <ActionButton onPress={() => !updating && markAsImportant(item)}>
+          {updating && (item.id === currentIdUpdate) ? <Spinner height='auto' /> : <MaterialIcons name="flag" size={24} color={colors.fadedBlack} />}
+
+        </ActionButton>
+      }
       <ActionButton onPress={() => !sharing && share(item)}>
         {sharing ? <Spinner height='auto' /> : <MaterialIcons name="share" size={24} color={colors.fadedBlack} />}
       </ActionButton>
@@ -503,7 +508,7 @@ export default function Deadlines(props) {
 
             {item.importante &&
               <ImportantFlag onPress={() => !updating && markAsImportant(item)}>
-                {updating ? <Spinner height='auto' /> : <MaterialIcons name="flag" size={24} color={colors.blueImportant} />}
+                {updating && (item.id === currentIdUpdate) ? <Spinner height='auto' /> : <MaterialIcons name="flag" size={24} color={colors.blueImportant} />}
               </ImportantFlag>
             }
           </ListContainer>
