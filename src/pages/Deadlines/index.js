@@ -180,14 +180,21 @@ export default function Deadlines(props) {
     return prazo;
   }));
 
-  const data = [...dataAll].sort((a,b) => a.dataHoraInicio > b.dataHoraInicio   ? -1 : 1)
-                            .sort((c) =>  c.dataHoraInicio > c.dataHoraInicio && c.diaInteiro === true  ? 1 : -1);
+  let data = [];
+ 
+  const [currentFilter, setCurrentFilter] = useState('a-vencer');                          
 
+  if(currentFilter !== 'concluidos'){
+
+     data = [...dataAll].sort((a,b) =>  a.dataHoraInicio  < b.dataHoraInicio && a.diaInteiro === true  ? -1 : 1);
+  }else{
+     data = [...dataAll].sort((a,b) =>  a.dataHoraUltAlteracao  < b.dataHoraUltAlteracao && a.diaInteiro === true  ? -1 : 1);
+  }
 
   const [currentIdUpdate, setCurrentIdUpdate] = useState(null);
   const [customFilters, setCustomFilters] = useState({});
   const [currentDeadline, setCurrentDeadline] = useState(data[0]);
-  const [currentFilter, setCurrentFilter] = useState('a-vencer');
+  
   const [sharing, setSharing] = useState(false);
   const [trigger, setTrigger] = useState(false);
   const [page, setPage] = useState(1);

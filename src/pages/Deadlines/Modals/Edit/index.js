@@ -47,7 +47,6 @@ export default Edit = forwardRef((props, ref) => {
 	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
 
-
   const dispatch = useDispatch();
   const { control, handleSubmit } = useForm();
 
@@ -64,7 +63,7 @@ export default Edit = forwardRef((props, ref) => {
   const [title, setTitle] = useState('');
   const [allDay, setAllDay] = useState(false);
   const [currentType, setCurrentType] = useState(null);
-  const [date, setDate] = useState(props.date || new Date());
+  const [date, setDate] = useState(props.dataEventoAgenda);
   const [hour, setHour] = useState(moment().format('hh:mm'));
   const [idAgenda, setIdAgenda] = useState(null);
   const [location, setLocation] = useState('');
@@ -143,12 +142,13 @@ export default Edit = forwardRef((props, ref) => {
       return;
     }
 
-    const dataHoraInicio = `${moment(data || new Date()).format('YYYY-MM-DD')}T${diaInteiro ? '09:30' : hora || hour}:00`;
+    const dataHoraInicio = `${moment(data ?? deadline.dataHoraInicio).format('YYYY-MM-DD')}T${diaInteiro ? '09:30' : hora || hour}:00`;
 
     //const dataHoraUltAlteracao = `${moment(data || new Date()).format('YYYY-MM-DD')}T${hora || hour}:00.000`;
 
     const dataHoraFim = diaInteiro ? moment(dataHoraInicio).format('YYYY-MM-DDT23:59:00') : moment(dataHoraInicio).add(1, 'hours').format('YYYY-MM-DDTH:mm:ss');
 
+    
     const type = types.find(type => type.id == currentType);
 
     if (!type) {
@@ -158,7 +158,7 @@ export default Edit = forwardRef((props, ref) => {
     }
 
     const allValues = {
-      titulo,
+      titulo:titulo || undefined,
       idAgenda,
       dataHoraFim,
       dataHoraInicio,
@@ -166,10 +166,10 @@ export default Edit = forwardRef((props, ref) => {
       sincronizado: false,
       idRepetEventoAgenda: -1,
       idOpcaoLembreteAgenda: -1,
-      observacao: observacao || '',
-      localizacao: localizacao || '',
+      observacao: observacao || undefined,
+      localizacao: localizacao || undefined,
       diaInteiro: diaInteiro || false,
-      idTipoEventoAgenda: type.id || null,
+      idTipoEventoAgenda: type.id || undefined,
     };
 
     let values = {};
@@ -184,8 +184,10 @@ export default Edit = forwardRef((props, ref) => {
 
     dispatch(DeadlinesActions.deadlinesEdit(itens));
 
-    setTimeout(() => closeModal(), 500);
-
+    setTimeout(() => { 
+      closeModal();
+    }, 500);
+    
     resetValues();
   };
 
@@ -208,7 +210,7 @@ export default Edit = forwardRef((props, ref) => {
   );
 
   return (
-    <Modal ref={ref} title="Editar prazo 12345" footer={footer()}>
+    <Modal ref={ref} title="Editar prazo" footer={footer()}>
       <Content>
         <Row>
           <Label>Título</Label>

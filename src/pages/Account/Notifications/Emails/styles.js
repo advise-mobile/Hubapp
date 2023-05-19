@@ -16,6 +16,7 @@ const ListItem = styled.View`
   background-color: ${({ theme }) => theme.colors.white};
   border-bottom-width: 1px;
   border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
+  flex: 1;
 `;
 
 const ListContent = styled.View`
