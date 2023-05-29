@@ -168,7 +168,7 @@ export default Edit = forwardRef((props, ref) => {
       idOpcaoLembreteAgenda: -1,
       observacao: observacao || undefined,
       localizacao: localizacao || undefined,
-      diaInteiro: diaInteiro || false,
+      diaInteiro: diaInteiro,
       idTipoEventoAgenda: type.id || undefined,
     };
 
