@@ -74,7 +74,7 @@ const filters = [{
   name: 'A vencer',
   params: {
     concluido: false,
-    dataInicial: moment().format('YYYY-MM-DD') + 'T03:00:00.000Z',
+    dataInicial: moment().format('YYYY-MM-DD') + 'T'+moment().format('HH:mm:ss')+'.000Z',
   }
 },
 {
