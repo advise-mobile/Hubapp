@@ -26,6 +26,7 @@ import {
 	getTribunals,
 	sendMovementsEmail,
 	deleteMovement,
+	deleteLogicalMovement
 } from './Movements';
 import {getProcess} from './Process';
 import {getPeople} from './People';
@@ -90,6 +91,8 @@ export default function* rootSaga() {
 		takeLatest(MovementsTypes.TRIBUNALS_REQUEST, getTribunals),
 		takeLatest(MovementsTypes.MOVEMENTS_EMAIL_REQUEST, sendMovementsEmail),
 		takeLatest(MovementsTypes.DELETE_MOVEMENT, deleteMovement),
+		
+		takeLatest(MovementsTypes.DELETE_LOGICAL_MOVEMENT, deleteLogicalMovement),
 
 		takeLatest(ProcessTypes.PROCESS_REQUEST, getProcess),
 

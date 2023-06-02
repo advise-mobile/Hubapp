@@ -87,6 +87,8 @@ export default Movements = props => {
 	const [filters, setFilters] = useState({});
 	const [currentPage, setCurrentPage] = useState(1);
 
+	const [daysDeleteMovTrash, setDaysDeleteMovTrash] = useState(0);
+
 	const movements = useSelector(state =>
 		state.movements.data.map(movement => {
 			if (!movementsRef[movement.id]) movementsRef[movement.id] = new Animated.Value(1);
@@ -94,6 +96,8 @@ export default Movements = props => {
 			return movement;
 		}),
 	);
+
+
 	const endReached = useSelector(state => state.movements.endReached);
 	const loading = useSelector(state => state.movements.loading);
 	const loadingMore = useSelector(state => state.movements.loadingMore);
@@ -179,6 +183,14 @@ export default Movements = props => {
 			}),
 		[movements],
 	);
+
+	const getDaysDeleteTrash = async () =>{
+		const {data} = await Api.get('/core/v1/parametros-gerais?campos=diasExcluirMovLixeira');
+		const currentDaysDeleteMovTrash = data.itens[0].diasExcluirMovLixeira;
+		setDaysDeleteMovTrash(currentDaysDeleteMovTrash);
+	}
+
+	useEffect(() => getDaysDeleteTrash(),[]);
 
 	/** LIST */
 	const refresh = useCallback(() => {
@@ -492,12 +504,16 @@ export default Movements = props => {
 	);
 
 	const renderConfirmation = useMemo(
-		() => (
+		() =>   (
+			
 			<Confirmation
 				ref={confirmationRef}
 				movement={currentMove}
 				remove={id => removeFromList(id)}
+				daysDeleteMovTrash = {daysDeleteMovTrash}
 			/>
+
+			
 		),
 		[currentMove],
 	);
@@ -553,7 +569,10 @@ export default Movements = props => {
 	));
 
 	const renderItem = useCallback(
-		({item}) => (
+		({item}) => 
+			
+			 (
+				
 			<Animated.View
 				style={{
 					overflow: 'hidden',
