@@ -31,6 +31,9 @@ import Folders from '../pages/Folders';
 import Movements from '../pages/Movements';
 import MovementDetail from '../pages/Movements/Details';
 
+import MovementsTrash from '../pages/MovementsTrash';
+
+
 import Jurisprudence from '../pages/Jurisprudence';
 import JurisprudenceList from '../pages/Jurisprudence/List';
 import JurisprudenceDetail from '../pages/Jurisprudence/Details';
@@ -56,6 +59,7 @@ const FoldersScreens = () => (
 	<FoldersStack.Navigator headerMode="none">
 		<FoldersStack.Screen name="Folders" component={Folders} />
 		<FoldersStack.Screen name="Movements" component={Movements} />
+		<FoldersStack.Screen name="MovementsTrash" component={MovementsTrash} />
 		<FoldersStack.Screen name="MovementDetail" component={MovementDetail} />
 	</FoldersStack.Navigator>
 );

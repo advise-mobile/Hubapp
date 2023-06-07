@@ -98,10 +98,10 @@ export function* getMovements({ params }) {
 
     const query = `campos=*&ordenacao=-dataPublicacao&idPastaUsuarioCliente=${params.folderId}`;
 
-    
-    const paginator = `registrosPorPagina=${params.perPage}&paginaAtual=${params.page}`;
+     
 
     
+    const paginator = `registrosPorPagina=${params.perPage}&paginaAtual=${params.page}`;
 
     yield put(AuthAction.contractsRequest());
 

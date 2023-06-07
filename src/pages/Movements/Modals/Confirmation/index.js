@@ -49,7 +49,6 @@ export default Confirmation = forwardRef((props, ref) => {
 
     const { idMovProcessoCliente } = movement;
 
-    console.log("=== deletando ",idMovProcessoCliente)
     dispatch(MovementsActions.deleteLogicalMovement({
        idMovimentoProcessoCliente: idMovProcessoCliente,
     }));

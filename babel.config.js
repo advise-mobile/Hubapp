@@ -6,7 +6,14 @@ module.exports = {
       {
         cwd: 'babelrc',
         root: ['./src'],
-        extensions: ['.js'],
+        extensions: ['.tsx', '.ts', '.js'],
+        alias: {
+          "@services": "./src/services",
+          "@pages": "./src/pages",
+          "@helpers": "./src/helpers",
+          "@components": "./src/components",
+
+        }
       },
     ],
   ],
