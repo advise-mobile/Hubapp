@@ -309,8 +309,6 @@ export default MovementsTrash = () => {
 		})
 	}, []);
 
-	const renderFooter = useCallback(() => loading && <Spinner />,[]);
-
 	return (
 		<Container>
 			<Warp>
@@ -346,7 +344,6 @@ export default MovementsTrash = () => {
 								previewOpenValue={-300}
 								previewOpenDelay={2000}
 								useNativeDriver={false}								
-								ListFooterComponent={renderFooter}
 								renderHiddenItem={renderHiddenItem}
 								keyExtractor={(item:ItemProps) => item.id.toString()}
 								removeClippedSubviews={true}
