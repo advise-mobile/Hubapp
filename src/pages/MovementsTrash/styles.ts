@@ -50,7 +50,7 @@ const FolderSelectedActionButton = styled.TouchableOpacity`
   padding-left: 16px;
 `;
 
-const BackButton = styled.TouchableOpacity`
+const Button = styled.TouchableOpacity`
   margin-right: 16;
 `;
 
@@ -141,7 +141,7 @@ export {
   FolderSelectedTitleHighlight,
   FolderSelectedActions,
   FolderSelectedActionButton,
-  BackButton,
+  Button,
   Movement,
   MovementHeader,
   MovementHeading,

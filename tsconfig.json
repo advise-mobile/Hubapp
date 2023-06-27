@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      "lib": [ "es2015" ],
       "target": "es5",
       "module": "commonjs",
       "jsx": "react",
@@ -12,7 +13,8 @@
         "@pages/*": ["src/pages/*"],
         "@helpers/*": ["src/helpers/*"],
         "@components/*": ["src/components/*"],
-      }
+      },
+      "types": ["@types/styled-components-react-native"]
     },
     "include": [
       "./src/**/*"

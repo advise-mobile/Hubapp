@@ -2,18 +2,18 @@ import React, {useState, useRef, useCallback, useEffect, useMemo} from 'react';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { SwipeListView, IRenderListViewProps } from 'react-native-swipe-list-view';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 import {Container, Warp, Actions, ActionButton} from 'assets/styles/global';
 
 import Header from '@components/Header';
 
-
+import Filters from './Filters';
 
 import {
 	Heading,
 	FolderTitle,
-	BackButton,
+	Button,
 	Movement,
 	MovementHeader,
 	MovementHeading,
@@ -22,10 +22,10 @@ import {
 	MovementTags,
 	Tag,
 	TagText,
-	// NotFound,
-	// Image,
-	// NotFoundText,
-	// NotFoundDescription,
+	NotFound,
+	Image,
+	NotFoundText,
+	NotFoundDescription,
 } from './styles';
 
 import { useNavigation } from '@react-navigation/native';
@@ -34,7 +34,7 @@ import Spinner from '@components/Spinner';
 
 import ConfirmModal from '@components/ConfirmModal';
 
-import { Animated, View } from 'react-native';
+import { Animated } from 'react-native';
 
 
 // Add Hook UseTheme para pegar o tema global addicionado
@@ -47,8 +47,11 @@ import { ItemProps } from '@pages/MovementsTrash/types'
 
 const movementsRef = {};
 
+import { DataFilterProps } from '@pages/MovementsTrash/Filters/types'; 
+
 export default MovementsTrash = () => {
 
+	
 	const navigation = useNavigation();
 	
 	// Variavel para usar o hook
@@ -62,15 +65,21 @@ export default MovementsTrash = () => {
 	const {isLoadingRecover, recoverMoviment} = useMovementRecover();
 	const {isLoadingDelete, deleteMovement} = useMovementDelete();
 
+	
+
+	const filtersRef = useRef(null);
 	const listRef = useRef(null);
 	const confirmationModalRef = useRef();
 	const confirmationModalRecoverRef = useRef();
 	
 	const [currentPage, setCurrentPage] = useState(1);
 
+	const [formattedData, setFormattedData] = useState({});
+
 	const [currentItem, setCurrentItem] = useState<ItemProps>();
 
-	const {movementsTrash, loading} = useGetMovementsTrash(currentPage);
+	
+	const {movementsTrash, loading, getData} = useGetMovementsTrash({page:currentPage});
 
 	const [movements, setMovements] = useState<ItemProps[]>(movementsTrash);
 	
@@ -101,21 +110,33 @@ export default MovementsTrash = () => {
 
 	const handleModalRecoverCancel = useCallback(() => confirmationModalRecoverRef.current?.close(),[]);
 
-	const handleModalSubmit = useCallback(() => {
+	const handleModalSubmit = useCallback(async() => {
+		
 		if(currentItem){
-			deleteMovement(currentItem,handleModalCancel);		
+			const trash = await deleteMovement(currentItem,handleModalCancel);		
+			if(trash){
+				await getData({
+					page:1
+				})
+			}
 		}
-	},[]);
+	},[currentItem]);
 
-	const handleModalRecoverSubmit = () => {
+	const handleModalRecoverSubmit = useCallback(async() => {
 		if(currentItem){
-			recoverMoviment(currentItem, handleModalRecoverCancel);
+			const recover = await recoverMoviment(currentItem, handleModalRecoverCancel);
+			if(recover){
+				await getData({
+					page:1
+				})
+			}
 		}
-	};
+	},[currentItem]);
 
 	const handleDelete = useCallback((item:ItemProps) => {
+		
 		setCurrentItem(item)
-		confirmationModalRef.current?.open();
+		confirmationModalRef.current?.open();			
 	},[]);
 
 	const handleRecover = useCallback((item:ItemProps) => {
@@ -179,7 +200,6 @@ export default MovementsTrash = () => {
 		,
 		[currentItem,isLoadingRecover],
 	);
-
 
 	const renderItem = useCallback(
 		(  { item }: { item: ItemProps })   => (
@@ -262,28 +282,59 @@ export default MovementsTrash = () => {
 		[movements],
 	);
 
+	/** FILTERS */
+	const openFilters = () => filtersRef.current?.open();
+
+	const handleSubmitFilters = useCallback(async (data: DataFilterProps) => {
+
+		filtersRef.current?.close();
+	
+		await getData({
+			page:1,
+			itens:data
+		})
+	}, []);
+
+	/** RENDER FILTERS */
+	const renderFilters = useMemo(
+		() => (
+			<Filters ref={filtersRef} handleSubmitFilters={handleSubmitFilters}/>
+		),
+		[formattedData],
+	);
+
+	const refresh = useCallback(async () => {
+		await getData({
+			page:1
+		})
+	}, []);
+
+	const renderFooter = useCallback(() => loading && <Spinner />,[]);
+
 	return (
 		<Container>
 			<Warp>
 				<Header title="Movimentações" />
 				<Heading>
-					<BackButton
+					<Button
 						onPress={() => {
 							setCurrentPage(1);
 							navigation.goBack();
 						}}>
 						<MaterialIcons name="arrow-back" size={20} color={colors.fadedBlack} />
-					</BackButton>
+					</Button>
 					<FolderTitle>Lixeira</FolderTitle>
-					<MaterialIcons name="filter-list" size={20} color={colors.fadedBlack} />
+					<Button onPress={() => {openFilters()}}>
+						<MaterialIcons  name="filter-list" size={20} color={colors.fadedBlack} />
+					</Button>
 				</Heading>
 				{
 					loading ? <Spinner	/> : 
 						
 						movements.length > 0 ? (
 							<SwipeListView
-								// onRefresh={refresh}
-								// refreshing={refreshing}
+								onRefresh={refresh}
+								refreshing={loading}
 								ref={listRef}
 								data={movements}
 								disableRightSwipe
@@ -294,9 +345,8 @@ export default MovementsTrash = () => {
 								renderItem={renderItem}
 								previewOpenValue={-300}
 								previewOpenDelay={2000}
-								useNativeDriver={false}
-								// onEndReached={onEndReached}
-								// ListFooterComponent={renderFooter}
+								useNativeDriver={false}								
+								ListFooterComponent={renderFooter}
 								renderHiddenItem={renderHiddenItem}
 								keyExtractor={(item:ItemProps) => item.id.toString()}
 								removeClippedSubviews={true}
@@ -306,16 +356,14 @@ export default MovementsTrash = () => {
 							/>
 							
 						) : (
-							<FolderTitle>NOT FOUND</FolderTitle>
-							// <NotFound>
-							// 	<Image source={notFound} />
-							// 	<NotFoundText>Não há resultados</NotFoundText>
-							// 	<NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
-							// </NotFound>
-						
-
-					)
+							<NotFound>
+								<Image source={notFound} />
+								<NotFoundText>Não há resultados</NotFoundText>
+								<NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+							</NotFound>
+						)	
 				}
+				{renderFilters}
 				{renderConfirmation}
 				{renderConfirmationRecover}
 				</Warp>

@@ -25,7 +25,6 @@ interface AndamentProccessProps {
     sujeitos: string,
     anexo: [AnexosProps],
 }
-
 interface WordKeysProps {
     id: number,
     palavraChave: string,
@@ -61,7 +60,6 @@ interface PublicationProps {
         palavrasChaves: [WordKeysProps],
         processosPublicacoes?: [PublicationProcessProps]
 }
-
 interface MovementProps {
     id: number,
     idCliente: number,
