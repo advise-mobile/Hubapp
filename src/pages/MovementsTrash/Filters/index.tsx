@@ -33,7 +33,9 @@ import {
   SubTitleMultiSelectText,
   ContainerMultiSelect,
   ContainerSituation,
-  ContainerSpinner
+  ContainerSpinner,
+  ClearButtom,
+  ClearButtomText
 } from "./styles";
 
 import { FilterProps, DataFilterProps } from './types';
@@ -231,6 +233,7 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
       <ContainerMultiSelect>
         <SpaceRow>  
           <Title>Palavras-chave</Title>
+          <ClearButtom onPress={()=> onChangeSelected([])}><ClearButtomText>Limpar</ClearButtomText></ClearButtom>
         </SpaceRow>
 
         {
@@ -296,22 +299,25 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
         setDataDiaries(data);
       }      
 
-      setShowDiaries(true);
+        const dataChekeds = data?.map(item => {
+          return item.id
+        });
 
-      const dataChekeds = data?.map(item => {
-        return item.id
-      });
+      
+        if(dataChekeds !== undefined){
+          setDataDiariesCheckeds(dataChekeds);  
+          setValue("idDiario",dataChekeds)
+        }
 
-      if(dataChekeds !== undefined){
-        setDataDiariesCheckeds(dataChekeds);  
-        setValue("idDiario",dataChekeds)
-      }       
+        setShowDiaries(true);
+      
     }
 
     return (
       <ContainerMultiSelect>
       <SpaceRow>  
         <Title>Diários</Title>
+        <ClearButtom onPress={()=> onChangeSelected([])}><ClearButtomText>Limpar</ClearButtomText></ClearButtom>
       </SpaceRow>
 
       
@@ -380,7 +386,6 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
 
       setValue("idJournals",dataChekeds)
 
-      
       setDataJournals(data);
     }
 
@@ -388,6 +393,7 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
       <ContainerMultiSelect>
       <SpaceRow>  
         <Title>Cardernos</Title>
+        <ClearButtom onPress={()=> onChangeSelected([])}><ClearButtomText>Limpar</ClearButtomText></ClearButtom>
       </SpaceRow>
 
       

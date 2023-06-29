@@ -78,3 +78,18 @@ export const ContainerSpinner = styled.View`
   margin-bottom: 20px;
 `;
 
+
+export const ClearButtom = styled.TouchableOpacity`
+  padding: 3px;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ClearButtomText = styled.Text`
+  font-size: ${fonts.smaller};
+	color:  ${({ theme }) => theme.colors.grayLight};
+	font-family: ${fonts.circularStdBold};
+  
+`;
+
+
