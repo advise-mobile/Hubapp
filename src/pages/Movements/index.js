@@ -17,7 +17,7 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 
 import {TOKEN} from 'helpers/StorageKeys';
 
-import Api, {BASE_URL, getLogin} from 'services/Api';
+import  {BASE_URL, getLogin} from 'services/Api';
 
 import Header from 'components/Header';
 import Spinner from 'components/Spinner';
@@ -65,13 +65,14 @@ const movementsRef = {};
 
 const dirs = RNFetchBlob.fs.dirs;
 
+// Hook para buscar os dias de delete da lixeira
+import { useMovementsGetDeleteTrash } from '@services/hooks/Movements/useMovements'
 
 export default Movements = props => {
 
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
-
 
 	const notFound = colorUseTheme.name === 'dark'
 		? require('assets/images/not_found/movements_white.png')
@@ -87,7 +88,10 @@ export default Movements = props => {
 	const [filters, setFilters] = useState({});
 	const [currentPage, setCurrentPage] = useState(1);
 
-	const [daysDeleteMovTrash, setDaysDeleteMovTrash] = useState(0);
+	const {loadingDeleteTrash, currentDayDeleteMovTrash} = useMovementsGetDeleteTrash();
+	const [daysDeleteMovTrash, setDaysDeleteMovTrash] = useState(currentDayDeleteMovTrash);
+
+	
 
 	const movements = useSelector(state =>
 		state.movements.data.map(movement => {
@@ -118,7 +122,6 @@ export default Movements = props => {
 
 	useEffect(() => {
 		if (loadingMore || loading) return;
-
 		dispatch(
 			MovementsActions.movementsRequest({
 				filters,
@@ -156,7 +159,7 @@ export default Movements = props => {
 	//   );
 	// }, [trigger, filters]);
 
-	useEffect(() => {
+	useEffect(() => {		
 		const custom =
 			folder.idTipoPasta == -2
 				? {
@@ -184,13 +187,10 @@ export default Movements = props => {
 		[movements],
 	);
 
-	const getDaysDeleteTrash = async () =>{
-		const {data} = await Api.get('/core/v1/parametros-gerais?campos=diasExcluirMovLixeira');
-		const currentDaysDeleteMovTrash = data.itens[0].diasExcluirMovLixeira;
-		setDaysDeleteMovTrash(currentDaysDeleteMovTrash);
-	}
-
-	useEffect(() => getDaysDeleteTrash(),[]);
+	useEffect(() => {		
+		
+		setDaysDeleteMovTrash(currentDayDeleteMovTrash);
+	}, [currentDayDeleteMovTrash]);
 
 	/** LIST */
 	const refresh = useCallback(() => {
@@ -504,7 +504,7 @@ export default Movements = props => {
 	);
 
 	const renderConfirmation = useMemo(
-		() =>   (
+		() =>  (
 			
 			<Confirmation
 				ref={confirmationRef}
@@ -689,6 +689,7 @@ export default Movements = props => {
 						onPress={() => {
 							setCurrentPage(1);
 							props.navigation.goBack();
+							
 						}}>
 						<MaterialIcons name="arrow-back" size={20} color={colors.fadedBlack} />
 					</BackButton>

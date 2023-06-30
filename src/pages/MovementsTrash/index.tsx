@@ -77,7 +77,6 @@ export default MovementsTrash = () => {
 	const [formattedData, setFormattedData] = useState({});
 
 	const [currentItem, setCurrentItem] = useState<ItemProps>();
-
 	
 	const {movementsTrash, loading, getData} = useGetMovementsTrash({page:currentPage});
 
@@ -176,7 +175,7 @@ export default MovementsTrash = () => {
 				onCancel={handleModalCancel}
 				onSubmit={handleModalSubmit} 
 				cancelText='Cancelar'
-				submitText='Sim, quero enviar'
+				submitText='Sim, quero excluir'
 				title='Deseja excluir?'
 				description='Ao excluir um movimento, você elimina todas as informações referentes a este documento. A ação de excluir é definitiva e irreversível.'
 				loading={isLoadingDelete}
