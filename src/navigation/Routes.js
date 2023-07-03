@@ -26,6 +26,8 @@ import Chat from '../pages/Account/Chat';
 import Notifications from '../pages/Account/Notifications';
 import Pushs from '../pages/Account/Notifications/Pushs';
 import Emails from '../pages/Account/Notifications/Emails';
+import PrivacyPolicy from '../pages/PrivacyPolicy';
+
 
 import Folders from '../pages/Folders';
 import Movements from '../pages/Movements';
@@ -89,6 +91,7 @@ const AccountScreens = () => (
 		<AccountStack.Screen name="Pushs" component={Pushs} />
 		<AccountStack.Screen name="Emails" component={Emails} />
 		<AccountStack.Screen name="Chat" component={Chat} />
+		<AccountStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
 	</AccountStack.Navigator>
 );
 

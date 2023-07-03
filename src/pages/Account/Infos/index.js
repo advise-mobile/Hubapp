@@ -190,6 +190,9 @@ export default Infos = props => {
       props.navigation.dispatch(StackActions.push('TermsUse'));
   },[])
 
+  const handleShowPolicyPrivacy = useCallback (()=> { 
+    props.navigation.dispatch(StackActions.push('PrivacyPolicy'));
+},[])
 
   return (
     <Container>
@@ -322,11 +325,11 @@ export default Infos = props => {
               <InfoContainer>
                 <InfoTitle>Legal</InfoTitle>
                 <InfoContent>
-                  <InfoLink onPress={() => {handleShowTermsOfUse()}}>
+                  <InfoLink onPress={() => {handleShowPolicyPrivacy()}}>
                     <InfoLinkText>Termos de uso</InfoLinkText>
                   </InfoLink>
                   <InfoText> e </InfoText>
-                  <InfoLink onPress={() => openLink("politica")}>
+                  <InfoLink onPress={() =>{handleShowPolicyPrivacy()}}>
                     <InfoLinkText>Política de Privacidade</InfoLinkText>
                   </InfoLink>
                 </InfoContent>
