@@ -123,7 +123,7 @@ const TermsUse = props => {
 					acceptTerms ? (
 						<>
 							<S.AcceptTermsWrapper>		
-								<S.TermsText color={colors.white}>Termo de uso ja aceito anteriormente</S.TermsText>
+								<S.TermsText color={colors.white}>Termo de uso já aceito anteriormente</S.TermsText>
 							</S.AcceptTermsWrapper>
 							<S.AcceptButton
 								onPress={handleGoback}

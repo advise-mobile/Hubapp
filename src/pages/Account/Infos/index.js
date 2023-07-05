@@ -325,7 +325,7 @@ export default Infos = props => {
               <InfoContainer>
                 <InfoTitle>Legal</InfoTitle>
                 <InfoContent>
-                  <InfoLink onPress={() => {handleShowPolicyPrivacy()}}>
+                  <InfoLink onPress={() => {handleShowTermsOfUse()}}>
                     <InfoLinkText>Termos de uso</InfoLinkText>
                   </InfoLink>
                   <InfoText> e </InfoText>

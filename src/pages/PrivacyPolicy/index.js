@@ -30,7 +30,7 @@ const PrivacyPolicy = props => {
 		<View style={{flex: 1}}>
 			<S.Container>
 				<S.ContentWrapper>
-					<S.TitleTerm>Policitica de Privacidade</S.TitleTerm>
+					<S.TitleTerm>Política de Privacidade</S.TitleTerm>
 			
 					<S.TextWrapper>
 						<RenderHtml 
