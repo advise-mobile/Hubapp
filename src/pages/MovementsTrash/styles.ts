@@ -113,11 +113,12 @@ const NotFound = styled.View`
   justify-content: center;
 `;
 
-const Image = styled.Image`
-  width: 170px;
-  height: 170px;
+const ImageNotFound = styled.Image`
+  width: 200px;
+  height: 200px;
   resize-mode: contain;
   margin-bottom: 12px;
+  
 `;
 
 const NotFoundText = styled.Text`
@@ -151,7 +152,7 @@ export {
   Tag,
   TagText,
   NotFound,
-  Image,
+  ImageNotFound,
   NotFoundText,
   NotFoundDescription,
 }

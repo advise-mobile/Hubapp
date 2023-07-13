@@ -89,7 +89,7 @@ export default Movements = props => {
 	const [currentPage, setCurrentPage] = useState(1);
 
 	const {loadingDeleteTrash, currentDayDeleteMovTrash} = useMovementsGetDeleteTrash();
-	const [daysDeleteMovTrash, setDaysDeleteMovTrash] = useState(currentDayDeleteMovTrash);
+	const [daysDeleteMovTrash, setDaysDeleteMovTrash] = useState(30);
 
 	
 

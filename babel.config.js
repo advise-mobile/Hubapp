@@ -12,7 +12,7 @@ module.exports = {
           "@pages": "./src/pages",
           "@helpers": "./src/helpers",
           "@components": "./src/components",
-
+          "@assets": "./src/assets",
         }
       },
     ],

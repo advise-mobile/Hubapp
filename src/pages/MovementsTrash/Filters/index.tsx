@@ -55,11 +55,12 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
   const {dataKeyWords, loadingKeyWords} = useKeyWordsGet();
 
   // - Key Words states
+  const [showKeyWordsAll, setKeyWordsAll] = useState<boolean>(true);
   const [keyWords, setKeyWords] = useState<ItemProps[]>();
   const [keyWordsCheckeds, setKeyWordsCheckeds] = useState<number[]>([]);
   const [showKeyWords, setShowKeyWords] = useState<boolean>(true);
   const [quantitySelected, setQuantitySelected] = useState<number>(0);
-  const [startAllChecked, setStartAllChecked] = useState<boolean>(true);
+  const [startAllChecked, setStartAllChecked] = useState<boolean>(false);
 
   // - Diaries  states
   const [showDiaries, setShowDiaries] = useState<boolean>(false);
@@ -138,11 +139,6 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
 
     setValue("Lido",null)
     
-
-    
-
-
-    
     setIdTipoMovProcesso(null)
 
     // - reset diaries
@@ -181,6 +177,30 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
 
     const pickerSelectStyles = stylePickerSelectStyles(colors);
 
+    const onValidateType = (value:number) => {
+      
+      if(value === "-1"){
+
+        // - reset keywords
+        setQuantitySelected(0)
+        setKeyWordsCheckeds([]);   
+        setValue("idPalavraChave",[])
+        setKeyWordsAll(false);
+
+            // - reset diaries
+        setDataDiariesCheckeds([])
+        setQuantityDiariesSelected(0)
+        setValue("idDiario",[])
+        
+        // - reset journals
+        setDataJournalsCheckeds([])
+        setQuantityDiariesSelected(0)
+        setValue("idJournals",[])
+      }else{
+        setKeyWordsAll(true);
+      }
+    }
+
     return (
       <>
         <Row>
@@ -195,7 +215,11 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
               <Column>
                 <RNPickerSelect
                   style={pickerSelectStyles}
-                  onValueChange={value => { setIdTipoMovProcesso(value); onChange(value); }}
+                  onValueChange={value => { 
+                    setIdTipoMovProcesso(value);
+                    onChange(value);
+                    onValidateType(value);
+                  }}
                   placeholder={{}}
                   doneText="Selecionar"
                   value={idTipoMovProcesso}
@@ -267,7 +291,7 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
             }
       </ContainerMultiSelect>
     );
-  },[keyWords,showKeyWords,quantitySelected]);
+  },[keyWords,showKeyWords,quantitySelected, showKeyWordsAll]);
 
   const renderDiaries = useCallback(() => {
 
@@ -539,7 +563,9 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
 
         </ContainerSituation>
 
-        {renderKeyWords()}
+         
+
+        {showKeyWordsAll && renderKeyWords()}
 
         {keyWordsCheckeds.length > 0 && renderDiaries()}
 

@@ -32,9 +32,9 @@ export const useGetMovementsTrash = (dataFilters:MovementsTrashProps) => {
             let addFilters = `&paginaAtual=${filters.page}`;
             if(filters.itens){
                                 
-                if(filters.itens.Lido){
-                    addFilters+=`&lido=${filters.itens.Lido}`;
-                }
+                
+                addFilters+=`&lido=${filters.itens.Lido}`;
+                
                 if(filters.itens.idPalavraChave){
                     addFilters+=`&idsPalavraChave=${filters.itens.idPalavraChave.toString()}`;
                 }
@@ -152,12 +152,12 @@ export const useMovementRecover = () => {
             
             const response = await Api.put(`/core/v1/movimentos-usuarios-clientes/restaurar-lixeira`,data);
 
-            dispatch(ToastNotifyActions.toastNotifyShow('Movimento recuperado com sucesso!',false));
+            dispatch(ToastNotifyActions.toastNotifyShow('Movimentação restaurada com sucesso!',false));
 
             return true;
 
         } catch (error) {
-            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível recuperar este movimento',true));
+            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível recuperar esta Movimentação',true));
         }finally {
             setTimeout(() => {
                 setIsloadngRecover(false);
@@ -191,11 +191,11 @@ export const useMovementDelete = () => {
             
             const response = await Api.put(`core/v1/pastas-usuarios-clientes/desvincular-movimento`,data);
 
-            dispatch(ToastNotifyActions.toastNotifyShow('Movimento excluído com sucesso!',false));
+            dispatch(ToastNotifyActions.toastNotifyShow('Movimentação excluída com sucesso!',false));
 
             return true;
         } catch (error) {
-            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível excluir este movimento',true));
+            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível excluir esta movimentação',true));
         }finally {
             setTimeout(() => {
                 setIsloadngDelete(false);

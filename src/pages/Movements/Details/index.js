@@ -43,6 +43,9 @@ import {MaskCnj} from 'helpers/Mask';
 // Add Hook UseTheme para pegar o tema global addicionado
 import { useTheme } from 'styled-components';
 
+// Hook para buscar os dias de delete da lixeira
+import { useMovementsGetDeleteTrash } from '@services/hooks/Movements/useMovements'
+
 export default MovementDetail = props => {
 
 	// Variavel para usar o hook
@@ -55,6 +58,9 @@ export default MovementDetail = props => {
 	const [moveReference, setMoveReference] = useState(null);
 	const [loadingDetails, setLoading] = useState(true);
 	const [downloading, setDownloading] = useState(false);
+
+	const {loadingDeleteTrash, currentDayDeleteMovTrash} = useMovementsGetDeleteTrash();
+	const [daysDeleteMovTrash, setDaysDeleteMovTrash] = useState(30);
 
 	const menuRef = useRef(null);
 	const emailRef = useRef(null);
@@ -119,6 +125,11 @@ export default MovementDetail = props => {
 
 		return;
 	}, []);
+
+	useEffect(() => {		
+		setDaysDeleteMovTrash(currentDayDeleteMovTrash);
+	}, [currentDayDeleteMovTrash]);
+
 
 	const requestPermission = useCallback(async () => {
 		try {
@@ -274,9 +285,10 @@ export default MovementDetail = props => {
 				ref={confirmationRef}
 				movement={moveReference}
 				remove={id => removeFromList(id)}
+				daysDeleteMovTrash = {daysDeleteMovTrash}
 			/>
 		),
-		[moveReference],
+		[moveReference,daysDeleteMovTrash],
 	);
 
 	const renderAddDeadline = useMemo(

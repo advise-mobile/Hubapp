@@ -2,6 +2,9 @@ import React, {useState, useRef, useCallback, useEffect, useMemo} from 'react';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+
+import Image from 'react-native-remote-svg';
+
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 import {Container, Warp, Actions, ActionButton} from 'assets/styles/global';
@@ -23,7 +26,7 @@ import {
 	Tag,
 	TagText,
 	NotFound,
-	Image,
+	ImageNotFound,
 	NotFoundText,
 	NotFoundDescription,
 } from './styles';
@@ -51,7 +54,6 @@ import { DataFilterProps } from '@pages/MovementsTrash/Filters/types';
 
 export default MovementsTrash = () => {
 
-	
 	const navigation = useNavigation();
 	
 	// Variavel para usar o hook
@@ -62,10 +64,16 @@ export default MovementsTrash = () => {
 	? require('assets/images/not_found/movements_white.png')
 	: require('assets/images/not_found/movements.png');
 
+	const iconDelete = colorUseTheme.name === 'dark'
+	? require('assets/images/movements-trash-delete-dark.png')
+	: require('assets/images/movements-trash-delete-white.png');
+
+	const iconRestore = colorUseTheme.name === 'dark'
+	? require('assets/images/movements-trash-restore-dark.png')
+	: require('assets/images/movements-trash-restore-white.png');
+
 	const {isLoadingRecover, recoverMoviment} = useMovementRecover();
 	const {isLoadingDelete, deleteMovement} = useMovementDelete();
-
-	
 
 	const filtersRef = useRef(null);
 	const listRef = useRef(null);
@@ -85,6 +93,7 @@ export default MovementsTrash = () => {
 	
 	useEffect(() => { 
 		setMovements(movementsTrash)
+		//setMovements([])
 	}, [movementsTrash]);
 
 	useEffect(() => { 
@@ -152,18 +161,10 @@ export default MovementsTrash = () => {
 					overflow: 'hidden',
 				}}>
 				<ActionButton onPress={() => handleRecover(item)}>
-					<MaterialIcons
-						name={'arrow-circle-up'}
-						size={24}
-						color={colors.fadedBlack}
-					/>
+					<Image source={iconRestore} style={{ width: 30, height: 45 }}  />
 				</ActionButton>
 				<ActionButton onPress={() => handleDelete(item)}>
-					<MaterialIcons
-						name={'delete-forever'}
-						size={24}
-						color={colors.fadedBlack}
-					/>
+					<Image source={iconDelete} style={{ width: 30, height: 45 }}  />
 				</ActionButton>
 			</Actions>
 	),[]);
@@ -336,11 +337,11 @@ export default MovementsTrash = () => {
 								data={movements}
 								disableRightSwipe
 								previewRowKey={'2'}
-								rightOpenValue={-300}
-								stopRightSwipe={-300}
+								rightOpenValue={-150}
+								stopRightSwipe={-150}
 								closeOnRowOpen={false}
 								renderItem={renderItem}
-								previewOpenValue={-300}
+								previewOpenValue={-150}
 								previewOpenDelay={2000}
 								useNativeDriver={false}								
 								renderHiddenItem={renderHiddenItem}
@@ -353,9 +354,8 @@ export default MovementsTrash = () => {
 							
 						) : (
 							<NotFound>
-								<Image source={notFound} />
-								<NotFoundText>Não há resultados</NotFoundText>
-								<NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+								<ImageNotFound source={notFound}  width={120} height={120}/>
+								<NotFoundText>A sua lixeira está vazia</NotFoundText>
 							</NotFound>
 						)	
 				}

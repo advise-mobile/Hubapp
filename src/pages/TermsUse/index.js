@@ -17,6 +17,7 @@ import { FormatDateBR } from "../../helpers/DateFunctions"
 import { useTheme } from 'styled-components';
 
 const TermsUse = props => {
+
 	const { width } = useWindowDimensions();
 	
 	// Variavel para usar o hook
@@ -27,6 +28,10 @@ const TermsUse = props => {
 
 	const [acceptCheck, setAcceptCheck] = useState(false);
 	const [term, setTerm] = useState({})
+
+	const fromPageInfoParams = props.route.params && props.route.params.previous_screen ? true : false;
+
+	const [fromPageInfo, setFromPageInfo] = useState(fromPageInfoParams);
 
 	const acceptTerms = useSelector(state => state.auth.acceptTerms);
 	const loadingAcceptTerms = useSelector(state => state.auth.loadingAcceptTerms);
@@ -51,6 +56,11 @@ const TermsUse = props => {
 
 	const checkAcceptTerms = useCallback(() => {
 
+		
+		if (fromPageInfo) {
+			return;	
+		}
+
 		if (acceptTerms) {
 			props.navigation.dispatch(StackActions.push('App'));
 		}
@@ -63,7 +73,7 @@ const TermsUse = props => {
 
 	useEffect(() => {
 		checkRedirect();
-		//checkAcceptTerms();
+		checkAcceptTerms();
 	}, [acceptTerms, redirect]);
 
 	useEffect(() => {
@@ -120,7 +130,7 @@ const TermsUse = props => {
 						</S.Title>
 					</S.TextWrapper>
 					{
-					acceptTerms ? (
+					fromPageInfo ? (
 						<>
 							<S.AcceptTermsWrapper>		
 								<S.TermsText color={colors.white}>Termo de uso já aceito anteriormente</S.TermsText>

@@ -11,8 +11,11 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import {navigationRef} from 'navigation/NavigationService';
 
+
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import UserIcon from 'components/UserIcon';
 import CustomIcon from 'components/CustomIcon';
 
@@ -132,7 +135,7 @@ const AppScreens = () => (
 			options={{
 				tabBarIcon: ({color}) => (
 					<CustomIcon group={PermissionsGroups.MOVEMENTS}>
-						<FontAwesome name="bolt" size={23} color={color} />
+						<MaterialCommunityIcons name="lightning-bolt" size={25} color={color} />
 					</CustomIcon>
 				),
 			}}

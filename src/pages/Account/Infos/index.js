@@ -187,7 +187,9 @@ export default Infos = props => {
     </ProfileImageContainer>, [picture]);
 
   const handleShowTermsOfUse = useCallback (()=> { 
-      props.navigation.dispatch(StackActions.push('TermsUse'));
+      props.navigation.dispatch(StackActions.push('TermsUse',{
+        previous_screen: 'Infos'
+      }));
   },[])
 
   const handleShowPolicyPrivacy = useCallback (()=> { 
