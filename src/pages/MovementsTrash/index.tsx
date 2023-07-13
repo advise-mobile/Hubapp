@@ -366,7 +366,7 @@ export default MovementsTrash = () => {
 								<ImageNotFound source={notFound}  width={120} height={120}/>
 								{filtering ? (
 									<>
-										<NotFoundText>Não ha resultados</NotFoundText>
+										<NotFoundText>Não há resultados</NotFoundText>
 										<NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
 									</>
 								) : (
