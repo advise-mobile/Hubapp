@@ -89,6 +89,8 @@ export default MovementsTrash = () => {
 	const {movementsTrash, loading, getData} = useGetMovementsTrash({page:currentPage});
 
 	const [movements, setMovements] = useState<ItemProps[]>(movementsTrash);
+
+	const [filtering, setFiltering] = useState<Boolean>(false);
 	
 	
 	useEffect(() => { 
@@ -285,8 +287,15 @@ export default MovementsTrash = () => {
 	/** FILTERS */
 	const openFilters = () => filtersRef.current?.open();
 
+	
+
+	const handleClearFilters = useCallback( () => {
+		setFiltering(false);
+	}, []);
+
 	const handleSubmitFilters = useCallback(async (data: DataFilterProps) => {
 
+		setFiltering(true);
 		filtersRef.current?.close();
 	
 		await getData({
@@ -298,7 +307,7 @@ export default MovementsTrash = () => {
 	/** RENDER FILTERS */
 	const renderFilters = useMemo(
 		() => (
-			<Filters ref={filtersRef} handleSubmitFilters={handleSubmitFilters}/>
+			<Filters ref={filtersRef} handleSubmitFilters={handleSubmitFilters} handleClearFilters={handleClearFilters}/>
 		),
 		[formattedData],
 	);
@@ -352,10 +361,17 @@ export default MovementsTrash = () => {
 								initialNumToRender={20}
 							/>
 							
-						) : (
+						) :  (
 							<NotFound>
 								<ImageNotFound source={notFound}  width={120} height={120}/>
+								{filtering ? (
+									<>
+										<NotFoundText>Não ha resultados</NotFoundText>
+										<NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+									</>
+								) : (
 								<NotFoundText>A sua lixeira está vazia</NotFoundText>
+								)}
 							</NotFound>
 						)	
 				}

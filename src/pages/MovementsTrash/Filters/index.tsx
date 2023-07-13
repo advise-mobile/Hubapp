@@ -45,7 +45,7 @@ import { useKeyWordsGet, useDiariesGet, useJournalsGet } from '@services/hooks/M
 // Add Hook UseTheme para pegar o tema global addicionado
 import { useTheme } from 'styled-components';
 
-export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
+export default Filters = forwardRef(({handleSubmitFilters,handleClearFilters}:FilterProps,ref) => {
 
   // Variavel para usar o hook
 	const colorUseTheme = useTheme();
@@ -128,6 +128,8 @@ export default Filters = forwardRef(({handleSubmitFilters}:FilterProps,ref) => {
   
 
   const clearFilters = useCallback(() => {
+
+    handleClearFilters();
     setSituation(0);
     setMinDate(null);
     setMaxDate(null);

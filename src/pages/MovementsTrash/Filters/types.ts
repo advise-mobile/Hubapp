@@ -10,4 +10,5 @@ export interface DataFilterProps {
 
 export interface FilterProps {
     handleSubmitFilters: (item:DataFilterProps) => void;
+    handleClearFilters: () => void;
 }
