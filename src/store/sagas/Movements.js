@@ -97,9 +97,6 @@ export function* getMovements({ params }) {
     const queryFilters = getFilterString(filters);
 
     const query = `campos=*&ordenacao=-dataPublicacao&idPastaUsuarioCliente=${params.folderId}`;
-
-     
-
     
     const paginator = `registrosPorPagina=${params.perPage}&paginaAtual=${params.page}`;
 
@@ -156,7 +153,7 @@ export function* getMovements({ params }) {
 
       }
 
-      if (publicacao) {
+      if (publicacao) { 
 
         const {
           resumo,
@@ -177,7 +174,12 @@ export function* getMovements({ params }) {
         };
 
         if (processosPublicacoes?.length > 0) {
-          optmizedMovement.numeroProcesso = MaskCnj(processosPublicacoes[0].numeroProcesso);
+          if(publicacao.numero){
+            optmizedMovement.numeroProcesso = publicacao.numero;
+          }else{
+            optmizedMovement.numeroProcesso = MaskCnj(processosPublicacoes[0].numeroProcesso);
+          }
+          
         }
 
       }

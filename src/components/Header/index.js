@@ -69,8 +69,11 @@ export default Header = props => {
                             optionsContainer: {
                               borderRadius: 5,
                               padding:10,
-                              width:143,
-                              marginTop:30
+                              width:120,
+                              marginTop:30,
+                              backgroundColor:colors.white,
+                              borderWidth:1,
+                              borderColor:colors.grayLighter
                             },
                           }}>
                             <MenuOption  
@@ -79,12 +82,17 @@ export default Header = props => {
                                     flexDirection: "row",
                                     alignItems: "center",
                                     justifyContent: "center",
+                                    
                                   },
                                 }}
                                onSelect={() => props.menu()}>
-                              <View style={{flexDirection: "row", width:70, justifyContent: "space-between"}}>
-                                <MaterialIcons name="delete" size={20} color={colors.primary} />   
-                                <Text>Lixeira</Text>
+                              <View style={{flexDirection: "row",
+                                            width:70,
+                                            justifyContent: "space-between",
+                                            
+                                            }}>
+                                <MaterialIcons name="delete" size={20} color={colors.fadedBlack} />   
+                                <Text style={{color:colors.grayLight}}>Lixeira</Text>
                               </View>
                           </MenuOption>
                         </MenuOptions>
