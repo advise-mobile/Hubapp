@@ -169,7 +169,7 @@ export default MovementsTrash = () => {
 					<Image source={iconDelete} style={{ width: 30, height: 45 }}  />
 				</ActionButton>
 			</Actions>
-	),[]);
+	),[iconRestore,iconDelete]);
 
 	const renderConfirmation = useMemo(
 		() =>   		
