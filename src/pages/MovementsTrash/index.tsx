@@ -281,7 +281,7 @@ export default MovementsTrash = () => {
 				</Movement>
 			</Animated.View>
 		),
-		[movements],
+		[movements,colors],
 	);
 
 	/** FILTERS */
