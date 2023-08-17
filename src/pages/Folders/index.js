@@ -339,12 +339,17 @@ export default function Folders(props) {
 
   const renderTabBar = () => <CustomTabs />;
 
+  const navigateToTrash = () =>{
+    props.navigation.push('MovementsTrash');
+  }
+
   return (
     <Container>
       {active ?
         <Warp>
-          {/* <Header title='Movimentações' add={add} edit={edit} /> */}
-          <Header title='Movimentações' />
+          
+          <Header title='Movimentações' menu={() => navigateToTrash()}/>
+            
           <ScrollableTabView renderTabBar={renderTabBar}>
             {Publicacoes()}
             {Processos()}

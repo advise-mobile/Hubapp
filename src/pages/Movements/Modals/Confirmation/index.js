@@ -1,5 +1,7 @@
 import React, { forwardRef, useState, useCallback, useEffect } from 'react';
 
+import Api from 'services/Api';
+
 import Modal from 'components/Modal';
 import Spinner from 'components/Spinner';
 
@@ -26,24 +28,37 @@ export default Confirmation = forwardRef((props, ref) => {
 	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
 
+  const userData = useSelector(state => state.user);
+  
+
   const dispatch = useDispatch();
 
   const [movement, setMovement] = useState(props.movement);
   const remove = props.remove;
+  const daysDeleteMovTrash = props.daysDeleteMovTrash;
 
   const deleting = useSelector(state => state.movements.deleting);
 
   useEffect(() => setMovement(props.movement), [props]);
 
+ 
+
   const closeModal = useCallback(() => ref.current?.close(), []);
 
-  const confirm = useCallback(() => {
-    const { idMovProcessoCliente, idPastaUsuarioCliente } = movement;
+  const  confirm = useCallback( async () => {
 
-    dispatch(MovementsActions.deleteMovement({
-      idMovimentoProcessoCliente: idMovProcessoCliente,
-      idPastaUsuarioCliente
+    const { idMovProcessoCliente } = movement;
+
+    dispatch(MovementsActions.deleteLogicalMovement({
+       idMovimentoProcessoCliente: idMovProcessoCliente,
     }));
+
+
+    
+    // dispatch(MovementsActions.deleteMovement({
+    //   idMovimentoProcessoCliente: idMovProcessoCliente,
+    //   idPastaUsuarioCliente
+    // }));
 
     setTimeout(() => closeModal(), 250);
 
@@ -57,18 +72,18 @@ export default Confirmation = forwardRef((props, ref) => {
         <CancelText>Cancelar</CancelText>
       </Cancel>
       <Submit onPress={() => confirm()} disabled={deleting}>
-        {deleting ? <Spinner transparent={true} color={colors.white} height='auto' /> : <SubmitText>Sim, quero excluir</SubmitText>}
+        {deleting ? <Spinner transparent={true} color={colors.white} height='auto' /> : <SubmitText>Sim, quero enviar</SubmitText>}
       </Submit>
     </Footer>
   );
 
   return (
-    <Modal ref={ref} title={movement?.idTipoMovProcesso === -1 ? "Deseja excluir o andamento?" : "Deseja excluir a publicação?"} footer={footer()}>
+    <Modal ref={ref} title={movement?.idTipoMovProcesso === -1 ? "Deseja enviar para a Lixeira?" : "Deseja enviar para lixeira?"} footer={footer()}>
       <Content>
         {movement?.idTipoMovProcesso === -1 ?
-          <Message>Ao excluir um andamento, você elimina todas as informações referentes a este documento. A ação de excluir é definitiva e irreversível.</Message>
+          <Message>Ao enviá-lo para a Lixeira, você elimina as informações referentes a essa movimentação. No ambiente da Lixeira, você pode restaurar o documento em um período de {daysDeleteMovTrash} dias, depois deste período o sistema exclui permanentemente.</Message>
           :
-          <Message>Ao excluir uma publicação, você elimina todas as informações referentes a este documento. A ação de excluir é definitiva e irreversível.</Message>
+          <Message>Ao enviá-la para a Lixeira, você elimina as informações referentes a essa movimentação. No ambiente da Lixeira, você pode restaurar o documento em um período de {daysDeleteMovTrash} dias, depois deste período o sistema exclui permanentemente.</Message>
         }
       </Content>
     </Modal>

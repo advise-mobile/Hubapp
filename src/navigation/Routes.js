@@ -11,8 +11,11 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import {navigationRef} from 'navigation/NavigationService';
 
+
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import UserIcon from 'components/UserIcon';
 import CustomIcon from 'components/CustomIcon';
 
@@ -26,10 +29,15 @@ import Chat from '../pages/Account/Chat';
 import Notifications from '../pages/Account/Notifications';
 import Pushs from '../pages/Account/Notifications/Pushs';
 import Emails from '../pages/Account/Notifications/Emails';
+import PrivacyPolicy from '../pages/PrivacyPolicy';
+
 
 import Folders from '../pages/Folders';
 import Movements from '../pages/Movements';
 import MovementDetail from '../pages/Movements/Details';
+
+import MovementsTrash from '../pages/MovementsTrash';
+
 
 import Jurisprudence from '../pages/Jurisprudence';
 import JurisprudenceList from '../pages/Jurisprudence/List';
@@ -56,6 +64,7 @@ const FoldersScreens = () => (
 	<FoldersStack.Navigator headerMode="none">
 		<FoldersStack.Screen name="Folders" component={Folders} />
 		<FoldersStack.Screen name="Movements" component={Movements} />
+		<FoldersStack.Screen name="MovementsTrash" component={MovementsTrash} />
 		<FoldersStack.Screen name="MovementDetail" component={MovementDetail} />
 	</FoldersStack.Navigator>
 );
@@ -85,6 +94,7 @@ const AccountScreens = () => (
 		<AccountStack.Screen name="Pushs" component={Pushs} />
 		<AccountStack.Screen name="Emails" component={Emails} />
 		<AccountStack.Screen name="Chat" component={Chat} />
+		<AccountStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
 	</AccountStack.Navigator>
 );
 
@@ -125,7 +135,7 @@ const AppScreens = () => (
 			options={{
 				tabBarIcon: ({color}) => (
 					<CustomIcon group={PermissionsGroups.MOVEMENTS}>
-						<FontAwesome name="bolt" size={23} color={color} />
+						<MaterialCommunityIcons name="lightning-bolt" size={25} color={color} />
 					</CustomIcon>
 				),
 			}}

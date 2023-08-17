@@ -18,9 +18,8 @@ import env from 'services/env';
 
 import Smartlook from 'smartlook-react-native-wrapper';
 
-LogBox.ignoreLogs(["Can't perform a React state update on an unmounted component"]);
-
-LogBox.ignoreAllLogs(true);
+// Para ativar menus pop-up da lixeira e demais que vierem
+import { MenuProvider } from 'react-native-popup-menu';
 
 
 const App = () => {
@@ -54,15 +53,17 @@ const App = () => {
 
 	return (
 		<Provider store={store}>
-			<ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
-				
-				<StatusBar
-					backgroundColor={theme === 'dark' ? '#111111' : '#fff'}
-					barStyle={barStyle}
-				/>
-				<Routes />
-				<ToastNotify />
-			</ThemeProvider>
+			<MenuProvider>
+				<ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
+					
+					<StatusBar
+						backgroundColor={theme === 'dark' ? '#111111' : '#fff'}
+						barStyle={barStyle}
+					/>
+					<Routes />
+					<ToastNotify />
+				</ThemeProvider>
+			</MenuProvider>
 		</Provider>
 	);
 };

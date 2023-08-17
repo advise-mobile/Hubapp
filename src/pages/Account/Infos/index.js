@@ -186,6 +186,16 @@ export default Infos = props => {
       </ProfileImageButton>
     </ProfileImageContainer>, [picture]);
 
+  const handleShowTermsOfUse = useCallback (()=> { 
+      props.navigation.dispatch(StackActions.push('TermsUse',{
+        previous_screen: 'Infos'
+      }));
+  },[])
+
+  const handleShowPolicyPrivacy = useCallback (()=> { 
+    props.navigation.dispatch(StackActions.push('PrivacyPolicy'));
+},[])
+
   return (
     <Container>
       <Warp>
@@ -317,11 +327,11 @@ export default Infos = props => {
               <InfoContainer>
                 <InfoTitle>Legal</InfoTitle>
                 <InfoContent>
-                  <InfoLink onPress={() => openLink("termos")}>
+                  <InfoLink onPress={() => {handleShowTermsOfUse()}}>
                     <InfoLinkText>Termos de uso</InfoLinkText>
                   </InfoLink>
                   <InfoText> e </InfoText>
-                  <InfoLink onPress={() => openLink("politica")}>
+                  <InfoLink onPress={() =>{handleShowPolicyPrivacy()}}>
                     <InfoLinkText>Política de Privacidade</InfoLinkText>
                   </InfoLink>
                 </InfoContent>
@@ -368,6 +378,7 @@ export default Infos = props => {
             </>
           }
         </ProfileContainer>
+      
       </Warp>
     </Container>
   );

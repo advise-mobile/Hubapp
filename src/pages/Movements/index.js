@@ -17,7 +17,7 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 
 import {TOKEN} from 'helpers/StorageKeys';
 
-import Api, {BASE_URL, getLogin} from 'services/Api';
+import  {BASE_URL, getLogin} from 'services/Api';
 
 import Header from 'components/Header';
 import Spinner from 'components/Spinner';
@@ -65,13 +65,14 @@ const movementsRef = {};
 
 const dirs = RNFetchBlob.fs.dirs;
 
+// Hook para buscar os dias de delete da lixeira
+import { useMovementsGetDeleteTrash } from '@services/hooks/Movements/useMovements'
 
 export default Movements = props => {
 
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
-
 
 	const notFound = colorUseTheme.name === 'dark'
 		? require('assets/images/not_found/movements_white.png')
@@ -87,6 +88,11 @@ export default Movements = props => {
 	const [filters, setFilters] = useState({});
 	const [currentPage, setCurrentPage] = useState(1);
 
+	const {loadingDeleteTrash, currentDayDeleteMovTrash} = useMovementsGetDeleteTrash();
+	const [daysDeleteMovTrash, setDaysDeleteMovTrash] = useState(30);
+
+	
+
 	const movements = useSelector(state =>
 		state.movements.data.map(movement => {
 			if (!movementsRef[movement.id]) movementsRef[movement.id] = new Animated.Value(1);
@@ -94,6 +100,8 @@ export default Movements = props => {
 			return movement;
 		}),
 	);
+
+
 	const endReached = useSelector(state => state.movements.endReached);
 	const loading = useSelector(state => state.movements.loading);
 	const loadingMore = useSelector(state => state.movements.loadingMore);
@@ -114,7 +122,6 @@ export default Movements = props => {
 
 	useEffect(() => {
 		if (loadingMore || loading) return;
-
 		dispatch(
 			MovementsActions.movementsRequest({
 				filters,
@@ -152,7 +159,7 @@ export default Movements = props => {
 	//   );
 	// }, [trigger, filters]);
 
-	useEffect(() => {
+	useEffect(() => {		
 		const custom =
 			folder.idTipoPasta == -2
 				? {
@@ -179,6 +186,11 @@ export default Movements = props => {
 			}),
 		[movements],
 	);
+
+	useEffect(() => {		
+		
+		setDaysDeleteMovTrash(currentDayDeleteMovTrash);
+	}, [currentDayDeleteMovTrash]);
 
 	/** LIST */
 	const refresh = useCallback(() => {
@@ -492,12 +504,16 @@ export default Movements = props => {
 	);
 
 	const renderConfirmation = useMemo(
-		() => (
+		() =>  (
+			
 			<Confirmation
 				ref={confirmationRef}
 				movement={currentMove}
 				remove={id => removeFromList(id)}
+				daysDeleteMovTrash = {daysDeleteMovTrash}
 			/>
+
+			
 		),
 		[currentMove],
 	);
@@ -553,7 +569,10 @@ export default Movements = props => {
 	));
 
 	const renderItem = useCallback(
-		({item}) => (
+		({item}) => 
+			
+			 (
+				
 			<Animated.View
 				style={{
 					overflow: 'hidden',
@@ -670,6 +689,7 @@ export default Movements = props => {
 						onPress={() => {
 							setCurrentPage(1);
 							props.navigation.goBack();
+							
 						}}>
 						<MaterialIcons name="arrow-back" size={20} color={colors.fadedBlack} />
 					</BackButton>

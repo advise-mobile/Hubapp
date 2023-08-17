@@ -17,6 +17,7 @@ import { FormatDateBR } from "../../helpers/DateFunctions"
 import { useTheme } from 'styled-components';
 
 const TermsUse = props => {
+
 	const { width } = useWindowDimensions();
 	
 	// Variavel para usar o hook
@@ -27,6 +28,10 @@ const TermsUse = props => {
 
 	const [acceptCheck, setAcceptCheck] = useState(false);
 	const [term, setTerm] = useState({})
+
+	const fromPageInfoParams = props.route.params && props.route.params.previous_screen ? true : false;
+
+	const [fromPageInfo, setFromPageInfo] = useState(fromPageInfoParams);
 
 	const acceptTerms = useSelector(state => state.auth.acceptTerms);
 	const loadingAcceptTerms = useSelector(state => state.auth.loadingAcceptTerms);
@@ -50,10 +55,21 @@ const TermsUse = props => {
 	}, [redirect]);
 
 	const checkAcceptTerms = useCallback(() => {
+
+		
+		if (fromPageInfo) {
+			return;	
+		}
+
 		if (acceptTerms) {
 			props.navigation.dispatch(StackActions.push('App'));
 		}
 	}, [acceptTerms]);
+
+	
+	const handleGoback = () => {
+		props.navigation.goBack();
+	}
 
 	useEffect(() => {
 		checkRedirect();
@@ -91,6 +107,7 @@ const TermsUse = props => {
 				<S.ContentWrapper>
 					<S.TitleTerm>Termos de Uso</S.TitleTerm>
 					<S.Subtitle>Licença de uso de software</S.Subtitle>
+
 					<S.TextWrapper>
 						<RenderHtml 
 							contantWitdh={width}
@@ -112,27 +129,45 @@ const TermsUse = props => {
 							Data de publicação: {term.dataHoraPublicacaoTermo}
 						</S.Title>
 					</S.TextWrapper>
-					<S.AcceptTermsWrapper>
-						<CheckBox
-							lineWidth={1.5}
-							boxType={'square'}
-							value={acceptCheck}
-							onValueChange={setAcceptCheck}
-							animationDuration={0.2}
-							tintColor={colors.primary}
-							onCheckColor={colors.white}
-							onFillColor={colors.primary}
-							onTintColor={colors.primary}
-							style={{width: 18, height: 18, marginRight: 12}}
-						/>
-						<S.TermsText color={colors.white}>Li e aceito os Termos de Uso</S.TermsText>
-					</S.AcceptTermsWrapper>
-					<S.AcceptButton
-						onPress={handleAccept}
-						activeOpacity={0.7}
-						disabled={disabledButton || loadingAcceptTerms}>
-						<S.AcceptButtonText>Aceitar</S.AcceptButtonText>
-					</S.AcceptButton>
+					{
+					fromPageInfo ? (
+						<>
+							<S.AcceptTermsWrapper>		
+								<S.TermsText color={colors.white}>Termo de uso já aceito anteriormente</S.TermsText>
+							</S.AcceptTermsWrapper>
+							<S.AcceptButton
+								onPress={handleGoback}
+								activeOpacity={0.7}>
+								<S.AcceptButtonText>Voltar</S.AcceptButtonText>
+							</S.AcceptButton>
+						</>
+						) :
+						(
+							<>
+							<S.AcceptTermsWrapper>
+								<CheckBox
+									lineWidth={1.5}
+									boxType={'square'}
+									value={acceptCheck}
+									onValueChange={setAcceptCheck}
+									animationDuration={0.2}
+									tintColor={colors.primary}
+									onCheckColor={colors.white}
+									onFillColor={colors.primary}
+									onTintColor={colors.primary}
+									style={{width: 18, height: 18, marginRight: 12}}
+								/>
+								<S.TermsText color={colors.white}>Li e aceito os Termos de Uso</S.TermsText>
+							</S.AcceptTermsWrapper>
+							<S.AcceptButton
+								onPress={handleAccept}
+								activeOpacity={0.7}
+								disabled={disabledButton || loadingAcceptTerms}>
+								<S.AcceptButtonText>Aceitar</S.AcceptButtonText>
+							</S.AcceptButton> 
+							</>
+						)
+					}
 				</S.ContentWrapper>
 			</S.Container>
 		</View>

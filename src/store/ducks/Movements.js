@@ -23,6 +23,9 @@ const { Types, Creators } = createActions({
   movementsEmailRequest: ['param'],
   movementsEmailSuccess: null,
   movementsEmailFailure: null,
+
+  // send to trash
+  deleteLogicalMovement: ['params'],
 });
 
 export const MovementsTypes = Types;
@@ -136,6 +139,9 @@ export const emailSuccess = state => state.merge({ sending: false });
 
 export const emailFailure = state => state.merge({ sending: false });
 
+
+export const deleteLogicalMovementRequest = state => state.merge({ deleting: true });
+
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.MOVEMENTS_REQUEST]: request,
   [Types.MOVEMENTS_SUCCESS]: success,
@@ -154,4 +160,6 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.MOVEMENTS_EMAIL_REQUEST]: emailRequest,
   [Types.MOVEMENTS_EMAIL_SUCCESS]: emailSuccess,
   [Types.MOVEMENTS_EMAIL_FAILURE]: emailFailure,
+
+  [Types.DELETE_LOGICAL_MOVEMENT]: deleteLogicalMovementRequest,
 });

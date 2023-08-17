@@ -97,6 +97,7 @@ export function* getMovements({ params }) {
     const queryFilters = getFilterString(filters);
 
     const query = `campos=*&ordenacao=-dataPublicacao&idPastaUsuarioCliente=${params.folderId}`;
+    
     const paginator = `registrosPorPagina=${params.perPage}&paginaAtual=${params.page}`;
 
     yield put(AuthAction.contractsRequest());
@@ -152,7 +153,7 @@ export function* getMovements({ params }) {
 
       }
 
-      if (publicacao) {
+      if (publicacao) { 
 
         const {
           resumo,
@@ -173,7 +174,12 @@ export function* getMovements({ params }) {
         };
 
         if (processosPublicacoes?.length > 0) {
-          optmizedMovement.numeroProcesso = MaskCnj(processosPublicacoes[0].numeroProcesso);
+          if(publicacao.numero){
+            optmizedMovement.numeroProcesso = publicacao.numero;
+          }else{
+            optmizedMovement.numeroProcesso = MaskCnj(processosPublicacoes[0].numeroProcesso);
+          }
+          
         }
 
       }
@@ -248,5 +254,31 @@ export function* deleteMovement({ params }) {
         )
       );
     }
+  }
+}
+
+export function* deleteLogicalMovement({ params }) {
+  try {
+    const { idUsuarioCliente } = yield getLoggedUser();
+  
+    const data = [{ ...params, idUsuarioCliente }];
+
+    yield call(Api.put, `/core/v1/movimentos-usuarios-clientes/enviar-lixeira`, data);
+
+    yield put(ToastNotifyActions.toastNotifyShow('Movimentação excluída com sucesso!', false));
+  } catch (err) {
+    console.error(err);
+
+    const { status } = err.response;
+    if (status !== 401) {
+      yield put(
+        ToastNotifyActions.toastNotifyShow(
+          'Não foi possível excluir o movimento.',
+          true
+        )
+      );
+    }
+  }finally {
+    yield put(MovementsTypes.deleteMovementProceeded());
   }
 }

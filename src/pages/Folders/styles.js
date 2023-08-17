@@ -167,5 +167,5 @@ export {
 	NotFound,
 	Image,
 	NotFoundText,
-	NotFoundDescription,
+	NotFoundDescription
 };
