@@ -558,21 +558,13 @@
 				CODE_SIGN_ENTITLEMENTS = HubApp/HubApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-<<<<<<< HEAD
-				CURRENT_PROJECT_VERSION = 1;
-=======
 				CURRENT_PROJECT_VERSION = 41;
->>>>>>> 2f33a243833e098152108c9e75dfb91278740da7
 				DEVELOPMENT_TEAM = DF8CC9QK2Y;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = HubApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-<<<<<<< HEAD
-				MARKETING_VERSION = 1;
-=======
 				MARKETING_VERSION = 1.1.14;
->>>>>>> 2f33a243833e098152108c9e75dfb91278740da7
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -580,17 +572,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.advise.hub;
 				PRODUCT_NAME = HubApp;
-<<<<<<< HEAD
 				PROVISIONING_PROFILE_SPECIFIER = "Advise Hub";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-=======
-				PROVISIONING_PROFILE_SPECIFIER = "Hubapp Test";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
->>>>>>> 2f33a243833e098152108c9e75dfb91278740da7
 				VALIDATE_WORKSPACE = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -606,21 +591,13 @@
 				CODE_SIGN_ENTITLEMENTS = HubAppRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-<<<<<<< HEAD
-				CURRENT_PROJECT_VERSION = 1;
-=======
 				CURRENT_PROJECT_VERSION = 41;
->>>>>>> 2f33a243833e098152108c9e75dfb91278740da7
 				DEVELOPMENT_TEAM = DF8CC9QK2Y;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = HubApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-<<<<<<< HEAD
-				MARKETING_VERSION = 1;
-=======
 				MARKETING_VERSION = 1.1.14;
->>>>>>> 2f33a243833e098152108c9e75dfb91278740da7
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -629,15 +606,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.advise.hub;
 				PRODUCT_NAME = HubApp;
-<<<<<<< HEAD
 				PROVISIONING_PROFILE_SPECIFIER = "Advise Hub";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-=======
-				PROVISIONING_PROFILE_SPECIFIER = "Hubapp Test";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
->>>>>>> 2f33a243833e098152108c9e75dfb91278740da7
 				VALIDATE_WORKSPACE = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -656,11 +627,7 @@
 				CODE_SIGN_ENTITLEMENTS = OneSignalNotificationServiceExtension/OneSignalNotificationServiceExtensionDebug.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-<<<<<<< HEAD
-				CURRENT_PROJECT_VERSION = 39;
-=======
 				CURRENT_PROJECT_VERSION = 41;
->>>>>>> 2f33a243833e098152108c9e75dfb91278740da7
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = DF8CC9QK2Y;
 				ENABLE_BITCODE = NO;
@@ -673,11 +640,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.advise.hub.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-<<<<<<< HEAD
 				PROVISIONING_PROFILE_SPECIFIER = "Advise Hub OneSignal";
-=======
-				PROVISIONING_PROFILE_SPECIFIER = "Hubapp OneSignal Test";
->>>>>>> 2f33a243833e098152108c9e75dfb91278740da7
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -712,11 +675,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.advise.hub.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-<<<<<<< HEAD
 				PROVISIONING_PROFILE_SPECIFIER = "Advise Hub OneSignal";
-=======
-				PROVISIONING_PROFILE_SPECIFIER = "Hubapp OneSignal Test";
->>>>>>> 2f33a243833e098152108c9e75dfb91278740da7
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
