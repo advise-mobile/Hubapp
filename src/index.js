@@ -61,7 +61,7 @@ const App = () => {
 						barStyle={barStyle}
 					/>
 					<Routes />
-					<ToastNotify />
+					<ToastNotify theme={theme === 'dark'? darkTheme : lightTheme} />
 				</ThemeProvider>
 			</MenuProvider>
 		</Provider>
