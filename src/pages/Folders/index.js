@@ -47,7 +47,37 @@ import {
   NotFoundDescription,
 } from './styles';
 
+import Rate, { AndroidMarket } from 'react-native-rate'
+
 export default function Folders(props) {
+
+
+  const fromTrash = props.route.params && props.route.params.previous_screen === "Trash" ? true : false;
+
+	const [fromPageTrash, setFromPageTrash] = useState(fromTrash);
+
+
+
+	useEffect(() => {
+    
+    if(fromPageTrash){
+      
+
+      const options = {
+        AppleAppID:"1559284091",
+        GooglePackageName:"com.hubapp",
+        preferInApp:true,
+        openAppStoreIfInAppFails:true,
+      }
+      Rate.rate(options, (success, errorMessage)=>{
+        if (success) {}
+        if (errorMessage) {}
+      })
+  
+      setFromPageTrash(false);
+    }
+  },[fromPageTrash]);
+
   // const add = () => { console.log("add") };
   // const edit = () => { console.log("edit") };
 

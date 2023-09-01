@@ -2,6 +2,7 @@ import React, {useState, useRef, useCallback, useEffect, useMemo} from 'react';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import { StackActions } from '@react-navigation/native';
 
 import Image from 'react-native-remote-svg';
 
@@ -323,10 +324,13 @@ export default MovementsTrash = () => {
 			<Warp>
 				<Header title="Movimentações" />
 				<Heading>
-					<Button
+				<Button
 						onPress={() => {
 							setCurrentPage(1);
 							navigation.goBack();
+							navigation.dispatch(StackActions.push('Folders',{
+								previous_screen: 'Trash'
+							}));
 						}}>
 						<MaterialIcons name="arrow-back" size={20} color={colors.fadedBlack} />
 					</Button>
