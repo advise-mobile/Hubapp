@@ -35,8 +35,9 @@ import PrivacyPolicy from '../pages/PrivacyPolicy';
 import Folders from '../pages/Folders';
 import Movements from '../pages/Movements';
 import MovementDetail from '../pages/Movements/Details';
-
 import MovementsTrash from '../pages/MovementsTrash';
+
+import Finance from '../pages/Finance'
 
 
 import Jurisprudence from '../pages/Jurisprudence';
@@ -66,6 +67,12 @@ const FoldersScreens = () => (
 		<FoldersStack.Screen name="Movements" component={Movements} />
 		<FoldersStack.Screen name="MovementsTrash" component={MovementsTrash} />
 		<FoldersStack.Screen name="MovementDetail" component={MovementDetail} />
+	</FoldersStack.Navigator>
+);
+
+const FinanceScreens = () => (
+	<FoldersStack.Navigator headerMode="none">
+		<FoldersStack.Screen name="Finance" component={Finance} />
 	</FoldersStack.Navigator>
 );
 
@@ -99,7 +106,7 @@ const AccountScreens = () => (
 );
 
 const AppScreens = () => (
-	
+
 	// Variavel para usar o hook
 	colorUseTheme = useTheme(),
 
@@ -162,6 +169,20 @@ const AppScreens = () => (
 				),
 			}}
 		/>*/}
+
+			<TabsStack.Screen
+			component={FinanceScreens}
+			name="Finance"
+			options={{
+				tabBarIcon: ({color}) => (
+					<CustomIcon group={PermissionsGroups.SCHEDULE}>
+						<MaterialIcons name="attach-money" size={25} color={color} />
+					</CustomIcon>
+				),
+			}}
+		/>
+
+
 		<TabsStack.Screen
 			component={AccountScreens}
 			name="Account"
@@ -169,12 +190,14 @@ const AppScreens = () => (
 				tabBarIcon: ({color}) => <UserIcon color={color} />,
 			}}
 		/>
+
 	</TabsStack.Navigator>
 );
 
 
 const MainScreens = () => (
 		<MainStack.Navigator headerMode="none" screenOptions={{gestureEnabled: false}}>
+			<MainStack.Screen name="Finance" component={Finance} />
 				<MainStack.Screen name="Initial" component={Initial} />
 				<MainStack.Screen name="TermsUse" component={TermsUse} />
 				<MainStack.Screen name="Intro" component={Intro} />

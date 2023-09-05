@@ -31,6 +31,11 @@ export default lightTheme  = {
       blue200: '#81D4FA',
       orange200: '#FFAB91',
       toastError: '#FFCDD2',
+			red200: '#D32F2F',
+			green200: '#689F38',
+			blueIcon: '#90CAF9',
+			colorBackGround: '#EEEEEE',
+			colorIconThumbdown: '#E0E0E0',
 
       grayLighter: 'rgba(0, 0, 0, .12)',
       grayLight: 'rgba(0, 0, 0, .5)',
@@ -39,5 +44,9 @@ export default lightTheme  = {
       disabledText: 'rgba(255, 255, 255, 0.5)',
       fadedWhite: 'rgba(255,255,255,0.69)',
       fadedBlack: 'rgba(0,0,0,0.6)',
-    }
+    },
+		FONT_FAMILY: {
+			REGULAR: 'Roboto_400Regular',
+			BOLD: 'Roboto_700Bold'
+		},
   }

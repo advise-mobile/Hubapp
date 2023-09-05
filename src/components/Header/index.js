@@ -26,7 +26,7 @@ import {
 
 export default Header = props => {
 
-  
+
   // Variavel para usar o hook
   const colorUseTheme = useTheme();
   const { colors } = colorUseTheme;
@@ -49,7 +49,7 @@ export default Header = props => {
             <HeaderActionsRight>
               {props.add && (
                 <HeaderAction>
-                  <MaterialIcons name="add-circle" size={20} color={colors.fadedBlack} onPress={() => props.add()} />
+                  <MaterialIcons name="add-circle" size={20} color={props.colorIcon ? props.colorIcon : colors.fadedBlack} onPress={() => props.add()} />
                 </HeaderAction>
               )}
               {props.edit && (
@@ -59,12 +59,12 @@ export default Header = props => {
               )}
 
               {props.menu && (
-                    
+
                       <Menu>
-                        <MenuTrigger >    
-                          <MaterialIcons name="more-vert" size={20} color={colors.fadedBlack} />    
+                        <MenuTrigger >
+                          <MaterialIcons name="more-vert" size={20} color={colors.fadedBlack} />
                         </MenuTrigger>
-                        <MenuOptions 
+                        <MenuOptions
                           customStyles={{
                             optionsContainer: {
                               borderRadius: 5,
@@ -76,22 +76,22 @@ export default Header = props => {
                               borderColor:colors.grayLighter
                             },
                           }}>
-                            <MenuOption  
+                            <MenuOption
                               customStyles={{
                                   optionWrapper: {
                                     flexDirection: "row",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    
+
                                   },
                                 }}
                                onSelect={() => props.menu()}>
                               <View style={{flexDirection: "row",
                                             width:70,
                                             justifyContent: "space-between",
-                                            
+
                                             }}>
-                                <MaterialIcons name="delete" size={20} color={colors.fadedBlack} />   
+                                <MaterialIcons name="delete" size={20} color={colors.fadedBlack} />
                                 <Text style={{color:colors.grayLight}}>Lixeira</Text>
                               </View>
                           </MenuOption>
