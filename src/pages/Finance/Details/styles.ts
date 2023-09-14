@@ -55,6 +55,7 @@ export const DataTextContainer = styled.View`
 export const DateText = styled.Text`
 	font-weight: bold;
 	font-size: 16px;
+	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactive};
 `;
 
 export const ThumbsIconContainer = styled.View`
@@ -82,7 +83,6 @@ export const InformationContainer = styled.View`
 	margin-top: 30px;
 `;
 
-
 export const InformationTitleTextContainer = styled.View`
 	width: 200px;
 	height: 24px;
@@ -106,17 +106,18 @@ export const DescriptionOfObservationsContainer = styled.View`
 export const InformationTitleText = styled.Text`
 	font-weight: bold;
 	font-size: 16px;
+	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactive};
 `;
-
-
 
 export const InformationText = styled.Text`
 	font-size: 14px;
+	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactive};
 `;
 
 export const DescriptionOfObservationsText = styled.Text`
 	font-size: 14px;
 	height: 115px;
 	lineHeight: 20px;
+	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactive};
 `;
 

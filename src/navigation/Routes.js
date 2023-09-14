@@ -38,6 +38,7 @@ import MovementDetail from '../pages/Movements/Details';
 import MovementsTrash from '../pages/MovementsTrash';
 
 import Finance from '../pages/Finance'
+import Details from '../pages/Finance/Details'
 
 
 import Jurisprudence from '../pages/Jurisprudence';
@@ -61,6 +62,8 @@ const TabsStack = createBottomTabNavigator();
 
 const FoldersStack = createStackNavigator();
 
+const FinanceStack = createStackNavigator();
+
 const FoldersScreens = () => (
 	<FoldersStack.Navigator headerMode="none">
 		<FoldersStack.Screen name="Folders" component={Folders} />
@@ -71,9 +74,10 @@ const FoldersScreens = () => (
 );
 
 const FinanceScreens = () => (
-	<FoldersStack.Navigator headerMode="none">
-		<FoldersStack.Screen name="Finance" component={Finance} />
-	</FoldersStack.Navigator>
+	<FinanceStack.Navigator headerMode="none">
+		<FinanceStack.Screen name="Finance" component={Finance} />
+		<FinanceStack.Screen name="Details" component={Details} />
+	</FinanceStack.Navigator>
 );
 
 const DeadlinesStack = createStackNavigator();
@@ -197,7 +201,7 @@ const AppScreens = () => (
 
 const MainScreens = () => (
 		<MainStack.Navigator headerMode="none" screenOptions={{gestureEnabled: false}}>
-			<MainStack.Screen name="Finance" component={Finance} />
+
 				<MainStack.Screen name="Initial" component={Initial} />
 				<MainStack.Screen name="TermsUse" component={TermsUse} />
 				<MainStack.Screen name="Intro" component={Intro} />

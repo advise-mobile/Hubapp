@@ -1,109 +1,97 @@
 import styled from 'styled-components';
 
-export const ContainerResume = styled.View`
+interface WeightTextProps {
+	fontWeight: boolean
+}
+
+export const ContainerReleases = styled.TouchableOpacity`
+	min-height: 165px;
+	border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
-// interface ColorTextProps {
-// 	colorText: string
-// }
-
-// export const TextValue = styled.Text<ColorTextProps>`
-//   font-size: 19px;
-//   color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.textInactive};
-//   height: 23px;
-// 	margin-right: 10px;
-// 	`;
-
-// export const TextValueExpense = styled.Text<ColorTextProps>`
-// font-size: 19px;
-// color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.textInactive};
-// height: 23px;
-// margin-right: 10px;
-// `;
+export const ContainerItemReleases = styled.View`
+	flex-direction: row;
+  padding: 10px;
+  justify-content: space-between;
+  min-height: 24px;
+	padding: 13px;
+`;
 
 
-// export const ContainerResume = styled.View`
-// 	border-top-width: 0.5;
-// 	border-bottom-width: 0.5;
-// 	border-color: #ABABAB;
-// `;
+export const ContainerIconDescriptionReleases =styled.View`
+	justify-content: center;
+  align-items: center;
+  flex-direction: row;
 
+`;
 
-// export const ContainerFinance = styled.View`
-// 	flex: 1;
-//   width: 100%;
-// `;
+export const ContainerIcon = styled.View`
+	margin-right: 7px;
+	margin-left: 3px;
+	align-items: center;
+	justify-content: center;
+`;
 
-// export const ContainerItensFinance = styled.View`
-//   width: 400px;
-//   flex: 1px;
-//   flex-direction: row;
-// 	padding-top: 20px;
-//   align-items: center;
-// `;
+export const ContainerIconThumbs = styled.View`
+	margin-right: 7px;
+	align-items: center;
+	justify-content: center;
+`;
 
-// export const ContainerDataFinanceTitle = styled.View`
-//   width: 450px;
-//   margin-right: 20px;
-//   padding: 15px;
-//   height: 55px;
+export const ContainerDescriptionReleases = styled.View`
+	align-items: center;
+	justify-content: center;
+	height: 110px;
 
-// `;
+`;
 
-// export const ContainerDataFinance = styled.View`
-//   width: 450px;
-//   margin-right: 20px;
-//   padding: 15px;
-//   height: 105px;
-// `;
+export const TextLabelDescriptionReleases = styled.Text<WeightTextProps>`
+  font-size: 19px;
+  color: ${({ theme }) => theme.colors.grayDarker};
+  font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
+	line-height: 30;
+	width: 350px;
+`;
 
-// export const TextLabel = styled.Text`
-//   font-size: 19px;
-//   color: ${({ theme }) => theme.colors.grayDarker};
-//   height: 30px;
-// 	flex: 1;
-// `;
+export const ContainerValueReleases =styled.View`
+	margin-left: 35px;
+	padding-bottom: 10px;
+  flex-direction: row;
+	height: 30px;
+	width: 370px;
+	align-items: center;
+`;
 
-// export const ContainerValues = styled.View`
-//   width: 130px;
-// 	height: 28px;
-// 	align-items: center;
-// 	margin-left: 10px;
+export const TextValueReleases = styled.Text<WeightTextProps>`
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.grayDarker};
+  font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
+`;
 
-// `;
+export const ContainerCategoryReleases = styled.View`
+	border-radius: 17px;
+	max-width: 100px;
+	margin-left: 5px;
+	align-items: center;
+	justify-content: center;
+	background-color: ${({ theme }) => theme.colors.green};
+`;
 
-// export const ContainerValuesDespesa = styled.View`
-//   width: 135px;
-// 	height: 28px;
-// 	align-items: center;
-// 	margin-left: 3px;
-// `;
+export const TextLabelCategory = styled.Text<WeightTextProps>`
+  font-size: 15px;
+	margin-left: 2px;
+	margin-right: 2px;
+  color: ${({ theme }) => theme.colors.grayDarker};
+  font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
+`;
 
-// export const ContainerLabel = styled.View`
-//   width: 230px;
-// 	height: 27px;
-// 	flex-direction: row;
-// 	padding-right: 20px;
-// `;
-
-
-
-// export const ContainerLabelFinance = styled.View`
-// 	height: 45px;
-// 	width: 100%;
-//   flex-direction: row;
-// 	align-items: center ;
-// `;
-
-// //lancamentos
-
-// export const ContainerIconReleases = styled.View`
-// 	height: 18px;
-// 	margin-right: 15px;
-// `;
-
-// export const ContainerIcon = styled.View`
-// 	height: 18px;
-// 	margin-right: 15px;
-// 	margin-left: 1px;
-// `;
+export const ContainerDownloadedReleases = styled.View`
+	border-radius: 17px;
+	margin-left: 5px;
+	margin-left: 5px;
+	align-items: center;
+	justify-content: center;
+	background-color: ${({ theme }) => theme.colors.colorBackGround};
+`;
