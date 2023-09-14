@@ -30,7 +30,6 @@ export const ContainerResume = styled.View`
 	border-color: #ABABAB;
 	min-height: 40px;
 	padding: 5px;
-	
 `;
 
 export const ContainerItemResume = styled.View`
@@ -56,9 +55,7 @@ export const ContainerItensFinance = styled.View`
   padding: 15px;
   justify-content: space-between;
   height: 55px;
-  
 `;
-
 
 
 export const ContainerIconDescription = styled.View`
@@ -68,49 +65,8 @@ export const ContainerIconDescription = styled.View`
 `;
 
 
-
 export const ContainerValues = styled.View`
-	/* height: 28px; */
 	align-items: center;
 	margin-left: 10px;
-	
-
 `;
 
-export const ContainerValuesDespesa = styled.View`
-  	/* width: 135px; */
-	height: 28px;
-	align-items: center;
-	margin-left: 3px;
-`;
-
-
-
-export const ContainerDataFinance = styled.View`
-  /* width: 450px; */
-  /* margin-right: 20px; */
-  /* padding: 15px;
-  height: 105px; */
-
-  /* border: 1px solid #3F51E7; */
-`;
-
-
-
-
-
-//lancamentos
-
-
-export const ContainerIcon = styled.View`
-	height: 18px;
-	margin-right: 15px;
-	margin-left: 1px;
-`;
-
-export const ContainerLabelFinance = styled.View`
-	height: 45px;
-	width: 100%;
-  flex-direction: row;
-	align-items: center ;
-`;

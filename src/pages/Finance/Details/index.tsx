@@ -1,5 +1,4 @@
-
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
@@ -28,47 +27,14 @@ import {
 	DescriptionOfObservationsContainer,
 	DescriptionOfObservationsText,
 } from './styles';
-import Filters from '@pages/MovementsTrash/Filters';
 
 
 export default function Details(props) {
-	const havePermission = true;
-	const loading = false;
-	const active = true;
 
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const filtersRef = useRef(null);
-
-	const [currentPage, setCurrentPage] = useState(1);
-	const [filters, setFilters] = useState({});
-	const [formattedData, setFormattedData] = useState({});
-
-	const openFilters = () => filtersRef.current?.open();
-
-	const renderFilters = useMemo(
-		() => (
-			<Filters
-				ref={filtersRef}
-				customField={formattedData}
-				submit={data => handleSubmit(data)}
-				filters={filters}
-			/>
-		),
-		[formattedData],
-	);
-
-	const handleSubmit = useCallback(data => {
-		setCurrentPage(1);
-		setFilters(data);
-	}, []);
-
-
 	const {item} = props.route.params;
-
-
-	const addRef = useRef(null);
 
 	return (
 		<Container>
@@ -76,9 +42,9 @@ export default function Details(props) {
 					title={item.title}
 					back={() => props.navigation.goBack()}
 					lower={true}
+					more={() => props.navigation.goBack()}
+
 				/>
-
-
 
 			<ContainerScreen>
 				<FirstContainer>
@@ -118,7 +84,7 @@ export default function Details(props) {
 					</InformationTitleTextContainer>
 
 					<InformationTextContainer>
-						<InformationText>{item.value}</InformationText>
+						<InformationText>R$ {item.value}</InformationText>
 					</InformationTextContainer>
 
 					<InformationTitleTextContainer>

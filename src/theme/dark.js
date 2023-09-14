@@ -7,7 +7,7 @@ export default darkTheme  = {
     realWhite: '#000000',
     darkGray: '#666666',
     gray: '#EEEEEE',
-    trueGray: '#222222',   
+    trueGray: '#222222',
     textInactive: '#BBBBBB',
     red: '#D32F2F',
     advise: '#FF5800',
@@ -32,7 +32,12 @@ export default darkTheme  = {
     inactive: '#565656',
     blue200: '#81D4FA',
     orange200: '#FFAB91',
-    toastError: '#FFCDD2',    
+    toastError: '#FFCDD2',
+		red200: '#D32F2F',
+		green200: '#689F38',
+		blueIcon: '#90CAF9',
+		colorBackGround: '#EEEEEE',
+		colorIconThumbdown: '#E0E0E0',
 
     grayLighter: 'rgba(255, 255, 255, .12)',
     grayLight: 'rgba(255, 255, 255, .5)',
@@ -41,6 +46,6 @@ export default darkTheme  = {
     disabledText: 'rgba(0, 0, 0, 0.5)',
     fadedWhite: 'rgba(0,0,0,0.69)',
     fadedBlack: 'rgba(255,255,255,0.69)',
-    
+
   }
 }

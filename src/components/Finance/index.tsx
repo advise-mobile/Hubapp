@@ -1,83 +1,85 @@
 import React from 'react';
-import {DataItemProps,FinanceItemProps} from './types';
+import {DataItemProps} from './types';
 import {
-	ContainerResume,
-	// ContainerDataReleases,
-	// ContainerIconReleases,
-	// ContainerLabelReleases,
-	// ContainerTextReleases,
-	// ContainerTitleReleases,
-	// IconContainerReleases,
-	// PriceSubTitleContainer,
-	// PriceSubTitleText,
-	// SubTitleContainer,
-	// SubtitleCategoryContainer,
-	// SubtitleCategoryText,
-	// SubtitleDateContainer,
-	// SubtitleDateText,
-	// TextDateReleases,
-	// TextReleases,
+	ContainerReleases,
+	ContainerItemReleases,
+	ContainerIconDescriptionReleases,
+	ContainerIcon,
+	ContainerIconThumbs,
+	TextLabelDescriptionReleases,
+	ContainerDescriptionReleases,
+	TextValueReleases,
+	ContainerCategoryReleases,
+	TextLabelCategory,
+	ContainerDownloadedReleases,
+	ContainerValueReleases,
 } from './styles';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useTheme } from 'styled-components';
+import {useTheme} from 'styled-components';
+import {ContainerLabel, TextLabel} from '@pages/Finance/styles';
+import { useNavigation } from '@react-navigation/native';
 
-const FinanceDataItem = ( { item }  : DataItemProps) => {
+const FinanceDataItem = ({item}: DataItemProps) => {
 
-	function CompleteFinancialInformation() {
-    props.navigation.navigate("CompleteFinancialInformation");
-  }
+	const navigation = useNavigation();
 
-	//const {Date, Type, Description, Value, Category, idBaixados} = item;
+	function Details() {
+		navigation.navigate('Details',{
+			"item":item
+		});
+	}
 
-	console.log("===",item);
+	const {Date, Type, Description, Value, Category, idBaixados} = item;
+
 
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
-	const { colors } = colorUseTheme;
+	const {colors} = colorUseTheme;
 
 	return (
-		<ContainerResume>
-			{/* <ContainerDataReleases>
-				<ContainerTitleReleases>
-					<ContainerLabelReleases>
-						<ContainerIconReleases>
-							{item.type ==='receita' &&  <FontAwesome name="circle" color={colors.green200} />}
-							{item.type ==='despesa' &&  <FontAwesome name="circle" color={colors.red200} />}
-						</ContainerIconReleases>
+		<>
+			<ContainerReleases onPress={Details}>
+				<ContainerItemReleases >
+					<ContainerIconDescriptionReleases>
+						<ContainerIcon>
+							{item.type === 'receita' ? (
+								<FontAwesome name="circle" color={colors.green200}/>
+							) : (
+								<FontAwesome name="circle" color={colors.red200}/>
+							)}
+						</ContainerIcon>
 
-						<TextDateReleases>{item.date}</TextDateReleases>
-					</ContainerLabelReleases>
+						<ContainerLabel>
+							<TextLabel fontWeight>{item.date}</TextLabel>
+						</ContainerLabel>
+					</ContainerIconDescriptionReleases>
 
-					<IconContainerReleases>
+					<ContainerIconThumbs>
+						{item.type === 'receita' ? (
+							<FontAwesome name="thumbs-up" color={colors.blueIcon} size={24}/>
+						) : (
+							<FontAwesome name="thumbs-down" color={colors.colorIconThumbdown} size={24} />
+						)}
+					</ContainerIconThumbs>
+				</ContainerItemReleases>
 
-						{item.type ==='receita' &&  <FontAwesome name={"thumbs-up"} color={colors.blueIcon} size={25} /> }
-						{item.type ==='despesa' &&  <FontAwesome name={"thumbs-down"} color={colors.colorIconThumbdown} size={25} /> }
+				<ContainerDescriptionReleases>
+					<TextLabelDescriptionReleases>{item.description}</TextLabelDescriptionReleases>
+				</ContainerDescriptionReleases>
 
-					</IconContainerReleases>
-				</ContainerTitleReleases>
+				<ContainerValueReleases>
+					<TextValueReleases fontWeight>R$ {item.value}</TextValueReleases>
 
-				<ContainerTextReleases>
-					<TextReleases>
-						{item.description}
-					</TextReleases>
-				</ContainerTextReleases>
-				<SubTitleContainer>
-					<PriceSubTitleContainer>
-						<PriceSubTitleText>R$ {item.value}</PriceSubTitleText>
-					</PriceSubTitleContainer>
-					<SubtitleCategoryContainer>
-						<SubtitleCategoryText> {item.category}</SubtitleCategoryText>
-					</SubtitleCategoryContainer>
+					<ContainerCategoryReleases>
+						<TextLabelCategory fontWeight>{item.category}</TextLabelCategory>
+					</ContainerCategoryReleases>
 
-					{
-						item.off &&
-							<SubtitleDateContainer>
-								<SubtitleDateText>Baixado em: {item.dateOff} </SubtitleDateText>
-							</SubtitleDateContainer>
-					}
-				</SubTitleContainer>
-			</ContainerDataReleases> */}
-		</ContainerResume>
+					<ContainerDownloadedReleases>
+						<TextLabelCategory fontWeight>Baixado em {item.dateOff}</TextLabelCategory>
+					</ContainerDownloadedReleases>
+				</ContainerValueReleases>
+			</ContainerReleases>
+		</>
 	);
 };
 
