@@ -27,12 +27,12 @@ import {useTheme} from 'styled-components';
 import Filters from '@pages/MovementsTrash/Filters';
 import { ScrollView } from 'react-native';
 
-export default function Deadlines(props) {
+export default function Finance(props) {
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
 	const [filters, setFilters] = useState({});
-	const [formattedData, setFormattedData] = useState({});
+	const [formattedData] = useState({});
 
 	const filtersRef = useRef(null);
 
@@ -50,7 +50,7 @@ export default function Deadlines(props) {
 			date: '29/07/2023',
 			type: 'despesa',
 			description:
-				'Título Lorem ipsum dolor sit amet, consectetur adipisci, Duis sollicitudin, erat commodo lacinia.',
+				'Título Lorem ipsum dolor sit amet, consectetur.',
 			value: '2.000,00',
 			category: 'Emprestimo',
 			off: true,
@@ -61,7 +61,7 @@ export default function Deadlines(props) {
 			date: '30/07/2023',
 			type: 'receita',
 			description:
-				'Título Lorem ipsum dolor sit amet, consectetur adipisci, Duis sollicitudin, erat commodo lacinia.',
+				'Receita ...Título Lorem ipsum dolor sit amet, consectetur.',
 			value: '5.000,00',
 			category: 'Contas',
 			off: false,
