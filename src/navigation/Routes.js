@@ -37,10 +37,12 @@ import Movements from '../pages/Movements';
 import MovementDetail from '../pages/Movements/Details';
 import MovementsTrash from '../pages/MovementsTrash';
 
-import Finance from '../pages/Finance'
-import Details from '../pages/Finance/Details'
-import CashFlow from '../pages/Finance/CashFlow'
-import Category from '../pages/Finance/Category'
+
+import FinanceTab from '../pages/Finance/FinanceTab';
+import Finance from '../pages/Finance/Releases';
+import Details from '../pages/Finance/Details';
+import CashFlow from '../pages/Finance/CashFlow';
+import Category from '../pages/Finance/Category';
 
 
 import Jurisprudence from '../pages/Jurisprudence';
@@ -76,8 +78,10 @@ const FoldersScreens = () => (
 	</FoldersStack.Navigator>
 );
 
+
 const FinanceScreens = () => (
 	<FinanceStack.Navigator headerMode="none">
+		<AccountStack.Screen name="FinanceTab" component={FinanceTab} />
 		<FinanceStack.Screen name="Finance" component={Finance} />
 		<FinanceStack.Screen name="Details" component={Details} />
 		<FinanceStack.Screen name="CashFlow" component={CashFlow} />

@@ -1,9 +1,6 @@
 import React from 'react';
-
-import HeaderGlobals from '../../../components/HeaderGlobals';
 import HasNotPermission from 'components/HasNotPermission';
 import {Container, Warp} from 'assets/styles/global';
-
 import Blocked from 'pages/Blocked';
 
 import {useTheme} from 'styled-components';
@@ -20,11 +17,11 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CashFlowDataItem from '@components/Finance/CashFlow';
 
-export default function CashFlow(props) {
+export default function CashFlow() {
 	const dataItem = [
 		{
 			valueProhibited: '10.000,20',
-			valueExit: '-611,15',
+			valueExit: '-612,15',
 			valueBalance: '9.389,05',
 			date: '23/07/2023',
 		},
@@ -54,12 +51,6 @@ export default function CashFlow(props) {
 				<>
 					{havePermission ? (
 						<Warp>
-							<HeaderGlobals
-								title={'Financeiro'}
-								filter={() => openFilters()}
-								add={() => addRef.current?.open()}
-								lower={true}
-							/>
 							<ScrollView>
 								<ContainerScreen>
 									<TopContainer>

@@ -1,6 +1,4 @@
 import React from 'react';
-
-import HeaderGlobals from '../../../components/HeaderGlobals';
 import HasNotPermission from 'components/HasNotPermission';
 import {Container, Warp} from 'assets/styles/global';
 
@@ -25,12 +23,6 @@ export default function Category(props) {
 				<>
 					{havePermission ? (
 						<Warp>
-							<HeaderGlobals
-								title={'Financeiro'}
-								filter={() => openFilters()}
-								add={() => addRef.current?.open()}
-								lower={true}
-							/>
 							<ScrollView>
 								<ContainerScreen>
 									<ContainerItems>

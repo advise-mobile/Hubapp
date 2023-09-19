@@ -20,7 +20,6 @@ export const TopContainer = styled.View`
 	justify-content: space-between;
 	align-items: center;
 	margin-right: 15px;
-	margin-top: 10px;
 	border-top-width: 0.5;
 	border-bottom-width: 0.5;
 	border-color: #ABABAB;
