@@ -16,7 +16,7 @@ import {
 } from './styles';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useTheme} from 'styled-components';
-import {ContainerLabel, TextLabel} from '@pages/Finance/styles';
+import {ContainerLabel, TextLabel} from '@pages/Finance/Releases/styles';
 import { useNavigation } from '@react-navigation/native';
 
 const FinanceDataItem = ({item}: DataItemProps) => {

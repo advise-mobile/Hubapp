@@ -36,6 +36,9 @@ export default lightTheme  = {
 			blueIcon: '#90CAF9',
 			colorBackGround: '#EEEEEE',
 			colorIconThumbdown: '#E0E0E0',
+			blueValue: '#1E88E5',
+			pinkTag: '#CE93D8',
+			greenTag: '#80CBC4',
 
       grayLighter: 'rgba(0, 0, 0, .12)',
       grayLight: 'rgba(0, 0, 0, .5)',

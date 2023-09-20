@@ -37,8 +37,12 @@ import Movements from '../pages/Movements';
 import MovementDetail from '../pages/Movements/Details';
 import MovementsTrash from '../pages/MovementsTrash';
 
-import Finance from '../pages/Finance'
-import Details from '../pages/Finance/Details'
+
+import FinanceTab from '../pages/Finance/FinanceTab';
+import Finance from '../pages/Finance/Releases';
+import Details from '../pages/Finance/Details';
+import CashFlow from '../pages/Finance/CashFlow';
+import Category from '../pages/Finance/Category';
 
 
 import Jurisprudence from '../pages/Jurisprudence';
@@ -64,6 +68,7 @@ const FoldersStack = createStackNavigator();
 
 const FinanceStack = createStackNavigator();
 
+
 const FoldersScreens = () => (
 	<FoldersStack.Navigator headerMode="none">
 		<FoldersStack.Screen name="Folders" component={Folders} />
@@ -73,10 +78,14 @@ const FoldersScreens = () => (
 	</FoldersStack.Navigator>
 );
 
+
 const FinanceScreens = () => (
 	<FinanceStack.Navigator headerMode="none">
+		<AccountStack.Screen name="FinanceTab" component={FinanceTab} />
 		<FinanceStack.Screen name="Finance" component={Finance} />
 		<FinanceStack.Screen name="Details" component={Details} />
+		<FinanceStack.Screen name="CashFlow" component={CashFlow} />
+		<FinanceStack.Screen name="Category" component={Category} />
 	</FinanceStack.Navigator>
 );
 
@@ -201,7 +210,6 @@ const AppScreens = () => (
 
 const MainScreens = () => (
 		<MainStack.Navigator headerMode="none" screenOptions={{gestureEnabled: false}}>
-
 				<MainStack.Screen name="Initial" component={Initial} />
 				<MainStack.Screen name="TermsUse" component={TermsUse} />
 				<MainStack.Screen name="Intro" component={Intro} />
