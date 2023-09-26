@@ -8,9 +8,17 @@ import CashFlow from './CashFlow';
 import Finance from '../Finance/Releases'
 import Category from './Category';
 
+import Add from './Modal/Add';
+
+
+import HeaderGlobals from '../../components/HeaderGlobals';
+
+
 export default FinanceTab = props => {
 
   const scrollRef = useRef();
+
+  const addRef = useRef(null);
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -23,7 +31,11 @@ export default FinanceTab = props => {
 			<Finance tabLabel='Lançamentos' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 0} />
 			<CashFlow tabLabel='Fluxo de caixa' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 1} />
 			<Category tabLabel='Categoria' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 2} />
-    </ScrollableTabView >, [selectedTab]);
+    </ScrollableTabView >, [selectedTab]
+  );
+
+  const renderAddOptions = useCallback(() => <Add ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
+
 
   return (
     <Container>
@@ -31,11 +43,13 @@ export default FinanceTab = props => {
 			<HeaderGlobals
 				title={'Financeiro'}
 				filter={() => openFilters()}
-				add={() => addRef.current?.open()}
+        add={() => addRef.current?.open()} 
 				lower={true}
 				customActions={customActions}
 			/>
         {renderTabs()}
+        {renderAddOptions()}
+        
       </Warp>
     </Container>
   );
