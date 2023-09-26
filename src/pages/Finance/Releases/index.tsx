@@ -19,6 +19,7 @@ import {Container, Warp} from 'assets/styles/global';
 
 import {useTheme} from 'styled-components';
 import {ScrollView} from 'react-native';
+import Filter from '@components/Filters';
 
 export default function Finance() {
 	const colorUseTheme = useTheme();
@@ -51,6 +52,7 @@ export default function Finance() {
 		<Container>
 			<Warp>
 				<ScrollView>
+					<Filter />
 					<ContainerFinance>
 						<ContainerItensFinance>
 							<TextLabel>Saldo anterior</TextLabel>

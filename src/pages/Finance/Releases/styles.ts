@@ -23,7 +23,6 @@ export const ContainerFinance = styled.View`
 	flex: 1;
 `;
 
-
 export const ContainerResume = styled.View`
 	border-top-width: 0.5;
 	border-bottom-width: 0.5;
