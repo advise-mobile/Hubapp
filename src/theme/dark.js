@@ -5,6 +5,7 @@ export default darkTheme = {
 		mainWhite: "#FFFFFF",
 		white: '#111111',
 		realWhite: '#000000',
+		realWhites: '#000000',
 		darkGray: '#666666',
 		gray: '#EEEEEE',
 		trueGray: '#222222',

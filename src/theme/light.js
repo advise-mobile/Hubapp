@@ -3,6 +3,7 @@ export default lightTheme  = {
     colors:{
       white: '#FEFEFE',
       realWhite: '#FFFFFF',
+			realWhites: '#000000',
       darkGray: '#666666',
       gray: '#EEEEEE',
       trueGray: '#EEEEEE',

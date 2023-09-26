@@ -1,18 +1,7 @@
-import React, { forwardRef, useState, useCallback, useRef, useEffect } from 'react';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import CheckBox from '@react-native-community/checkbox';
-import moment from 'moment';
+import React, { forwardRef,useCallback} from 'react';
 
-import { FormatFullDateEN } from 'helpers/DateFunctions';
-
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Modal from 'components/Modal';
-import Spinner from 'components/Spinner';
-import Datepicker from 'components/DatePicker';
-
-import { useForm, Controller, reset } from "react-hook-form";
-import { useSelector, useDispatch } from 'react-redux';
-
-import DeadlinesActions from 'store/ducks/Deadlines';
 
 import {
   Footer,
@@ -21,10 +10,10 @@ import {
   Content,
   Row,
   Label,
-  
+	Icon,
 } from './styles';
 
-// Add Hook UseTheme para pegar o tema global addicionado
+// Add UseTheme para pegar o tema global adicionado
 import { useTheme } from 'styled-components';
 
 export default Add = forwardRef((props, ref) => {
@@ -33,9 +22,7 @@ export default Add = forwardRef((props, ref) => {
 	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
 
-
   const closeModal = useCallback(() => ref.current?.close(), []);
-
 
   const footer = () => (
     <Footer>
@@ -46,12 +33,33 @@ export default Add = forwardRef((props, ref) => {
   );
 
   return (
-    <Modal maxHeight={200} ref={ref} title="Cadastrar prazo" footer={footer()} >
+    <Modal maxHeight={300} ref={ref} title="Cadastrar" footer={footer()} >
+
       <Content>
         <Row >
           <Label>Despesa</Label>
-          
         </Row>
+				<Icon>
+				<FontAwesome name="chevron-right" color={colors.realWhites}/>
+				</Icon>
+      </Content>
+
+			<Content>
+        <Row >
+          <Label>Receita</Label>
+        </Row>
+				<Icon>
+				<FontAwesome name="chevron-right" color={colors.realWhites}/>
+				</Icon>
+      </Content>
+
+			<Content>
+        <Row >
+          <Label>Categoria</Label>
+        </Row>
+				<Icon>
+				<FontAwesome name="chevron-right" color={colors.realWhites}/>
+				</Icon>
       </Content>
     </Modal >
   );
