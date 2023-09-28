@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback,useMemo } from 'react';
 import CustomScrollableTabBar from '../../components/CustomScrollableTabBar';
 import { Container, Warp } from '../../assets/styles/global';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -16,12 +16,20 @@ import HeaderGlobals from '../../components/HeaderGlobals';
 import AddRevenue from './Modal/AddRevenue';
 import AddCategory from './Modal/AddCategory';
 
+import Filters from './Filters';
+
 
 export default FinanceTab = props => {
 
   const scrollRef = useRef();
 
+  const filtersRef = useRef(null);
+
   const addRef = useRef(null);
+
+  const [filtering, setFiltering] = useState<Boolean>(false);
+
+  const [formattedData, setFormattedData] = useState({});
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -39,19 +47,45 @@ export default FinanceTab = props => {
 
   const renderAddOptions = useCallback(() => <Add ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
 
+	/** FILTERS */
+	// const openFilters = () => filtersRef.current?.open();
+
+  const handleClearFilters = useCallback( () => {
+		setFiltering(false);
+	}, []);
+
+	const handleSubmitFilters = useCallback(async (data: DataFilterProps) => {
+
+		setFiltering(true);
+		filtersRef.current?.close();
+	
+		await getData({
+			page:1,
+			itens:data
+		})
+	}, []);
+
+	/** RENDER FILTERS */
+	const renderFilters = useMemo(
+		() => (
+			<Filters ref={filtersRef} handleSubmitFilters={handleSubmitFilters} handleClearFilters={handleClearFilters}/>
+		),
+		[formattedData],
+	);
 
   return (
     <Container>
       <Warp>
 			<HeaderGlobals
 				title={'Financeiro'}
-				filter={() => openFilters()}
+				filter={() => filtersRef.current?.open()}
         add={() => addRef.current?.open()}
 				lower={true}
 				customActions={customActions}
 			/>
         {renderTabs()}
         {renderAddOptions()}
+        {renderFilters}
 
       </Warp>
     </Container>

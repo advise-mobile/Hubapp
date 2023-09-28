@@ -55,7 +55,3 @@ export const Icon = styled.View`
 	justify-content: space-between;
 	width: 50px;
 `;
-
-export const botao = styled.bottom`
-	border: red
-`;
