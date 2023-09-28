@@ -9,9 +9,12 @@ import Finance from '../Finance/Releases'
 import Category from './Category';
 
 import Add from './Modal/Add';
+import AddExpense from './Modal/AddExpense';
 
 
 import HeaderGlobals from '../../components/HeaderGlobals';
+import AddRevenue from './Modal/AddRevenue';
+import AddCategory from './Modal/AddCategory';
 
 
 export default FinanceTab = props => {
@@ -43,13 +46,13 @@ export default FinanceTab = props => {
 			<HeaderGlobals
 				title={'Financeiro'}
 				filter={() => openFilters()}
-        add={() => addRef.current?.open()} 
+        add={() => addRef.current?.open()}
 				lower={true}
 				customActions={customActions}
 			/>
         {renderTabs()}
         {renderAddOptions()}
-        
+
       </Warp>
     </Container>
   );

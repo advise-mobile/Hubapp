@@ -32,6 +32,7 @@ export default Add = forwardRef((props, ref) => {
     </Footer>
   );
 
+
   return (
     <Modal maxHeight={300} ref={ref} title="Cadastrar" footer={footer()} >
 
@@ -42,6 +43,7 @@ export default Add = forwardRef((props, ref) => {
 				<Icon>
 				<FontAwesome name="chevron-right" color={colors.realWhites}/>
 				</Icon>
+
       </Content>
 
 			<Content>

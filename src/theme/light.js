@@ -40,6 +40,11 @@ export default lightTheme  = {
 			blueValue: '#1E88E5',
 			pinkTag: '#CE93D8',
 			greenTag: '#80CBC4',
+			purple: '#B39DDB',
+			pink: '#F48FB1',
+			pinkRed: '#EF9A9A',
+			neutral: '#F5F5F5',
+			typecolor: '#9FA8DA',
 
       grayLighter: 'rgba(0, 0, 0, .12)',
       grayLight: 'rgba(0, 0, 0, .5)',
