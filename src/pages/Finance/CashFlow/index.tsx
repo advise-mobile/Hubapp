@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import HasNotPermission from 'components/HasNotPermission';
 import {Container, Warp} from 'assets/styles/global';
 import Blocked from 'pages/Blocked';
@@ -16,6 +16,8 @@ import {
 } from './styles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CashFlowDataItem from '@components/Finance/CashFlow';
+import StockCashFlow from '../Modal/StockCashFlow';
+import AddCategory from '../Modal/AddCategory';
 
 export default function CashFlow() {
 	const dataItem = [
@@ -38,6 +40,11 @@ export default function CashFlow() {
 			date: '03/08/2023',
 		},
 	];
+
+
+	const CategoryRef = useRef(null);
+
+	const addCategory = useCallback(() => <StockCashFlow ref={CategoryRef} idAgenda={null} onAdd={() => {}} />, []);
 
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
@@ -62,9 +69,10 @@ export default function CashFlow() {
 											</ContainerMainInformation>
 										</ContainerMainInformation>
 
-										<ContainerIconMore>
+										<ContainerIconMore onPress={() => CategoryRef.current?.open()}>
 											<MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
 										</ContainerIconMore>
+
 									</TopContainer>
 
 									{dataItem.map(item => {
@@ -72,6 +80,7 @@ export default function CashFlow() {
 									})}
 								</ContainerScreen>
 							</ScrollView>
+							{addCategory()}
 						</Warp>
 					) : (
 						<HasNotPermission

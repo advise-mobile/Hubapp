@@ -128,6 +128,7 @@ export default AddExpense = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsPerson>
+
 					<ItemsPerson>
 						<LabelItems>Pessoa 1</LabelItems>
 					</ItemsPerson>

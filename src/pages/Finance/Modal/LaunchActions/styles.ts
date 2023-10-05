@@ -27,31 +27,28 @@ export const CancelText = styled.Text`
 
 export const Content = styled.TouchableOpacity`
   margin: 0 -27px;
-  justify-content: space-between;
 	flex-direction: row;
 	align-items: center;
 	border: ${({ theme }) => theme.colors.grayLighter};
-	height: 60px;
-
+	height: 48px;
 `;
 
 export const Row = styled.View`
-  padding: 12px 24px;
+	margin-left: 10px;
   flex-wrap: wrap;
   flex-direction: row;
-	justify-content: space-between;
 	width: 300px;
 `;
 
 export const Label = styled.Text`
   margin-right: 12;
-  color: ${({ theme }) => theme.colors.inactiveDetails};
+  color: ${({ theme }) => theme.colors.darkGray};
   font-size: ${fonts.regular};
 `;
 
 export const Icon = styled.View`
-	padding: 16px;
-
-	justify-content: space-between;
-	width: 50px;
+	width: 24px;
+	height: 24px;
+  align-items: center;
+	margin-left: 20px;
 `;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
@@ -27,9 +27,16 @@ import {
 	DescriptionOfObservationsContainer,
 	DescriptionOfObservationsText,
 } from './styles';
+import More from '../Modal/LaunchActions';
+
 
 
 export default function Details(props) {
+
+	const addRef = useRef(null);
+
+	const renderAddOptions = useCallback(() => <More ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
+
 
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
@@ -42,9 +49,10 @@ export default function Details(props) {
 					title={item.title}
 					back={() => props.navigation.goBack()}
 					lower={true}
-					more={() => props.navigation.goBack()}
+					more={() => addRef.current?.open()}
 
 				/>
+				{renderAddOptions()}
 
 			<ContainerScreen>
 				<FirstContainer>

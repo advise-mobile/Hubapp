@@ -9,12 +9,12 @@ interface WeightTextProps {
 }
 
 export const TextValue = styled.Text<ColorTextProps>`
-  font-size: 19px;
+  font-size: 18px;
   color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.textInactive};
 `;
 
 export const TextLabel = styled.Text<WeightTextProps>`
-  font-size: 19px;
+  font-size: 18px;
   color: ${({ theme }) => theme.colors.grayDarker};
   font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
 `;

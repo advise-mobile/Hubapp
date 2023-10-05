@@ -52,30 +52,47 @@ export const ContentDescription = styled.View`
 	border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
-export const ContentType = styled.View`
+export const ContentType = styled.TouchableOpacity`
   margin: 0 -24px;
 	justify-content: center;
 	height: 48px;
 	width: 414px;
 `;
 
+export const Content = styled.TouchableOpacity`
+  margin: 0 -24px;
+	justify-content: center;
+	height: 48px;
+	width: 414px;
+	align-items: center;
+`;
+
+export const RBRow = styled.View`
+  flex-direction: row-reverse;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0px;
+`;
+
 export const Row = styled.View`
   padding: 12px 24px;
-	width: 360px;
+	width: 412px;
 	justify-content: space-between;
 	flex-direction: row;
+
 `;
 
 export const Label = styled.Text`
   margin-right: 12;
-  color: ${({ theme }) => theme.colors.realWhites};
+  color: ${({ theme }) => theme.colors.BlackInactive};
   font-size: ${fonts.regular};
 	font-family: ${fonts.circularStdBold};
 `;
 
 export const LabelType = styled.Text`
   margin-right: 12;
-  color: ${({ theme }) => theme.colors.realWhites};
+  color: ${({ theme }) => theme.colors.BlackInactive};
   font-size: ${fonts.regular};
 	width: 336px;
 	height: 24px;
@@ -102,7 +119,7 @@ export const ContainerColor = styled.View`
 	flex-direction: row;
 `;
 
-export const ColorsItem = styled.View`
+export const ColorsItem = styled.TouchableOpacity`
 	width: 51px;
 	height: 20px;
 	border-radius: 17px;

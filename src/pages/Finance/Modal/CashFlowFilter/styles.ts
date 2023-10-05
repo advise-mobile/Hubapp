@@ -1,6 +1,48 @@
 import styled from 'styled-components/native';
 import { fonts } from 'assets/styles';
 
+export const Footer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const Cancel = styled.TouchableOpacity`
+  flex: 1;
+  padding: 7px;
+  margin-right: 12px;
+  background: ${({ theme }) => theme.colors.white};
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.colors.primary};
+`;
+
+export const ToSave = styled.TouchableOpacity`
+  flex: 1;
+  padding: 7px;
+  margin-right: 12px;
+  background: ${({ theme }) => theme.colors.primary};
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.colors.primary};
+`;
+
+export const CancelText = styled.Text`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: ${fonts.small};
+  font-family: ${fonts.circularStdBold};
+`;
+
+export const ToSaveText = styled.Text`
+  color: ${({ theme }) => theme.colors.realWhite};
+  font-size: ${fonts.small};
+  font-family: ${fonts.circularStdBold};
+`;
+
 export const Title = styled.Text`
   font-size: ${fonts.big};
   color: ${({ theme }) => theme.colors.primary};
@@ -12,6 +54,14 @@ export const Label = styled.Text`
   color: ${({ theme }) => theme.colors.primary};
   font-family: ${fonts.circularStdBold};
   padding-bottom: 4px;
+`;
+
+export const LabelPeriod = styled.Text`
+  font-size: 15px;
+  color: ${({ theme }) => theme.colors.realWhite};
+  font-family: ${fonts.circularStdBold};
+	margin-left: 10px;
+	margin-right: 10px;
 `;
 
 export const Row = styled.View`
@@ -52,10 +102,22 @@ export const SpaceRow = styled.View`
   align-items: flex-start;
 `;
 
-export const SubTitleMultiSelectText = styled.Text`
-  font-size: ${fonts.small};
-  color: ${({ theme }) => theme.colors.inactive};
-  padding-bottom: 4px;
+export const PeriodItemsContainer = styled.View`
+	width: 414px;
+	height: 44px;
+	flex-direction: row;
+	align-items: center;
+`;
+
+export const PeriodItems = styled.TouchableOpacity`
+	max-width: 300px;
+	min-width: 50px;
+	height: 20px;
+	border-radius: 17px;
+	align-items: center;
+	align-items: center;
+	margin-right: 10px;
+	background: ${({ theme }) => theme.colors.gray};
 `;
 
 export const ContainerSubtitle = styled.TouchableOpacity`
@@ -89,7 +151,8 @@ export const ClearButtomText = styled.Text`
   font-size: ${fonts.smaller};
 	color:  ${({ theme }) => theme.colors.grayLight};
 	font-family: ${fonts.circularStdBold};
-  
 `;
+
+
 
 

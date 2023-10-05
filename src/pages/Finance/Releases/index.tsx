@@ -19,6 +19,7 @@ import {Container, Warp} from 'assets/styles/global';
 
 import {useTheme} from 'styled-components';
 import {ScrollView} from 'react-native';
+import FilterScreen from '../tab-Filters';
 
 export default function Finance() {
 	const colorUseTheme = useTheme();
@@ -50,6 +51,7 @@ export default function Finance() {
 	return (
 		<Container>
 			<Warp>
+				<FilterScreen/>
 				<ScrollView>
 					<ContainerFinance>
 						<ContainerItensFinance>

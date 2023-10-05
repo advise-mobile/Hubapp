@@ -1,4 +1,4 @@
-import React, { forwardRef,useCallback} from 'react';
+import React, { forwardRef,useCallback, useRef} from 'react';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Modal from 'components/Modal';
@@ -15,8 +15,22 @@ import {
 
 // Add UseTheme para pegar o tema global adicionado
 import { useTheme } from 'styled-components';
+import AddRevenue from '../AddRevenue';
+import AddExpense from '../AddExpense';
+import AddCategory from '../AddCategory';
+
 
 export default Add = forwardRef((props, ref) => {
+
+	const RevenueRef = useRef(null);
+	const ExpenseRef = useRef(null);
+	const CategoryRef = useRef(null);
+
+
+	const renderRevenue = useCallback(() => <AddRevenue ref={RevenueRef} idAgenda={null} onAdd={() => {}} />, []);
+	const renderExpense = useCallback(() => <AddExpense ref={ExpenseRef} idAgenda={null} onAdd={() => {}} />, []);
+	const addCategory = useCallback(() => <AddCategory ref={CategoryRef} idAgenda={null} onAdd={() => {}} />, []);
+
 
   // Variavel para usar o hook
 	const colorUseTheme = useTheme();
@@ -34,35 +48,44 @@ export default Add = forwardRef((props, ref) => {
 
 
   return (
-    <Modal maxHeight={300} ref={ref} title="Cadastrar" footer={footer()} >
+		<>
+    <Modal maxHeight={500} ref={ref} title="Cadastrar" footer={footer()} >
 
-      <Content>
+      <Content onPress={() => ExpenseRef.current?.open()}>
         <Row >
           <Label>Despesa</Label>
         </Row>
 				<Icon>
-				<FontAwesome name="chevron-right" color={colors.realWhites}/>
+				<FontAwesome name="chevron-right" color={colors.inactiveDetails}/>
 				</Icon>
 
       </Content>
 
-			<Content>
+
+
+			<Content onPress={() => RevenueRef.current?.open()}>
         <Row >
           <Label>Receita</Label>
         </Row>
 				<Icon>
-				<FontAwesome name="chevron-right" color={colors.realWhites}/>
+				<FontAwesome name="chevron-right" color={colors.inactiveDetails}/>
 				</Icon>
       </Content>
 
-			<Content>
+			<Content onPress={() => CategoryRef.current?.open()}>
         <Row >
           <Label>Categoria</Label>
         </Row>
 				<Icon>
-				<FontAwesome name="chevron-right" color={colors.realWhites}/>
+				<FontAwesome name="chevron-right" color={colors.inactiveDetails}/>
 				</Icon>
       </Content>
     </Modal >
+
+
+		{renderRevenue()}
+		{renderExpense()}
+		{addCategory()}
+		</>
   );
 });

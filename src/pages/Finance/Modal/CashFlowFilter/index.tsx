@@ -1,4 +1,4 @@
-import React, {forwardRef, useState, useCallback, useEffect, Ref} from 'react';
+import React, {forwardRef, useState, useCallback, useEffect} from 'react';
 
 import {StyleSheet, Dimensions} from 'react-native';
 
@@ -23,25 +23,19 @@ import {
 	CancelText,
 	ToSave,
 	ToSaveText,
-	Releases,
-	ReleaseType,
-	LabelItems,
-	Type,
-	Process,
-	Person,
+	PeriodItemsContainer,
+	PeriodItems,
+	LabelPeriod,
 } from './styles';
 
 import {FilterProps, DataFilterProps} from './types';
 
-import {
-	useKeyWordsGet,
-} from '@services/hooks/MovimentsTrash/useMovementsTrash';
+import {useKeyWordsGet} from '@services/hooks/MovimentsTrash/useMovementsTrash';
 
 // Add Hook UseTheme para pegar o tema global addicionado
 import {useTheme} from 'styled-components';
 
-export default Filters = forwardRef(
-
+export default CashFlowFilter = forwardRef(
 	({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
 		// Variavel para usar o hook
 		const colorUseTheme = useTheme();
@@ -55,7 +49,7 @@ export default Filters = forwardRef(
 		const [keyWords, setKeyWords] = useState<ItemProps[]>();
 		const [keyWordsCheckeds, setKeyWordsCheckeds] = useState<number[]>([]);
 		const [quantitySelected, setQuantitySelected] = useState<number>(0);
-		const [startAllChecked, setStartAllChecked] = useState<boolean>(false);
+		const [startAllChecked] = useState<boolean>(false);
 
 		// - Diaries  states
 		const [quantityDiariesSelected, setQuantityDiariesSelected] = useState<number>(0);
@@ -100,8 +94,6 @@ export default Filters = forwardRef(
 			],
 		);
 
-
-
 		const checkNull = useCallback(
 			states => states.filter(state => state != null && state != 0).length,
 			[],
@@ -123,7 +115,6 @@ export default Filters = forwardRef(
 				setKeyWordsCheckeds([]);
 			}
 		}, [dataKeyWords]);
-
 
 		const clearFilters = useCallback(() => {
 			handleClearFilters();
@@ -156,7 +147,6 @@ export default Filters = forwardRef(
 			setValue('idJournals', []);
 		}, []);
 
-
 		const closeModal = useCallback(() => ref.current?.close(), []);
 
 		const footer = () => (
@@ -186,6 +176,26 @@ export default Filters = forwardRef(
 				<Row>
 					<Title>Período</Title>
 				</Row>
+
+				<PeriodItemsContainer>
+					<PeriodItems>
+					<LabelPeriod>Hoje</LabelPeriod>
+					</PeriodItems>
+
+					<PeriodItems>
+					<LabelPeriod>Esta semana</LabelPeriod>
+					</PeriodItems>
+
+					<PeriodItems>
+					<LabelPeriod>Este mês</LabelPeriod>
+					</PeriodItems>
+
+					<PeriodItems>
+					<LabelPeriod>Este ano</LabelPeriod>
+					</PeriodItems>
+				</PeriodItemsContainer>
+
+
 
 				<Row>
 					<Column>
@@ -227,146 +237,6 @@ export default Filters = forwardRef(
 							)}></Controller>
 					</Column>
 				</Row>
-
-				<Row>
-					<Title>Tipo do lançamento</Title>
-				</Row>
-
-				<Releases>
-						<ReleaseType>
-							<LabelItems>Despesas</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Despesas pagas</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Despesas não pagas</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Receitas recebidas</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Receitas não recebidas</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>lançamentos Fixos</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Lançamentos Parcelados</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Todos lançamentos</LabelItems>
-						</ReleaseType>
-
-
-				</Releases>
-
-				<Row>
-					<Title>Categorias</Title>
-				</Row>
-
-				<Type>
-						<ReleaseType>
-							<LabelItems>Pagamento de acessoria</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Trabalho</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Salário</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Transporte</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Todas categorias</LabelItems>
-						</ReleaseType>
-
-
-				</Type>
-
-				<Row>
-					<Title>Processos</Title>
-				</Row>
-
-				<Process>
-						<ReleaseType>
-							<LabelItems>0000503-12.2017.5.09.0014</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>0001518-...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>0004232-...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Trabalhista - Kam...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Márcia Sophie...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>0045069-...</LabelItems>
-						</ReleaseType>
-
-
-				</Process>
-
-				<Row>
-					<Title>Pessoas</Title>
-				</Row>
-
-				<Person>
-						<ReleaseType>
-							<LabelItems>Betina da Conceição</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Daniela Barros</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Allana Marli Dias</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Trabalhista - Kam...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Márcia Sophie...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>0045069-...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Todas pessoas</LabelItems>
-						</ReleaseType>
-
-
-
-				</Person>
-
-
-
 			</Modal>
 		);
 	},

@@ -48,7 +48,7 @@ export const ContainerDescriptionReleases = styled.View`
 `;
 
 export const TextLabelDescriptionReleases = styled.Text<WeightTextProps>`
-  font-size: 19px;
+  font-size: 18px;
   color: ${({ theme }) => theme.colors.grayDarker};
   font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
 	line-height: 30;
@@ -65,7 +65,7 @@ export const ContainerValueReleases =styled.View`
 `;
 
 export const TextValueReleases = styled.Text<WeightTextProps>`
-  font-size: 14px;
+  font-size: 13px;
   color: ${({ theme }) => theme.colors.grayDarker};
   font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
 `;
@@ -80,10 +80,10 @@ export const ContainerCategoryReleases = styled.View`
 `;
 
 export const TextLabelCategory = styled.Text<WeightTextProps>`
-  font-size: 15px;
+  font-size: 14px;
 	margin-left: 2px;
 	margin-right: 2px;
-  color: ${({ theme }) => theme.colors.grayDarker};
+  color: ${({ theme }) => theme.colors.Darkesgray};
   font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
 `;
 

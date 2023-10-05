@@ -51,7 +51,9 @@ export const TextLabelDescription = styled.Text<WeightTextProps>`
 	font-size: 15px;
 	margin-right: 5px;
 	font-weight: bold;
+	color: ${({ theme }) => theme.colors.BlackInactive};
 `;
+
 
 export const TextValueDescriptionProhibited = styled.Text`
 	max-width: 70px;

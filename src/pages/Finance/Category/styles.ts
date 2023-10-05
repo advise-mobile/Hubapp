@@ -37,6 +37,7 @@ export const ContainerIcon = styled.View`
 export const TextTitle = styled.Text`
 	font-size: 16px;
 	font-weight: bold;
+	color: ${({ theme }) => theme.colors.BlackInactive};
 `;
 
 export const SubTitle = styled.Text`
@@ -44,6 +45,7 @@ export const SubTitle = styled.Text`
 	width: 70px;
 	height: 24px;
 	margin-left: 15px;
+	color: ${({ theme }) => theme.colors.BlackInactive};
 `;
 
 

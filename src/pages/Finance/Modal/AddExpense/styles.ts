@@ -87,7 +87,7 @@ export const RowCategory = styled.View`
 
 export const Label = styled.Text`
   margin-right: 12;
-  color: ${({ theme }) => theme.colors.realWhites};
+  color: ${({ theme }) => theme.colors.BlackInactive};
   font-size: ${fonts.regular};
 	font-family: ${fonts.circularStdBold};
 `;
@@ -199,12 +199,12 @@ export const ContentDuring= styled.View`
 	justify-content: center;
 	height: 60px;
 	width: 414px;
-	background-color: ${({ theme }) => theme.colors.neutral};
+	background-color: ${({ theme }) => theme.colors.during};
 `;
 
 export const LabelDuring = styled.Text`
   margin-right: 12;
-  color: ${({ theme }) => theme.colors.inactive};
+  color: ${({ theme }) => theme.colors.BlackInactive};
   font-size: ${fonts.regular};
 	font-family: ${fonts.circularStdBold};
 `;
@@ -219,14 +219,14 @@ export const ContentComments = styled.View`
 
 export const LabelComments = styled.Text`
   margin-right: 12;
-  color: ${({ theme }) => theme.colors.realWhites};
+  color: ${({ theme }) => theme.colors.BlackInactive};
   font-size: ${fonts.regular};
 	font-family: ${fonts.circularStdBold};
 `;
 
 
 export const InputDescription = styled.TextInput`
-  color: ${({ theme }) => theme.colors.realWhites};
+  color: ${({ theme }) => theme.colors.BlackInactive};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBook};
 	margin-left: 25px;

@@ -1,5 +1,15 @@
-import React, {forwardRef, useCallback} from 'react';
+import React, {forwardRef, useCallback, useState} from 'react';
+
 import Modal from 'components/Modal';
+import {StyleSheet} from 'react-native';
+
+import RadioForm, {
+	RadioButton,
+	RadioButtonInput,
+	RadioButtonLabel,
+} from 'react-native-simple-radio-button';
+
+import {fonts} from 'assets/styles';
 
 import {
 	Footer,
@@ -11,11 +21,10 @@ import {
 	ToSave,
 	ContentDescription,
 	ContentType,
-	LabelType,
-	ContainerIcon,
 	ContainerColor,
 	ColorsItem,
 	ToSaveText,
+	RBRow,
 } from './styles';
 
 // Add UseTheme para pegar o tema global adicionado
@@ -25,6 +34,21 @@ export default AddCategory = forwardRef((props, ref) => {
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
+
+	const [type, setType] = useState<number>(null);
+
+
+	const type_props =
+	[
+		{label: 'Despesas -', value: false},
+		{label: 'Receitas +', value: false},
+	];
+
+	const clearFilters = useCallback(() => {
+		setType(0);
+	}, [type]);
+
+	const RBLabel = stylesRBLabel(colors);
 
 	const closeModal = useCallback(() => ref.current?.close(), []);
 	const footer = () => (
@@ -40,7 +64,7 @@ export default AddCategory = forwardRef((props, ref) => {
 	);
 
 	return (
-		<Modal maxHeight={650} ref={ref} title="Cadastrar categoria" footer={footer()}>
+		<Modal maxHeight={750} ref={ref} title="Cadastrar categoria" footer={footer()} clear={clearFilters}>
 			<ContentDescription>
 				<Row>
 					<Label>Nome</Label>
@@ -60,19 +84,33 @@ export default AddCategory = forwardRef((props, ref) => {
 				</Row>
 			</ContentType>
 
-			<ContentType>
-				<Row>
-					<LabelType>Despesa -</LabelType>
 
-					<ContainerIcon></ContainerIcon>
-				</Row>
-			</ContentType>
+					<RadioForm animation={true} style={{flex: 1}}>
+						{type_props.map((obj, i) => (
+							<RBRow as={RadioButton} key={i}>
+								<RadioButtonInput
+									obj={obj}
+									isSelected={type === i}
+									onPress={value => {
+										setType(i);
+									}}
+									borderWidth={1}
+									buttonInnerColor={colors.primary}
+									buttonOuterColor={colors.primary}
+									buttonSize={12}
+									buttonOuterSize={18}
+								/>
+								<RadioButtonLabel
+									obj={obj}
+									labelStyle={RBLabel.label}
+									onPress={value => {
+										setType(i);
+									}}
+								/>
+							</RBRow>
+						))}
+					</RadioForm>
 
-			<ContentType>
-				<Row>
-					<LabelType>Receita +</LabelType>
-				</Row>
-			</ContentType>
 
 			<ContentType>
 				<Row>
@@ -93,3 +131,12 @@ export default AddCategory = forwardRef((props, ref) => {
 		</Modal>
 	);
 });
+
+const stylesRBLabel = colors =>
+	StyleSheet.create({
+		label: {
+			color: colors.BlackInactive,
+			fontFamily: fonts.circularStdBook,
+			fontSize: fonts.regular,
+		},
+	});

@@ -55,7 +55,7 @@ export const DataTextContainer = styled.View`
 export const DateText = styled.Text`
 	font-weight: bold;
 	font-size: 16px;
-	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactive};
+	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactiveDetails};
 `;
 
 export const ThumbsIconContainer = styled.View`
@@ -73,7 +73,7 @@ export const DescriptionContainer = styled.View`
 
 export const DataText = styled.Text`
 	font-size: 14px;
-	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactive};
+	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactiveDetails};
 `;
 
 export const InformationContainer = styled.View`
@@ -106,18 +106,18 @@ export const DescriptionOfObservationsContainer = styled.View`
 export const InformationTitleText = styled.Text`
 	font-weight: bold;
 	font-size: 16px;
-	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactive};
+	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactiveDetails};
 `;
 
 export const InformationText = styled.Text`
 	font-size: 14px;
-	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactive};
+	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactiveDetails};
 `;
 
 export const DescriptionOfObservationsText = styled.Text`
 	font-size: 14px;
 	height: 115px;
 	lineHeight: 20px;
-	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactive};
+	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactiveDetails};
 `;
 

@@ -9,14 +9,14 @@ import Finance from '../Finance/Releases'
 import Category from './Category';
 
 import Add from './Modal/Add';
-import AddExpense from './Modal/AddExpense';
 
 
 import HeaderGlobals from '../../components/HeaderGlobals';
-import AddRevenue from './Modal/AddRevenue';
-import AddCategory from './Modal/AddCategory';
 
 import Filters from './Filters';
+import CashFlowFilter from '../Finance/Modal/CashFlowFilter'
+import { DataFilterProps } from './Filters/types';
+import CategoryFilter from './Modal/CategoryFilter';
 
 
 export default FinanceTab = props => {
@@ -24,12 +24,14 @@ export default FinanceTab = props => {
   const scrollRef = useRef();
 
   const filtersRef = useRef(null);
+	const FilterCash = useRef(null);
+	const FilterCategoryRef = useRef(null);
 
   const addRef = useRef(null);
 
-  const [filtering, setFiltering] = useState<Boolean>(false);
+  const [setFiltering] = useState<Boolean>(false);
 
-  const [formattedData, setFormattedData] = useState({});
+  const [formattedData] = useState({});
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -47,8 +49,8 @@ export default FinanceTab = props => {
 
   const renderAddOptions = useCallback(() => <Add ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
 
-	/** FILTERS */
-	// const openFilters = () => filtersRef.current?.open();
+
+
 
   const handleClearFilters = useCallback( () => {
 		setFiltering(false);
@@ -58,7 +60,7 @@ export default FinanceTab = props => {
 
 		setFiltering(true);
 		filtersRef.current?.close();
-	
+
 		await getData({
 			page:1,
 			itens:data
@@ -73,12 +75,48 @@ export default FinanceTab = props => {
 		[formattedData],
 	);
 
+	const FilterCashFlow = useMemo(
+		() => (
+			<CashFlowFilter ref={FilterCash} handleSubmitFilters={handleSubmitFilters} handleClearFilters={handleClearFilters}/>
+		),
+		[formattedData],
+	);
+
+	const renderFilterCategory = useMemo(
+		() => (
+			<CategoryFilter ref={FilterCategoryRef} handleSubmitFilters={handleSubmitFilters} handleClearFilters={handleClearFilters}/>
+		),
+		[formattedData],
+	);
+
+	/** RENDER FILTERS */
+	const renderFilterVerify = () => {
+
+			if (selectedTab === 0 ) {
+				filtersRef.current?.open();
+			}
+
+			if (selectedTab === 1 ) {
+				FilterCash.current?.open();
+			}
+
+			if (selectedTab === 2 ) {
+				FilterCategoryRef.current?.open();
+			}
+
+			// if(selectedTab === 1){
+			// 	addRef.current?.open();
+			// }
+			//console.log("=== cheguei", selectedTab)
+
+	};
+
   return (
     <Container>
       <Warp>
 			<HeaderGlobals
 				title={'Financeiro'}
-				filter={() => filtersRef.current?.open()}
+				filter={() => renderFilterVerify()}
         add={() => addRef.current?.open()}
 				lower={true}
 				customActions={customActions}
@@ -86,6 +124,8 @@ export default FinanceTab = props => {
         {renderTabs()}
         {renderAddOptions()}
         {renderFilters}
+				{FilterCashFlow}
+				{renderFilterCategory}
 
       </Warp>
     </Container>
