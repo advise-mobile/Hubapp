@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 
 
-export const ContainerScreen = styled.View`
-	height: 740px;
-`;
-
 export const ContainerItems = styled.TouchableOpacity`
 	width: 414px;
 	height: 48px;
@@ -42,10 +38,11 @@ export const TextTitle = styled.Text`
 
 export const SubTitle = styled.Text`
 	font-size: 16px;
-	width: 70px;
+	max-width: 170px;
 	height: 24px;
 	margin-left: 15px;
 	color: ${({ theme }) => theme.colors.BlackInactive};
+
 `;
 
 

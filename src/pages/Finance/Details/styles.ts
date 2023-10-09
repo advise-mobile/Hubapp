@@ -1,9 +1,5 @@
 import styled from 'styled-components';
 
-interface ColorTextProps {
-	colorText: string
-}
-
 export const ContainerHeader = styled.View`
 	border: black;
 	width: 410px;
