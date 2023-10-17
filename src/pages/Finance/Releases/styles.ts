@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 
 interface ColorTextProps {
 	colorText: string
@@ -9,25 +9,31 @@ interface WeightTextProps {
 }
 
 export const TextValue = styled.Text<ColorTextProps>`
-  font-size: 18px;
+  font-size: 14px;
   color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.textInactive};
 `;
 
 export const TextLabel = styled.Text<WeightTextProps>`
-  font-size: 18px;
+  font-size: 14px;
   color: ${({ theme }) => theme.colors.grayDarker};
-  font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
+  font-weight: normal;
 `;
+
+export const TextLabelSubtitle = styled.Text<WeightTextProps>`
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.grayDarker};
+  font-weight: bold;
+`;
+
+
 
 export const ContainerFinance = styled.View`
 	flex: 1;
 `;
 
-
 export const ContainerResume = styled.View`
-	border-top-width: 0.5;
 	border-bottom-width: 0.5;
-	border-color: #ABABAB;
+	border-color:  ${({ theme }) => theme.colors.iconGray};
 	min-height: 40px;
 	padding: 5px;
 `;
@@ -55,6 +61,9 @@ export const ContainerItensFinance = styled.View`
   padding: 15px;
   justify-content: space-between;
   height: 55px;
+  align-items: center;
+  border-bottom-width: 1px;
+  border-color: ${({ theme }) => theme.colors.grayLighter};  
 `;
 
 

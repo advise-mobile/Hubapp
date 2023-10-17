@@ -1,30 +1,26 @@
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 
 interface WeightTextProps {
 	fontWeight: boolean
 }
 
 export const ContainerReleases = styled.TouchableOpacity`
-	min-height: 165px;
-	border-top-width: 1px;
+  min-height: 135px;
   border-bottom-width: 1px;
-  border-color: ${({ theme }) => theme.colors.grayLighter};
+  border-color: ${({ theme }) => theme.colors.grayLighter};  
 `;
 
 export const ContainerItemReleases = styled.View`
 	flex-direction: row;
-  padding: 10px;
-  justify-content: space-between;
-  min-height: 24px;
-	padding: 13px;
+	justify-content: space-between;
+	padding: 10px;
 `;
 
 
 export const ContainerIconDescriptionReleases =styled.View`
 	justify-content: center;
-  align-items: center;
-  flex-direction: row;
-
+  	align-items: center;
+  	flex-direction: row;
 `;
 
 export const ContainerIcon = styled.View`
@@ -41,31 +37,34 @@ export const ContainerIconThumbs = styled.View`
 `;
 
 export const ContainerDescriptionReleases = styled.View`
-	align-items: center;
-	justify-content: center;
-	height: 110px;
-
+margin-bottom: 5px    ;
 `;
 
 export const TextLabelDescriptionReleases = styled.Text<WeightTextProps>`
-  font-size: 18px;
-  color: ${({ theme }) => theme.colors.grayDarker};
-  font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
-	line-height: 30;
-	width: 350px;
+	font-size: 14px;
+	color: ${({ theme }) => theme.colors.grayDarker};
+	font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
+	line-height: 24;
+	/* min-width: 250px; */
+	/* border: 1px solid #000000; */
+	/* align-items: center; */
 `;
 
-export const ContainerValueReleases =styled.View`
-	margin-left: 35px;
-	padding-bottom: 10px;
-  flex-direction: row;
-	height: 30px;
-	width: 370px;
+export const ContainerLabel = styled.View`
 	align-items: center;
+	justify-content: center;
+`;
+
+
+export const ContainerValueReleases =styled.View`
+  	flex-direction: row;
+	height: 30px;
+	align-items: center;
+	/* border: 1px solid #000000; */
 `;
 
 export const TextValueReleases = styled.Text<WeightTextProps>`
-  font-size: 13px;
+  font-size: 14px;
   color: ${({ theme }) => theme.colors.grayDarker};
   font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
 `;
@@ -76,22 +75,35 @@ export const ContainerCategoryReleases = styled.View`
 	margin-left: 5px;
 	align-items: center;
 	justify-content: center;
+	padding: 4px;
 	background-color: ${({ theme }) => theme.colors.green};
+
 `;
 
 export const TextLabelCategory = styled.Text<WeightTextProps>`
-  font-size: 14px;
+  	font-size: 12px;
 	margin-left: 2px;
 	margin-right: 2px;
-  color: ${({ theme }) => theme.colors.Darkesgray};
-  font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
+	color: ${({ theme }) => theme.colors.Darkesgray};
+	font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
 `;
 
 export const ContainerDownloadedReleases = styled.View`
 	border-radius: 17px;
 	margin-left: 5px;
-	margin-left: 5px;
 	align-items: center;
 	justify-content: center;
+	padding: 4px;
 	background-color: ${({ theme }) => theme.colors.colorBackGround};
 `;
+
+export const TextLabel = styled.Text<WeightTextProps>`
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.grayDarker};
+  font-weight: bold;
+`;
+
+export const Content = styled.View`
+justify-content: space-between;
+margin: 0px 25px 10px 30px;
+`

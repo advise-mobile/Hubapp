@@ -1,11 +1,12 @@
 import React from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FinanceDataItem from '../../../components/Finance';
+import FinanceDataItem from '@components/Finance';
 
 import {
 	ContainerFinance,
 	ContainerItensFinance,
 	TextLabel,
+	TextLabelSubtitle,
 	TextValue,
 	ContainerResume,
 	ContainerItemResume,
@@ -15,7 +16,7 @@ import {
 	ContainerIconReleases,
 } from './styles';
 
-import {Container, Warp} from 'assets/styles/global';
+import {Container} from 'assets/styles/global';
 
 import {useTheme} from 'styled-components';
 import {ScrollView} from 'react-native';
@@ -30,7 +31,7 @@ export default function Finance() {
 			title: 'Despesa',
 			date: '29/07/2023',
 			type: 'despesa',
-			description: 'Título Lorem ipsum dolor sit amet, consectetur.',
+			description: 'Título Lorem ipsum dolor sit amet, consectetur adipisci, Duis sollicitudin, erat commodo lacinia.',
 			value: '2.000,00',
 			category: 'Contas',
 			off: true,
@@ -40,9 +41,9 @@ export default function Finance() {
 			title: 'Receita',
 			date: '30/07/2023',
 			type: 'receita',
-			description: 'Receita ...Título Lorem ipsum dolor sit amet, consectetur.',
+			description: 'Receita ...Título Lorem ipsum dolor sit amet.',
 			value: '5.000,00',
-			category: 'Contas',
+			category: 'Emprestimos',
 			off: false,
 			dateOff: '25/06/2023',
 		},
@@ -50,7 +51,6 @@ export default function Finance() {
 
 	return (
 		<Container>
-			<Warp>
 				<FilterScreen/>
 				<ScrollView>
 					<ContainerFinance>
@@ -65,7 +65,7 @@ export default function Finance() {
 							<ContainerItemResume>
 								<ContainerIconDescription>
 									<ContainerIconReleases>
-										<FontAwesome name="circle" color={colors.green200} />
+										<FontAwesome size={8} name="circle" color={colors.green200} />
 									</ContainerIconReleases>
 
 									<ContainerLabel>
@@ -80,7 +80,7 @@ export default function Finance() {
 							<ContainerItemResume>
 								<ContainerIconDescription>
 									<ContainerIconReleases>
-										<FontAwesome name="circle" color={colors.red200} />
+										<FontAwesome size={8} name="circle" color={colors.red200} />
 									</ContainerIconReleases>
 
 									<ContainerLabel>
@@ -95,7 +95,7 @@ export default function Finance() {
 						</ContainerResume>
 
 						<ContainerItensFinance>
-							<TextLabel fontWeight>Saldo Atual</TextLabel>
+							<TextLabelSubtitle >Saldo Atual</TextLabelSubtitle>
 							<ContainerValues>
 								<TextValue colorText={colors.forgetLink}>999.999.999</TextValue>
 							</ContainerValues>
@@ -106,7 +106,6 @@ export default function Finance() {
 						})}
 					</ContainerFinance>
 				</ScrollView>
-			</Warp>
 		</Container>
 	);
 }
