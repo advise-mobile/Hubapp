@@ -122,7 +122,6 @@ export const Items = styled.TouchableOpacity`
 `;
 
 export const LabelItems = styled.Text`
-  color: ${({ theme }) => theme.colors.realWhites};
   font-size: ${fonts.smaller};
 	font-family: ${fonts.circularStdBold};
 `;
@@ -145,7 +144,7 @@ export const ItemsPerson = styled.TouchableOpacity`
 	margin-bottom: 7px;
 	align-items: center;
 	justify-content: center;
-	background-color: ${({ theme }) => theme.colors.gray};
+
 `;
 
 export const ContainerItemsProcess = styled.View`
@@ -173,11 +172,10 @@ export const ItemsProcess = styled.TouchableOpacity`
 	margin-bottom: 7px;
 	align-items: center;
 	justify-content: center;
-	background-color: ${({ theme }) => theme.colors.gray};
+
 `;
 
 export const LabelItemsProcess = styled.Text`
-  color: ${({ theme }) => theme.colors.realWhites};
   font-size: ${fonts.smaller};
 	font-family: ${fonts.circularStdBold};
 	margin-left: 10px;

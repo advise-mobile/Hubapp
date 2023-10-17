@@ -52,7 +52,7 @@ export const ContentDescription = styled.View`
 	border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
-export const ContentType = styled.TouchableOpacity`
+export const ContentType = styled.View`
   margin: 0 -24px;
 	justify-content: center;
 	height: 48px;

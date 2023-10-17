@@ -1,4 +1,4 @@
-import React, {forwardRef, useCallback} from 'react';
+import React, {forwardRef, useCallback, useState} from 'react';
 import Modal from 'components/Modal';
 import {
 	Footer,
@@ -36,7 +36,36 @@ import {
 // Add UseTheme para pegar o tema global adicionado
 import {useTheme} from 'styled-components';
 
+const people = ['Pessoa 1', 'Pessoa 2', 'Pessoa 3', 'Pessoa 4', 'Pessoa 5', 'Pessoa 6'];
+
+const process = [
+	'Nº do processo',
+	'Pasta do processo',
+	'Luiz José x Rafaela Zemuner',
+	'Proc.: 0000846-51.2020.5.07.0016',
+];
+
+const repeat = ['Não se repete', 'Todos os dias', 'Semanal', 'Quinzenal ', 'Mensal', 'Anual'];
+
 export default AddRevenue = forwardRef((props, ref) => {
+
+	const [selectedColor, setSelectedColor] = useState(null);
+
+	const [selectedPeople, setSelectedPeople] = useState(null);
+	const [selectedProcess, setSelectedProcess] = useState(null);
+	const [selectedRepeat, setSelectedRepeat] = useState(null);
+
+	const handlePeopleClick = index => {
+		setSelectedPeople(index);
+	};
+
+	const handleProcessClick = index => {
+		setSelectedProcess(index);
+	};
+
+	const handleRepeatClick = index => {
+		setSelectedRepeat(index);
+	};
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
@@ -98,27 +127,63 @@ export default AddRevenue = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItems>
-					<Items style={[{backgroundColor: colors.gray}]}>
+					<Items style={[
+							{backgroundColor: colors.gray},
+							selectedColor === colors.gray
+								? {borderWidth: 2, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.gray)}>
 						<LabelItems>Categoria 01</LabelItems>
 					</Items>
 
-					<Items style={[{backgroundColor: colors.amber}]}>
+					<Items style={[
+							{backgroundColor: colors.amber},
+							selectedColor === colors.amber
+								? {borderWidth: 2, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.amber)}>
 						<LabelItems>Categoria 02</LabelItems>
 					</Items>
 
-					<Items style={[{backgroundColor: colors.yellow}]}>
+					<Items style={[
+							{backgroundColor: colors.yellow},
+							selectedColor === colors.yellow
+								? {borderWidth: 2, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.yellow)}>
 						<LabelItems>Categoria 03</LabelItems>
 					</Items>
 
-					<Items style={[{backgroundColor: colors.purple}]}>
+					<Items style={[
+							{backgroundColor: colors.purple},
+							selectedColor === colors.purple
+								? {borderWidth: 2, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.purple)}>
 						<LabelItems>Categoria 04</LabelItems>
 					</Items>
 
-					<Items style={[{backgroundColor: colors.pink}]}>
+					<Items style={[
+							{backgroundColor: colors.pink},
+							selectedColor === colors.pink
+								? {borderWidth: 2, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.pink)}>
 						<LabelItems>Categoria 05</LabelItems>
 					</Items>
 
-					<Items style={[{backgroundColor: colors.pinkRed}]}>
+					<Items style={[
+							{backgroundColor: colors.pinkRed},
+							selectedColor === colors.pinkRed
+								? {borderWidth: 2, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.pinkRed)}>
 						<LabelItems>Categoria 06</LabelItems>
 					</Items>
 				</ContainerItems>
@@ -130,29 +195,21 @@ export default AddRevenue = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsPerson>
-					<ItemsPerson>
-						<LabelItems>Pessoa 1</LabelItems>
-					</ItemsPerson>
-
-					<ItemsPerson>
-						<LabelItems>Pessoa 2</LabelItems>
-					</ItemsPerson>
-
-					<ItemsPerson>
-						<LabelItems>Pessoa 3</LabelItems>
-					</ItemsPerson>
-
-					<ItemsPerson>
-						<LabelItems>Pessoa 4</LabelItems>
-					</ItemsPerson>
-
-					<ItemsPerson>
-						<LabelItems>Pessoa 5</LabelItems>
-					</ItemsPerson>
-
-					<ItemsPerson>
-						<LabelItems>Pessoa 6</LabelItems>
-					</ItemsPerson>
+					{people.map((people, index) => (
+						<ItemsPerson
+							key={index}
+							onPress={() => handlePeopleClick(index)}
+							style={{
+								backgroundColor: colors.gray,
+							}}>
+							<LabelItems
+								style={{
+									color: selectedPeople === index ? colors.backgroundButton : colors.iconGray,
+								}}>
+								{people}
+							</LabelItems>
+						</ItemsPerson>
+					))}
 				</ContainerItemsPerson>
 			</ContentCategory>
 
@@ -162,21 +219,21 @@ export default AddRevenue = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsProcess>
-					<ItemsProcess>
-						<LabelItemsProcess>Nº do processo</LabelItemsProcess>
-					</ItemsProcess>
-
-					<ItemsProcess>
-						<LabelItemsProcess>Pasta do processo</LabelItemsProcess>
-					</ItemsProcess>
-
-					<ItemsProcess>
-						<LabelItemsProcess>Luiz José x Rafaela Zemuner</LabelItemsProcess>
-					</ItemsProcess>
-
-					<ItemsProcess>
-						<LabelItemsProcess>Proc.: 0000846-51.2020.5.07.0016</LabelItemsProcess>
-					</ItemsProcess>
+					{process.map((process, index) => (
+						<ItemsProcess
+							key={index}
+							onPress={() => handleProcessClick(index)}
+							style={{
+								backgroundColor: colors.gray,
+							}}>
+							<LabelItemsProcess
+								style={{
+									color: selectedProcess === index ? colors.backgroundButton : colors.iconGray,
+								}}>
+								{process}
+							</LabelItemsProcess>
+						</ItemsProcess>
+					))}
 				</ContainerItemsProcess>
 			</ContentProcess>
 
@@ -186,29 +243,21 @@ export default AddRevenue = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsRepeat>
-					<ItemsProcess>
-						<LabelItemsProcess>Não se repete</LabelItemsProcess>
-					</ItemsProcess>
-
-					<ItemsProcess>
-						<LabelItemsProcess>Todos os dias</LabelItemsProcess>
-					</ItemsProcess>
-
-					<ItemsProcess>
-						<LabelItemsProcess>Semanal</LabelItemsProcess>
-					</ItemsProcess>
-
-					<ItemsProcess>
-						<LabelItemsProcess>Quinzenal</LabelItemsProcess>
-					</ItemsProcess>
-
-					<ItemsProcess>
-						<LabelItemsProcess>Mensal</LabelItemsProcess>
-					</ItemsProcess>
-
-					<ItemsProcess>
-						<LabelItemsProcess>Anual</LabelItemsProcess>
-					</ItemsProcess>
+					{repeat.map((repeat, index) => (
+						<ItemsProcess
+							key={index}
+							onPress={() => handleRepeatClick(index)}
+							style={{
+								backgroundColor: colors.gray,
+							}}>
+							<LabelItemsProcess
+								style={{
+									color: selectedRepeat === index ? colors.backgroundButton : colors.iconGray,
+								}}>
+								{repeat}
+							</LabelItemsProcess>
+						</ItemsProcess>
+					))}
 				</ContainerItemsRepeat>
 			</ContentRepeat>
 

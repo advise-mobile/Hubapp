@@ -58,7 +58,6 @@ export const Label = styled.Text`
 
 export const LabelPeriod = styled.Text`
   font-size: 15px;
-  color: ${({ theme }) => theme.colors.realWhite};
   font-family: ${fonts.circularStdBold};
 	margin-left: 10px;
 	margin-right: 10px;
@@ -117,7 +116,6 @@ export const PeriodItems = styled.TouchableOpacity`
 	align-items: center;
 	align-items: center;
 	margin-right: 10px;
-	background: ${({ theme }) => theme.colors.gray};
 `;
 
 export const ContainerSubtitle = styled.TouchableOpacity`

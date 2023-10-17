@@ -36,10 +36,9 @@ export default AddCategory = forwardRef((props, ref) => {
 	const {colors} = colorUseTheme;
 
 	const [type, setType] = useState<number>(null);
+	const [selectedColor, setSelectedColor] = useState(null);
 
-
-	const type_props =
-	[
+	const type_props = [
 		{label: 'Despesas -', value: false},
 		{label: 'Receitas +', value: false},
 	];
@@ -64,7 +63,12 @@ export default AddCategory = forwardRef((props, ref) => {
 	);
 
 	return (
-		<Modal maxHeight={750} ref={ref} title="Cadastrar categoria" footer={footer()} clear={clearFilters}>
+		<Modal
+			maxHeight={750}
+			ref={ref}
+			title="Cadastrar categoria"
+			footer={footer()}
+			clear={clearFilters}>
 			<ContentDescription>
 				<Row>
 					<Label>Nome</Label>
@@ -84,33 +88,31 @@ export default AddCategory = forwardRef((props, ref) => {
 				</Row>
 			</ContentType>
 
-
-					<RadioForm animation={true} style={{flex: 1}}>
-						{type_props.map((obj, i) => (
-							<RBRow as={RadioButton} key={i}>
-								<RadioButtonInput
-									obj={obj}
-									isSelected={type === i}
-									onPress={value => {
-										setType(i);
-									}}
-									borderWidth={1}
-									buttonInnerColor={colors.primary}
-									buttonOuterColor={colors.primary}
-									buttonSize={12}
-									buttonOuterSize={18}
-								/>
-								<RadioButtonLabel
-									obj={obj}
-									labelStyle={RBLabel.label}
-									onPress={value => {
-										setType(i);
-									}}
-								/>
-							</RBRow>
-						))}
-					</RadioForm>
-
+			<RadioForm animation={true} style={{flex: 1}}>
+				{type_props.map((obj, i) => (
+					<RBRow as={RadioButton} key={i}>
+						<RadioButtonInput
+							obj={obj}
+							isSelected={type === i}
+							onPress={value => {
+								setType(i);
+							}}
+							borderWidth={1}
+							buttonInnerColor={colors.primary}
+							buttonOuterColor={colors.primary}
+							buttonSize={12}
+							buttonOuterSize={18}
+						/>
+						<RadioButtonLabel
+							obj={obj}
+							labelStyle={RBLabel.label}
+							onPress={value => {
+								setType(i);
+							}}
+						/>
+					</RBRow>
+				))}
+			</RadioForm>
 
 			<ContentType>
 				<Row>
@@ -120,12 +122,58 @@ export default AddCategory = forwardRef((props, ref) => {
 
 			<ContentType>
 				<ContainerColor>
-					<ColorsItem style={[{backgroundColor: colors.colorBackGround}]} />
-					<ColorsItem style={[{backgroundColor: colors.pinkRed}]} />
-					<ColorsItem style={[{backgroundColor: colors.pink}]} />
-					<ColorsItem style={[{backgroundColor: colors.pinkTag}]} />
-					<ColorsItem style={[{backgroundColor: colors.purple}]} />
-					<ColorsItem style={[{backgroundColor: colors.typecolor}]} />
+					<ColorsItem
+						style={[
+							{backgroundColor: colors.colorBackGround},
+							selectedColor === colors.colorBackGround
+								? {borderWidth: 1, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.colorBackGround)}
+					/>
+					<ColorsItem
+						style={[
+							{backgroundColor: colors.pinkRed},
+							selectedColor === colors.pinkRed ? {borderWidth: 1, borderColor: colors.primary} : {},
+						]}
+						onPress={() => setSelectedColor(colors.pinkRed)}
+					/>
+					<ColorsItem
+						style={[
+							{backgroundColor: colors.pink},
+							selectedColor === colors.pink
+								? {borderWidth: 1, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.pink)}
+					/>
+					<ColorsItem
+						style={[
+							{backgroundColor: colors.pinkTag},
+							selectedColor === colors.pinkTag
+								? {borderWidth: 1, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.pinkTag)}
+					/>
+					<ColorsItem
+						style={[
+							{backgroundColor: colors.purple},
+							selectedColor === colors.purple
+								? {borderWidth: 1, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.purple)}
+					/>
+					<ColorsItem
+						style={[
+							{backgroundColor: colors.typecolor},
+							selectedColor === colors.typecolor
+								? {borderWidth: 1, borderColor: colors.primary}
+								: {},
+						]}
+						onPress={() => setSelectedColor(colors.typecolor)}
+					/>
 				</ContainerColor>
 			</ContentType>
 		</Modal>

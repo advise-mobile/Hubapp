@@ -1,6 +1,6 @@
-import React, {forwardRef, useState, useCallback, useEffect, Ref} from 'react';
+import React, {forwardRef, useState, useCallback, useEffect} from 'react';
 
-import {StyleSheet, Dimensions} from 'react-native';
+import {Dimensions} from 'react-native';
 
 import {useForm, Controller} from 'react-hook-form';
 
@@ -10,8 +10,6 @@ import Datepicker from '@components/DatePicker';
 import {FormatFullDateEN} from '@helpers/DateFunctions';
 
 import {ItemProps} from '@components/MultiSelectCheckBox/types';
-
-import {fonts} from 'assets/styles';
 
 import {
 	Title,
@@ -33,16 +31,76 @@ import {
 
 import {FilterProps, DataFilterProps} from './types';
 
-import {
-	useKeyWordsGet,
-} from '@services/hooks/MovimentsTrash/useMovementsTrash';
+import {useKeyWordsGet} from '@services/hooks/MovimentsTrash/useMovementsTrash';
 
 // Add Hook UseTheme para pegar o tema global addicionado
 import {useTheme} from 'styled-components';
 
-export default Filters = forwardRef(
 
+const launch = [
+'Despesas',
+'Despesas pagas',
+'Despesas não pagas',
+'Receitas recebidas',
+'Receitas não recebidas',
+'lançamentos Fixos',
+'Lançamentos Parcelados',
+'Todos lançamentos'
+];
+
+const category =[
+'Pagamento de acessoria',
+'Trabalho',
+'Salário',
+'Transporte',
+'Todas as categorias'
+];
+
+const process = [
+'0000503-12.2017.5.09.0014',
+'0001518-...',
+'0004232-...',
+'Trabalhista - Kam...',
+'Márcia Sophie...',
+'0045069-...',
+];
+
+const person = [
+'Betina da Conceição',
+'Daniela Barros',
+'Allana Marli Dias',
+'Trabalhista - Kam...',
+'Márcia Sophie...',
+'0045069-...',
+'Todas as pessoas',
+];
+
+
+export default Filters = forwardRef(
 	({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
+
+		const [selectedLaunch, setSelectedLaunch] = useState(null);
+		const [selectedCategory, setSelectedCategory] = useState(null);
+		const [selectedProcess, setSelectedProcess] = useState(null);
+		const [selectedPerson, setSelectedPerson] = useState(null);
+
+		const handleLaunchClick = index => {
+			setSelectedLaunch(index);
+		};
+
+		const handleCategoryClick = index => {
+			setSelectedCategory(index);
+		};
+
+		const handleProcessClick = index => {
+			setSelectedProcess(index);
+		};
+
+		const handlePersonClick = index => {
+			setSelectedPerson(index);
+		};
+
+
 		// Variavel para usar o hook
 		const colorUseTheme = useTheme();
 		const {colors} = colorUseTheme;
@@ -100,8 +158,6 @@ export default Filters = forwardRef(
 			],
 		);
 
-
-
 		const checkNull = useCallback(
 			states => states.filter(state => state != null && state != 0).length,
 			[],
@@ -123,7 +179,6 @@ export default Filters = forwardRef(
 				setKeyWordsCheckeds([]);
 			}
 		}, [dataKeyWords]);
-
 
 		const clearFilters = useCallback(() => {
 			handleClearFilters();
@@ -155,7 +210,6 @@ export default Filters = forwardRef(
 			setQuantityDiariesSelected(0);
 			setValue('idJournals', []);
 		}, []);
-
 
 		const closeModal = useCallback(() => ref.current?.close(), []);
 
@@ -233,39 +287,18 @@ export default Filters = forwardRef(
 				</Row>
 
 				<Releases>
-						<ReleaseType>
-							<LabelItems>Despesas</LabelItems>
+					{launch.map((launch, index) => (
+						<ReleaseType
+							key={index}
+							onPress={() => handleLaunchClick(index)}
+							style={{
+								backgroundColor: colors.gray,
+							}}>
+							<LabelItems style={{color: selectedLaunch === index ? colors.backgroundButton : colors.iconGray}}>
+								{launch}
+							</LabelItems>
 						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Despesas pagas</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Despesas não pagas</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Receitas recebidas</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Receitas não recebidas</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>lançamentos Fixos</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Lançamentos Parcelados</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Todos lançamentos</LabelItems>
-						</ReleaseType>
-
-
+					))}
 				</Releases>
 
 				<Row>
@@ -273,27 +306,18 @@ export default Filters = forwardRef(
 				</Row>
 
 				<Type>
-						<ReleaseType>
-							<LabelItems>Pagamento de acessoria</LabelItems>
+					{category.map((category, index) => (
+						<ReleaseType
+							key={index}
+							onPress={() => handleCategoryClick(index)}
+							style={{
+								backgroundColor: colors.gray,
+							}}>
+							<LabelItems style={{color: selectedCategory === index ? colors.backgroundButton : colors.iconGray}}>
+								{category}
+							</LabelItems>
 						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Trabalho</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Salário</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Transporte</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Todas categorias</LabelItems>
-						</ReleaseType>
-
-
+					))}
 				</Type>
 
 				<Row>
@@ -301,31 +325,18 @@ export default Filters = forwardRef(
 				</Row>
 
 				<Process>
-						<ReleaseType>
-							<LabelItems>0000503-12.2017.5.09.0014</LabelItems>
+					{process.map((process, index) => (
+						<ReleaseType
+							key={index}
+							onPress={() => handleProcessClick(index)}
+							style={{
+								backgroundColor: colors.gray,
+							}}>
+							<LabelItems style={{color: selectedProcess === index ? colors.backgroundButton : colors.iconGray}}>
+								{process}
+							</LabelItems>
 						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>0001518-...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>0004232-...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Trabalhista - Kam...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Márcia Sophie...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>0045069-...</LabelItems>
-						</ReleaseType>
-
-
+					))}
 				</Process>
 
 				<Row>
@@ -333,71 +344,20 @@ export default Filters = forwardRef(
 				</Row>
 
 				<Person>
-						<ReleaseType>
-							<LabelItems>Betina da Conceição</LabelItems>
+					{person.map((person, index) => (
+						<ReleaseType
+							key={index}
+							onPress={() => handlePersonClick(index)}
+							style={{
+								backgroundColor: colors.gray,
+							}}>
+							<LabelItems style={{color: selectedPerson === index ? colors.backgroundButton : colors.iconGray}}>
+								{person}
+							</LabelItems>
 						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Daniela Barros</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Allana Marli Dias</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Trabalhista - Kam...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Márcia Sophie...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>0045069-...</LabelItems>
-						</ReleaseType>
-
-						<ReleaseType>
-							<LabelItems>Todas pessoas</LabelItems>
-						</ReleaseType>
-
-
-
+					))}
 				</Person>
-
-
-
 			</Modal>
 		);
 	},
 );
-
-const stylePickerSelectStyles = colors =>
-	StyleSheet.create({
-		inputIOS: {
-			fontSize: 16,
-			flex: 1,
-			color: colors.fadedBlack,
-			fontFamily: fonts.circularStdBook,
-			borderBottomWidth: 1,
-			borderBottomColor: colors.grayLighter,
-		},
-		inputAndroid: {
-			height: 20,
-			fontSize: 16,
-			color: colors.fadedBlack,
-			fontFamily: fonts.circularStdBook,
-			flex: 1,
-			borderBottomWidth: 1,
-			borderBottomColor: colors.grayLighter,
-		},
-	});
-
-const stylesRBLabel = colors =>
-	StyleSheet.create({
-		label: {
-			color: colors.grayDarker,
-			fontFamily: fonts.circularStdBook,
-			fontSize: fonts.regular,
-		},
-	});

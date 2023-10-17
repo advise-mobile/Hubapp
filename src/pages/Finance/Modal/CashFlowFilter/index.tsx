@@ -35,8 +35,16 @@ import {useKeyWordsGet} from '@services/hooks/MovimentsTrash/useMovementsTrash';
 // Add Hook UseTheme para pegar o tema global addicionado
 import {useTheme} from 'styled-components';
 
+const periods = ['Hoje', 'Esta semana', 'Este mês', 'Este ano'];
+
 export default CashFlowFilter = forwardRef(
 	({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
+		const [selectedPeriod, setSelectedPeriod] = useState(null);
+
+		const handlePeriodClick = index => {
+			setSelectedPeriod(index);
+		};
+
 		// Variavel para usar o hook
 		const colorUseTheme = useTheme();
 		const {colors} = colorUseTheme;
@@ -178,24 +186,19 @@ export default CashFlowFilter = forwardRef(
 				</Row>
 
 				<PeriodItemsContainer>
-					<PeriodItems>
-					<LabelPeriod>Hoje</LabelPeriod>
-					</PeriodItems>
-
-					<PeriodItems>
-					<LabelPeriod>Esta semana</LabelPeriod>
-					</PeriodItems>
-
-					<PeriodItems>
-					<LabelPeriod>Este mês</LabelPeriod>
-					</PeriodItems>
-
-					<PeriodItems>
-					<LabelPeriod>Este ano</LabelPeriod>
-					</PeriodItems>
+					{periods.map((period, index) => (
+						<PeriodItems
+							key={index}
+							onPress={() => handlePeriodClick(index)}
+							style={{
+								backgroundColor: colors.gray,
+							}}>
+							<LabelPeriod style={{color: selectedPeriod === index ? colors.backgroundButton : colors.iconGray}}>
+								{period}
+							</LabelPeriod>
+						</PeriodItems>
+					))}
 				</PeriodItemsContainer>
-
-
 
 				<Row>
 					<Column>

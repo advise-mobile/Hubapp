@@ -37,6 +37,8 @@ export default function Category(props) {
 	const {colors} = colorUseTheme;
 
 	const confirmationModalRef = useRef();
+	const [iconOpacity, setIconOpacity] = useState(new Animated.Value(0));
+
 	const confirmationModalRecoverRef = useRef();
 	const [currentItem, setCurrentItem] = useState<ItemProps>();
 
@@ -63,36 +65,70 @@ export default function Category(props) {
 	}, []);
 
 	const renderHiddenItem = useCallback(
-		({item}: {item: ItemProps}) => (
+		({ item }: { item: CategoryItemProps }) => (
 			<Actions
 				as={Animated.View}
 				style={{
 					overflow: 'hidden',
-				}}>
+					opacity: item.id === currentItem?.id ? iconOpacity : 0,
+				}}
+			>
 				<ActionButton onPress={() => handleRecover(item)}>
-					<Image source={iconRestore} style={{width: 30, height: 45}} />
+					<Image source={iconRestore} style={{ width: 30, height: 45 }} />
 				</ActionButton>
 				<ActionButton onPress={() => handleDelete(item)}>
-					<Image source={iconDelete} style={{width: 30, height: 45}} />
+					<Image source={iconDelete} style={{ width: 30, height: 45 }} />
 				</ActionButton>
 			</Actions>
 		),
-		[iconRestore, iconDelete],
+		[iconRestore, iconDelete, iconOpacity, currentItem]
 	);
+
+
 
 	const openRow = useCallback(
 		(item: CategoryItemProps) => {
-			!listRef.current?._rows[item.id].isOpen
-				? listRef.current?._rows[item.id].manuallySwipeRow(-150)
-				: closeOpenedRow(item);
+			const row = listRef.current?._rows[item.id];
+
+			if (!row || row.isOpen) {
+				closeOpenedRow(item);
+				return;
+			}
+
+			setCurrentItem(item);
+
+			row.manuallySwipeRow(-130);
+
+			Animated.timing(iconOpacity, {
+				toValue: 1,
+				duration: 30,
+				useNativeDriver: false,
+			}).start();
 		},
-		[listRef],
+		[listRef, iconOpacity]
 	);
 
+
 	const closeOpenedRow = useCallback(
-		(item: CategoryItemProps) => listRef.current?._rows[item.id].closeRow(),
-		[],
+		(item: CategoryItemProps) => {
+			const row = listRef.current?._rows[item.id];
+
+			if (row && !row.isOpen) {
+				setCurrentItem(null);
+				return;
+			}
+
+			row.closeRow();
+
+			Animated.timing(iconOpacity, {
+				toValue: 0,
+				duration: 50,
+				useNativeDriver: false,
+			}).start();
+		},
+		[listRef, iconOpacity]
 	);
+
 
 	const renderItem = useCallback(
 		({item}: {item: CategoryItemProps}) => (
@@ -100,7 +136,7 @@ export default function Category(props) {
 				<ContainerItems onPress={() => openRow(item)}>
 					<ContainerTextTitle>
 						<ContainerIcon>
-							<FontAwesome name="list" color={colors.pinkTag} size={20} />
+							<FontAwesome name="list" color={item.id === 1 ? colors.pinkTag : colors.greenTag } size={20} />
 						</ContainerIcon>
 						<ContainerText>
 							<TextTitle>{item.title}</TextTitle>

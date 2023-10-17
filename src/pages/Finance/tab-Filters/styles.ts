@@ -22,7 +22,6 @@ export const ContainerItems = styled.TouchableOpacity`
 
 export const TextItems = styled.Text`
 	font-size: 14px;
-	color: ${({ theme }) => theme.colors.BlackInactive};
 	margin-left: 10px;
 	margin-right: 10px;
 `;
