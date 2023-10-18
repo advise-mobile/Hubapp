@@ -69,7 +69,7 @@ export default function Details(props) {
 						</CircleIconContainer>
 
 						<DataTextContainer>
-							<DateText size={20}>{item.date}</DateText>
+							<DateText>{item.date}</DateText>
 						</DataTextContainer>
 					</ContainerDate>
 					<ThumbsIconContainer>

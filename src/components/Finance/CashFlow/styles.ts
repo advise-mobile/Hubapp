@@ -27,8 +27,8 @@ export const ContainerDataReleases = styled.View`
 `;
 
 export const TextData = styled.Text`
-	font-size: 18px;
-	color: ${({ theme }) => theme.colors.grayDarker};
+	font-size: 16px;
+	color: ${({ theme }) => theme.colors.BlackInactive};
 	font-weight: bold;
 `;
 
@@ -48,7 +48,7 @@ export const ContainerDescriptionItems = styled.View`
 export const TextLabelDescription = styled.Text<WeightTextProps>`
 	max-width: 70px;
 	height: 23px;
-	font-size: 15px;
+	font-size: 14px;
 	margin-right: 5px;
 	font-weight: bold;
 	color: ${({ theme }) => theme.colors.BlackInactive};
@@ -58,7 +58,7 @@ export const TextLabelDescription = styled.Text<WeightTextProps>`
 export const TextValueDescriptionProhibited = styled.Text`
 	max-width: 70px;
 	height: 23px;
-	font-size: 15px;
+	font-size: 14px;
 	margin-right: 8px;
 	color: ${({ theme }) => theme.colors.green200};
 `;
@@ -66,7 +66,7 @@ export const TextValueDescriptionProhibited = styled.Text`
 export const TextValueDescriptionExit = styled.Text`
 	max-width: 70px;
 	height: 23px;
-	font-size: 15px;
+	font-size: 14px;
 	margin-right: 8px;
 	color: ${({ theme }) => theme.colors.red200};
 `;
@@ -74,7 +74,7 @@ export const TextValueDescriptionExit = styled.Text`
 export const TextValueDescriptionBalance = styled.Text`
 	max-width: 70px;
 	height: 23px;
-	font-size: 15px;
+	font-size: 14px;
 	margin-right: 8px;
 	color: ${({ theme }) => theme.colors.grayDarker};
 `;

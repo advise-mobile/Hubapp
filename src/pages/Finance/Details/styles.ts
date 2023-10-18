@@ -9,6 +9,9 @@ export const ContainerHeader = styled.View`
 
 export const ContainerScreen = styled.View`
 	flex: 1;
+	border-top-width: 1px;
+  border-color: ${({ theme }) => theme.colors.grayLighter};
+	margin-top: 10px;
 `;
 
 export const FirstContainer = styled.View`
@@ -51,7 +54,7 @@ export const DataTextContainer = styled.View`
 export const DateText = styled.Text`
 	font-weight: bold;
 	font-size: 16px;
-	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactiveDetails};
+	color: ${({theme }) => theme.colors.BlackInactive};
 `;
 
 export const ThumbsIconContainer = styled.View`
@@ -69,7 +72,7 @@ export const DescriptionContainer = styled.View`
 
 export const DataText = styled.Text`
 	font-size: 14px;
-	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactiveDetails};
+	color: ${({ theme }) => theme.colors.inactiveDetails};
 `;
 
 export const InformationContainer = styled.View`
@@ -102,18 +105,18 @@ export const DescriptionOfObservationsContainer = styled.View`
 export const InformationTitleText = styled.Text`
 	font-weight: bold;
 	font-size: 16px;
-	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactiveDetails};
+	color: ${({ theme }) => theme.colors.BlackInactive};
 `;
 
 export const InformationText = styled.Text`
 	font-size: 14px;
-	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactiveDetails};
+	color: ${({ theme }) => theme.colors.BlackInactive};
 `;
 
 export const DescriptionOfObservationsText = styled.Text`
 	font-size: 14px;
 	height: 115px;
 	lineHeight: 20px;
-	color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.inactiveDetails};
+	color: ${({ theme }) => theme.colors.inactiveDetails};
 `;
 

@@ -43,7 +43,7 @@ export const Row = styled.View`
 export const Label = styled.Text`
   margin-right: 12;
   color: ${({ theme }) => theme.colors.darkGray};
-  font-size: ${fonts.regular};
+  font-size: 14px;
 `;
 
 export const Icon = styled.View`

@@ -15,6 +15,7 @@ import {
 	TextTitle,
 } from './styles';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {CategoryItemProps} from './types';
 
 export default function Category(props) {
@@ -74,10 +75,10 @@ export default function Category(props) {
 				}}
 			>
 				<ActionButton onPress={() => handleRecover(item)}>
-					<Image source={iconRestore} style={{ width: 30, height: 45 }} />
+				<MaterialIcons name="edit" size={24} color={colors.fadedBlack} />
 				</ActionButton>
 				<ActionButton onPress={() => handleDelete(item)}>
-					<Image source={iconDelete} style={{ width: 30, height: 45 }} />
+				<MaterialIcons name="block" size={24} color={colors.fadedBlack} />
 				</ActionButton>
 			</Actions>
 		),
@@ -136,7 +137,7 @@ export default function Category(props) {
 				<ContainerItems onPress={() => openRow(item)}>
 					<ContainerTextTitle>
 						<ContainerIcon>
-							<FontAwesome name="list" color={item.id === 1 ? colors.pinkTag : colors.greenTag } size={20} />
+						<MaterialIcons name="label" color={item.id === 1 ? colors.pinkTag : colors.greenTag } size={24} />
 						</ContainerIcon>
 						<ContainerText>
 							<TextTitle>{item.title}</TextTitle>

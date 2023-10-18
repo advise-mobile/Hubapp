@@ -34,15 +34,16 @@ export const TextTitle = styled.Text`
 	font-size: 16px;
 	font-weight: bold;
 	color: ${({ theme }) => theme.colors.BlackInactive};
+	margin-top: 1.5px;
 `;
 
 export const SubTitle = styled.Text`
 	font-size: 16px;
 	max-width: 170px;
 	height: 24px;
-	margin-left: 15px;
+	margin-left: 14px;
 	color: ${({ theme }) => theme.colors.BlackInactive};
-
+	margin-top: 2.5px;
 `;
 
 

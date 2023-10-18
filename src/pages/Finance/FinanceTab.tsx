@@ -41,7 +41,7 @@ export default FinanceTab = props => {
 
   const renderTabs = useCallback(() =>
     <ScrollableTabView ref={scrollRef} initialPage={0} renderTabBar={() => <CustomScrollableTabBar theme={colorUseTheme} />} onChangeTab={tab => setSelectedTab(tab.i)}>
-			<Finance tabLabel='Lançamentos' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 0} />
+			<Finance tabLabel='Lançamentos' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 0}/>
 			<CashFlow tabLabel='Fluxo de caixa' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 1} />
 			<Category tabLabel='Categoria' setCustomActions={setCustomActions} navigation={props.navigation} selected={selectedTab == 2} />
     </ScrollableTabView >, [selectedTab]
