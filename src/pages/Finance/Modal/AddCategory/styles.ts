@@ -1,6 +1,12 @@
 import styled from 'styled-components/native';
 import { fonts } from 'assets/styles';
 
+interface PropsColorsItem {
+  backgroundColor: string;
+  borderWidth: string;
+  borderColor: string;
+}
+
 export const Footer = styled.View`
   flex-direction: row;
   align-items: center;
@@ -119,10 +125,12 @@ export const ContainerColor = styled.View`
 	flex-direction: row;
 `;
 
-export const ColorsItem = styled.TouchableOpacity`
+export const ColorsItem = styled.TouchableOpacity<PropsColorsItem>`
 	width: 51px;
 	height: 20px;
 	border-radius: 17px;
-	background-color: red;
+	background-color: ${({ PropsColorsItem, theme }) => PropsColorsItem ? PropsColorsItem : theme.colors.textvalue}; ;
 	margin-right: 7px;
+	border-width: ${({ borderWidth }) => borderWidth ? borderWidth : 4};
+	border-color: ${({ borderColor, theme }) => borderColor ? borderColor : theme.colors.colorSelect};
 `;

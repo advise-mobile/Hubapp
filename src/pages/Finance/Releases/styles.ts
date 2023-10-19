@@ -10,7 +10,7 @@ interface WeightTextProps {
 
 export const TextValue = styled.Text<ColorTextProps>`
   font-size: 14px;
-  color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.textInactive};
+  color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.textvalue};
 `;
 
 export const TextLabel = styled.Text<WeightTextProps>`
@@ -33,7 +33,7 @@ export const ContainerFinance = styled.View`
 
 export const ContainerResume = styled.View`
 	border-bottom-width: 0.5;
-	border-color:  ${({ theme }) => theme.colors.iconGray};
+	border-color:  ${({ theme }) => theme.colors.bordercolor};
 	min-height: 40px;
 	padding: 5px;
 `;
@@ -63,7 +63,7 @@ export const ContainerItensFinance = styled.View`
   height: 55px;
   align-items: center;
   border-bottom-width: 1px;
-  border-color: ${({ theme }) => theme.colors.grayLighter};  
+  border-color: ${({ theme }) => theme.colors.bordercolor};
 `;
 
 

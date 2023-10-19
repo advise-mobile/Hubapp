@@ -49,6 +49,15 @@ export default lightTheme  = {
 			typecolor: '#9FA8DA',
 			during: '#F5F5F5',
 
+			bordercolor: '#ABABAB',
+			tabcolor: '#000000',
+			textTab: '#ffff',
+			textvalue: '#666666',
+			colorSelect: '#000000',
+
+
+
+
       grayLighter: 'rgba(0, 0, 0, .12)',
       grayLight: 'rgba(0, 0, 0, .5)',
       grayDarker: 'rgba(0, 0, 0, .8)',

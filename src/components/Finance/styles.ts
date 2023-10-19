@@ -5,9 +5,10 @@ interface WeightTextProps {
 }
 
 export const ContainerReleases = styled.TouchableOpacity`
-  min-height: 135px;
+  min-height: 110px;
+	flex: 1;
   border-bottom-width: 1px;
-  border-color: ${({ theme }) => theme.colors.grayLighter};
+  border-color: ${({ theme }) => theme.colors.bordercolor};
 `;
 
 export const ContainerItemReleases = styled.View`
@@ -45,9 +46,6 @@ export const TextLabelDescriptionReleases = styled.Text<WeightTextProps>`
 	color: ${({ theme }) => theme.colors.grayDarker};
 	font-weight: ${({ fontWeight }) => fontWeight ? 'bold':'normal'};
 	line-height: 24;
-	/* min-width: 250px; */
-	/* border: 1px solid #000000; */
-	/* align-items: center; */
 `;
 
 export const ContainerLabel = styled.View`
@@ -57,10 +55,10 @@ export const ContainerLabel = styled.View`
 
 
 export const ContainerValueReleases =styled.View`
-  	flex-direction: row;
+  flex-direction: row;
 	height: 30px;
 	align-items: center;
-	/* border: 1px solid #000000; */
+
 `;
 
 export const TextValueReleases = styled.Text<WeightTextProps>`
@@ -77,11 +75,10 @@ export const ContainerCategoryReleases = styled.View`
 	justify-content: center;
 	padding: 4px;
 	background-color: ${({ theme }) => theme.colors.green};
-
 `;
 
 export const TextLabelCategory = styled.Text<WeightTextProps>`
-  	font-size: 12px;
+  font-size: 12px;
 	margin-left: 2px;
 	margin-right: 2px;
 	color: ${({ theme }) => theme.colors.Darkesgray};
@@ -104,6 +101,6 @@ export const TextLabel = styled.Text<WeightTextProps>`
 `;
 
 export const Content = styled.View`
-justify-content: space-between;
-margin: 0px 25px 10px 30px;
-`
+	justify-content: space-between;
+	margin: 0px 25px 10px 30px;
+`;

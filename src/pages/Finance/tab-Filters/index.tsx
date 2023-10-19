@@ -25,12 +25,12 @@ const FilterScreen = () => {
         <ContainerItems
           onPress={() => setSelectedFilter(isSelected ? null : item.id)}
           style={{
-            backgroundColor: isSelected ? colors.secondary : 'white',
+            backgroundColor: isSelected ? colors.tabcolor : colors.realWhite,
           }}
         >
           <TextItems
             style={{
-              color: isSelected ? 'white' : colors.BlackInactive,
+              color: isSelected ? colors.textTab : colors.BlackInactive,
             }}
           >
             {item.name}

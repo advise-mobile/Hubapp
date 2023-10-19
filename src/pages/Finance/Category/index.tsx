@@ -1,7 +1,5 @@
 import {SwipeListView} from 'react-native-swipe-list-view';
 import React, {useCallback, useRef, useState} from 'react';
-import Image from 'react-native-remote-svg';
-
 import {Actions, ActionButton} from 'assets/styles/global';
 
 import {useTheme} from 'styled-components';
@@ -14,7 +12,6 @@ import {
 	SubTitle,
 	TextTitle,
 } from './styles';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {CategoryItemProps} from './types';
 
@@ -155,7 +152,6 @@ export default function Category(props) {
 			ref={listRef}
 			data={categories}
 			disableRightSwipe
-			previewRowKey={'2'}
 			rightOpenValue={-120}
 			stopRightSwipe={-120}
 			closeOnRowOpen={false}

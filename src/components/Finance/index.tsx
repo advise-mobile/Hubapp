@@ -15,19 +15,18 @@ import {
 	ContainerValueReleases,
 	TextLabel,
 	ContainerLabel,
-	Content
+	Content,
 } from './styles';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useTheme} from 'styled-components';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const FinanceDataItem = ({item}: DataItemProps) => {
-
 	const navigation = useNavigation();
 
 	function Details() {
-		navigation.navigate('Details',{
-			"item":item
+		navigation.navigate('Details', {
+			item: item,
 		});
 	}
 
@@ -42,9 +41,9 @@ const FinanceDataItem = ({item}: DataItemProps) => {
 					<ContainerIconDescriptionReleases>
 						<ContainerIcon>
 							{item.type === 'receita' ? (
-								<FontAwesome size={8} name="circle" si color={colors.green200}/>
+								<FontAwesome size={8} name="circle" si color={colors.green200} />
 							) : (
-								<FontAwesome size={8} name="circle" color={colors.red200}/>
+								<FontAwesome size={8} name="circle" color={colors.red200} />
 							)}
 						</ContainerIcon>
 
@@ -55,30 +54,32 @@ const FinanceDataItem = ({item}: DataItemProps) => {
 
 					<ContainerIconThumbs>
 						{item.type === 'receita' ? (
-							<FontAwesome name="thumbs-up" color={colors.blueIcon} size={20}/>
+							<FontAwesome name="thumbs-up" color={colors.blueIcon} size={20} />
 						) : (
 							<FontAwesome name="thumbs-down" color={colors.colorIconThumbdown} size={20} />
 						)}
 					</ContainerIconThumbs>
 				</ContainerItemReleases>
 
-			<Content>
-				<ContainerDescriptionReleases>
-					<TextLabelDescriptionReleases numberOfRows={2}>{item.description}</TextLabelDescriptionReleases>
-				</ContainerDescriptionReleases>
+				<Content>
+					<ContainerDescriptionReleases>
+						<TextLabelDescriptionReleases numberOfRows={2}>
+							{item.description}
+						</TextLabelDescriptionReleases>
+					</ContainerDescriptionReleases>
 
-				<ContainerValueReleases>
-					<TextValueReleases fontWeight>R$ {item.value}</TextValueReleases>
+					<ContainerValueReleases>
+						<TextValueReleases fontWeight>R$ {item.value}</TextValueReleases>
 
-					<ContainerCategoryReleases>
-						<TextLabelCategory fontWeight>{item.category}</TextLabelCategory>
-					</ContainerCategoryReleases>
+						<ContainerCategoryReleases>
+							<TextLabelCategory fontWeight>{item.category}</TextLabelCategory>
+						</ContainerCategoryReleases>
 
-					<ContainerDownloadedReleases>
-						<TextLabelCategory fontWeight>Baixado em {item.dateOff}</TextLabelCategory>
-					</ContainerDownloadedReleases>
-				</ContainerValueReleases>
-			</Content>
+						<ContainerDownloadedReleases>
+							<TextLabelCategory fontWeight>Baixado em {item.dateOff}</TextLabelCategory>
+						</ContainerDownloadedReleases>
+					</ContainerValueReleases>
+				</Content>
 			</ContainerReleases>
 		</>
 	);

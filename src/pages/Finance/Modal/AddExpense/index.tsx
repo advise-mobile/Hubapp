@@ -133,7 +133,12 @@ export default AddExpense = forwardRef((props, ref) => {
 								: {},
 						]}
 						onPress={() => setSelectedColor(colors.gray)}>
-						<LabelItems>Categoria 01</LabelItems>
+						<LabelItems style={[
+              selectedColor === colors.gray
+							? {color: colors.primary}
+								: {},
+            ]}
+          >Categoria 01</LabelItems>
 					</Items>
 
 					<Items style={[

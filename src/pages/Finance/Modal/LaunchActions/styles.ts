@@ -42,7 +42,7 @@ export const Row = styled.View`
 
 export const Label = styled.Text`
   margin-right: 12;
-  color: ${({ theme }) => theme.colors.darkGray};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-size: 14px;
 `;
 

@@ -123,56 +123,40 @@ export default AddCategory = forwardRef((props, ref) => {
 			<ContentType>
 				<ContainerColor>
 					<ColorsItem
-						style={[
-							{backgroundColor: colors.colorBackGround},
-							selectedColor === colors.colorBackGround
-								? {borderWidth: 1, borderColor: colors.primary}
-								: {},
-						]}
+						borderWidth={selectedColor === colors.colorBackGround ? '4px' : '1px'}
+						borderColor={selectedColor === colors.colorBackGround ? colors.colorSelect : 'transparent'}
 						onPress={() => setSelectedColor(colors.colorBackGround)}
+						PropsColorsItem={colors.colorBackGround}
 					/>
 					<ColorsItem
-						style={[
-							{backgroundColor: colors.pinkRed},
-							selectedColor === colors.pinkRed ? {borderWidth: 1, borderColor: colors.primary} : {},
-						]}
+						borderWidth={selectedColor === colors.pinkRed ? '4px' : '1px'}
+						borderColor={selectedColor === colors.pinkRed ? colors.colorSelect : 'transparent'}
 						onPress={() => setSelectedColor(colors.pinkRed)}
+						PropsColorsItem={colors.pinkRed}
 					/>
 					<ColorsItem
-						style={[
-							{backgroundColor: colors.pink},
-							selectedColor === colors.pink
-								? {borderWidth: 1, borderColor: colors.primary}
-								: {},
-						]}
+						borderWidth={selectedColor === colors.pink ? '4px' : '1px'}
+						borderColor={selectedColor === colors.pink ? colors.colorSelect : 'transparent'}
 						onPress={() => setSelectedColor(colors.pink)}
+						PropsColorsItem={colors.pink}
 					/>
 					<ColorsItem
-						style={[
-							{backgroundColor: colors.pinkTag},
-							selectedColor === colors.pinkTag
-								? {borderWidth: 1, borderColor: colors.primary}
-								: {},
-						]}
+						borderWidth={selectedColor === colors.pinkTag ? '4px' : '1px'}
+						borderColor={selectedColor === colors.pinkTag ? colors.colorSelect : 'transparent'}
 						onPress={() => setSelectedColor(colors.pinkTag)}
+						PropsColorsItem={colors.pinkTag}
 					/>
 					<ColorsItem
-						style={[
-							{backgroundColor: colors.purple},
-							selectedColor === colors.purple
-								? {borderWidth: 1, borderColor: colors.primary}
-								: {},
-						]}
+						borderWidth={selectedColor === colors.purple ? '4px' : '1px'}
+						borderColor={selectedColor === colors.purple ? colors.colorSelect : 'transparent'}
 						onPress={() => setSelectedColor(colors.purple)}
+						PropsColorsItem={colors.purple}
 					/>
 					<ColorsItem
-						style={[
-							{backgroundColor: colors.typecolor},
-							selectedColor === colors.typecolor
-								? {borderWidth: 1, borderColor: colors.primary}
-								: {},
-						]}
+						borderWidth={selectedColor === colors.typecolor ? '4px' : '1px'}
+						borderColor={selectedColor === colors.typecolor ? colors.colorSelect : 'transparent'}
 						onPress={() => setSelectedColor(colors.typecolor)}
+						PropsColorsItem={colors.typecolor}
 					/>
 				</ContainerColor>
 			</ContentType>

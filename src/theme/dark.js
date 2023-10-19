@@ -7,7 +7,7 @@ export default darkTheme = {
 		realWhite: '#000000',
 		realWhites: '#000000',
 		darkGray: '#666666',
-		gray: '#EEEEEE',
+		gray: 'rgba(255, 255, 255, .12)',
 		trueGray: '#222222',
 		textInactive: '#BBBBBB',
 		BlackInactive: '#EEEEEE',
@@ -50,6 +50,13 @@ export default darkTheme = {
 		neutral: '#F5F5F5',
 		typecolor: '#9FA8DA',
 		during: 'rgba(255, 255, 255, .12)',
+
+		bordercolor: '#BDBDBD',
+		tabcolor: '#FFFFFF',
+		textTab: '#000',
+		textvalue: '#ffffff',
+		colorSelect: '#000000',
+
 
 		grayLighter: 'rgba(255, 255, 255, .12)',
 		grayLight: 'rgba(255, 255, 255, .5)',
