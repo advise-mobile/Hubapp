@@ -55,7 +55,7 @@ export default darkTheme = {
 		tabcolor: '#FFFFFF',
 		textTab: '#000',
 		textvalue: '#ffffff',
-		colorSelect: '#000000',
+		colorSelect: '#111111',
 
 
 		grayLighter: 'rgba(255, 255, 255, .12)',

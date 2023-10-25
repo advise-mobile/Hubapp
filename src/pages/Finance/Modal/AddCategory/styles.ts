@@ -2,9 +2,9 @@ import styled from 'styled-components/native';
 import { fonts } from 'assets/styles';
 
 interface PropsColorsItem {
-  backgroundColor: string;
-  borderWidth: string;
-  borderColor: string;
+	backgroundColor: string;
+	borderWidth: string;
+	borderColor: string;
 }
 
 export const Footer = styled.View`
@@ -126,11 +126,12 @@ export const ContainerColor = styled.View`
 `;
 
 export const ColorsItem = styled.TouchableOpacity<PropsColorsItem>`
-	width: 51px;
-	height: 20px;
-	border-radius: 17px;
-	background-color: ${({ PropsColorsItem, theme }) => PropsColorsItem ? PropsColorsItem : theme.colors.textvalue}; ;
-	margin-right: 7px;
-	border-width: ${({ borderWidth }) => borderWidth ? borderWidth : 4};
-	border-color: ${({ borderColor, theme }) => borderColor ? borderColor : theme.colors.colorSelect};
+  width: 51px;
+  height: 20px;
+  border-radius: 17px;
+  background-color: ${({ PropsColorsItem, theme }) => PropsColorsItem ? PropsColorsItem : theme.colors.textvalue};
+  margin-right: 7px;
+  border-width: 5px;
+  border-color: ${({ isSelected, theme }) => isSelected ? 'transparent' : theme.colors.colorSelect};
 `;
+

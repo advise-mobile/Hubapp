@@ -9,6 +9,9 @@ import {
 	ContainerItems,
 	ContainerText,
 	ContainerTextTitle,
+	Movement,
+	MovementHeader,
+	MovementHeading,
 	SubTitle,
 	TextTitle,
 } from './styles';
@@ -35,7 +38,7 @@ export default function Category(props) {
 	const {colors} = colorUseTheme;
 
 	const confirmationModalRef = useRef();
-	const [iconOpacity, setIconOpacity] = useState(new Animated.Value(0));
+
 
 	const confirmationModalRecoverRef = useRef();
 	const [currentItem, setCurrentItem] = useState<ItemProps>();
@@ -68,7 +71,6 @@ export default function Category(props) {
 				as={Animated.View}
 				style={{
 					overflow: 'hidden',
-					opacity: item.id === currentItem?.id ? iconOpacity : 0,
 				}}
 			>
 				<ActionButton onPress={() => handleRecover(item)}>
@@ -79,69 +81,40 @@ export default function Category(props) {
 				</ActionButton>
 			</Actions>
 		),
-		[iconRestore, iconDelete, iconOpacity, currentItem]
+		[iconRestore, iconDelete]
 	);
 
 
 
 	const openRow = useCallback(
 		(item: CategoryItemProps) => {
-			const row = listRef.current?._rows[item.id];
-
-			if (!row || row.isOpen) {
-				closeOpenedRow(item);
-				return;
-			}
-
-			setCurrentItem(item);
-
-			row.manuallySwipeRow(-130);
-
-			Animated.timing(iconOpacity, {
-				toValue: 1,
-				duration: 30,
-				useNativeDriver: false,
-			}).start();
+			!listRef.current?._rows[item.id].isOpen
+				? listRef.current?._rows[item.id].manuallySwipeRow(-150)
+				: closeOpenedRow(item);
 		},
-		[listRef, iconOpacity]
+		[listRef],
 	);
 
 
 	const closeOpenedRow = useCallback(
-		(item: CategoryItemProps) => {
-			const row = listRef.current?._rows[item.id];
-
-			if (row && !row.isOpen) {
-				setCurrentItem(null);
-				return;
-			}
-
-			row.closeRow();
-
-			Animated.timing(iconOpacity, {
-				toValue: 0,
-				duration: 50,
-				useNativeDriver: false,
-			}).start();
-		},
-		[listRef, iconOpacity]
+		(item: CategoryItemProps) => listRef.current?._rows[item.id].closeRow(),
+		[],
 	);
 
 
 	const renderItem = useCallback(
 		({item}: {item: CategoryItemProps}) => (
 			<Animated.View>
-				<ContainerItems onPress={() => openRow(item)}>
-					<ContainerTextTitle>
-						<ContainerIcon>
-						<MaterialIcons name="label" color={item.id === 1 ? colors.pinkTag : colors.greenTag } size={24} />
-						</ContainerIcon>
-						<ContainerText>
+				<Movement>
+					<MovementHeader>
+						<MovementHeading onPress={() => openRow(item)} underlayColor={colors.white} activeOpacity={1}>
+							<ContainerIcon>
+								<MaterialIcons name="label" color={item.id === 1 ? colors.pinkTag : colors.greenTag } size={24} />
+							</ContainerIcon>
 							<TextTitle>{item.title}</TextTitle>
-						</ContainerText>
-						<SubTitle>{item.SubTitle}</SubTitle>
-					</ContainerTextTitle>
-				</ContainerItems>
+						</MovementHeading>
+					</MovementHeader>
+				</Movement>
 			</Animated.View>
 		),
 		[categories, colors],

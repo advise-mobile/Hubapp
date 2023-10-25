@@ -38,7 +38,7 @@ import MovementDetail from '../pages/Movements/Details';
 import MovementsTrash from '../pages/MovementsTrash';
 
 
-import FinanceTab from '../pages/Finance/FinanceTab';
+import FinanceTab from '../pages/Finance';
 import Finance from '../pages/Finance/Releases';
 import Details from '../pages/Finance/Details';
 import CashFlow from '../pages/Finance/CashFlow';

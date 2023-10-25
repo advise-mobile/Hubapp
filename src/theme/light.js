@@ -53,7 +53,7 @@ export default lightTheme  = {
 			tabcolor: '#000000',
 			textTab: '#ffff',
 			textvalue: '#666666',
-			colorSelect: '#000000',
+			colorSelect: '#ffff',
 
 
 

@@ -8,7 +8,7 @@ interface WeightTextProps {
 export const ContainerReleases = styled.View`
 		width: 414px;
 		height: 90px;
-		border-bottom-width: 0.5;
+		border-bottom-width: 0.4;
 		border-color: #ABABAB;
 		align-items: center;
 		justify-content: center;
@@ -27,7 +27,7 @@ export const ContainerDataReleases = styled.View`
 `;
 
 export const TextData = styled.Text`
-	font-size: 16px;
+	font-size: 14px;
 	color: ${({ theme }) => theme.colors.BlackInactive};
 	font-weight: bold;
 `;
@@ -48,7 +48,7 @@ export const ContainerDescriptionItems = styled.View`
 export const TextLabelDescription = styled.Text<WeightTextProps>`
 	max-width: 70px;
 	height: 23px;
-	font-size: 14px;
+	font-size: 13px;
 	margin-right: 5px;
 	font-weight: bold;
 	color: ${({ theme }) => theme.colors.BlackInactive};
@@ -58,7 +58,7 @@ export const TextLabelDescription = styled.Text<WeightTextProps>`
 export const TextValueDescriptionProhibited = styled.Text`
 	max-width: 70px;
 	height: 23px;
-	font-size: 14px;
+	font-size: 13px;
 	margin-right: 8px;
 	color: ${({ theme }) => theme.colors.green200};
 `;
@@ -66,7 +66,7 @@ export const TextValueDescriptionProhibited = styled.Text`
 export const TextValueDescriptionExit = styled.Text`
 	max-width: 70px;
 	height: 23px;
-	font-size: 14px;
+	font-size: 13px;
 	margin-right: 8px;
 	color: ${({ theme }) => theme.colors.red200};
 `;
@@ -74,7 +74,7 @@ export const TextValueDescriptionExit = styled.Text`
 export const TextValueDescriptionBalance = styled.Text`
 	max-width: 70px;
 	height: 23px;
-	font-size: 14px;
+	font-size: 13px;
 	margin-right: 8px;
 	color: ${({ theme }) => theme.colors.grayDarker};
 `;

@@ -181,8 +181,8 @@ export default function Deadlines(props) {
   }));
 
   let data = [];
- 
-  const [currentFilter, setCurrentFilter] = useState('a-vencer');                          
+
+  const [currentFilter, setCurrentFilter] = useState('a-vencer');
 
   if(currentFilter !== 'concluidos'){
 
@@ -194,7 +194,7 @@ export default function Deadlines(props) {
   const [currentIdUpdate, setCurrentIdUpdate] = useState(null);
   const [customFilters, setCustomFilters] = useState({});
   const [currentDeadline, setCurrentDeadline] = useState(data[0]);
-  
+
   const [sharing, setSharing] = useState(false);
   const [trigger, setTrigger] = useState(false);
   const [page, setPage] = useState(1);
@@ -480,7 +480,7 @@ export default function Deadlines(props) {
       <ActionButton onPress={() => handleEmail(item)}>
         <MaterialIcons name="mail" size={24} color={colors.fadedBlack} />
       </ActionButton>
-      {!item.importante && 
+      {!item.importante &&
         <ActionButton onPress={() => !updating && markAsImportant(item)}>
           {updating && (item.id === currentIdUpdate) ? <Spinner height='auto' /> : <MaterialIcons name="flag" size={24} color={colors.fadedBlack} />}
 

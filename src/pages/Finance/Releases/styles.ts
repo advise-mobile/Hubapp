@@ -32,7 +32,7 @@ export const ContainerFinance = styled.View`
 `;
 
 export const ContainerResume = styled.View`
-	border-bottom-width: 0.5;
+	border-bottom-width: 0.3;
 	border-color:  ${({ theme }) => theme.colors.bordercolor};
 	min-height: 40px;
 	padding: 5px;
@@ -62,7 +62,7 @@ export const ContainerItensFinance = styled.View`
   justify-content: space-between;
   height: 55px;
   align-items: center;
-  border-bottom-width: 1px;
+  border-bottom-width: 0.3;
   border-color: ${({ theme }) => theme.colors.bordercolor};
 `;
 

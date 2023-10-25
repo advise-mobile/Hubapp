@@ -7,7 +7,7 @@ interface WeightTextProps {
 export const ContainerReleases = styled.TouchableOpacity`
   min-height: 110px;
 	flex: 1;
-  border-bottom-width: 1px;
+  border-bottom-width: 0.3;
   border-color: ${({ theme }) => theme.colors.bordercolor};
 `;
 

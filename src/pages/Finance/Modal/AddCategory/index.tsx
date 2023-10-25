@@ -123,38 +123,32 @@ export default AddCategory = forwardRef((props, ref) => {
 			<ContentType>
 				<ContainerColor>
 					<ColorsItem
-						borderWidth={selectedColor === colors.colorBackGround ? '4px' : '1px'}
-						borderColor={selectedColor === colors.colorBackGround ? colors.colorSelect : 'transparent'}
+						isSelected={selectedColor === colors.colorBackGround}
 						onPress={() => setSelectedColor(colors.colorBackGround)}
 						PropsColorsItem={colors.colorBackGround}
 					/>
 					<ColorsItem
-						borderWidth={selectedColor === colors.pinkRed ? '4px' : '1px'}
-						borderColor={selectedColor === colors.pinkRed ? colors.colorSelect : 'transparent'}
+						isSelected={selectedColor === colors.pinkRed}
 						onPress={() => setSelectedColor(colors.pinkRed)}
 						PropsColorsItem={colors.pinkRed}
 					/>
 					<ColorsItem
-						borderWidth={selectedColor === colors.pink ? '4px' : '1px'}
-						borderColor={selectedColor === colors.pink ? colors.colorSelect : 'transparent'}
+						isSelected={selectedColor === colors.pink}
 						onPress={() => setSelectedColor(colors.pink)}
 						PropsColorsItem={colors.pink}
 					/>
 					<ColorsItem
-						borderWidth={selectedColor === colors.pinkTag ? '4px' : '1px'}
-						borderColor={selectedColor === colors.pinkTag ? colors.colorSelect : 'transparent'}
+						isSelected={selectedColor === colors.pinkTag}
 						onPress={() => setSelectedColor(colors.pinkTag)}
 						PropsColorsItem={colors.pinkTag}
 					/>
 					<ColorsItem
-						borderWidth={selectedColor === colors.purple ? '4px' : '1px'}
-						borderColor={selectedColor === colors.purple ? colors.colorSelect : 'transparent'}
+						isSelected={selectedColor === colors.purple}
 						onPress={() => setSelectedColor(colors.purple)}
 						PropsColorsItem={colors.purple}
 					/>
 					<ColorsItem
-						borderWidth={selectedColor === colors.typecolor ? '4px' : '1px'}
-						borderColor={selectedColor === colors.typecolor ? colors.colorSelect : 'transparent'}
+						isSelected={selectedColor === colors.typecolor}
 						onPress={() => setSelectedColor(colors.typecolor)}
 						PropsColorsItem={colors.typecolor}
 					/>

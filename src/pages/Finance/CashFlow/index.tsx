@@ -10,6 +10,7 @@ import {
 	ContainerIconMore,
 	ContainerMainInformation,
 	ContainerScreen,
+	ContainerValueInformation,
 	TextLabel,
 	TextValue,
 	TopContainer,
@@ -17,7 +18,6 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CashFlowDataItem from '@components/Finance/CashFlow';
 import StockCashFlow from '../Modal/StockCashFlow';
-import AddCategory from '../Modal/AddCategory';
 
 export default function CashFlow() {
 	const dataItem = [
@@ -64,9 +64,9 @@ export default function CashFlow() {
 										<ContainerMainInformation>
 											<TextLabel WeightTextProps>Saldo Total</TextLabel>
 
-											<ContainerMainInformation>
+											<ContainerValueInformation>
 												<TextValue>16.251,55</TextValue>
-											</ContainerMainInformation>
+											</ContainerValueInformation>
 										</ContainerMainInformation>
 
 										<ContainerIconMore onPress={() => CategoryRef.current?.open()}>
