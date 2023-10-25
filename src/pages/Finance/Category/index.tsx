@@ -6,9 +6,7 @@ import {useTheme} from 'styled-components';
 import {Animated} from 'react-native';
 import {
 	ContainerIcon,
-	ContainerItems,
-	ContainerText,
-	ContainerTextTitle,
+	ContainerSubtitle,
 	Movement,
 	MovementHeader,
 	MovementHeading,
@@ -39,7 +37,6 @@ export default function Category(props) {
 
 	const confirmationModalRef = useRef();
 
-
 	const confirmationModalRecoverRef = useRef();
 	const [currentItem, setCurrentItem] = useState<ItemProps>();
 
@@ -66,25 +63,22 @@ export default function Category(props) {
 	}, []);
 
 	const renderHiddenItem = useCallback(
-		({ item }: { item: CategoryItemProps }) => (
+		({item}: {item: CategoryItemProps}) => (
 			<Actions
 				as={Animated.View}
 				style={{
 					overflow: 'hidden',
-				}}
-			>
+				}}>
 				<ActionButton onPress={() => handleRecover(item)}>
-				<MaterialIcons name="edit" size={24} color={colors.fadedBlack} />
+					<MaterialIcons name="edit" size={24} color={colors.fadedBlack} />
 				</ActionButton>
 				<ActionButton onPress={() => handleDelete(item)}>
-				<MaterialIcons name="block" size={24} color={colors.fadedBlack} />
+					<MaterialIcons name="block" size={24} color={colors.fadedBlack} />
 				</ActionButton>
 			</Actions>
 		),
-		[iconRestore, iconDelete]
+		[iconRestore, iconDelete],
 	);
-
-
 
 	const openRow = useCallback(
 		(item: CategoryItemProps) => {
@@ -95,24 +89,35 @@ export default function Category(props) {
 		[listRef],
 	);
 
-
 	const closeOpenedRow = useCallback(
 		(item: CategoryItemProps) => listRef.current?._rows[item.id].closeRow(),
 		[],
 	);
-
 
 	const renderItem = useCallback(
 		({item}: {item: CategoryItemProps}) => (
 			<Animated.View>
 				<Movement>
 					<MovementHeader>
-						<MovementHeading onPress={() => openRow(item)} underlayColor={colors.white} activeOpacity={1}>
-							<ContainerIcon>
-								<MaterialIcons name="label" color={item.id === 1 ? colors.pinkTag : colors.greenTag } size={24} />
-							</ContainerIcon>
+						<ContainerIcon>
+							<MaterialIcons
+								name="label"
+								color={item.id === 1 ? colors.pinkTag : colors.greenTag}
+								size={24}
+							/>
+						</ContainerIcon>
+						<MovementHeading
+							onPress={() => openRow(item)}
+							underlayColor={colors.white}
+							activeOpacity={1}>
 							<TextTitle>{item.title}</TextTitle>
 						</MovementHeading>
+
+						<ContainerSubtitle >
+							<SubTitle onPress={() => openRow(item)}
+							underlayColor={colors.white}
+							activeOpacity={1}>{item.SubTitle}</SubTitle>
+						</ContainerSubtitle>
 					</MovementHeader>
 				</Movement>
 			</Animated.View>
