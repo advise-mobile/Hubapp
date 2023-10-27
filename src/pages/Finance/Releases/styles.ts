@@ -1,7 +1,8 @@
 import styled from 'styled-components/native';
 
 interface ColorTextProps {
-	colorText: string
+	colorText: string;
+  fontWeight: boolean;
 }
 
 interface WeightTextProps {
@@ -11,6 +12,7 @@ interface WeightTextProps {
 export const TextValue = styled.Text<ColorTextProps>`
   font-size: 14px;
   color: ${({ colorText, theme }) => colorText ? colorText : theme.colors.textvalue};
+  font-weight:${({ fontWeight }) => fontWeight ? "bold" : "normal"};
 `;
 
 export const TextLabel = styled.Text<WeightTextProps>`
@@ -60,7 +62,7 @@ export const ContainerItensFinance = styled.View`
   flex-direction: row;
   padding: 15px;
   justify-content: space-between;
-  height: 55px;
+  height: 50px;
   align-items: center;
   border-bottom-width: 0.3;
   border-color: ${({ theme }) => theme.colors.bordercolor};

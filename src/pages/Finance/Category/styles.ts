@@ -24,23 +24,23 @@ export const ContainerSubtitle = styled.View`
 	height: 23px;
 `;
 
-export const Movement = styled.View`
+export const Container = styled.View`
   background-color:  ${({ theme }) => theme.colors.white};
   padding: 12px 17px;
-  border-bottom-width: 1px;
-	border-top-width: 1px;
+  border-bottom-width: 0.7px;
   border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
-	border-top-color: ${({ theme }) => theme.colors.grayLighter};
+
+
 `;
 
-export const MovementHeader = styled.View`
+export const ContainerItems = styled.View`
   flex-wrap: nowrap;
-  margin-bottom: 8px;
+  margin-top: 1px;
   flex-direction: row;
   align-items: center;
 `;
 
-export const MovementHeading = styled.Text`
+export const ContainerTitle = styled.Text`
   color: ${({ theme }) => theme.colors.primary};
   font-family: ${props => props.read ? fonts.circularStdBook : fonts.circularStdBold};
   font-size: 16px;
@@ -48,8 +48,3 @@ export const MovementHeading = styled.Text`
 	max-width: 70px;
 	height: 25px;
 `;
-
-
-
-
-

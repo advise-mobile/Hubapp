@@ -47,6 +47,8 @@ import CashFlow from './CashFlow';
 import Release from '../Finance/Releases'
 import Category from './Category';
 
+//import Category from '@pages/MovementsTrash';
+
 import ReleaseFilters from './Filters';
 import CashFlowFilter from '../Finance/Modal/CashFlowFilter'
 import CategoryFilter from './Modal/CategoryFilter';

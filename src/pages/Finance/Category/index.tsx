@@ -5,11 +5,11 @@ import {Actions, ActionButton} from 'assets/styles/global';
 import {useTheme} from 'styled-components';
 import {Animated} from 'react-native';
 import {
+	Container,
 	ContainerIcon,
+	ContainerItems,
 	ContainerSubtitle,
-	Movement,
-	MovementHeader,
-	MovementHeading,
+	ContainerTitle,
 	SubTitle,
 	TextTitle,
 } from './styles';
@@ -97,8 +97,8 @@ export default function Category(props) {
 	const renderItem = useCallback(
 		({item}: {item: CategoryItemProps}) => (
 			<Animated.View>
-				<Movement>
-					<MovementHeader>
+				<Container>
+					<ContainerItems>
 						<ContainerIcon>
 							<MaterialIcons
 								name="label"
@@ -106,20 +106,20 @@ export default function Category(props) {
 								size={24}
 							/>
 						</ContainerIcon>
-						<MovementHeading
+						<ContainerTitle
 							onPress={() => openRow(item)}
 							underlayColor={colors.white}
 							activeOpacity={1}>
 							<TextTitle>{item.title}</TextTitle>
-						</MovementHeading>
+						</ContainerTitle>
 
 						<ContainerSubtitle >
 							<SubTitle onPress={() => openRow(item)}
 							underlayColor={colors.white}
 							activeOpacity={1}>{item.SubTitle}</SubTitle>
 						</ContainerSubtitle>
-					</MovementHeader>
-				</Movement>
+					</ContainerItems>
+				</Container>
 			</Animated.View>
 		),
 		[categories, colors],

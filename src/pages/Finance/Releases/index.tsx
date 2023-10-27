@@ -1,6 +1,8 @@
-import React from 'react';
+import React,{ useEffect, useState} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FinanceDataItem from '@components/Finance';
+
+import Spinner from 'components/Spinner';
 
 import {
 	ContainerFinance,
@@ -16,15 +18,52 @@ import {
 	ContainerIconReleases,
 } from './styles';
 
+import { ItemProps,ItemResumeProps } from "./types";
+
 import {Container} from 'assets/styles/global';
 
 import {useTheme} from 'styled-components';
 import {ScrollView} from 'react-native';
 import FilterScreen from '../tab-Filters';
 
-export default function Finance() {
+
+// Hook custom para pegar os Lançamentos do modulo financeiro
+import { useGetFinanceID, useGetResume } from '@services/hooks/Finances/useReleases'
+
+export default function Release() {
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
+
+	const { isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
+	const { isLoadingResumeRelease, getReleaseResume} = useGetResume();
+	
+
+	const [dataFinanceID, setDataFinanceID] = useState<ItemProps>();
+	const [dataResume, setDataResume] = useState<ItemResumeProps>();
+
+	useEffect( () => {
+		
+		const fetchFinanceDataID = async () => {
+			const responseFinanceID =  await getFinanceDataID();
+			setDataFinanceID(responseFinanceID)
+		}
+
+		fetchFinanceDataID();
+    }, []);
+
+
+	useEffect( () => {
+		
+		const fetchResume = async () => {
+			if(dataFinanceID != undefined){
+				const responseResume =  await getReleaseResume(dataFinanceID);
+				console.log("=== responseResume",responseResume);
+				
+				setDataResume(responseResume)
+			}
+		 }
+		 fetchResume();
+   }, [dataFinanceID]);
 
 	const dataItem = [
 		{
@@ -52,12 +91,15 @@ export default function Finance() {
 	return (
 		<Container>
 				<FilterScreen/>
+				
 				<ScrollView>
 					<ContainerFinance>
+					{ isLoadingResumeRelease ? (<Spinner height={50} color={colors.primary} transparent={true} />) : (
+						<>
 						<ContainerItensFinance>
 							<TextLabel>Saldo anterior</TextLabel>
 							<ContainerValues>
-								<TextValue>999.999.999</TextValue>
+								<TextValue>{dataResume?.saldoAnterior}</TextValue>
 							</ContainerValues>
 						</ContainerItensFinance>
 
@@ -74,7 +116,7 @@ export default function Finance() {
 								</ContainerIconDescription>
 
 								<ContainerValues>
-									<TextValue>999.999.999</TextValue>
+									<TextValue>{dataResume?.totalEntradas}</TextValue>
 								</ContainerValues>
 							</ContainerItemResume>
 							<ContainerItemResume>
@@ -89,7 +131,7 @@ export default function Finance() {
 								</ContainerIconDescription>
 
 								<ContainerValues>
-									<TextValue colorText={colors.red200}>-999.999.999</TextValue>
+									<TextValue colorText={colors.red200}>{dataResume?.totalSaidas}</TextValue>
 								</ContainerValues>
 							</ContainerItemResume>
 						</ContainerResume>
@@ -97,9 +139,13 @@ export default function Finance() {
 						<ContainerItensFinance>
 							<TextLabelSubtitle >Saldo Atual</TextLabelSubtitle>
 							<ContainerValues>
-								<TextValue colorText={colors.forgetLink}>999.999.999</TextValue>
+								<TextValue fontWeight  colorText={colors.forgetLink}>{dataResume?.saldo}</TextValue>
 							</ContainerValues>
 						</ContainerItensFinance>
+						</>
+						)}
+
+
 
 						{dataItem.map(item => {
 							return <FinanceDataItem item={item} />;

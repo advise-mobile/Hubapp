@@ -5,6 +5,7 @@ const Container = styled.View`
   backgroundColor: ${props => props.transparent ? 'transparent' : props.theme.colors.white};
   height: ${props => props.height || '100%'};
   marginTop: ${props => props.height ? 0 : '20%'};
+  justify-content: center;
 `;
 
 export { Container };

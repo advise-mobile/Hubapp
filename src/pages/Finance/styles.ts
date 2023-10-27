@@ -42,11 +42,12 @@ const ReadButton = styled.TouchableOpacity`
 `;
 
 const Filters = styled.FlatList`
-  padding: 12px 24px;
+  padding: 12px 28px;
   background: ${({ theme }) => theme.colors.white};
   overflow: scroll;
   max-height: 54px;
-  margin-right: 12px;
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const FiltersButton = styled.TouchableOpacity`
@@ -113,6 +114,7 @@ const NotFound = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
+  
 `;
 
 const Image = styled.Image`
