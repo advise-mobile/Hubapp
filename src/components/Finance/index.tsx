@@ -36,6 +36,7 @@ const FinanceDataItem = ({item}: DataItemProps) => {
 
 	return (
 		<>
+
 			<ContainerReleases onPress={Details}>
 				<ContainerItemReleases>
 					<ContainerIconDescriptionReleases>

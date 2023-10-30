@@ -1,10 +1,10 @@
-import React, { useCallback, useRef } from 'react';
+import React, {useCallback, useRef} from 'react';
 import HasNotPermission from 'components/HasNotPermission';
 import {Container, Warp} from 'assets/styles/global';
 import Blocked from 'pages/Blocked';
 
 import {useTheme} from 'styled-components';
-import {ScrollView} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {
 	ContainerIconMore,
@@ -41,10 +41,12 @@ export default function CashFlow() {
 		},
 	];
 
-
 	const CategoryRef = useRef(null);
 
-	const addCategory = useCallback(() => <StockCashFlow ref={CategoryRef} idAgenda={null} onAdd={() => {}} />, []);
+	const addCategory = useCallback(
+		() => <StockCashFlow ref={CategoryRef} idAgenda={null} onAdd={() => {}} />,
+		[],
+	);
 
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
@@ -58,28 +60,27 @@ export default function CashFlow() {
 				<>
 					{havePermission ? (
 						<Warp>
-							<ScrollView>
-								<ContainerScreen>
-									<TopContainer>
-										<ContainerMainInformation>
-											<TextLabel WeightTextProps>Saldo Total</TextLabel>
+							<ContainerScreen>
+								<TopContainer>
+									<ContainerMainInformation>
+										<TextLabel WeightTextProps>Saldo Total</TextLabel>
 
-											<ContainerValueInformation>
-												<TextValue>16.251,55</TextValue>
-											</ContainerValueInformation>
-										</ContainerMainInformation>
+										<ContainerValueInformation>
+											<TextValue>16.251,55</TextValue>
+										</ContainerValueInformation>
+									</ContainerMainInformation>
 
-										<ContainerIconMore onPress={() => CategoryRef.current?.open()}>
-											<MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
-										</ContainerIconMore>
+									<ContainerIconMore onPress={() => CategoryRef.current?.open()}>
+										<MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
+									</ContainerIconMore>
+								</TopContainer>
+								<FlatList
+									data={dataItem}
+									keyExtractor={(item, index) => index.toString()}
+									renderItem={({item}) => <CashFlowDataItem item={item} />}
+								/>
+							</ContainerScreen>
 
-									</TopContainer>
-
-									{dataItem.map(item => {
-										return <CashFlowDataItem item={item} />;
-									})}
-								</ContainerScreen>
-							</ScrollView>
 							{addCategory()}
 						</Warp>
 					) : (

@@ -104,3 +104,4 @@ export const Content = styled.View`
 	justify-content: space-between;
 	margin: 0px 25px 10px 30px;
 `;
+

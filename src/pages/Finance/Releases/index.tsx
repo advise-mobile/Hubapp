@@ -1,4 +1,4 @@
-import React,{ useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FinanceDataItem from '@components/Finance';
 
@@ -18,59 +18,56 @@ import {
 	ContainerIconReleases,
 } from './styles';
 
-import { ItemProps,ItemResumeProps } from "./types";
+import {FlatList} from 'react-native';
+
+import {ItemProps, ItemResumeProps} from './types';
 
 import {Container} from 'assets/styles/global';
 
 import {useTheme} from 'styled-components';
-import {ScrollView} from 'react-native';
 import FilterScreen from '../tab-Filters';
 
-
 // Hook custom para pegar os Lançamentos do modulo financeiro
-import { useGetFinanceID, useGetResume } from '@services/hooks/Finances/useReleases'
+import {useGetFinanceID, useGetResume} from '@services/hooks/Finances/useReleases';
 
 export default function Release() {
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const { isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
-	const { isLoadingResumeRelease, getReleaseResume} = useGetResume();
-	
+	const {isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
+	const {isLoadingResumeRelease, getReleaseResume} = useGetResume();
 
 	const [dataFinanceID, setDataFinanceID] = useState<ItemProps>();
 	const [dataResume, setDataResume] = useState<ItemResumeProps>();
 
-	useEffect( () => {
-		
+	useEffect(() => {
 		const fetchFinanceDataID = async () => {
-			const responseFinanceID =  await getFinanceDataID();
-			setDataFinanceID(responseFinanceID)
-		}
+			const responseFinanceID = await getFinanceDataID();
+			setDataFinanceID(responseFinanceID);
+		};
 
 		fetchFinanceDataID();
-    }, []);
+	}, []);
 
-
-	useEffect( () => {
-		
+	useEffect(() => {
 		const fetchResume = async () => {
-			if(dataFinanceID != undefined){
-				const responseResume =  await getReleaseResume(dataFinanceID);
-				console.log("=== responseResume",responseResume);
-				
-				setDataResume(responseResume)
+			if (dataFinanceID != undefined) {
+				const responseResume = await getReleaseResume(dataFinanceID);
+				console.log('=== responseResume', responseResume);
+
+				setDataResume(responseResume);
 			}
-		 }
-		 fetchResume();
-   }, [dataFinanceID]);
+		};
+		fetchResume();
+	}, [dataFinanceID]);
 
 	const dataItem = [
 		{
 			title: 'Despesa',
 			date: '29/07/2023',
 			type: 'despesa',
-			description: 'Título Lorem ipsum dolor sit amet, consectetur adipisci, Duis sollicitudin, erat commodo lacinia.',
+			description:
+				'Título Lorem ipsum dolor sit amet, consectetur adipisci, Duis sollicitudin, erat commodo lacinia.',
 			value: '2.000,00',
 			category: 'Contas',
 			off: true,
@@ -88,14 +85,24 @@ export default function Release() {
 		},
 	];
 
+	const FinanceList = ({data}) => {
+		return (
+			<FlatList
+				data={data}
+				keyExtractor={(item, index) => index.toString()}
+				renderItem={({item}) => <FinanceDataItem item={item} />}
+			/>
+		);
+	};
+
 	return (
 		<Container>
-				<FilterScreen/>
-				
-				<ScrollView>
-					<ContainerFinance>
-					{ isLoadingResumeRelease ? (<Spinner height={50} color={colors.primary} transparent={true} />) : (
-						<>
+			<FilterScreen />
+			<ContainerFinance>
+				{isLoadingResumeRelease ? (
+					<Spinner height={50} color={colors.primary} transparent={true} />
+				) : (
+					<>
 						<ContainerItensFinance>
 							<TextLabel>Saldo anterior</TextLabel>
 							<ContainerValues>
@@ -137,21 +144,18 @@ export default function Release() {
 						</ContainerResume>
 
 						<ContainerItensFinance>
-							<TextLabelSubtitle >Saldo Atual</TextLabelSubtitle>
+							<TextLabelSubtitle>Saldo Atual</TextLabelSubtitle>
 							<ContainerValues>
-								<TextValue fontWeight  colorText={colors.forgetLink}>{dataResume?.saldo}</TextValue>
+								<TextValue fontWeight colorText={colors.forgetLink}>
+									{dataResume?.saldo}
+								</TextValue>
 							</ContainerValues>
 						</ContainerItensFinance>
-						</>
-						)}
+					</>
+				)}
 
-
-
-						{dataItem.map(item => {
-							return <FinanceDataItem item={item} />;
-						})}
-					</ContainerFinance>
-				</ScrollView>
+				<FinanceList data={dataItem} />
+			</ContainerFinance>
 		</Container>
 	);
 }
