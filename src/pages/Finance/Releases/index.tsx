@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FinanceDataItem from '@components/Finance';
+import FinanceDataItem from '@components/Finance/Installments';
 
 import Spinner from 'components/Spinner';
 
@@ -16,11 +16,11 @@ import {
 	ContainerValues,
 	ContainerLabel,
 	ContainerIconReleases,
+	FinanceList
 } from './styles';
 
-import {FlatList} from 'react-native';
 
-import {ItemProps, ItemResumeProps} from './types';
+import {ItemProps, ItemResumeProps,ItemInstallmentsProps,ItemsInstallmentsProps} from './types';
 
 import {Container} from 'assets/styles/global';
 
@@ -28,17 +28,21 @@ import {useTheme} from 'styled-components';
 import FilterScreen from '../tab-Filters';
 
 // Hook custom para pegar os Lançamentos do modulo financeiro
-import {useGetFinanceID, useGetResume} from '@services/hooks/Finances/useReleases';
+import { useGetFinanceID, useGetResume, useGetInstallments } from '@services/hooks/Finances/useReleases'
 
 export default function Release() {
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const {isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
-	const {isLoadingResumeRelease, getReleaseResume} = useGetResume();
+	const { isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
+	const { isLoadingResumeRelease, getReleaseResume} = useGetResume();
+	const { isLoadingInstallments, getInstallments} = useGetInstallments();
+	
+	
 
 	const [dataFinanceID, setDataFinanceID] = useState<ItemProps>();
 	const [dataResume, setDataResume] = useState<ItemResumeProps>();
+	const [dataInstallments, setDataInstallments] = useState<ItemInstallmentsProps[]>();
 
 	useEffect(() => {
 		const fetchFinanceDataID = async () => {
@@ -53,13 +57,21 @@ export default function Release() {
 		const fetchResume = async () => {
 			if (dataFinanceID != undefined) {
 				const responseResume = await getReleaseResume(dataFinanceID);
-				console.log('=== responseResume', responseResume);
-
 				setDataResume(responseResume);
 			}
 		};
 		fetchResume();
 	}, [dataFinanceID]);
+
+   useEffect( () => {
+		
+	const fetchInstallments = async () => {
+		const installments =  await getInstallments({});
+		setDataInstallments(installments)
+	}
+
+	fetchInstallments();
+}, []);
 
 	const dataItem = [
 		{
@@ -85,15 +97,12 @@ export default function Release() {
 		},
 	];
 
-	const FinanceList = ({data}) => {
-		return (
-			<FlatList
-				data={data}
-				keyExtractor={(item, index) => index.toString()}
-				renderItem={({item}) => <FinanceDataItem item={item} />}
-			/>
-		);
-	};
+	const renderItem =  (  { item } : { item: ItemInstallmentsProps })   => {
+        return (
+            <FinanceDataItem item={item} />
+        );
+    }
+
 
 	return (
 		<Container>
@@ -104,7 +113,9 @@ export default function Release() {
 				) : (
 					<>
 						<ContainerItensFinance>
-							<TextLabel>Saldo anterior</TextLabel>
+							<ContainerLabel>
+								<TextLabel>Saldo anterior</TextLabel>
+							</ContainerLabel>
 							<ContainerValues>
 								<TextValue>{dataResume?.saldoAnterior}</TextValue>
 							</ContainerValues>
@@ -144,7 +155,9 @@ export default function Release() {
 						</ContainerResume>
 
 						<ContainerItensFinance>
+							<ContainerLabel>
 							<TextLabelSubtitle>Saldo Atual</TextLabelSubtitle>
+							</ContainerLabel>
 							<ContainerValues>
 								<TextValue fontWeight colorText={colors.forgetLink}>
 									{dataResume?.saldo}
@@ -154,7 +167,15 @@ export default function Release() {
 					</>
 				)}
 
-				<FinanceList data={dataItem} />
+					
+
+				
+				<FinanceList
+					data={dataInstallments}
+					// keyExtractor={(_, index:number) => index.toString()}
+					renderItem={renderItem}
+			/>
+
 			</ContainerFinance>
 		</Container>
 	);

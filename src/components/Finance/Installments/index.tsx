@@ -1,5 +1,7 @@
 import React from 'react';
-import {DataItemProps} from './types';
+
+import { ItemInstallmentsProps } from '@pages/Finance/Releases/types';
+
 import {
 	ContainerReleases,
 	ContainerItemReleases,
@@ -17,11 +19,13 @@ import {
 	ContainerLabel,
 	Content,
 } from './styles';
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useTheme} from 'styled-components';
 import {useNavigation} from '@react-navigation/native';
 
-const FinanceDataItem = ({item}: DataItemProps) => {
+const FinanceDataItem =  (  { item } : { item: ItemInstallmentsProps }) => {
+
 	const navigation = useNavigation();
 
 	function Details() {
@@ -35,13 +39,12 @@ const FinanceDataItem = ({item}: DataItemProps) => {
 	const {colors} = colorUseTheme;
 
 	return (
-		<>
-
+	
 			<ContainerReleases onPress={Details}>
 				<ContainerItemReleases>
 					<ContainerIconDescriptionReleases>
 						<ContainerIcon>
-							{item.type === 'receita' ? (
+							{item.debitoCredito === 'C' ? (
 								<FontAwesome size={8} name="circle" si color={colors.green200} />
 							) : (
 								<FontAwesome size={8} name="circle" color={colors.red200} />
@@ -49,40 +52,48 @@ const FinanceDataItem = ({item}: DataItemProps) => {
 						</ContainerIcon>
 
 						<ContainerLabel>
-							<TextLabel fontWeight>{item.date}</TextLabel>
+							<TextLabel fontWeight>{item.dataVencimentoFormatada}</TextLabel>
+							<TextLabel fontWeight> ({item.numeroParcela}/{item.quantidadeParcelas})</TextLabel>
 						</ContainerLabel>
 					</ContainerIconDescriptionReleases>
 
 					<ContainerIconThumbs>
-						{item.type === 'receita' ? (
+						{item.debitoCredito === 'C' ? (
 							<FontAwesome name="thumbs-up" color={colors.blueIcon} size={20} />
 						) : (
-							<FontAwesome name="thumbs-down" color={colors.colorIconThumbdown} size={20} />
+							<FontAwesome name="thumbs-down" flip="horizontal" color={colors.colorIconThumbdown} size={20} />
 						)}
 					</ContainerIconThumbs>
 				</ContainerItemReleases>
 
 				<Content>
 					<ContainerDescriptionReleases>
-						<TextLabelDescriptionReleases numberOfRows={2}>
-							{item.description}
+		
+						<TextLabelDescriptionReleases>
+							{item.descricaoLancamento}
 						</TextLabelDescriptionReleases>
 					</ContainerDescriptionReleases>
 
 					<ContainerValueReleases>
-						<TextValueReleases fontWeight>R$ {item.value}</TextValueReleases>
+						<TextValueReleases fontWeight> {item.value}</TextValueReleases>
 
-						<ContainerCategoryReleases>
-							<TextLabelCategory fontWeight>{item.category}</TextLabelCategory>
+						<ContainerCategoryReleases backgroundContainerColor={
+													item.categoriaFinanceiro.corCategoria === undefined
+													? colors.purple
+													: item.categoriaFinanceiro.corCategoria }
+													baixado={item.baixado} >
+							<TextLabelCategory numberOfLines={1} fontWeight>{item.categoriaFinanceiro.nomeCategoriaFinanceiro}</TextLabelCategory>
 						</ContainerCategoryReleases>
 
-						<ContainerDownloadedReleases>
-							<TextLabelCategory fontWeight>Baixado em {item.dateOff}</TextLabelCategory>
-						</ContainerDownloadedReleases>
+						{
+							item.baixado && 
+								<ContainerDownloadedReleases>
+									<TextLabelCategory fontWeight>Baixado em {item.dataBaixaFormatada}</TextLabelCategory>
+								</ContainerDownloadedReleases>
+						 }
 					</ContainerValueReleases>
 				</Content>
 			</ContainerReleases>
-		</>
 	);
 };
 

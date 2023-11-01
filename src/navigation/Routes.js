@@ -81,7 +81,7 @@ const FoldersScreens = () => (
 
 const FinanceScreens = () => (
 	<FinanceStack.Navigator headerMode="none">
-		<AccountStack.Screen name="FinanceTab" component={FinanceTab} />
+		<FinanceStack.Screen name="FinanceTab" component={FinanceTab} />
 		<FinanceStack.Screen name="Finance" component={Finance} />
 		<FinanceStack.Screen name="Details" component={Details} />
 		<FinanceStack.Screen name="CashFlow" component={CashFlow} />

@@ -12,10 +12,10 @@ export interface DataItemsProps {
 }
 
 export interface ItemResumeProps {
-    saldo: number;
-    saldoAnterior: number;
-    totalEntradas: number;
-    totalSaidas: number;
+    saldo: string;
+    saldoAnterior: string;
+    totalEntradas: string;
+    totalSaidas: string;
 }
 export interface ItemsResumeProps {
     itens:ItemResumeProps[];
@@ -23,4 +23,35 @@ export interface ItemsResumeProps {
 
 export interface DataItemsResumeProps {
     data:ItemsResumeProps;
+}
+
+export interface ItemInstallmentsProps {
+    title: string;
+    dataVencimento: string;
+    debitoCredito:string;
+    descricaoLancamento: string;
+    value: string;
+    category: string;
+    baixado: boolean
+    dataBaixa: string;
+    quantidadeParcelas: number,
+    numeroParcela: number,
+
+    dataVencimentoFormatada?:string;
+    dataBaixaFormatada?:string;
+    valorAberto?:string;
+    categoriaFinanceiro:CategoryFinanceProps;
+}
+
+export interface CategoryFinanceProps { 
+    nomeCategoriaFinanceiro: string;
+    corCategoria: string;
+ }
+
+export interface ItemsInstallmentsProps {
+    itens:ItemInstallmentsProps[];
+}
+
+export interface DataItemsInstallmentsProps {
+    data:ItemsInstallmentsProps;
 }

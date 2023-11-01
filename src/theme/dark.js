@@ -67,5 +67,7 @@ export default darkTheme = {
 		fadedWhite: 'rgba(0,0,0,0.69)',
 		fadedBlack: 'rgba(255,255,255,0.69)',
 
+		backgroundDefault : "#FFFFFF"
+
 	}
 }

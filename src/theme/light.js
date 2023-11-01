@@ -66,9 +66,11 @@ export default lightTheme  = {
       disabledText: 'rgba(255, 255, 255, 0.5)',
       fadedWhite: 'rgba(255,255,255,0.69)',
       fadedBlack: 'rgba(0,0,0,0.6)',
+
+      backgroundDefault : "#000000"
     },
-		FONT_FAMILY: {
-			REGULAR: 'Roboto_400Regular',
-			BOLD: 'Roboto_700Bold'
+		fonts: {
+			regular: 'Roboto_400Regular',
+			bold: 'Roboto_700Bold'
 		},
   }
