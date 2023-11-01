@@ -20,7 +20,7 @@ import {
 } from './styles';
 
 
-import {ItemProps, ItemResumeProps,ItemInstallmentsProps,ItemsInstallmentsProps} from './types';
+import {ItemProps, ItemResumeProps,ItemInstallmentsProps} from './types';
 
 import {Container} from 'assets/styles/global';
 
@@ -37,8 +37,8 @@ export default function Release() {
 	const { isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
 	const { isLoadingResumeRelease, getReleaseResume} = useGetResume();
 	const { isLoadingInstallments, getInstallments} = useGetInstallments();
-	
-	
+
+
 
 	const [dataFinanceID, setDataFinanceID] = useState<ItemProps>();
 	const [dataResume, setDataResume] = useState<ItemResumeProps>();
@@ -64,7 +64,7 @@ export default function Release() {
 	}, [dataFinanceID]);
 
    useEffect( () => {
-		
+
 	const fetchInstallments = async () => {
 		const installments =  await getInstallments({});
 		setDataInstallments(installments)
@@ -73,29 +73,6 @@ export default function Release() {
 	fetchInstallments();
 }, []);
 
-	const dataItem = [
-		{
-			title: 'Despesa',
-			date: '29/07/2023',
-			type: 'despesa',
-			description:
-				'Título Lorem ipsum dolor sit amet, consectetur adipisci, Duis sollicitudin, erat commodo lacinia.',
-			value: '2.000,00',
-			category: 'Contas',
-			off: true,
-			dateOff: '30/06/2023',
-		},
-		{
-			title: 'Receita',
-			date: '30/07/2023',
-			type: 'receita',
-			description: 'Receita ...Título Lorem ipsum dolor sit amet.',
-			value: '5.000,00',
-			category: 'Emprestimos',
-			off: false,
-			dateOff: '25/06/2023',
-		},
-	];
 
 	const renderItem =  (  { item } : { item: ItemInstallmentsProps })   => {
         return (
@@ -103,10 +80,18 @@ export default function Release() {
         );
     }
 
+		const [selectedFilterName, setSelectedFilterName] = useState(null);
+
 
 	return (
 		<Container>
-			<FilterScreen />
+			<FilterScreen
+				onFilterSelect={(selectedFilterName) => {
+					setSelectedFilterName(selectedFilterName);
+					console.log(`=== ${selectedFilterName}`);
+				}}
+
+			/>
 			<ContainerFinance>
 				{isLoadingResumeRelease ? (
 					<Spinner height={50} color={colors.primary} transparent={true} />
@@ -167,13 +152,13 @@ export default function Release() {
 					</>
 				)}
 
-					
 
-				
+
+
 				<FinanceList
 					data={dataInstallments}
-					// keyExtractor={(_, index:number) => index.toString()}
 					renderItem={renderItem}
+					showsVerticalScrollIndicator={false}
 			/>
 
 			</ContainerFinance>
