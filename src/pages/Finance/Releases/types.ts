@@ -55,3 +55,9 @@ export interface ItemsInstallmentsProps {
 export interface DataItemsInstallmentsProps {
     data:ItemsInstallmentsProps;
 }
+
+export interface FilterPeriodProps {
+    dataVencimento: string | null,
+    dataVencimentoFim: string | null,
+    currentPage:number | null
+}

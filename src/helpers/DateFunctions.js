@@ -16,3 +16,21 @@ export const isSameDate = (date1, date2) =>
 export const isSameDateTime = (date1, date2) =>
   moment(date1, 'YYYY-MM-DD H:mm:ss').format('YYYY-MM-DD H:mm:ss') ===
   moment(date2, 'YYYY-MM-DD H:mm:ss').format('YYYY-MM-DD H:mm:ss');
+
+export const GetMonthPeriod = () => {
+  return {
+    startOfMonth : moment().startOf('month').format('YYYY-MM-DD'),
+    endOfMonth: moment().endOf('month').format('YYYY-MM-DD')
+  }
+} 
+
+export const GetToday = () => {
+  return moment().format("YYYY-MM-DD");
+} 
+
+export const GetWeekPeriod = () => {
+  return {
+    startOfWeek: moment().day(0).format('YYYY-MM-DD'),
+    endOfWeek:moment().day(6).format('YYYY-MM-DD'),
+  } 
+}

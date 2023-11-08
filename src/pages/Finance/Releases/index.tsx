@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FinanceDataItem from '@components/Finance/Installments';
 
+import { GetMonthPeriod, GetToday, GetWeekPeriod } from 'helpers/DateFunctions';
+
 import Spinner from 'components/Spinner';
 
 import {
@@ -38,11 +40,12 @@ export default function Release() {
 	const { isLoadingResumeRelease, getReleaseResume} = useGetResume();
 	const { isLoadingInstallments, getInstallments} = useGetInstallments();
 
-
-
 	const [dataFinanceID, setDataFinanceID] = useState<ItemProps>();
 	const [dataResume, setDataResume] = useState<ItemResumeProps>();
 	const [dataInstallments, setDataInstallments] = useState<ItemInstallmentsProps[]>();
+
+	const [selectedFilterPeriod, setSelectedFilterPeriod] = useState(1);
+	const [currentPage, setCurrentPage] = useState(1);
 
 	useEffect(() => {
 		const fetchFinanceDataID = async () => {
@@ -63,15 +66,60 @@ export default function Release() {
 		fetchResume();
 	}, [dataFinanceID]);
 
-   useEffect( () => {
+   	useEffect( () => {
 
-	const fetchInstallments = async () => {
-		const installments =  await getInstallments({});
-		setDataInstallments(installments)
+		const fetchInstallments = async () => {
+			const parameterPeriod = getParametersPeriod(selectedFilterPeriod)	
+			const installments =  await getInstallments({currentPage,...parameterPeriod});
+			setDataInstallments(installments)
+		}
+
+		fetchInstallments();
+	}, [selectedFilterPeriod]);
+
+	const getParametersPeriod = (id:number) => {
+		
+		let period = {
+			dataVencimento: null,
+			dataVencimentoFim: null
+		};;
+
+		
+		switch (id) {
+			case 1:
+				const {startOfMonth,endOfMonth} = GetMonthPeriod();
+
+				period = {
+					dataVencimento: startOfMonth,
+					dataVencimentoFim: endOfMonth
+				};
+			   return period;		
+			break;
+
+			case 2:
+				const today = GetToday();
+				
+				period = {
+					dataVencimento: today,
+					dataVencimentoFim: today
+				};
+			   return period;		
+			break;
+
+			case 3:
+				const {startOfWeek, endOfWeek} = GetWeekPeriod();
+				
+				period = {
+					dataVencimento: startOfWeek,
+					dataVencimentoFim: endOfWeek
+				};
+
+			   return period;		
+			break;
+		}
+
+		return period;	
 	}
-
-	fetchInstallments();
-}, []);
 
 
 	const renderItem =  (  { item } : { item: ItemInstallmentsProps })   => {
@@ -80,16 +128,14 @@ export default function Release() {
         );
     }
 
-		const [selectedFilterName, setSelectedFilterName] = useState(null);
-
 
 	return (
 		<Container>
 			<FilterScreen
-				onFilterSelect={(selectedFilterName) => {
-					setSelectedFilterName(selectedFilterName);
-					console.log(`=== ${selectedFilterName}`);
-				}}
+				onFilterSelect={(setSelectedFilterPeriod)}
+					// setSelectedFilterName(selectedFilterName);
+					// console.log(`=== ${selectedFilterName}`);
+				//}
 
 			/>
 			<ContainerFinance>

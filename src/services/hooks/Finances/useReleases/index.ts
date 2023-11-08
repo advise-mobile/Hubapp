@@ -8,7 +8,7 @@ import  { FormatReal }  from '@helpers/MoneyFunctions.ts';
 
 import { DataItemsProps, ItemsProps, ItemProps ,
          DataItemsResumeProps, ItemsResumeProps,ItemResumeProps,
-         DataItemsInstallmentsProps,ItemsInstallmentsProps,ItemInstallmentsProps } from "@pages/Finance/Releases/types";
+         DataItemsInstallmentsProps,ItemsInstallmentsProps,ItemInstallmentsProps, FilterPeriodProps } from "@pages/Finance/Releases/types";
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 
@@ -83,16 +83,18 @@ export const useGetInstallments = () => {
 
     const dispatch = useDispatch();
 
-    const getInstallments = async (filters:ItemInstallmentsProps) => {
+    const getInstallments = async (filters:FilterPeriodProps) => {
         
         try {
             setIsLoadingInstallments(true);
+            
             let currentPage = filters.currentPage ? filters.currentPage : 1;
+            let period = `dataVencimento=${filters.dataVencimento}&dataVencimentoFim=${filters.dataVencimentoFim}`;
 
-            const params = `campos=*&ativo=true&ordenacao=+dataVencimento&registrosPorPagina=20&paginaAtual=${currentPage}`;
-            const response: DataItemsInstallmentsProps = await Api.get(`/core/v1/parcelas-financeiro?${params}`,{
-                filters
-            });
+            console.log("=== filters", filters);
+
+            const params = `campos=*&ativo=true&ordenacao=+dataVencimento&registrosPorPagina=20&paginaAtual=${currentPage}&${period}`;
+            const response: DataItemsInstallmentsProps = await Api.get(`/core/v1/parcelas-financeiro?${params}`);
 
             const { itens } : ItemsInstallmentsProps  = response.data;
 

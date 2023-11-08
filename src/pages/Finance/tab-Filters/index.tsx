@@ -11,7 +11,7 @@ const filters = [
 ];
 
 const FilterScreen = ({onFilterSelect}) => {
-	const [selectedFilter, setSelectedFilter] = useState(null);
+	const [selectedFilter, setSelectedFilter] = useState(1);
 
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
@@ -23,10 +23,10 @@ const FilterScreen = ({onFilterSelect}) => {
 			<Container>
 				<ContainerItems
 					onPress={() => {
-            setSelectedFilter(isSelected ? null : item.id);
+            				setSelectedFilter(isSelected ? null : item.id);						
+							onFilterSelect(item.id);
+						}}
 
-						if (onFilterSelect) {
-							onFilterSelect(item.name);}}}
 					style={{
 						backgroundColor: isSelected ? colors.tabcolor : colors.realWhite,
 					}}>

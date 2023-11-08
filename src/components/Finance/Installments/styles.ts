@@ -78,7 +78,7 @@ interface ContainerCategoryReleasesProps {
 	baixado:boolean
 }
 export const ContainerCategoryReleases = styled.View<ContainerCategoryReleasesProps>`
-	max-width: ${({ baixado }) => baixado ? '110px' : '250px'};	 
+	max-width: ${({ baixado }) => baixado ? '105px' : '250px'};	 
 	border-radius: 17px;
 	margin-left: 5px;
 	padding: 4px;
