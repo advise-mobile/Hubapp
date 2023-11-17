@@ -23,9 +23,11 @@ const FilterScreen = ({onFilterSelect}) => {
 			<Container>
 				<ContainerItems
 					onPress={() => {
-            				setSelectedFilter(isSelected ? null : item.id);						
+						if (!isSelected) {
+							setSelectedFilter(item.id);
 							onFilterSelect(item.id);
-						}}
+						}
+					}}
 
 					style={{
 						backgroundColor: isSelected ? colors.tabcolor : colors.realWhite,

@@ -1,213 +1,238 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FinanceDataItem from '@components/Finance/Installments';
-
 import { GetMonthPeriod, GetToday, GetWeekPeriod } from 'helpers/DateFunctions';
-
 import Spinner from 'components/Spinner';
-
 import {
-	ContainerFinance,
-	ContainerItensFinance,
-	TextLabel,
-	TextLabelSubtitle,
-	TextValue,
-	ContainerResume,
-	ContainerItemResume,
-	ContainerIconDescription,
-	ContainerValues,
-	ContainerLabel,
-	ContainerIconReleases,
-	FinanceList
+  ContainerFinance,
+  ContainerItensFinance,
+  TextLabel,
+  TextLabelSubtitle,
+  TextValue,
+  ContainerResume,
+  ContainerItemResume,
+  ContainerIconDescription,
+  ContainerValues,
+  ContainerLabel,
+  ContainerIconReleases,
+  FinanceList,
 } from './styles';
-
-
-import {ItemProps, ItemResumeProps,ItemInstallmentsProps} from './types';
-
-import {Container} from 'assets/styles/global';
-
-import {useTheme} from 'styled-components';
+import { ItemProps, ItemResumeProps, ItemInstallmentsProps } from './types';
+import { Container } from 'assets/styles/global';
+import { useTheme } from 'styled-components';
 import FilterScreen from '../tab-Filters';
-
-// Hook custom para pegar os Lançamentos do modulo financeiro
-import { useGetFinanceID, useGetResume, useGetInstallments } from '@services/hooks/Finances/useReleases'
+import {
+  useGetFinanceID,
+  useGetResume,
+  useGetInstallments,
+} from '@services/hooks/Finances/useReleases';
 
 export default function Release() {
-	const colorUseTheme = useTheme();
-	const {colors} = colorUseTheme;
+  const colorUseTheme = useTheme();
+  const { colors } = colorUseTheme;
+  const [isFetching, setIsFetching] = useState(false);
 
-	const { isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
-	const { isLoadingResumeRelease, getReleaseResume} = useGetResume();
-	const { isLoadingInstallments, getInstallments} = useGetInstallments();
+  const { isLoadingFinanceID, getFinanceDataID } = useGetFinanceID();
+  const { isLoadingResumeRelease, getReleaseResume } = useGetResume();
+  const { isLoadingInstallments, getInstallments } = useGetInstallments();
 
-	const [dataFinanceID, setDataFinanceID] = useState<ItemProps>();
-	const [dataResume, setDataResume] = useState<ItemResumeProps>();
-	const [dataInstallments, setDataInstallments] = useState<ItemInstallmentsProps[]>();
-
-	const [selectedFilterPeriod, setSelectedFilterPeriod] = useState(1);
-	const [currentPage, setCurrentPage] = useState(1);
-
-	useEffect(() => {
-		const fetchFinanceDataID = async () => {
-			const responseFinanceID = await getFinanceDataID();
-			setDataFinanceID(responseFinanceID);
-		};
-
-		fetchFinanceDataID();
-	}, []);
+  const [dataFinanceID, setDataFinanceID] = useState<ItemProps>();
+  const [dataResume, setDataResume] = useState<ItemResumeProps>();
+  const [allInstallments, setAllInstallments] = useState<ItemInstallmentsProps[]>([]);
+  const [selectedFilterPeriod, setSelectedFilterPeriod] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
 	useEffect(() => {
-		const fetchResume = async () => {
-			if (dataFinanceID != undefined) {
-				const responseResume = await getReleaseResume(dataFinanceID);
-				setDataResume(responseResume);
-			}
-		};
-		fetchResume();
-	}, [dataFinanceID]);
+    fetchDataResume();
+  }, []);
 
-   	useEffect( () => {
-
-		const fetchInstallments = async () => {
-			const parameterPeriod = getParametersPeriod(selectedFilterPeriod)	
-			const installments =  await getInstallments({currentPage,...parameterPeriod});
-			setDataInstallments(installments)
-		}
-
-		fetchInstallments();
-	}, [selectedFilterPeriod]);
-
-	const getParametersPeriod = (id:number) => {
-		
-		let period = {
-			dataVencimento: null,
-			dataVencimentoFim: null
-		};;
-
-		
-		switch (id) {
-			case 1:
-				const {startOfMonth,endOfMonth} = GetMonthPeriod();
-
-				period = {
-					dataVencimento: startOfMonth,
-					dataVencimentoFim: endOfMonth
-				};
-			   return period;		
-			break;
-
-			case 2:
-				const today = GetToday();
-				
-				period = {
-					dataVencimento: today,
-					dataVencimentoFim: today
-				};
-			   return period;		
-			break;
-
-			case 3:
-				const {startOfWeek, endOfWeek} = GetWeekPeriod();
-				
-				period = {
-					dataVencimento: startOfWeek,
-					dataVencimentoFim: endOfWeek
-				};
-
-			   return period;		
-			break;
-		}
-
-		return period;	
-	}
+  useEffect(() => {
+		setCurrentPage(1);
+    fetchDataInstallments();
+  }, [selectedFilterPeriod]);
 
 
-	const renderItem =  (  { item } : { item: ItemInstallmentsProps })   => {
-        return (
-            <FinanceDataItem item={item} />
-        );
+
+	const fetchDataResume = async () => {
+    try {
+      const responseFinanceID = await getFinanceDataID();
+      setDataFinanceID(responseFinanceID);
+
+      const responseResume = await getReleaseResume(responseFinanceID);
+      setDataResume(responseResume);
+
+
+    } catch (error) {
+
+    }
+  };
+
+  const fetchDataInstallments = async () => {
+    try {
+      const parameterPeriod = getParametersPeriod(selectedFilterPeriod);
+      const installments = await fetchInstallmentsData({ currentPage: 1, ...parameterPeriod });
+      setAllInstallments(installments);
+    } catch (error) {
+
+    }
+  };
+
+  const fetchInstallmentsData = async ({ currentPage, ...parameterPeriod }) => {
+    try {
+      const installments = await getInstallments({ currentPage, ...parameterPeriod });
+			console.log('Installments:', installments);
+      return installments;
+    } catch (error) {
+      console.error('Error fetching installments:', error);
+      return [];
+    }
+  };
+
+  const handleLoadMore = async () => {
+    if (isFetching) {
+      return;
     }
 
+    setIsFetching(true);
+		setCurrentPage(currentPage + 1);
 
-	return (
-		<Container>
-			<FilterScreen
-				onFilterSelect={(setSelectedFilterPeriod)}
-					// setSelectedFilterName(selectedFilterName);
-					// console.log(`=== ${selectedFilterName}`);
-				//}
+    try {
+      const parameterPeriod = getParametersPeriod(selectedFilterPeriod);
+      const newInstallments = await fetchInstallmentsData({
+        currentPage,
+        ...parameterPeriod,
+      });
 
-			/>
-			<ContainerFinance>
-				{isLoadingResumeRelease ? (
-					<Spinner height={50} color={colors.primary} transparent={true} />
-				) : (
-					<>
-						<ContainerItensFinance>
-							<ContainerLabel>
-								<TextLabel>Saldo anterior</TextLabel>
-							</ContainerLabel>
-							<ContainerValues>
-								<TextValue>{dataResume?.saldoAnterior}</TextValue>
-							</ContainerValues>
-						</ContainerItensFinance>
+      if (newInstallments.length > 0) {
+        setAllInstallments((prevInstallments) => [...prevInstallments, ...newInstallments]);
+      }
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
-						<ContainerResume>
-							<ContainerItemResume>
-								<ContainerIconDescription>
-									<ContainerIconReleases>
-										<FontAwesome size={8} name="circle" color={colors.green200} />
-									</ContainerIconReleases>
+  const getParametersPeriod = (id: number) => {
+    let period = {
+      dataVencimento: null,
+      dataVencimentoFim: null,
+    };
 
-									<ContainerLabel>
-										<TextLabel>Receita realizada</TextLabel>
-									</ContainerLabel>
-								</ContainerIconDescription>
+    switch (id) {
+      case 1:
+        const { startOfMonth, endOfMonth } = GetMonthPeriod();
 
-								<ContainerValues>
-									<TextValue>{dataResume?.totalEntradas}</TextValue>
-								</ContainerValues>
-							</ContainerItemResume>
-							<ContainerItemResume>
-								<ContainerIconDescription>
-									<ContainerIconReleases>
-										<FontAwesome size={8} name="circle" color={colors.red200} />
-									</ContainerIconReleases>
+        period = {
+          dataVencimento: startOfMonth,
+          dataVencimentoFim: endOfMonth,
+        };
+        return period;
+      case 2:
+        const today = GetToday();
 
-									<ContainerLabel>
-										<TextLabel>Despesa realizada</TextLabel>
-									</ContainerLabel>
-								</ContainerIconDescription>
+        period = {
+          dataVencimento: today,
+          dataVencimentoFim: today,
+        };
+        return period;
+      case 3:
+        const { startOfWeek, endOfWeek } = GetWeekPeriod();
 
-								<ContainerValues>
-									<TextValue colorText={colors.red200}>{dataResume?.totalSaidas}</TextValue>
-								</ContainerValues>
-							</ContainerItemResume>
-						</ContainerResume>
+        period = {
+          dataVencimento: startOfWeek,
+          dataVencimentoFim: endOfWeek,
+        };
 
-						<ContainerItensFinance>
-							<ContainerLabel>
-							<TextLabelSubtitle>Saldo Atual</TextLabelSubtitle>
-							</ContainerLabel>
-							<ContainerValues>
-								<TextValue fontWeight colorText={colors.forgetLink}>
-									{dataResume?.saldo}
-								</TextValue>
-							</ContainerValues>
-						</ContainerItensFinance>
-					</>
+        return period;
+      default:
+        return period;
+    }
+  };
+
+  const renderItem = ({ item }: { item: ItemInstallmentsProps }) => {
+    return <FinanceDataItem item={item} />;
+  };
+
+  const renderFooter = () => {
+    if (allInstallments.length < 20) return false;
+    return isFetching ? <Spinner height={50} color={colors.primary} transparent={true} /> : null;
+  };
+
+  return (
+    <Container>
+      <FilterScreen onFilterSelect={setSelectedFilterPeriod} />
+      <ContainerFinance>
+        {isLoadingResumeRelease ? (
+          <Spinner height={50} color={colors.primary} transparent={true} />
+        ) : (
+          <>
+            <ContainerItensFinance>
+              <ContainerLabel>
+                <TextLabel>Saldo anterior</TextLabel>
+              </ContainerLabel>
+              <ContainerValues>
+                <TextValue>{dataResume?.saldoAnterior}</TextValue>
+              </ContainerValues>
+            </ContainerItensFinance>
+
+            <ContainerResume>
+              <ContainerItemResume>
+                <ContainerIconDescription>
+                  <ContainerIconReleases>
+                    <FontAwesome size={8} name="circle" color={colors.green200} />
+                  </ContainerIconReleases>
+
+                  <ContainerLabel>
+                    <TextLabel>Receita realizada</TextLabel>
+                  </ContainerLabel>
+                </ContainerIconDescription>
+
+                <ContainerValues>
+                  <TextValue>{dataResume?.totalEntradas}</TextValue>
+                </ContainerValues>
+              </ContainerItemResume>
+              <ContainerItemResume>
+                <ContainerIconDescription>
+                  <ContainerIconReleases>
+                    <FontAwesome size={8} name="circle" color={colors.red200} />
+                  </ContainerIconReleases>
+
+                  <ContainerLabel>
+                    <TextLabel>Despesa realizada</TextLabel>
+                  </ContainerLabel>
+                </ContainerIconDescription>
+
+                <ContainerValues>
+                  <TextValue colorText={colors.red200}>{dataResume?.totalSaidas}</TextValue>
+                </ContainerValues>
+              </ContainerItemResume>
+            </ContainerResume>
+
+            <ContainerItensFinance>
+              <ContainerLabel>
+                <TextLabelSubtitle>Saldo Atual</TextLabelSubtitle>
+              </ContainerLabel>
+              <ContainerValues>
+                <TextValue fontWeight colorText={colors.forgetLink}>
+                  {dataResume?.saldo}
+                </TextValue>
+              </ContainerValues>
+            </ContainerItensFinance>
+          </>
+        )}
+
+				{isLoadingInstallments && currentPage === 1 ? (
+          <Spinner height={50} color={colors.primary} transparent={true} />
+        ) : (
+        <FinanceList
+          data={allInstallments}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooter}
+        />
 				)}
-
-
-
-
-				<FinanceList
-					data={dataInstallments}
-					renderItem={renderItem}
-					showsVerticalScrollIndicator={false}
-			/>
-
-			</ContainerFinance>
-		</Container>
-	);
+      </ContainerFinance>
+    </Container>
+  );
 }

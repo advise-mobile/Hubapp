@@ -16,13 +16,13 @@ import { useDispatch } from 'react-redux';
 
 
 export const useGetFinanceID= () => {
-    
+
     const [isLoadingFinanceID, setIsLoadingFinanceID] = useState(false);
 
     const dispatch = useDispatch();
 
     const getFinanceDataID = async () => {
-        
+
         try {
             setIsLoadingFinanceID(true);
 
@@ -30,15 +30,15 @@ export const useGetFinanceID= () => {
             const response: DataItemsProps = await Api.get(`/core/v1/contas-financeiro?${params}`);
             const { itens } : ItemsProps  = response.data;
             return itens
-            
+
         } catch (error) {
             dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estes lançamentos',true));
         }finally {
             setTimeout(() => {
                 setIsLoadingFinanceID(false);
-            }, 2000); 
+            }, 2000);
         }
-    };    
+    };
     return {isLoadingFinanceID, getFinanceDataID};
 }
 
@@ -49,7 +49,7 @@ export const useGetResume = () => {
     const dispatch = useDispatch();
 
     const getReleaseResume = async (filters:ItemProps) => {
-        
+
         try {
             setIsLoadingResumeRelease(true);
 
@@ -65,13 +65,13 @@ export const useGetResume = () => {
                 totalEntradas: FormatReal(itens[0].totalEntradas),
                 totalSaidas: FormatReal(itens[0].totalSaidas)
             }
-            
+
         } catch (error) {
             dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível buscar este resumo',true));
         }finally {
             setTimeout(() => {
                 setIsLoadingResumeRelease(false);
-            }, 2000);             
+            }, 2000);
         }
     };
     return {isLoadingResumeRelease, getReleaseResume};
@@ -84,14 +84,14 @@ export const useGetInstallments = () => {
     const dispatch = useDispatch();
 
     const getInstallments = async (filters:FilterPeriodProps) => {
-        
+
         try {
             setIsLoadingInstallments(true);
-            
+
             let currentPage = filters.currentPage ? filters.currentPage : 1;
             let period = `dataVencimento=${filters.dataVencimento}&dataVencimentoFim=${filters.dataVencimentoFim}`;
 
-            console.log("=== filters", filters);
+
 
             const params = `campos=*&ativo=true&ordenacao=+dataVencimento&registrosPorPagina=20&paginaAtual=${currentPage}&${period}`;
             const response: DataItemsInstallmentsProps = await Api.get(`/core/v1/parcelas-financeiro?${params}`);
@@ -99,11 +99,11 @@ export const useGetInstallments = () => {
             const { itens } : ItemsInstallmentsProps  = response.data;
 
             const itensOptimized = itens.map((item:ItemInstallmentsProps) => {
-                                
+
                 const dataVencimentoFormatada =  FormatDateBR(item.dataVencimento);
                 const dataBaixaFormatada =  FormatDateBR(item.dataBaixa);
-                                        
-                return { 
+
+                return {
                             ...item,
                             dataVencimentoFormatada,
                             value:FormatReal(item.valorAberto),
@@ -111,15 +111,15 @@ export const useGetInstallments = () => {
                         }
             });
             return itensOptimized;
-            
+
         } catch (error) {
             dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível buscar as parcelas',true));
         }finally {
             setTimeout(() => {
                 setIsLoadingInstallments(false);
-            }, 2000); 
+            }, 2000);
         }
     };
-    
+
     return {isLoadingInstallments, getInstallments};
 }
