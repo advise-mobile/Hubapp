@@ -47,7 +47,6 @@ export default function Release() {
   }, []);
 
   useEffect(() => {
-		setCurrentPage(1);
     fetchDataInstallments();
   }, [selectedFilterPeriod]);
 
@@ -70,42 +69,32 @@ export default function Release() {
   const fetchDataInstallments = async () => {
     try {
       const parameterPeriod = getParametersPeriod(selectedFilterPeriod);
-      const installments = await fetchInstallmentsData({ currentPage: 1, ...parameterPeriod });
-      setAllInstallments(installments);
+			const installments = await getInstallments({ currentPage, ...parameterPeriod });
+
+			setCurrentPage(currentPage + 1);
+			if(currentPage === 1 ){
+				setAllInstallments(installments);
+			}else{
+				setAllInstallments((prevInstallments) => [...prevInstallments, ...installments]);
+			}
+
     } catch (error) {
 
-    }
-  };
-
-  const fetchInstallmentsData = async ({ currentPage, ...parameterPeriod }) => {
-    try {
-      const installments = await getInstallments({ currentPage, ...parameterPeriod });
-			console.log('Installments:', installments);
-      return installments;
-    } catch (error) {
-      console.error('Error fetching installments:', error);
-      return [];
     }
   };
 
   const handleLoadMore = async () => {
+
     if (isFetching) {
       return;
     }
 
     setIsFetching(true);
-		setCurrentPage(currentPage + 1);
 
     try {
-      const parameterPeriod = getParametersPeriod(selectedFilterPeriod);
-      const newInstallments = await fetchInstallmentsData({
-        currentPage,
-        ...parameterPeriod,
-      });
 
-      if (newInstallments.length > 0) {
-        setAllInstallments((prevInstallments) => [...prevInstallments, ...newInstallments]);
-      }
+       await fetchDataInstallments();
+
     } finally {
       setIsFetching(false);
     }
@@ -157,9 +146,14 @@ export default function Release() {
     return isFetching ? <Spinner height={50} color={colors.primary} transparent={true} /> : null;
   };
 
+	const setPeriod = (period) => {
+		setCurrentPage(1);
+		setSelectedFilterPeriod(period)
+	}
+
   return (
     <Container>
-      <FilterScreen onFilterSelect={setSelectedFilterPeriod} />
+      <FilterScreen onFilterSelect={setPeriod} />
       <ContainerFinance>
         {isLoadingResumeRelease ? (
           <Spinner height={50} color={colors.primary} transparent={true} />
@@ -228,7 +222,7 @@ export default function Release() {
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
+          onEndReachedThreshold={0.1}
           ListFooterComponent={renderFooter}
         />
 				)}

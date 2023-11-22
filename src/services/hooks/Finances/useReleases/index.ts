@@ -13,6 +13,7 @@ import { DataItemsProps, ItemsProps, ItemProps ,
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 
 import { useDispatch } from 'react-redux';
+import { DataItemsDetailsProps, ItemsDetailsProps } from "@pages/Finance/Details/types";
 
 
 export const useGetFinanceID= () => {
@@ -123,3 +124,56 @@ export const useGetInstallments = () => {
 
     return {isLoadingInstallments, getInstallments};
 }
+
+export const useGetInstallmentsDetails = () => {
+
+	const [isLoadingInstallmentsDetails, setIsLoadingInstallmentsDetails] = useState(false);
+
+	const dispatch = useDispatch();
+
+	const getInstallmentsDetails = async (filters: ItemProps) => {
+
+
+		// console.log("=== filter",filters);
+			try {
+					setIsLoadingInstallmentsDetails(true);
+
+					const params = `campos=*`;
+					const response: DataItemsDetailsProps = await Api.get(`/core/v1/lancamentos-financeiro?${params}&IdsLancamentoFinanceiro=${filters.idFinanceiro}`);
+					// console.log('===', response)
+
+
+					const { itens } : ItemsDetailsProps  = response.data;
+
+
+					if (itens.length > 0) {
+							const item = itens[0];
+
+							return {
+									idLancamentoFinanceiro: item.idLancamentoFinanceiro,
+									idCliente: (item.idCliente),
+									idFinanceiro: (item.idFinanceiro),
+									valor: FormatReal (item.valor),
+									dataEmissao:FormatDateBR (item.dataEmissao),
+									idProcesso: (item.idProcesso),
+									quantidadeParcelas: (item.quantidadeParcelas),
+									observacao: (item.observacao),
+									categoria: (item.categoriaFinanceiro.nomeCategoriaFinanceiro),
+							};
+					} else {
+							dispatch(ToastNotifyActions.toastNotifyShow('Lançamento não encontrado', true));
+							return null;
+					}
+
+			} catch (error) {
+					dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível buscar este resumo', true));
+			} finally {
+					setTimeout(() => {
+							setIsLoadingInstallmentsDetails(false);
+					}, 2000);
+			}
+	};
+
+	return { isLoadingInstallmentsDetails, getInstallmentsDetails };
+}
+

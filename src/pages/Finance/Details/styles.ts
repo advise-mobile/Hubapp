@@ -100,6 +100,7 @@ export const DescriptionOfObservationsContainer = styled.View`
 	width: 290px;
 	height: 50px;
 	margin-top: 1px;
+	margin-left: 4px;
 `;
 
 export const InformationTitleText = styled.Text`
@@ -117,6 +118,7 @@ export const DescriptionOfObservationsText = styled.Text`
 	font-size: 14px;
 	height: 115px;
 	lineHeight: 20px;
-	color: ${({ theme }) => theme.colors.inactiveDetails};
+	color: ${({ theme }) => theme.colors.BlackInactive};
+
 `;
 

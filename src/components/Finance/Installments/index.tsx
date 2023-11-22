@@ -38,8 +38,10 @@ const FinanceDataItem =  (  { item } : { item: ItemInstallmentsProps }) => {
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
+	// console.log("===", item)
+
 	return (
-	
+
 			<ContainerReleases onPress={Details}>
 				<ContainerItemReleases>
 					<ContainerIconDescriptionReleases>
@@ -68,7 +70,7 @@ const FinanceDataItem =  (  { item } : { item: ItemInstallmentsProps }) => {
 
 				<Content>
 					<ContainerDescriptionReleases>
-		
+
 						<TextLabelDescriptionReleases>
 							{item.descricaoLancamento}
 						</TextLabelDescriptionReleases>
@@ -76,6 +78,8 @@ const FinanceDataItem =  (  { item } : { item: ItemInstallmentsProps }) => {
 
 					<ContainerValueReleases>
 						<TextValueReleases fontWeight> {item.value}</TextValueReleases>
+
+
 
 						<ContainerCategoryReleases backgroundContainerColor={
 													item.categoriaFinanceiro.corCategoria === undefined
@@ -86,7 +90,7 @@ const FinanceDataItem =  (  { item } : { item: ItemInstallmentsProps }) => {
 						</ContainerCategoryReleases>
 
 						{
-							item.baixado && 
+							item.baixado &&
 								<ContainerDownloadedReleases>
 									<TextLabelCategory fontWeight>Baixado em {item.dataBaixaFormatada}</TextLabelCategory>
 								</ContainerDownloadedReleases>
