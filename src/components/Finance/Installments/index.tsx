@@ -38,7 +38,7 @@ const FinanceDataItem =  (  { item } : { item: ItemInstallmentsProps }) => {
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	// console.log("===", item)
+
 
 	return (
 

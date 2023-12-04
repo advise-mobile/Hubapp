@@ -3,6 +3,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FinanceDataItem from '@components/Finance/Installments';
 import { GetMonthPeriod, GetToday, GetWeekPeriod } from 'helpers/DateFunctions';
 import Spinner from 'components/Spinner';
+
 import {
   ContainerFinance,
   ContainerItensFinance,
@@ -28,6 +29,8 @@ import {
 } from '@services/hooks/Finances/useReleases';
 
 export default function Release() {
+
+
   const colorUseTheme = useTheme();
   const { colors } = colorUseTheme;
   const [isFetching, setIsFetching] = useState(false);
@@ -54,8 +57,11 @@ export default function Release() {
 
 	const fetchDataResume = async () => {
     try {
+
+
       const responseFinanceID = await getFinanceDataID();
       setDataFinanceID(responseFinanceID);
+
 
       const responseResume = await getReleaseResume(responseFinanceID);
       setDataResume(responseResume);

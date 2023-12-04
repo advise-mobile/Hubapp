@@ -1,4 +1,4 @@
-import React, { forwardRef,useCallback, useRef} from 'react';
+import React, { forwardRef,useCallback, useRef,useState,useEffect} from 'react';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Modal from 'components/Modal';
@@ -22,14 +22,16 @@ import AddCategory from '../AddCategory';
 
 export default Add = forwardRef((props, ref) => {
 
-	const RevenueRef = useRef(null);
-	const ExpenseRef = useRef(null);
-	const CategoryRef = useRef(null);
+	const revenueRef = useRef(null);
+	const expenseRef = useRef(null);
+	const categoryRef = useRef(null);
+
+	const [modalCategoriesOpen, setModalCategoriesOpen] = useState(false);
+	const [modalExpenseOpen, setModalExpenseOpen] = useState(false);
+	const [modalRevenueOpen, setModalRevenueOpen] = useState(false);
 
 
-	const renderRevenue = useCallback(() => <AddRevenue ref={RevenueRef} idAgenda={null} onAdd={() => {}} />, []);
-	const renderExpense = useCallback(() => <AddExpense ref={ExpenseRef} idAgenda={null} onAdd={() => {}} />, []);
-	const addCategory = useCallback(() => <AddCategory ref={CategoryRef} idAgenda={null} onAdd={() => {}} />, []);
+
 
 
   // Variavel para usar o hook
@@ -37,6 +39,25 @@ export default Add = forwardRef((props, ref) => {
 	const { colors } = colorUseTheme;
 
   const closeModal = useCallback(() => ref.current?.close(), []);
+
+	useEffect(() => {
+			if(modalExpenseOpen){
+				expenseRef.current?.open();
+			}
+  }, [modalExpenseOpen]);
+
+	useEffect(() => {
+		if(modalRevenueOpen){
+			revenueRef.current?.open();
+		}
+}, [modalRevenueOpen]);
+
+useEffect(() => {
+	if(modalCategoriesOpen){
+		categoryRef.current?.open();
+	}
+}, [modalCategoriesOpen]);
+
 
   const footer = () => (
     <Footer>
@@ -47,11 +68,26 @@ export default Add = forwardRef((props, ref) => {
   );
 
 
+	const closeExpense = ()=>{
+		setModalExpenseOpen(false);
+	}
+
+	const closeRevenue = ()=>{
+		setModalRevenueOpen(false);
+	}
+
+	const closeCategory = ()=>{
+		setModalCategoriesOpen(false);
+	}
+
+
+
+
   return (
 		<>
     <Modal maxHeight={500} ref={ref} title="Cadastrar" footer={footer()} >
 
-      <Content onPress={() => ExpenseRef.current?.open()}>
+      <Content onPress={() => setModalExpenseOpen(true) }>
         <Row >
           <Label>Despesa</Label>
         </Row>
@@ -63,7 +99,7 @@ export default Add = forwardRef((props, ref) => {
 
 
 
-			<Content onPress={() => RevenueRef.current?.open()}>
+			<Content onPress={() => setModalRevenueOpen(true)}>
         <Row >
           <Label>Receita</Label>
         </Row>
@@ -72,7 +108,7 @@ export default Add = forwardRef((props, ref) => {
 				</Icon>
       </Content>
 
-			<Content onPress={() => CategoryRef.current?.open()}>
+			<Content onPress={() => setModalCategoriesOpen(true)}>
         <Row >
           <Label>Categoria</Label>
         </Row>
@@ -83,9 +119,10 @@ export default Add = forwardRef((props, ref) => {
     </Modal >
 
 
-		{renderRevenue()}
-		{renderExpense()}
-		{addCategory()}
+		{modalRevenueOpen && <AddRevenue ref={revenueRef} onClose={closeRevenue}/>}
+		{modalExpenseOpen && <AddExpense ref={expenseRef} onClose={closeExpense}/>
+		}
+		{modalCategoriesOpen && <AddCategory ref={categoryRef} onClose={closeCategory}/>}
 		</>
   );
 });

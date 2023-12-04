@@ -1,4 +1,4 @@
-import React, {forwardRef, useCallback, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useState} from 'react';
 import Modal from 'components/Modal';
 import {
 	Footer,
@@ -29,12 +29,18 @@ import {
 	Register,
 	ContentDescription,
 	ContentRepeat,
+	ContainerInfo,
+	LabelDuringInfo,
 } from './styles';
 
 // Add UseTheme para pegar o tema global adicionado
 import {useTheme} from 'styled-components';
+import {useGetCategories} from '@services/hooks/Finances/useCategories';
+import {useGetPeople} from '@services/hooks/Finances/usePeople';
+import {CategoryProps, PersonProps, ProcessProps} from '@pages/Finance/Category/types';
+import {useGetProcess} from '@services/hooks/Finances/useProcess';
 
-const people = ['Pessoa 1', 'Pessoa 2', 'Pessoa 3', 'Pessoa 4', 'Pessoa 5', 'Pessoa 6'];
+import {scrollView} from 'react-native';
 
 const process = [
 	'Nº do processo',
@@ -43,12 +49,16 @@ const process = [
 	'Proc.: 0000846-51.2020.5.07.0016',
 ];
 
-const repeat = ['Não se repete', 'Todos os dias', 'Semanal', 'Quinzenal ', 'Mensal', 'Anual'];
-
 export default AddExpense = forwardRef((props, ref) => {
+	const {isLoadingCategories, getCategoriesData} = useGetCategories();
+	const {isLoadingPeople, getPeopleData} = useGetPeople();
+	const {isLoadingProcess, getProcessData} = useGetProcess();
+
+	const [dataResume, setDataResume] = useState<CategoryProps>([]);
+	const [PeopleResume, setPeopleResume] = useState<PersonProps[]>([]);
+	const [ProcessResume, setProcessResume] = useState<ProcessProps[]>([]);
 
 	const [selectedColor, setSelectedColor] = useState(null);
-
 	const [selectedPeople, setSelectedPeople] = useState(null);
 	const [selectedProcess, setSelectedProcess] = useState(null);
 	const [selectedRepeat, setSelectedRepeat] = useState(null);
@@ -65,11 +75,75 @@ export default AddExpense = forwardRef((props, ref) => {
 		setSelectedRepeat(index);
 	};
 
+	// const handleRepeatClick = index => {
+	// 	setSelectedRepeat(data[index].value);
+	// };
+
+	useEffect(() => {
+		fetchData();
+	}, []);
+
+	useEffect(() => {
+		fetchPeople();
+	}, []);
+
+	useEffect(() => {
+		fetchProcess();
+	}, []);
+
+	const fetchData = async () => {
+		try {
+			const responseCategories = await getCategoriesData();
+			setDataResume(responseCategories);
+		} catch (error) {}
+	};
+
+	const fetchPeople = async () => {
+		try {
+			const responsePeople = await getPeopleData();
+			setPeopleResume(responsePeople);
+		} catch (error) {}
+	};
+
+	const fetchProcess = async () => {
+		try {
+			const responseProcess = await getProcessData();
+			setProcessResume(responseProcess);
+		} catch (error) {}
+	};
+
+	const data = [
+		{
+			label: `Não se repete`,
+			value: '-1',
+		},
+		{
+			label: `Todos os dias`,
+			value: '-9',
+		},
+		{
+			label: `Semanal`,
+			value: '-8',
+		},
+		{
+			label: `Quinzenal`,
+			value: '-7',
+		},
+		{
+			label: `Mensal`,
+			value: '-6',
+		},
+		{
+			label: `Anual`,
+			value: '-2',
+		},
+	];
+
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const closeModal = useCallback(() => ref.current?.close(), []);
+	const closeModal = useCallback(() => ref.current?.close(), props);
 	const footer = () => (
 		<Footer>
 			<Cancel onPress={() => closeModal()}>
@@ -83,7 +157,8 @@ export default AddExpense = forwardRef((props, ref) => {
 	);
 
 	return (
-		<Modal maxHeight={650} ref={ref} title="Cadastrar despesa" footer={footer()}>
+
+		<Modal maxHeight={650} onClose={props.onClose} ref={ref} title="Cadastrar despesa" footer={footer()}>
 			<ContentDescription>
 				<Row>
 					<Label>Descrição</Label>
@@ -126,70 +201,19 @@ export default AddExpense = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItems>
-					<Items style={[
-							{backgroundColor: colors.gray},
-							selectedColor === colors.gray
-								? {borderWidth: 2, borderColor: colors.primary}
-								: {},
-						]}
-						onPress={() => setSelectedColor(colors.gray)}>
-						<LabelItems style={[
-              selectedColor === colors.gray
-							? {color: colors.primary}
-								: {},
-            ]}
-          >Categoria 01</LabelItems>
-					</Items>
-
-					<Items style={[
-							{backgroundColor: colors.amber},
-							selectedColor === colors.amber
-								? {borderWidth: 2, borderColor: colors.primary}
-								: {},
-						]}
-						onPress={() => setSelectedColor(colors.amber)}>
-						<LabelItems>Categoria 02</LabelItems>
-					</Items>
-
-					<Items style={[
-							{backgroundColor: colors.yellow},
-							selectedColor === colors.yellow
-								? {borderWidth: 2, borderColor: colors.primary}
-								: {},
-						]}
-						onPress={() => setSelectedColor(colors.yellow)}>
-						<LabelItems>Categoria 03</LabelItems>
-					</Items>
-
-					<Items style={[
-							{backgroundColor: colors.purple},
-							selectedColor === colors.purple
-								? {borderWidth: 2, borderColor: colors.primary}
-								: {},
-						]}
-						onPress={() => setSelectedColor(colors.purple)}>
-						<LabelItems>Categoria 04</LabelItems>
-					</Items>
-
-					<Items style={[
-							{backgroundColor: colors.pink},
-							selectedColor === colors.pink
-								? {borderWidth: 2, borderColor: colors.primary}
-								: {},
-						]}
-						onPress={() => setSelectedColor(colors.pink)}>
-						<LabelItems>Categoria 05</LabelItems>
-					</Items>
-
-					<Items style={[
-							{backgroundColor: colors.pinkRed},
-							selectedColor === colors.pinkRed
-								? {borderWidth: 2, borderColor: colors.primary}
-								: {},
-						]}
-						onPress={() => setSelectedColor(colors.pinkRed)}>
-						<LabelItems>Categoria 06</LabelItems>
-					</Items>
+					{dataResume.map((category, index) => (
+						<Items
+							key={index}
+							style={[
+								{backgroundColor: category.corCategoria},
+								selectedColor === colors.gray ? {borderWidth: 2, borderColor: colors.primary} : {},
+							]}
+							onPress={() => setSelectedColor(colors.gray)}>
+							<LabelItems style={[selectedColor === colors.gray ? {color: colors.primary} : {}]}>
+								{category.nomeCategoriaFinanceiro}
+							</LabelItems>
+						</Items>
+					))}
 				</ContainerItems>
 			</ContentCategory>
 
@@ -199,7 +223,7 @@ export default AddExpense = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsPerson>
-					{people.map((people, index) => (
+					{PeopleResume.map((person, index) => (
 						<ItemsPerson
 							key={index}
 							onPress={() => handlePeopleClick(index)}
@@ -210,7 +234,7 @@ export default AddExpense = forwardRef((props, ref) => {
 								style={{
 									color: selectedPeople === index ? colors.backgroundButton : colors.iconGray,
 								}}>
-								{people}
+								{person.nomePessoaCliente}
 							</LabelItems>
 						</ItemsPerson>
 					))}
@@ -223,7 +247,7 @@ export default AddExpense = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsProcess>
-					{process.map((process, index) => (
+					{ProcessResume.map((process, index) => (
 						<ItemsProcess
 							key={index}
 							onPress={() => handleProcessClick(index)}
@@ -234,7 +258,7 @@ export default AddExpense = forwardRef((props, ref) => {
 								style={{
 									color: selectedProcess === index ? colors.backgroundButton : colors.iconGray,
 								}}>
-								{process}
+								{process.numeroProcesso}
 							</LabelItemsProcess>
 						</ItemsProcess>
 					))}
@@ -247,7 +271,7 @@ export default AddExpense = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsRepeat>
-					{repeat.map((repeat, index) => (
+					{data.map((repeat, index) => (
 						<ItemsProcess
 							key={index}
 							onPress={() => handleRepeatClick(index)}
@@ -258,7 +282,7 @@ export default AddExpense = forwardRef((props, ref) => {
 								style={{
 									color: selectedRepeat === index ? colors.backgroundButton : colors.iconGray,
 								}}>
-								{repeat}
+								{repeat.label}
 							</LabelItemsProcess>
 						</ItemsProcess>
 					))}
@@ -268,6 +292,9 @@ export default AddExpense = forwardRef((props, ref) => {
 			<ContentDuring>
 				<Row>
 					<LabelDuring>Durante</LabelDuring>
+					<ContainerInfo>
+						<LabelDuringInfo>02 semanas</LabelDuringInfo>
+					</ContainerInfo>
 				</Row>
 			</ContentDuring>
 

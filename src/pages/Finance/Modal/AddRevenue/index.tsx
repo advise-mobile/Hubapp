@@ -1,4 +1,4 @@
-import React, {forwardRef, useCallback, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useState} from 'react';
 import Modal from 'components/Modal';
 import {
 	Footer,
@@ -66,11 +66,15 @@ export default AddRevenue = forwardRef((props, ref) => {
 	const handleRepeatClick = index => {
 		setSelectedRepeat(index);
 	};
+
+	useEffect(() => {
+    // fetchData();
+  }, []);
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const closeModal = useCallback(() => ref.current?.close(), []);
+	const closeModal = useCallback(() => ref.current?.close(), props);
 	const footer = () => (
 		<Footer>
 			<Cancel onPress={() => closeModal()}>
@@ -84,7 +88,7 @@ export default AddRevenue = forwardRef((props, ref) => {
 	);
 
 	return (
-		<Modal maxHeight={650} ref={ref} title="Cadastrar receita" footer={footer()}>
+		<Modal maxHeight={650} onClose={props.onClose} ref={ref} title="Cadastrar receita" footer={footer()}>
 			<ContentDescription>
 				<Row>
 					<Label>Descrição</Label>

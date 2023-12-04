@@ -45,7 +45,7 @@ export default function Details(props) {
 
 	const {item} = props.route.params;
 
-	//console.log("===, item",item)
+
 
 	const renderAddOptions = useCallback(() => <More ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
 
@@ -60,9 +60,9 @@ export default function Details(props) {
     try {
 
       const installmentsDetails = await getInstallmentsDetails({idFinanceiro:item.idLancamentoFinanceiro});
-      //console.log("=== na screen details",installmentsDetails);
+
 			setDataDetails(installmentsDetails);
-			// console.log("===",installmentsDetails);
+
     } catch (error) {
 
     }

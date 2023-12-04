@@ -49,7 +49,7 @@ export default AddCategory = forwardRef((props, ref) => {
 
 	const RBLabel = stylesRBLabel(colors);
 
-	const closeModal = useCallback(() => ref.current?.close(), []);
+	const closeModal = useCallback(() => ref.current?.close(), props);
 	const footer = () => (
 		<Footer>
 			<Cancel onPress={() => closeModal()}>
@@ -68,7 +68,9 @@ export default AddCategory = forwardRef((props, ref) => {
 			ref={ref}
 			title="Cadastrar categoria"
 			footer={footer()}
-			clear={clearFilters}>
+			clear={clearFilters}
+			onClose={props.onClose}
+			>
 			<ContentDescription>
 				<Row>
 					<Label>Nome</Label>

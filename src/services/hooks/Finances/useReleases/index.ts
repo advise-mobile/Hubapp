@@ -39,6 +39,8 @@ export const useGetFinanceID= () => {
                 setIsLoadingFinanceID(false);
             }, 2000);
         }
+
+
     };
     return {isLoadingFinanceID, getFinanceDataID};
 }
@@ -134,13 +136,13 @@ export const useGetInstallmentsDetails = () => {
 	const getInstallmentsDetails = async (filters: ItemProps) => {
 
 
-		// console.log("=== filter",filters);
+
 			try {
 					setIsLoadingInstallmentsDetails(true);
 
 					const params = `campos=*`;
 					const response: DataItemsDetailsProps = await Api.get(`/core/v1/lancamentos-financeiro?${params}&IdsLancamentoFinanceiro=${filters.idFinanceiro}`);
-					// console.log('===', response)
+
 
 
 					const { itens } : ItemsDetailsProps  = response.data;
