@@ -70,6 +70,7 @@ export default AddRevenue = forwardRef((props, ref) => {
 	useEffect(() => {
     // fetchData();
   }, []);
+
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
