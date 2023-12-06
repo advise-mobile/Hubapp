@@ -1,5 +1,5 @@
 import {SwipeListView} from 'react-native-swipe-list-view';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Actions, ActionButton} from 'assets/styles/global';
 
 import {useTheme} from 'styled-components';
@@ -14,53 +14,34 @@ import {
 	TextTitle,
 } from './styles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {CategoryItemProps} from './types';
+import { useGetCategory } from '@services/hooks/Finances/useCategory';
+import { CategoryItemProps} from './types';
+
+
 
 export default function Category(props) {
-	const dataItem = [
-		{
-			id: 1,
-			title: 'Sálarios',
-			SubTitle: 'Receitas',
-		},
-		{
-			id: 2,
-			title: 'Viagem',
-			SubTitle: 'Despesas',
-		},
-	];
 
-	const [categories, setCategories] = useState<CategoryItemProps[]>(dataItem);
+	const {isLoadingCategory, getCategoryData} = useGetCategory();
+	const [dataResume, setDataResume] = useState<CategoryItemProps>([]);
 
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const confirmationModalRef = useRef();
+	useEffect(() => {
+		fetchData();
+	}, []);
 
-	const confirmationModalRecoverRef = useRef();
-	const [currentItem, setCurrentItem] = useState<ItemProps>();
+	const fetchData = async () => {
+		try {
+			const responseCategories = await getCategoryData();
+			console.log("=== responseCategories", responseCategories)
+			setDataResume(responseCategories);
+		} catch (error) {}
+	};
 
-	const iconDelete =
-		colorUseTheme.name === 'dark'
-			? require('assets/images/movements-trash-delete-dark.png')
-			: require('assets/images/movements-trash-delete-white.png');
-
-	const iconRestore =
-		colorUseTheme.name === 'dark'
-			? require('assets/images/movements-trash-restore-dark.png')
-			: require('assets/images/movements-trash-restore-white.png');
 
 	const listRef = useRef(null);
 
-	const handleDelete = useCallback((item: ItemProps) => {
-		setCurrentItem(item);
-		confirmationModalRef.current?.open();
-	}, []);
-
-	const handleRecover = useCallback((item: ItemProps) => {
-		setCurrentItem(item);
-		confirmationModalRecoverRef.current?.open();
-	}, []);
 
 	const renderHiddenItem = useCallback(
 		({item}: {item: CategoryItemProps}) => (
@@ -69,28 +50,28 @@ export default function Category(props) {
 				style={{
 					overflow: 'hidden',
 				}}>
-				<ActionButton onPress={() => handleRecover(item)}>
+				<ActionButton>
 					<MaterialIcons name="edit" size={24} color={colors.fadedBlack} />
 				</ActionButton>
-				<ActionButton onPress={() => handleDelete(item)}>
+				<ActionButton>
 					<MaterialIcons name="block" size={24} color={colors.fadedBlack} />
 				</ActionButton>
 			</Actions>
 		),
-		[iconRestore, iconDelete],
+		[],
 	);
 
 	const openRow = useCallback(
 		(item: CategoryItemProps) => {
-			!listRef.current?._rows[item.id].isOpen
-				? listRef.current?._rows[item.id].manuallySwipeRow(-150)
+			!listRef.current?._rows[item.idCategoriaFinanceiro].isOpen
+				? listRef.current?._rows[item.idCategoriaFinanceiro].manuallySwipeRow(-150)
 				: closeOpenedRow(item);
 		},
 		[listRef],
 	);
 
 	const closeOpenedRow = useCallback(
-		(item: CategoryItemProps) => listRef.current?._rows[item.id].closeRow(),
+		(item: CategoryItemProps) => listRef.current?._rows[item.idCategoriaFinanceiro].closeRow(),
 		[],
 	);
 
@@ -102,7 +83,7 @@ export default function Category(props) {
 						<ContainerIcon>
 							<MaterialIcons
 								name="label"
-								color={item.id === 1 ? colors.pinkTag : colors.greenTag}
+								color={item.corCategoria}
 								size={24}
 							/>
 						</ContainerIcon>
@@ -110,25 +91,26 @@ export default function Category(props) {
 							onPress={() => openRow(item)}
 							underlayColor={colors.white}
 							activeOpacity={1}>
-							<TextTitle>{item.title}</TextTitle>
+							<TextTitle>{item.nomeCategoriaFinanceiro}</TextTitle>
 						</ContainerTitle>
 
 						<ContainerSubtitle >
 							<SubTitle onPress={() => openRow(item)}
 							underlayColor={colors.white}
-							activeOpacity={1}>{item.SubTitle}</SubTitle>
+							activeOpacity={1}>{item.tipoCategoriaFinanceiro.nomeTipoCategoriaFinanceiro}</SubTitle>
 						</ContainerSubtitle>
+
 					</ContainerItems>
 				</Container>
 			</Animated.View>
 		),
-		[categories, colors],
+		[dataResume, colors],
 	);
 
 	return (
 		<SwipeListView
 			ref={listRef}
-			data={categories}
+			data={dataResume}
 			disableRightSwipe
 			rightOpenValue={-120}
 			stopRightSwipe={-120}
@@ -138,7 +120,7 @@ export default function Category(props) {
 			previewOpenDelay={2000}
 			useNativeDriver={false}
 			renderHiddenItem={renderHiddenItem}
-			keyExtractor={(item: CategoryItemProps) => item.id.toString()}
+			keyExtractor={(item: CategoryItemProps) => item.idCategoriaFinanceiro.toString()}
 			removeClippedSubviews={true}
 			maxToRenderPerBatch={5}
 			updateCellsBatchingPeriod={100}

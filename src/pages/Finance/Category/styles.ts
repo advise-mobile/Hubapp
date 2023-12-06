@@ -16,7 +16,9 @@ export const TextTitle = styled.Text`
 export const SubTitle = styled.Text`
 	font-size: 16px;
 	color: ${({ theme }) => theme.colors.BlackInactive};
-	width: 290px;
+	width: 190px;
+	margin-left: 10px;
+
 `;
 
 export const ContainerSubtitle = styled.View`
@@ -45,6 +47,6 @@ export const ContainerTitle = styled.Text`
   font-family: ${props => props.read ? fonts.circularStdBook : fonts.circularStdBold};
   font-size: 16px;
 	flex: 1;
-	max-width: 70px;
+	max-width: 165px;
 	height: 25px;
 `;
