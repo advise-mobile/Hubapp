@@ -12,33 +12,36 @@ import {
 	TextValueDescriptionExit,
 	TextValueDescriptionProhibited,
 } from './styles';
+import {CashFlowProps} from '@pages/Finance/CashFlow/types';
 
-const CashFlowDataItem = ({item}: DataItemProps) => {
+const CashFlowDataItem = (  { item } : { item: CashFlowProps }) => {
+
 	return (
 		<>
+
 			<ContainerReleases>
 				<ContainerItems>
 					<ContainerDataReleases>
-						<TextData WeightTextProps>{item.date}</TextData>
+						<TextData>{item.dataSaldo}</TextData>
 					</ContainerDataReleases>
 
 					<ContainerDescriptionReleases>
 						<ContainerDescriptionItems>
 							<TextLabelDescription>Entrada</TextLabelDescription>
 
-							<TextValueDescriptionProhibited>{item.valueProhibited}</TextValueDescriptionProhibited>
+							<TextValueDescriptionProhibited>{item.totalEntradas}</TextValueDescriptionProhibited>
 						</ContainerDescriptionItems>
 
 						<ContainerDescriptionItems>
 							<TextLabelDescription>Saída</TextLabelDescription>
 
-							<TextValueDescriptionExit>{item.valueExit}</TextValueDescriptionExit>
+							<TextValueDescriptionExit>{item.totalSaidas}</TextValueDescriptionExit>
 						</ContainerDescriptionItems>
 
 						<ContainerDescriptionItems>
 							<TextLabelDescription>Saldo</TextLabelDescription>
 
-							<TextValueDescriptionBalance>{item.valueBalance}</TextValueDescriptionBalance>
+							<TextValueDescriptionBalance>{item.valorSaldo}</TextValueDescriptionBalance>
 						</ContainerDescriptionItems>
 					</ContainerDescriptionReleases>
 				</ContainerItems>

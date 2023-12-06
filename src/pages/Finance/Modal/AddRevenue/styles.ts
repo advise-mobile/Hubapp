@@ -61,7 +61,7 @@ export const Content = styled.View`
 export const ContentCategory = styled.View`
   margin: 0 -24px;
 	border: ${({ theme }) => theme.colors.grayLighter};
-	height: 116px;
+	min-height: 146px;
 	width: 414px;
 `;
 
@@ -102,8 +102,8 @@ export const Input = styled.TextInput`
 `;
 
 export const ContainerItems = styled.View`
-	width: 335px;
-	height: 55px;
+	min-width: 435px;
+	height: 85px;
 	flex-direction: row;
 	flex-wrap: wrap;
 	margin-left: 25px;
@@ -159,8 +159,8 @@ export const ContainerItemsProcess = styled.View`
 export const ContentProcess = styled.View`
   margin: 0 -24px;
 	border: ${({ theme }) => theme.colors.grayLighter};
-	height: 147px;
-	width: 414px;
+	height: 190px;
+	width: 434px;
 `;
 
 export const ItemsProcess = styled.TouchableOpacity`

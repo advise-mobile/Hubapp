@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getLoggedUser } from '@helpers/Permissions';
+
 import Api from '@services/Api';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import { useDispatch } from 'react-redux';
