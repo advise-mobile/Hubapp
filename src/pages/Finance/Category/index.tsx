@@ -12,15 +12,13 @@ import {
 	ContainerTitle,
 	SubTitle,
 	TextTitle,
+	ContainerDescriptionCategory,
 } from './styles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useGetCategory } from '@services/hooks/Finances/useCategory';
-import { CategoryItemProps} from './types';
-
-
+import {useGetCategory} from '@services/hooks/Finances/useCategory';
+import {CategoryItemProps} from './types';
 
 export default function Category(props) {
-
 	const {isLoadingCategory, getCategoryData} = useGetCategory();
 	const [dataResume, setDataResume] = useState<CategoryItemProps>([]);
 
@@ -34,14 +32,12 @@ export default function Category(props) {
 	const fetchData = async () => {
 		try {
 			const responseCategories = await getCategoryData();
-			console.log("=== responseCategories", responseCategories)
+			console.log('=== responseCategories', responseCategories);
 			setDataResume(responseCategories);
 		} catch (error) {}
 	};
 
-
 	const listRef = useRef(null);
-
 
 	const renderHiddenItem = useCallback(
 		({item}: {item: CategoryItemProps}) => (
@@ -81,12 +77,9 @@ export default function Category(props) {
 				<Container>
 					<ContainerItems>
 						<ContainerIcon>
-							<MaterialIcons
-								name="label"
-								color={item.corCategoria}
-								size={24}
-							/>
+							<MaterialIcons name="label" color={item.corCategoria} size={24} />
 						</ContainerIcon>
+
 						<ContainerTitle
 							onPress={() => openRow(item)}
 							underlayColor={colors.white}
@@ -94,12 +87,14 @@ export default function Category(props) {
 							<TextTitle>{item.nomeCategoriaFinanceiro}</TextTitle>
 						</ContainerTitle>
 
-						<ContainerSubtitle >
-							<SubTitle onPress={() => openRow(item)}
-							underlayColor={colors.white}
-							activeOpacity={1}>{item.tipoCategoriaFinanceiro.nomeTipoCategoriaFinanceiro}</SubTitle>
+						<ContainerSubtitle>
+							<SubTitle
+								onPress={() => openRow(item)}
+								underlayColor={colors.white}
+								activeOpacity={1}>
+								{item.tipoCategoriaFinanceiro.nomeTipoCategoriaFinanceiro}
+							</SubTitle>
 						</ContainerSubtitle>
-
 					</ContainerItems>
 				</Container>
 			</Animated.View>
