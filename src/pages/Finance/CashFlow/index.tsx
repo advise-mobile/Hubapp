@@ -20,10 +20,12 @@ import CashFlowDataItem from '@components/Finance/CashFlow';
 import StockCashFlow from '../Modal/StockCashFlow';
 import {useGetCashFlow} from '@services/hooks/Finances/useCashFlow';
 import {CashFlowProps} from './types';
+import { FormatReal } from '@helpers/MoneyFunctions';
 
 export default function CashFlow() {
 	const {isLoadingCashFlow, getCashFlowData} = useGetCashFlow();
 	const [CashFlowResume, setCashFlowResume] = useState<CashFlowProps[]>([]);
+	const [saldoAnterior, setSaldoAnterior] = useState('');
 
 	const CategoryRef = useRef(null);
 
@@ -47,8 +49,11 @@ export default function CashFlow() {
 			const responseCashFlow = await getCashFlowData();
 			if (responseCashFlow !== undefined) {
 				setCashFlowResume(responseCashFlow);
+				setSaldoAnterior(responseCashFlow[0].saldoAnterior);
 			}
-		} catch (error) {}
+		} catch (error) {
+
+		}
 	};
 
 	const renderItem = ({item}: {item: CashFlowProps}) => {
@@ -64,10 +69,10 @@ export default function CashFlow() {
 							<ContainerScreen style={{flex: 1}}>
 								<TopContainer>
 									<ContainerMainInformation>
-										<TextLabel WeightTextProps>Saldo Total</TextLabel>
+										<TextLabel WeightTextProps>Saldo Anterior</TextLabel>
 
 										<ContainerValueInformation>
-											<TextValue>{}</TextValue>
+											<TextValue>{FormatReal(saldoAnterior)}</TextValue>
 										</ContainerValueInformation>
 									</ContainerMainInformation>
 

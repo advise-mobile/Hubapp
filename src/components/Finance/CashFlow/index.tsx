@@ -1,5 +1,4 @@
 import React from 'react';
-import {DataItemProps} from './types';
 import {
 	ContainerDataReleases,
 	ContainerDescriptionItems,

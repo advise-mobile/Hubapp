@@ -3,6 +3,7 @@ export interface CashFlowProps {
   totalSaidas: number;
   dataSaldo: string;
   valorSaldo: number;
+	contador: saldoAnteriorProps;
 }
 
 export interface ItemCashFlowProps {
@@ -10,9 +11,13 @@ export interface ItemCashFlowProps {
 }
 
 export interface ItemCashFlowItensProps {
-  itens: ItemCashFlowProps[];
+  contador: ItemCashFlowProps[];
 }
 
 export interface DataCashFlowProps {
   data: ItemCashFlowItensProps;
+}
+
+export interface saldoAnteriorProps{
+	saldoAnterior: number;
 }
