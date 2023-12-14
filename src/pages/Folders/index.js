@@ -132,7 +132,8 @@ export default function Folders(props) {
   
     useEffect(async () => { 
       const promotion = await AsyncStorage.getItem(SHOW_PROMOTION);
-      setSeenPromotion(JSON.parse(promotion) === null ? true : JSON.parse(promotion));
+      //setSeenPromotion(JSON.parse(promotion) === null ? true : JSON.parse(promotion));
+      setSeenPromotion(false);
     }, []);
 
 
