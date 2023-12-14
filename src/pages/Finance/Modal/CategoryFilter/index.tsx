@@ -9,31 +9,16 @@ import {StyleSheet, Dimensions} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 
 import Modal from '@components/Modal';
-import Datepicker from '@components/DatePicker';
-
-import {FormatFullDateEN} from '@helpers/DateFunctions';
-
-import {ItemProps} from '@components/MultiSelectCheckBox/types';
 
 import {fonts} from 'assets/styles';
 
-import {
-	Title,
-	Row,
-	Footer,
-	Cancel,
-	CancelText,
-	ToSave,
-	ToSaveText,
-	RBRow,
-} from './styles';
+import {Title, Row, Footer, Cancel, CancelText, ToSave, ToSaveText, RBRow} from './styles';
 
-import {FilterProps, DataFilterProps} from './types';
+import {FilterProps, DataFilterProps, TypesCategoryFilterProps} from './types';
 
-import {useKeyWordsGet} from '@services/hooks/MovimentsTrash/useMovementsTrash';
-
-// Add Hook UseTheme para pegar o tema global addicionado
+// Add Hook UseTheme para pegar o tema global adicionado
 import {useTheme} from 'styled-components';
+import {useGetFilterCategory} from '@services/hooks/Finances/useFilterCategory';
 
 export default CategoryFilter = forwardRef(
 	({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
@@ -41,89 +26,54 @@ export default CategoryFilter = forwardRef(
 		const colorUseTheme = useTheme();
 		const {colors} = colorUseTheme;
 
-		// - Key Words from hook called api
-		const {dataKeyWords} = useKeyWordsGet();
-
-		// - Key Words states
-
-		const [keyWords, setKeyWords] = useState<ItemProps[]>();
-		const [keyWordsCheckeds, setKeyWordsCheckeds] = useState<number[]>([]);
-		const [quantitySelected, setQuantitySelected] = useState<number>(0);
-		const [startAllChecked] = useState<boolean>(false);
-
-		// - Diaries  states
-		const [quantityDiariesSelected, setQuantityDiariesSelected] = useState<number>(0);
-
-		const [dataDiariesCheckeds, setDataDiariesCheckeds] = useState<number[]>([]);
-
-		// - Journals  states
-		const [dataJournalsCheckeds, setDataJournalsCheckeds] = useState<number[]>([]);
-
-		const [situation, setSituation] = useState<number>(0);
-		const [situationtype, setSituationtype] = useState<number>(0);
-		const [idTipoMovProcesso, setIdTipoMovProcesso] = useState<number | null>(null);
-		const [minDate, setMinDate] = useState<string | null>(null);
-		const [maxDate, setMaxDate] = useState<string | null>(null);
+		const [situation, setSituation] = useState<boolean | null>(null);
+		const [type, setType] = useState<number>(0);
 
 		const {control, handleSubmit, setValue, getValues} = useForm({
 			shouldUnregister: false,
 		});
 
-		const onSubmit = (data: DataFilterProps) => {
+		const onSubmit = async (data: DataFilterProps) => {
 			handleSubmitFilters(data);
+			// closeModal(); //fechar o modal depois de clicar em filtrar
+
 		};
 
-		const countFilters = useCallback(
-			() =>
-				checkNull([
-					situation,
-					situationtype,
-					minDate,
-					maxDate,
-					idTipoMovProcesso,
-					keyWordsCheckeds,
-					dataDiariesCheckeds,
-					dataJournalsCheckeds,
-				]),
-			[
-				situation,
-				situationtype,
-				minDate,
-				maxDate,
-				idTipoMovProcesso,
-				keyWordsCheckeds,
-				dataDiariesCheckeds,
-				dataJournalsCheckeds,
-			],
-		);
+		const countFilters = useCallback(() => checkNull([situation, type]), [situation, type]);
 
 		const checkNull = useCallback(
 			states => states.filter(state => state != null && state != 0).length,
 			[],
 		);
 
+		// chamando o hook
+		const {isLoadingFilterCategory, getFilterCategoryData} = useGetFilterCategory();
+
+		const typesCategoryAllOption = {
+			value: null,
+			label: 'Todos os tipos',
+		};
+
+		const [typesCategory, setTypeCategory] = useState<TypesCategoryFilterProps[]>([
+			typesCategoryAllOption,
+		]);
+
 		useEffect(() => {
-			setKeyWords(dataKeyWords);
+			fetchFilterCategory();
+		}, []);
 
-			setQuantitySelected(startAllChecked ? dataKeyWords.length : 0);
-
-			if (startAllChecked) {
-				const dataChecked = dataKeyWords.map((item: ItemProps) => {
-					return item.id;
+		const fetchFilterCategory = async () => {
+			try {
+				const responseFilterCategory = await getFilterCategoryData();
+				const typesCategoryOptimized = responseFilterCategory.map(obj => {
+					return {
+						value: obj.idTipoCategoriaFinanceiro,
+						label: obj.nomeTipoCategoriaFinanceiro,
+					};
 				});
-
-				setKeyWordsCheckeds(dataChecked);
-				setValue('idPalavraChave', dataChecked);
-			} else {
-				setKeyWordsCheckeds([]);
-			}
-		}, [dataKeyWords]);
-
-		const radio_props = [
-			{label: 'Todos os tipos', value: null},
-			{label: 'Receitas', value: true},
-			{label: 'Despesas', value: true},
-		];
+				setTypeCategory([typesCategoryAllOption, ...typesCategoryOptimized]);
+			} catch (error) {}
+		};
 
 		const radio_props_situation = [
 			{label: 'Todas situações', value: true},
@@ -132,10 +82,9 @@ export default CategoryFilter = forwardRef(
 		];
 
 		const clearFilters = useCallback(() => {
-			setSituation(0);
-			setSituationtype(0);
-			setMinDate(null);
-			setMaxDate(null);
+			handleClearFilters();
+			setSituation(null);
+			setType(0);
 		}, []);
 
 		const RBLabel = stylesRBLabel(colors);
@@ -166,18 +115,18 @@ export default CategoryFilter = forwardRef(
 				title="Filtros"
 				filters={countFilters()}
 				clear={clearFilters}>
-					<Row>
-						<Title>Tipo</Title>
-					</Row>
+				<Row>
+					<Title>Tipo</Title>
+				</Row>
 				<Row>
 					<RadioForm animation={true} style={{flex: 1}}>
-						{radio_props.map((obj, i) => (
+						{typesCategory.map((obj, i) => (
 							<RBRow as={RadioButton} key={i}>
 								<RadioButtonInput
 									obj={obj}
-									isSelected={situationtype == i}
-									onPress={value => {
-										setSituationtype(i);
+									isSelected={type === i}
+									onPress={() => {
+										setType(i);
 									}}
 									borderWidth={1}
 									buttonInnerColor={colors.primary}
@@ -188,8 +137,8 @@ export default CategoryFilter = forwardRef(
 								<RadioButtonLabel
 									obj={obj}
 									labelStyle={RBLabel.label}
-									onPress={value => {
-										setSituationtype(i);
+									onPress={() => {
+										setType(i);
 									}}
 								/>
 							</RBRow>
@@ -198,11 +147,11 @@ export default CategoryFilter = forwardRef(
 				</Row>
 
 				<Row>
-						<Title>Situação</Title>
-					</Row>
+					<Title>Situação</Title>
+				</Row>
 
 				<Row>
-				<RadioForm animation={true} style={{flex: 1}}>
+					<RadioForm animation={true} style={{flex: 1}}>
 						{radio_props_situation.map((obj, a) => (
 							<RBRow as={RadioButton} key={a}>
 								<RadioButtonInput
@@ -228,8 +177,6 @@ export default CategoryFilter = forwardRef(
 						))}
 					</RadioForm>
 				</Row>
-
-
 			</Modal>
 		);
 	},
