@@ -82,6 +82,8 @@ export default function Finance(props) {
   const [havePermission, setPermission] = useState(false);
 	const [filtering, setFiltering] = useState<Boolean>(false);
 
+  const [dataFiltersCategory,setDataFiltersCategory] = useState();
+ 
   const [formattedData] = useState({});
 
   useEffect(() => {
@@ -138,8 +140,15 @@ export default function Finance(props) {
 		setFiltering(false);
 	}, []);
 
-	const handleSubmitFilters = useCallback(async (data: DataFilterProps) => {
+	const handleSubmitFiltersCategory = useCallback(async (data) => {
+    setDataFiltersCategory(data)
+    filterCategoryRef.current?.close();
+	}, []);
 
+  const handleSubmitFilters = useCallback(async (data) => {
+
+    console.log("===",data);
+    setDataFiltersCategory(data)
 		//setFiltering(true);
 		//filtersRef.current?.close();
 
@@ -148,6 +157,7 @@ export default function Finance(props) {
 		// 	itens:data
 		// })
 	}, []);
+
 
   const renderAddOptions = useCallback(() => <Add ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
 
@@ -168,7 +178,7 @@ export default function Finance(props) {
 
 	const renderFilterCategory = useMemo(
 		() => (
-			<CategoryFilter ref={filterCategoryRef} handleSubmitFilters={handleSubmitFilters} handleClearFilters={handleClearFilters}/>
+			<CategoryFilter ref={filterCategoryRef} handleSubmitFilters={handleSubmitFiltersCategory} handleClearFilters={handleClearFilters}/>
 		),
 		[formattedData],
 	);
@@ -200,7 +210,7 @@ export default function Finance(props) {
                   <>
                     {currentTab === "release" && <Release /> }
                     {currentTab === "cash-flow" && <CashFlow /> }
-                    {currentTab === "category" && <Category /> }
+                    {currentTab === "category" && <Category dataFiltersCategory={dataFiltersCategory} /> }
                   </>
 		  		    }
               </Content>

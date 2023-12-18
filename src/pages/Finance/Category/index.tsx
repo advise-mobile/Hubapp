@@ -1,6 +1,9 @@
 import {SwipeListView} from 'react-native-swipe-list-view';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState,useMemo} from 'react';
 import {Actions, ActionButton} from 'assets/styles/global';
+
+import HeaderGlobals from '@components/HeaderGlobals';
+
 
 import {useTheme} from 'styled-components';
 import {Animated} from 'react-native';
@@ -18,21 +21,37 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useGetCategory} from '@services/hooks/Finances/useCategory';
 import {CategoryItemProps} from './types';
 
+import { useNavigation } from '@react-navigation/native';
+
 export default function Category(props) {
+
+	console.log("=== no category",props)	
+	const navigation = useNavigation();  
+
 	const {isLoadingCategory, getCategoryData} = useGetCategory();
+
 	const [dataResume, setDataResume] = useState<CategoryItemProps>([]);
 
+	
+
 	const colorUseTheme = useTheme();
+
 	const {colors} = colorUseTheme;
+
+
 
 	useEffect(() => {
 		fetchData();
-	}, []);
+	}, [props]);
+
 
 	const fetchData = async () => {
 		try {
-			const responseCategories = await getCategoryData();
-			console.log('=== responseCategories', responseCategories);
+			// console.log("=== buscar",props.dataFiltersCategory)
+			const responseCategories = await getCategoryData(props.dataFiltersCategory);
+
+			//const responseCategories = await getCategoryData();
+			console.log('=== fetchData');
 			setDataResume(responseCategories);
 		} catch (error) {}
 	};
@@ -103,6 +122,7 @@ export default function Category(props) {
 	);
 
 	return (
+		<>
 		<SwipeListView
 			ref={listRef}
 			data={dataResume}
@@ -121,5 +141,7 @@ export default function Category(props) {
 			updateCellsBatchingPeriod={100}
 			initialNumToRender={20}
 		/>
+
+		</>
 	);
 }
