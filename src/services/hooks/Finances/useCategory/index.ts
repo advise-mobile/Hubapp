@@ -8,6 +8,10 @@ import { CategoryDataItemProps, CategoryDataProps } from "@pages/Finance/Categor
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import { useDispatch } from 'react-redux';
 
+interface CategoryDataProps {
+	type:number,
+	situation:boolean
+}
 
 export const useGetCategory = () => {
 
@@ -15,18 +19,22 @@ export const useGetCategory = () => {
 
 	const dispatch = useDispatch();
 
-	const getCategoryData = async () => {
+	const getCategoryData = async (filtersData:CategoryDataProps | undefined ) => {
 
 		try {
 			setIsLoadingCategory(true);
 
 			const { idUsuarioCliente } = await getLoggedUser();
 
+			let filters;
+			if (filtersData === undefined){
+				filters = ""
+			}else{
+				filters = `“IdsTipoCategoriaFinanceiro”=${filtersData.type}&situacao=${filtersData.situation}`;
+			}
 
 			const params = `?campos=*&idUsuarioCliente=65810&ordenacao=+nomeCategoriaFinanceiro`;
-			const response: CategoryDataProps = await Api.get(`/core/v1/categorias-financeiro${params}`);
-
-			console.log("=== response", response)
+			const response: CategoryDataProps = await Api.get(`/core/v1/categorias-financeiro${params}&${filters}`);
 
 			const { itens }: CategoryDataItemProps = response.data;
 			return itens

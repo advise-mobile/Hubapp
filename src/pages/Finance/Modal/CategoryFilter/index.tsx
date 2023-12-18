@@ -20,23 +20,21 @@ import {FilterProps, DataFilterProps, TypesCategoryFilterProps} from './types';
 import {useTheme} from 'styled-components';
 import {useGetFilterCategory} from '@services/hooks/Finances/useFilterCategory';
 
-export default CategoryFilter = forwardRef(
-	({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
-		// Variavel para usar o hook
+export default CategoryFilter = forwardRef( ({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
+		
+		// Variavel para usar o hook theme
 		const colorUseTheme = useTheme();
 		const {colors} = colorUseTheme;
 
 		const [situation, setSituation] = useState<boolean | null>(null);
-		const [type, setType] = useState<number>(0);
+		const [type, setType] = useState<number | null>(null);
 
-		const {control, handleSubmit, setValue, getValues} = useForm({
+		const {control, handleSubmit, setValue} = useForm({
 			shouldUnregister: false,
 		});
 
 		const onSubmit = async (data: DataFilterProps) => {
 			handleSubmitFilters(data);
-			// closeModal(); //fechar o modal depois de clicar em filtrar
-
 		};
 
 		const countFilters = useCallback(() => checkNull([situation, type]), [situation, type]);
@@ -59,7 +57,7 @@ export default CategoryFilter = forwardRef(
 		]);
 
 		useEffect(() => {
-			fetchFilterCategory();
+		fetchFilterCategory();
 		}, []);
 
 		const fetchFilterCategory = async () => {
@@ -76,15 +74,18 @@ export default CategoryFilter = forwardRef(
 		};
 
 		const radio_props_situation = [
-			{label: 'Todas situações', value: true},
+			{label: 'Todas situações', value: null},
 			{label: 'Ativo', value: true},
-			{label: 'Inativo', value: true},
+			{label: 'Inativo', value: false},
 		];
 
 		const clearFilters = useCallback(() => {
 			handleClearFilters();
 			setSituation(null);
-			setType(0);
+			setType(null);
+
+			setValue("type",null);
+			setValue("situation",null);
 		}, []);
 
 		const RBLabel = stylesRBLabel(colors);
@@ -115,68 +116,89 @@ export default CategoryFilter = forwardRef(
 				title="Filtros"
 				filters={countFilters()}
 				clear={clearFilters}>
-				<Row>
-					<Title>Tipo</Title>
-				</Row>
-				<Row>
-					<RadioForm animation={true} style={{flex: 1}}>
-						{typesCategory.map((obj, i) => (
-							<RBRow as={RadioButton} key={i}>
-								<RadioButtonInput
-									obj={obj}
-									isSelected={type === i}
-									onPress={() => {
-										setType(i);
-									}}
-									borderWidth={1}
-									buttonInnerColor={colors.primary}
-									buttonOuterColor={colors.primary}
-									buttonSize={12}
-									buttonOuterSize={18}
-								/>
-								<RadioButtonLabel
-									obj={obj}
-									labelStyle={RBLabel.label}
-									onPress={() => {
-										setType(i);
-									}}
-								/>
-							</RBRow>
-						))}
-					</RadioForm>
-				</Row>
+					<Row>
+						<Title>Tipo</Title>
+					</Row>
+					
+					<Row>
+						<Controller
+							name="type"
+							control={control}
+							defaultValue={null}
+							render={({ onChange }) => (
+							<RadioForm animation={true} style={{ flex: 1 }}>
+								{
+								typesCategory.map((obj, i) => (
+									<RBRow as={RadioButton} key={i}>
+									<RadioButtonInput
+										obj={obj}
+										isSelected={type == obj.value}
+										onPress={value => {
+											setType(value);
+										onChange(value);
+										}}
+										borderWidth={1}
+										buttonInnerColor={colors.primary}
+										buttonOuterColor={colors.primary}
+										buttonSize={12}
+										buttonOuterSize={18}
+									/>
+									<RadioButtonLabel
+										obj={obj}
+										labelStyle={RBLabel.label}
+										onPress={value => {
+											setType(value);
+										onChange(value);
+										}}
+									/>
+									</RBRow>
+								))
+								}
+							</RadioForm>
+							)}>
+						</Controller>
+					</Row>
 
-				<Row>
-					<Title>Situação</Title>
-				</Row>
+					<Row>
+						<Title>Situação</Title>
+					</Row>
 
-				<Row>
-					<RadioForm animation={true} style={{flex: 1}}>
-						{radio_props_situation.map((obj, a) => (
-							<RBRow as={RadioButton} key={a}>
-								<RadioButtonInput
-									obj={obj}
-									isSelected={situation == a}
-									onPress={value => {
-										setSituation(a);
-									}}
-									borderWidth={1}
-									buttonInnerColor={colors.primary}
-									buttonOuterColor={colors.primary}
-									buttonSize={12}
-									buttonOuterSize={18}
-								/>
-								<RadioButtonLabel
-									obj={obj}
-									labelStyle={RBLabel.label}
-									onPress={value => {
-										setSituation(a);
-									}}
-								/>
-							</RBRow>
-						))}
-					</RadioForm>
-				</Row>
+					<Row>
+						<Controller
+							name="situation"
+							control={control}
+							defaultValue={null}
+							render={({ onChange }) => (
+							<RadioForm animation={true} style={{flex: 1}}>
+								{radio_props_situation.map((obj, i) => (
+									<RBRow as={RadioButton} key={i}>
+										<RadioButtonInput
+											obj={obj}
+											isSelected={situation == obj.value}
+											onPress={value => {
+												onChange(value);
+												setSituation(value);
+											}}
+											borderWidth={1}
+											buttonInnerColor={colors.primary}
+											buttonOuterColor={colors.primary}
+											buttonSize={12}
+											buttonOuterSize={18}
+										/>
+										<RadioButtonLabel
+											obj={obj}
+											labelStyle={RBLabel.label}
+											onPress={value => {
+												onChange(value);
+												setSituation(value);
+											}}
+										/>
+									</RBRow>
+								))}
+							</RadioForm>
+							)}>
+						</Controller>
+					</Row>
 			</Modal>
 		);
 	},
