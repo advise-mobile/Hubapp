@@ -1,14 +1,3 @@
-// export interface CategoryItemProps {
-// 	id:number,
-// 	title?: string,
-// 	SubTitle?: string,
-// }
-
-// export interface DataItemProps {
-// 	items: [CategoryItemProps]
-// }
-
-
 
 export interface CategoryProps {
 	idCategoriaFinanceiro: number,
@@ -22,7 +11,7 @@ export interface TypeCategoryProps{
 }
 
 export interface DataCategoryItemProps{
-	items: [CategoryProps],
+	itens: [CategoryProps],
 }
 
 
@@ -82,6 +71,16 @@ export interface ADataCategoryItemProps{
 export interface ADataCategoryProps{
 	data: ADataCategoryItemProps,
 }
+
+export interface CategoryDataProps {
+	type:number,
+	situation:boolean
+}
+
+export interface DataFiltersCategory {
+	dataFiltersCategory:CategoryDataProps | undefined
+}
+
 
 
 
