@@ -8,12 +8,17 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { PermissionsGroups, checkPermission } from 'helpers/Permissions';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SHOW_PROMOTION } from 'helpers/StorageKeys';
+
 import Header from 'components/Header';
 import Spinner from 'components/Spinner';
 import CustomTabs from 'components/CustomTabs';
 import HasNotPermission from 'components/HasNotPermission';
 
 import Blocked from 'pages/Blocked';
+
+import Promotion from '../Promotion';
 
 // Add Hook UseTheme para pegar o tema global addicionado
 import { useTheme } from 'styled-components';
@@ -48,6 +53,8 @@ import {
 } from './styles';
 
 export default function Folders(props) {
+
+  
   // const add = () => { console.log("add") };
   // const edit = () => { console.log("edit") };
 
@@ -55,6 +62,7 @@ export default function Folders(props) {
 	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
 
+  const [seenPromotion, setSeenPromotion] = useState();
   const [filters, setFilters] = useState();
   const [processFilters, setProcessFilters] = useState();
   const [keywordSearch, setKeywordSearch] = useState('');
@@ -120,7 +128,14 @@ export default function Folders(props) {
         perPage: 20,
       })
     )
-  }, [processFilters, triggerProcessesRequest]);
+  }, [processFilters, triggerProcessesRequest]);  
+  
+    useEffect(async () => { 
+      const promotion = await AsyncStorage.getItem(SHOW_PROMOTION);
+      setSeenPromotion(JSON.parse(promotion) === null ? true : JSON.parse(promotion));
+    }, []);
+
+
 
   const onKeywordsEndReached = useCallback(() => {
     if (endKeywordsReached || loadingKeywords) return;
@@ -348,6 +363,7 @@ export default function Folders(props) {
       {active ?
         <Warp>
           
+          {seenPromotion && <Promotion/> }
           <Header title='Movimentações' menu={() => navigateToTrash()}/>
             
           <ScrollableTabView renderTabBar={renderTabBar}>

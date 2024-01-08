@@ -7,6 +7,7 @@ const PUSH = '@Advise:pushHash';
 const VERSION = '@Advise:version';
 const INTRO = '@Advise:intro';
 const ACCEPT_TERMS = '@Advise:acceptTerms';
+const SHOW_PROMOTION = '@Advise:seenPromotion';
 
 export {
   TOKEN,
@@ -17,5 +18,6 @@ export {
   PUSH,
   VERSION,
   INTRO,
-  ACCEPT_TERMS
+  ACCEPT_TERMS,
+  SHOW_PROMOTION
 };

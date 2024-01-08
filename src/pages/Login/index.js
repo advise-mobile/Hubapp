@@ -16,7 +16,8 @@ import Spinner from 'components/Spinner';
 
 // import { changeAmbient } from 'services/Api';
 import {registerNotification} from 'helpers/Pushs';
-import {AVATAR, TOKEN, REFRESH_TOKEN} from 'helpers/StorageKeys';
+import {AVATAR, TOKEN, REFRESH_TOKEN, SHOW_PROMOTION} from 'helpers/StorageKeys';
+
 
 // Add Hook UseTheme para pegar o tema global addicionado
 import { useTheme } from 'styled-components';
@@ -135,12 +136,18 @@ export default function Login(props) {
 		setEmptyPassword(password.length > 0 && password.length < 2);
 	}, [email, password]);
 
+	const resetPromotion = async () => {
+		await AsyncStorage.setItem(SHOW_PROMOTION, JSON.stringify(true));
+	}
+
 	const handleLoginPress = useCallback(() => {
 		setDisabled(true);
 		Keyboard.dismiss();
 
 		setEmptyEmail(email.length == 0);
 		setEmptyPassword(password.length == 0);
+
+		resetPromotion();
 
 		if (email.length && password.length)
 			dispatch(AuthAction.loginRequest(email.trim(), password.trim()));
