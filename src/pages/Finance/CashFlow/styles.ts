@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 
 interface ColorTextProps {
 	colorText: string
@@ -20,8 +20,8 @@ export const TopContainer = styled.View`
 	justify-content: space-between;
 	align-items: center;
 	margin-right: 15px;
-	border-top-width: 0.5;
-	border-bottom-width: 0.5;
+	border-top-width: 0.4;
+	border-bottom-width: 0.4;
 	border-color: #ABABAB;
 `;
 
@@ -30,12 +30,22 @@ export const ContainerMainInformation = styled.View`
 	width: 340px;
 	margin-left: 19px;
 	flex-direction: row;
+	flex: 1;
 	align-items: center;
 `;
 
+export const ContainerValueInformation = styled.View`
+	height: 30px;
+	width: 340px;
+	margin-left: 19px;
+	flex-direction: row;
+	flex: 1;
+	margin-top: 5px;
+
+`;
+
 export const TextLabel = styled.Text<WeightTextProps>`
-	height: 20px;
-	font-size: 18px;
+	font-size: 14px;
 	color: ${({ theme }) => theme.colors.grayDarker};
 	font-weight: bold;
 `;
@@ -49,7 +59,7 @@ export const TextValue = styled.Text`
 export const ContainerIconMore = styled.TouchableOpacity`
 	width: 30px;
 	height: 30px;
-	margin-right: 30px;
+	margin-right: 35px;
 	margin-top: 5px;
 `;
 

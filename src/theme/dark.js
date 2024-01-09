@@ -5,10 +5,12 @@ export default darkTheme = {
 		mainWhite: "#FFFFFF",
 		white: '#111111',
 		realWhite: '#000000',
+		realWhites: '#000000',
 		darkGray: '#666666',
-		gray: '#EEEEEE',
+		gray: 'rgba(255, 255, 255, .12)',
 		trueGray: '#222222',
 		textInactive: '#BBBBBB',
+		BlackInactive: '#EEEEEE',
 		red: '#D32F2F',
 		advise: '#FF5800',
 		adviseDarker: '#E64C00',
@@ -30,6 +32,7 @@ export default darkTheme = {
 		secondary: '#DDDDDD',
 		forgetLink: '#1976D2',
 		inactive: '#565656',
+		inactiveDetails: '#EEEEEE',
 		blue200: '#81D4FA',
 		orange200: '#FFAB91',
 		toastError: '#FFCDD2',
@@ -41,14 +44,30 @@ export default darkTheme = {
 		blueValue: '#1E88E5',
 		pinkTag: '#CE93D8',
 		greenTag: '#80CBC4',
+		purple: '#B39DDB',
+		pink: '#F48FB1',
+		pinkRed: '#EF9A9A',
+		neutral: '#F5F5F5',
+		typecolor: '#9FA8DA',
+		during: 'rgba(255, 255, 255, .12)',
+
+		bordercolor: '#BDBDBD',
+		tabcolor: '#FFFFFF',
+		textTab: '#000',
+		textvalue: '#ffffff',
+		colorSelect: '#111111',
+
 
 		grayLighter: 'rgba(255, 255, 255, .12)',
 		grayLight: 'rgba(255, 255, 255, .5)',
 		grayDarker: 'rgba(255, 255, 255, .8)',
+		Darkesgray: 'rgba(0, 0, 0, .8)',
 		disabled: 'rgba(255, 255, 255, 0.38)',
 		disabledText: 'rgba(0, 0, 0, 0.5)',
 		fadedWhite: 'rgba(0,0,0,0.69)',
 		fadedBlack: 'rgba(255,255,255,0.69)',
+
+		backgroundDefault : "#FFFFFF"
 
 	}
 }

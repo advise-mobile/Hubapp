@@ -43,7 +43,7 @@ export default HeaderGlobals = props => {
               )}
 							{props.more && (
                 <HeaderAction>
-                  <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} onPress={() => props.edit()} />
+                  <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} onPress={() => props.more()} />
                 </HeaderAction>
               )}
               {props.edit && (

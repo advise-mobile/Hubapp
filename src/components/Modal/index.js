@@ -36,7 +36,7 @@ export default Modal = forwardRef((props, ref) => {
 				backgroundColor: colors.white,
 				maxHeight: 50,
 			}}
-			childrenStyle={{maxHeight: 400}}
+			childrenStyle={{maxHeight: props.maxHeight ? props.maxHeight : 400}}
 			HeaderComponent={renderHeader}
 			handlePosition="inside"
 			handleStyle={{backgroundColor: colors.grayDarker, marginTop: 8}}

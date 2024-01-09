@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef,useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
@@ -27,55 +27,98 @@ import {
 	DescriptionOfObservationsContainer,
 	DescriptionOfObservationsText,
 } from './styles';
+import More from '../Modal/LaunchActions';
 
+import {
+  useGetInstallmentsDetails,
+} from '@services/hooks/Finances/useReleases';
+
+import { ItemsInstallmentsDetailsProps } from './types';
 
 export default function Details(props) {
+
+	const { isLoadingInstallmentsDetails, getInstallmentsDetails } = useGetInstallmentsDetails();
+
+	const [dataDetails, setDataDetails] = useState<ItemsInstallmentsDetailsProps>();
+
+	const addRef = useRef(null);
+
+	const {item} = props.route.params;
+
+
+
+	const renderAddOptions = useCallback(() => <More ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
+
+	//chama o hook
+	useEffect(() => {
+    fetchDataInstallmentsDetails();
+  }, []);
+
+
+	//busca a informação
+	const fetchDataInstallmentsDetails = async () => {
+    try {
+
+      const installmentsDetails = await getInstallmentsDetails({idFinanceiro:item.idLancamentoFinanceiro});
+
+			setDataDetails(installmentsDetails);
+
+    } catch (error) {
+
+    }
+  };
+
+
 
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const {item} = props.route.params;
+
+	const getTransactionTitle = () => {
+		return item.debitoCredito === 'C' ? 'Receita' : 'Despesa';
+	};
+
+
 
 	return (
 		<Container>
 			<HeaderGlobals
-					title={item.title}
+					title={getTransactionTitle()}
 					back={() => props.navigation.goBack()}
 					lower={true}
-					more={() => props.navigation.goBack()}
+					more={() => addRef.current?.open()}
 
 				/>
+				{renderAddOptions()}
 
 			<ContainerScreen>
 				<FirstContainer>
 					<ContainerDate>
 						<CircleIconContainer>
-							<ContainerIcon>
-								{item.type === 'receita' && (
-									<FontAwesome name="circle" color={colors.green200} />
-								)}
-								{item.type === 'despesa' && (
-									<FontAwesome name="circle" color={colors.red200} />
-								)}
-							</ContainerIcon>
+						<ContainerIcon>
+							{item.debitoCredito === 'C' ? (
+								<FontAwesome size={8} name="circle" si color={colors.green200} />
+							) : (
+								<FontAwesome size={8} name="circle" color={colors.red200} />
+							)}
+						</ContainerIcon>
 						</CircleIconContainer>
 
 						<DataTextContainer>
-							<DateText size={20}>{item.date}</DateText>
+							<DateText>{item.dataVencimentoFormatada}</DateText>
 						</DataTextContainer>
 					</ContainerDate>
 					<ThumbsIconContainer>
-						{item.type === 'receita' && (
-							<FontAwesome name={'thumbs-up'} color={colors.blueIcon} size={25} />
-						)}
-						{item.type === 'despesa' && (
-							<FontAwesome name={'thumbs-down'} color={colors.colorIconThumbdown} size={25} />
+					{item.debitoCredito === 'C' ? (
+							<FontAwesome name="thumbs-up" color={colors.blueIcon} size={20} />
+						) : (
+							<FontAwesome name="thumbs-down" flip="horizontal" color={colors.colorIconThumbdown} size={20} />
 						)}
 					</ThumbsIconContainer>
 				</FirstContainer>
 
 				<DescriptionContainer>
-					<DataText>{item.description}</DataText>
+					<DataText>{item.descricaoLancamento || 'N/I'}</DataText>
 				</DescriptionContainer>
 
 				<InformationContainer>
@@ -84,7 +127,7 @@ export default function Details(props) {
 					</InformationTitleTextContainer>
 
 					<InformationTextContainer>
-						<InformationText>R$ {item.value}</InformationText>
+						<InformationText>{dataDetails?.valor || 'N/I'}</InformationText>
 					</InformationTextContainer>
 
 					<InformationTitleTextContainer>
@@ -92,7 +135,7 @@ export default function Details(props) {
 					</InformationTitleTextContainer>
 
 					<InformationTextContainer>
-						<InformationText>01/07/2023</InformationText>
+						<InformationText>{item.dataVencimentoFormatada || 'N/I'}</InformationText>
 					</InformationTextContainer>
 
 					<InformationTitleTextContainer>
@@ -100,7 +143,7 @@ export default function Details(props) {
 					</InformationTitleTextContainer>
 
 					<InformationTextContainer>
-						<InformationText>{item.category}</InformationText>
+						<InformationText>{dataDetails?.categoria || 'N/I'}</InformationText>
 					</InformationTextContainer>
 
 					<InformationTitleTextContainer>
@@ -108,14 +151,14 @@ export default function Details(props) {
 					</InformationTitleTextContainer>
 
 					<InformationTextContainer>
-						<InformationText>Nenhuma</InformationText>
+						<InformationText>{item.nomePessoaCliente || 'N/I'}</InformationText>
 					</InformationTextContainer>
 					<InformationTitleTextContainer>
 						<InformationTitleText>Processo</InformationTitleText>
 					</InformationTitleTextContainer>
 
 					<InformationTextContainer>
-						<InformationText>Nenhuma</InformationText>
+						<InformationText>{item.numeroProcesso || 'N/I'}</InformationText>
 					</InformationTextContainer>
 
 					<InformationTitleTextContainer>
@@ -123,7 +166,7 @@ export default function Details(props) {
 					</InformationTitleTextContainer>
 
 					<InformationTextContainer>
-						<InformationText>Durante 480 dias</InformationText>
+						<InformationText>Durante {dataDetails?.quantidadeParcelas || 'N/I'} dia(s)</InformationText>
 					</InformationTextContainer>
 
 					<InformationTitleTextContainer>
@@ -132,9 +175,7 @@ export default function Details(props) {
 
 					<DescriptionOfObservationsContainer>
 						<DescriptionOfObservationsText>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sollicitudin, erat
-							commodo lacinia imperdiet, metus velit rhoncus nisl, non auctor erat metus ut quam.
-							Mauris in vestibulum sem.
+						{dataDetails?.observacao || 'N/I'}
 						</DescriptionOfObservationsText>
 					</DescriptionOfObservationsContainer>
 				</InformationContainer>

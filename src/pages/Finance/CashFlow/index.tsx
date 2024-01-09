@@ -1,21 +1,23 @@
-import React from 'react';
+import React, {useCallback, useRef} from 'react';
 import HasNotPermission from 'components/HasNotPermission';
 import {Container, Warp} from 'assets/styles/global';
 import Blocked from 'pages/Blocked';
 
 import {useTheme} from 'styled-components';
-import {ScrollView} from 'react-native';
+import {FlatList} from 'react-native';
 
 import {
 	ContainerIconMore,
 	ContainerMainInformation,
 	ContainerScreen,
+	ContainerValueInformation,
 	TextLabel,
 	TextValue,
 	TopContainer,
 } from './styles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CashFlowDataItem from '@components/Finance/CashFlow';
+import StockCashFlow from '../Modal/StockCashFlow';
 
 export default function CashFlow() {
 	const dataItem = [
@@ -39,6 +41,13 @@ export default function CashFlow() {
 		},
 	];
 
+	const CategoryRef = useRef(null);
+
+	const addCategory = useCallback(
+		() => <StockCashFlow ref={CategoryRef} idAgenda={null} onAdd={() => {}} />,
+		[],
+	);
+
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
@@ -51,27 +60,28 @@ export default function CashFlow() {
 				<>
 					{havePermission ? (
 						<Warp>
-							<ScrollView>
-								<ContainerScreen>
-									<TopContainer>
-										<ContainerMainInformation>
-											<TextLabel WeightTextProps>Saldo Total</TextLabel>
+							<ContainerScreen>
+								<TopContainer>
+									<ContainerMainInformation>
+										<TextLabel WeightTextProps>Saldo Total</TextLabel>
 
-											<ContainerMainInformation>
-												<TextValue>16.251,55</TextValue>
-											</ContainerMainInformation>
-										</ContainerMainInformation>
+										<ContainerValueInformation>
+											<TextValue>16.251,55</TextValue>
+										</ContainerValueInformation>
+									</ContainerMainInformation>
 
-										<ContainerIconMore>
-											<MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
-										</ContainerIconMore>
-									</TopContainer>
+									<ContainerIconMore onPress={() => CategoryRef.current?.open()}>
+										<MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
+									</ContainerIconMore>
+								</TopContainer>
+								<FlatList
+									data={dataItem}
+									keyExtractor={(item, index) => index.toString()}
+									renderItem={({item}) => <CashFlowDataItem item={item} />}
+								/>
+							</ContainerScreen>
 
-									{dataItem.map(item => {
-										return <CashFlowDataItem item={item} />;
-									})}
-								</ContainerScreen>
-							</ScrollView>
+							{addCategory()}
 						</Warp>
 					) : (
 						<HasNotPermission
