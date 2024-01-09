@@ -42,39 +42,41 @@ export const ContainerDescriptionReleases = styled.View`
 
 export const ContainerDescriptionItems = styled.View`
 	flex-direction: row;
+
 `;
 
 
 export const TextLabelDescription = styled.Text<WeightTextProps>`
-	max-width: 70px;
+	min-width: 35px;
 	height: 23px;
 	font-size: 13px;
 	margin-right: 5px;
 	font-weight: bold;
 	color: ${({ theme }) => theme.colors.BlackInactive};
+	/* border: 1px solid blue */
 `;
 
 
 export const TextValueDescriptionProhibited = styled.Text`
-	max-width: 70px;
+	width: 70px;
 	height: 23px;
 	font-size: 13px;
-	margin-right: 8px;
+	/* margin-right: 8px; */
 	color: ${({ theme }) => theme.colors.green200};
 `;
 
 export const TextValueDescriptionExit = styled.Text`
-	max-width: 70px;
+	min-width: 72px;
 	height: 23px;
 	font-size: 13px;
-	margin-right: 8px;
+	margin-right: 10px;
 	color: ${({ theme }) => theme.colors.red200};
 `;
 
 export const TextValueDescriptionBalance = styled.Text`
-	max-width: 70px;
+	max-width: 100px;
 	height: 23px;
 	font-size: 13px;
-	margin-right: 8px;
+	/* margin-right: 8px; */
 	color: ${({ theme }) => theme.colors.grayDarker};
 `;

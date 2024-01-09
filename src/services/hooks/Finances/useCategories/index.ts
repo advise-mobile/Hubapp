@@ -22,7 +22,7 @@ export const useGetCategories = () => {
 
 			const { idUsuarioCliente } = await getLoggedUser();
 
-
+			console.log("=== id", idUsuarioCliente)
 			const params = `ativo=true&campos=*&idUsuarioCliente=${idUsuarioCliente}&idsTipoCategoriaFinanceiro=-2&ordenacao=+nomeCategoriaFinanceiro`;
 			const response: DataItemsResumeProps = await Api.get(`/core/v1/categorias-financeiro?${params}`);
 

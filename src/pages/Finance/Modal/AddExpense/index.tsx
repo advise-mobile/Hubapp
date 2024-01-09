@@ -40,14 +40,6 @@ import {useGetPeople} from '@services/hooks/Finances/usePeople';
 import {CategoryProps, PersonProps, ProcessProps} from '@pages/Finance/Category/types';
 import {useGetProcess} from '@services/hooks/Finances/useProcess';
 
-import {scrollView} from 'react-native';
-
-const process = [
-	'Nº do processo',
-	'Pasta do processo',
-	'Luiz José x Rafaela Zemuner',
-	'Proc.: 0000846-51.2020.5.07.0016',
-];
 
 export default AddExpense = forwardRef((props, ref) => {
 	const {isLoadingCategories, getCategoriesData} = useGetCategories();

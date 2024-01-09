@@ -16,12 +16,10 @@ export const TextTitle = styled.Text`
 export const SubTitle = styled.Text`
 	font-size: 16px;
 	color: ${({ theme }) => theme.colors.BlackInactive};
-	width: 290px;
 `;
 
 export const ContainerSubtitle = styled.View`
 	width: 80px;
-	height: 23px;
 `;
 
 export const Container = styled.View`
@@ -29,8 +27,6 @@ export const Container = styled.View`
   padding: 12px 17px;
   border-bottom-width: 0.7px;
   border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
-
-
 `;
 
 export const ContainerItems = styled.View`
@@ -45,6 +41,7 @@ export const ContainerTitle = styled.Text`
   font-family: ${props => props.read ? fonts.circularStdBook : fonts.circularStdBold};
   font-size: 16px;
 	flex: 1;
-	max-width: 70px;
+	max-width: 138px;
 	height: 25px;
+	margin-right: 10px;
 `;
