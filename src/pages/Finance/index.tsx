@@ -16,7 +16,7 @@ import {
   FiltersButton,
   FiltersText,
   FiltersActive,
- 
+
   NotFound,
   Image,
   Content,
@@ -70,18 +70,20 @@ export default function Finance(props) {
   const image = (colorUseTheme.name == 'dark') ? require('assets/images/permissions/deadlines_white.png') : require('assets/images/permissions/deadlines.png');
 
   const addRef = useRef(null);
-  
+
   const headerFiltersRef = useRef(null);
-  
+
   const loading = useSelector(state => state.deadlines.loading);
- 
-  const [currentTab, setCurrentTab] = useState('release');                          
+
+  const [currentTab, setCurrentTab] = useState('release');
 
   const [trigger, setTrigger] = useState(false);
   const [page, setPage] = useState(1);
   const [havePermission, setPermission] = useState(false);
+	const [filtering, setFiltering] = useState<Boolean>(false);
 
-
+  const [dataFiltersCategory,setDataFiltersCategory] = useState();
+ 
   const [formattedData] = useState({});
 
   useEffect(() => {
@@ -96,7 +98,7 @@ export default function Finance(props) {
 
   useEffect(() => { checkPermission(PermissionsGroups.SCHEDULE).then(permission => setPermission(permission)) }, [props]);
 
-  
+
 
   const handleFilter = useCallback((id, index) => {
     headerFiltersRef.current?.scrollToIndex({ animated: true, index: index });
@@ -138,8 +140,15 @@ export default function Finance(props) {
 		setFiltering(false);
 	}, []);
 
-	const handleSubmitFilters = useCallback(async (data: DataFilterProps) => {
+	const handleSubmitFiltersCategory = useCallback(async (data) => {
+    setDataFiltersCategory(data)
+    filterCategoryRef.current?.close();
+	}, []);
 
+  const handleSubmitFilters = useCallback(async (data) => {
+
+    console.log("===",data);
+    setDataFiltersCategory(data)
 		//setFiltering(true);
 		//filtersRef.current?.close();
 
@@ -148,6 +157,7 @@ export default function Finance(props) {
 		// 	itens:data
 		// })
 	}, []);
+
 
   const renderAddOptions = useCallback(() => <Add ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
 
@@ -168,14 +178,14 @@ export default function Finance(props) {
 
 	const renderFilterCategory = useMemo(
 		() => (
-			<CategoryFilter ref={filterCategoryRef} handleSubmitFilters={handleSubmitFilters} handleClearFilters={handleClearFilters}/>
+			<CategoryFilter ref={filterCategoryRef} handleSubmitFilters={handleSubmitFiltersCategory} handleClearFilters={handleClearFilters}/>
 		),
 		[formattedData],
 	);
 
   return (
     <Container>
-      
+
           {havePermission ?
             <Warp>
               <HeaderGlobals
@@ -183,7 +193,7 @@ export default function Finance(props) {
                 filter={() => renderFilterVerify()}
                 add={() => addRef.current?.open()}
 				      />
-              
+
               <Filters
                 ref={headerFiltersRef}
                 contentContainerStyle={{ alignItems: 'center', paddingRight: 16 }}
@@ -200,16 +210,16 @@ export default function Finance(props) {
                   <>
                     {currentTab === "release" && <Release /> }
                     {currentTab === "cash-flow" && <CashFlow /> }
-                    {currentTab === "category" && <Category /> }
-                  </>   
+                    {currentTab === "category" && <Category dataFiltersCategory={dataFiltersCategory} /> }
+                  </>
 		  		    }
               </Content>
-			
-      {renderAddOptions()} 
+
+      {renderAddOptions()}
 			{renderReleaseFilters}
 			{renderFilterCashFlow}
 			{renderFilterCategory}
-    
+
             </Warp>
             :
             <HasNotPermission
@@ -217,7 +227,7 @@ export default function Finance(props) {
               title="A sua rotina totalmente organizada!"
               body="Tenha a facilidade de cadastrar um prazo judicial, uma audiência ou uma reunião diretamente na sua ferramenta de monitoramento de informações jurídicas"
             />}
-       
+
     </Container>
   );
 };

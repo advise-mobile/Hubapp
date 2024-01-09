@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { getLoggedUser } from '@helpers/Permissions';
+import { toCamelCase } from "@helpers/functions";
 
 import Api from '@services/Api';
 
-import { CategoryDataItemProps, CategoryDataProps } from "@pages/Finance/Category/types";
+import { DataCategoryItemProps, DataCategoryProps, CategoryDataProps } from "@pages/Finance/Category/types";
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import { useDispatch } from 'react-redux';
@@ -15,28 +16,42 @@ export const useGetCategory = () => {
 
 	const dispatch = useDispatch();
 
-	const getCategoryData = async () => {
+	const getCategoryData = async (filtersData:CategoryDataProps | undefined ) => {
 
 		try {
 			setIsLoadingCategory(true);
 
 			const { idUsuarioCliente } = await getLoggedUser();
 
+			let filters;
+			if ((filtersData === undefined) || (filtersData.type === null && filtersData.situation == null) ){
+				filters = ""
+			}else{
+				filters = `IdsTipoCategoriaFinanceiro=${filtersData.type}&ativo=${filtersData.situation}`;
+			}
 
-			const params = `?campos=*&idUsuarioCliente=65810&ordenacao=+nomeCategoriaFinanceiro`;
-			const response: CategoryDataProps = await Api.get(`/core/v1/categorias-financeiro${params}`);
+			const params = `?campos=*&registrosPorPagina=300&idUsuarioCliente=${idUsuarioCliente}&ordenacao=+nomeCategoriaFinanceiro`;
+			const response: DataCategoryProps = await Api.get(`/core/v1/categorias-financeiro${params}&${filters}`);
 
-			console.log("=== response", response)
+			const { itens }: DataCategoryItemProps = response.data;
 
-			const { itens }: CategoryDataItemProps = response.data;
-			return itens
+			const itensOptimized = itens.map((item:ItemInstallmentsProps) => {
+
+                return {
+                            ...item,
+  							nomeCategoriaFinanceiro:item.nomeCategoriaFinanceiro.length > 13 ? 
+							  toCamelCase(item.nomeCategoriaFinanceiro.substr(0,10)) + " ...":
+							  toCamelCase(item.nomeCategoriaFinanceiro)
+                        }
+            });
+            return itensOptimized;
 
 		} catch (error) {
 			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estas categorias', true));
 		} finally {
 			setTimeout(() => {
 				setIsLoadingCategory(false);
-			}, 2000);
+			}, 200);
 		}
 	};
 	return { isLoadingCategory, getCategoryData };

@@ -1,5 +1,4 @@
 import styled from 'styled-components/native';
-import { fonts } from 'assets/styles';
 
 export const ContainerIcon = styled.View`
 	height: 25px;
@@ -37,11 +36,13 @@ export const ContainerItems = styled.View`
 `;
 
 export const ContainerTitle = styled.Text`
-  color: ${({ theme }) => theme.colors.primary};
-  font-family: ${props => props.read ? fonts.circularStdBook : fonts.circularStdBold};
-  font-size: 16px;
 	flex: 1;
-	max-width: 138px;
-	height: 25px;
+	max-width: 140px;
 	margin-right: 10px;
+`;
+
+export const ContainerSpinner = styled.View`
+	flex: 1;
+	align-items: center;
+	justify-content: center;
 `;

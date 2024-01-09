@@ -1,9 +1,14 @@
 import {SwipeListView} from 'react-native-swipe-list-view';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState } from 'react';
 import {Actions, ActionButton} from 'assets/styles/global';
-
 import {useTheme} from 'styled-components';
 import {Animated} from 'react-native';
+
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useGetCategory} from '@services/hooks/Finances/useCategory';
+import {CategoryProps,DataFiltersCategory} from './types';
+
+import Spinner from '@components/Spinner';
 import {
 	Container,
 	ContainerIcon,
@@ -12,27 +17,29 @@ import {
 	ContainerTitle,
 	SubTitle,
 	TextTitle,
-	ContainerDescriptionCategory,
+	ContainerSpinner
 } from './styles';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useGetCategory} from '@services/hooks/Finances/useCategory';
-import {CategoryItemProps} from './types';
 
-export default function Category(props) {
+export default function Category(props:DataFiltersCategory ) {
+
 	const {isLoadingCategory, getCategoryData} = useGetCategory();
-	const [dataResume, setDataResume] = useState<CategoryItemProps>([]);
+
+	const [dataResume, setDataResume] = useState<CategoryProps[] | undefined>([]);
 
 	const colorUseTheme = useTheme();
-	const {colors} = colorUseTheme;
+
+	const { colors } = colorUseTheme;
+
+
 
 	useEffect(() => {
 		fetchData();
-	}, []);
+	}, [props]);
+
 
 	const fetchData = async () => {
 		try {
-			const responseCategories = await getCategoryData();
-			console.log('=== responseCategories', responseCategories);
+			const responseCategories = await getCategoryData(props.dataFiltersCategory);
 			setDataResume(responseCategories);
 		} catch (error) {}
 	};
@@ -40,7 +47,7 @@ export default function Category(props) {
 	const listRef = useRef(null);
 
 	const renderHiddenItem = useCallback(
-		({item}: {item: CategoryItemProps}) => (
+		({item}: {item: CategoryProps}) => (
 			<Actions
 				as={Animated.View}
 				style={{
@@ -58,7 +65,7 @@ export default function Category(props) {
 	);
 
 	const openRow = useCallback(
-		(item: CategoryItemProps) => {
+		(item: CategoryProps) => {
 			!listRef.current?._rows[item.idCategoriaFinanceiro].isOpen
 				? listRef.current?._rows[item.idCategoriaFinanceiro].manuallySwipeRow(-150)
 				: closeOpenedRow(item);
@@ -67,12 +74,13 @@ export default function Category(props) {
 	);
 
 	const closeOpenedRow = useCallback(
-		(item: CategoryItemProps) => listRef.current?._rows[item.idCategoriaFinanceiro].closeRow(),
+		(item: CategoryProps) => listRef.current?._rows[item.idCategoriaFinanceiro].closeRow(),
 		[],
 	);
 
 	const renderItem = useCallback(
 		({item}: {item: CategoryItemProps}) => (
+		 
 			<Animated.View>
 				<Container>
 					<ContainerItems>
@@ -84,7 +92,7 @@ export default function Category(props) {
 							onPress={() => openRow(item)}
 							underlayColor={colors.white}
 							activeOpacity={1}>
-							<TextTitle>{item.nomeCategoriaFinanceiro}</TextTitle>
+							<TextTitle>{item.nomeCategoriaFinanceiro.substr(0,14)}</TextTitle>
 						</ContainerTitle>
 
 						<ContainerSubtitle>
@@ -98,28 +106,38 @@ export default function Category(props) {
 					</ContainerItems>
 				</Container>
 			</Animated.View>
+			
 		),
 		[dataResume, colors],
 	);
 
 	return (
-		<SwipeListView
-			ref={listRef}
-			data={dataResume}
-			disableRightSwipe
-			rightOpenValue={-120}
-			stopRightSwipe={-120}
-			closeOnRowOpen={false}
-			renderItem={renderItem}
-			previewOpenValue={-150}
-			previewOpenDelay={2000}
-			useNativeDriver={false}
-			renderHiddenItem={renderHiddenItem}
-			keyExtractor={(item: CategoryItemProps) => item.idCategoriaFinanceiro.toString()}
-			removeClippedSubviews={true}
-			maxToRenderPerBatch={5}
-			updateCellsBatchingPeriod={100}
-			initialNumToRender={20}
-		/>
+		<>
+		{ isLoadingCategory ? (
+			<ContainerSpinner>
+				<Spinner height={50} color={colors.primary} transparent={true} />
+			</ContainerSpinner>
+				) : (
+			<SwipeListView
+				ref={listRef}
+				data={dataResume}
+				disableRightSwipe
+				rightOpenValue={-120}
+				stopRightSwipe={-120}
+				closeOnRowOpen={false}
+				renderItem={renderItem}
+				previewOpenValue={-150}
+				previewOpenDelay={2000}
+				useNativeDriver={false}
+				renderHiddenItem={renderHiddenItem}
+				keyExtractor={(item: CategoryProps) => item.idCategoriaFinanceiro.toString()}
+				removeClippedSubviews={true}
+				maxToRenderPerBatch={5}
+				updateCellsBatchingPeriod={100}
+				initialNumToRender={20}
+			/>)
+		}
+
+		</>
 	);
 }
