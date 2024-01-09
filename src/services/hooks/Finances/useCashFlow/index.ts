@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { CashFlowProps, DataCashFlowProps, ItemCashFlowItensProps, ItemCashFlowProps } from "@pages/Finance/CashFlow/types";
 import { GetMonthPeriod } from 'helpers/DateFunctions';
 import { FormatReal } from "@helpers/MoneyFunctions";
-import  { FormatDateBR }  from '@helpers/DateFunctions.js';
+import { FormatDateBR } from '@helpers/DateFunctions.js';
 
 
 
@@ -27,27 +27,26 @@ export const useGetCashFlow = () => {
 
 			const { itens }: ItemCashFlowItensProps = response.data;
 
-			console.log("=== response",response)
 
-			const itensOptimized = itens[0].itens.map((_,index) => {
+
+			const saldoAnterior = itens[0].contador[0].saldoAnterior
+
+
+			const itensOptimized = itens[0].itens.map((_, index) => {
 
 				return {
-										...itens[0].itens,
-										dataSaldo: (itens[0].itens[index].dataSaldo),
-										totalEntradas: FormatReal (itens[0].itens[index].totalEntradas),
-										totalSaidas: FormatReal (itens[0].itens[index].totalSaidas),
-										valorSaldo: FormatReal (itens[0].itens[index].valorSaldo),
-								}
-		});
+					...itens,
+					...itens[0].itens,
+					dataSaldo: (itens[0].itens[index].dataSaldo),
+					totalEntradas: FormatReal(itens[0].itens[index].totalEntradas),
+					totalSaidas: FormatReal(itens[0].itens[index].totalSaidas),
+					valorSaldo: FormatReal(itens[0].itens[index].valorSaldo),
+					saldoAnterior: FormatReal(saldoAnterior),
+				}
+				x
 
+			});
 
-			// return [{
-			// 	...itens[0].itens,
-				// dataSaldo: (itens[0].itens[0].dataSaldo),
-				// totalEntradas: FormatReal (itens[0].itens[0].totalEntradas),
-				// totalSaidas: FormatReal (itens[0].itens[0].totalSaidas),
-				// valorSaldo: FormatReal (itens[0].itens[0].valorSaldo),
-			// }]
 			return itensOptimized
 
 
