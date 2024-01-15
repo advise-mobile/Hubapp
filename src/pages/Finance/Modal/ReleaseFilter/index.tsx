@@ -11,6 +11,8 @@ import {FormatFullDateEN} from '@helpers/DateFunctions';
 
 import {ItemProps} from '@components/MultiSelectCheckBox/types';
 
+import { DataPopulateCategoriesProps, DataPopulateProcessProps, DataPopulatePeopleProps } from './types';
+
 import {
 	Title,
 	Label,
@@ -25,6 +27,7 @@ import {
 	ReleaseType,
 	LabelItems,
 	Type,
+	ContainerCategories,
 	Process,
 	Person,
 } from './styles';
@@ -35,6 +38,9 @@ import {useKeyWordsGet} from '@services/hooks/MovimentsTrash/useMovementsTrash';
 
 // Add Hook UseTheme para pegar o tema global addicionado
 import {useTheme} from 'styled-components';
+import { useGetPopulateCategories } from '@services/hooks/Finances/useCategories';
+import { useGetPopulateProcess } from '@services/hooks/Finances/useProcess';
+import { useGetPopulatePeople } from '@services/hooks/Finances/usePeople';
 
 
 const launch = [
@@ -48,41 +54,25 @@ const launch = [
 'Todos lançamentos'
 ];
 
-const category =[
-'Pagamento de acessoria',
-'Trabalho',
-'Salário',
-'Transporte',
-'Todas as categorias'
-];
-
-const process = [
-'0000503-12.2017.5.09.0014',
-'0001518-...',
-'0004232-...',
-'Trabalhista - Kam...',
-'Márcia Sophie...',
-'0045069-...',
-];
-
-const person = [
-'Betina da Conceição',
-'Daniela Barros',
-'Allana Marli Dias',
-'Trabalhista - Kam...',
-'Márcia Sophie...',
-'0045069-...',
-'Todas as pessoas',
-];
 
 
 export default Filters = forwardRef(
 	({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
 
+
+		const {isLoading, getCategoriesData} = useGetPopulateCategories();
+		const {isLoadingProcess, getProcessData} = useGetPopulateProcess();
+		const {isLoadingPeople, getPeopleData} = useGetPopulatePeople();
+		
+
 		const [selectedLaunch, setSelectedLaunch] = useState(null);
 		const [selectedCategory, setSelectedCategory] = useState(null);
 		const [selectedProcess, setSelectedProcess] = useState(null);
 		const [selectedPerson, setSelectedPerson] = useState(null);
+
+		const [categories, setCategories] = useState<DataPopulateCategoriesProps[]>([]);
+		const [process, setProcess] = useState<DataPopulateProcessProps[]>([]);
+		const [people, setPeople] = useState<DataPopulatePeopleProps[]>([]);
 
 		const handleLaunchClick = index => {
 			setSelectedLaunch(index);
@@ -104,6 +94,38 @@ export default Filters = forwardRef(
 		// Variavel para usar o hook
 		const colorUseTheme = useTheme();
 		const {colors} = colorUseTheme;
+
+
+		// Categories from hook called api
+		useEffect(() => {
+			fetchDataCategories();
+			fetchDataProcess();
+			fetchDataPeople();
+		}, []);
+	
+		const fetchDataCategories = async () => {
+			try {
+				const responseCategories = await getCategoriesData();
+				setCategories(responseCategories);
+			} catch (error) {}
+		};
+
+		const fetchDataProcess = async () => {
+			try {
+				const responseProcess = await getProcessData();
+				setProcess(responseProcess);
+			} catch (error) {}
+		};
+
+		const fetchDataPeople = async () => {
+			try {
+				const responsePeople = await getPeopleData();
+				console.log("=== responsePeople",responsePeople);
+				setPeople(responsePeople);
+			} catch (error) {}
+		};
+		
+
 
 		// - Key Words from hook called api
 		const {dataKeyWords} = useKeyWordsGet();
@@ -133,7 +155,8 @@ export default Filters = forwardRef(
 		});
 
 		const onSubmit = (data: DataFilterProps) => {
-			handleSubmitFilters(data);
+			console.log("===",data);
+			//handleSubmitFilters(data);
 		};
 
 		const countFilters = useCallback(
@@ -305,20 +328,20 @@ export default Filters = forwardRef(
 					<Title>Categorias</Title>
 				</Row>
 
-				<Type>
-					{category.map((category, index) => (
+				<ContainerCategories>
+					{categories.map((category, index) => (
 						<ReleaseType
 							key={index}
-							onPress={() => handleCategoryClick(index)}
+							onPress={() => handleCategoryClick(category.idCategoriaFinanceiro)}
 							style={{
 								backgroundColor: colors.gray,
 							}}>
-							<LabelItems style={{color: selectedCategory === index ? colors.backgroundButton : colors.iconGray}}>
-								{category}
+							<LabelItems style={{color: selectedCategory === category.idCategoriaFinanceiro ? colors.backgroundButton : colors.iconGray}}>
+								{category.nomeCategoriaFinanceiro}
 							</LabelItems>
 						</ReleaseType>
 					))}
-				</Type>
+				</ContainerCategories>
 
 				<Row>
 					<Title>Processos</Title>
@@ -328,12 +351,12 @@ export default Filters = forwardRef(
 					{process.map((process, index) => (
 						<ReleaseType
 							key={index}
-							onPress={() => handleProcessClick(index)}
+							onPress={() => handleProcessClick(process.id)}
 							style={{
 								backgroundColor: colors.gray,
 							}}>
-							<LabelItems style={{color: selectedProcess === index ? colors.backgroundButton : colors.iconGray}}>
-								{process}
+							<LabelItems style={{color: selectedProcess === process.id ? colors.backgroundButton : colors.iconGray}}>
+								{process.numeroProcesso}
 							</LabelItems>
 						</ReleaseType>
 					))}
@@ -344,15 +367,15 @@ export default Filters = forwardRef(
 				</Row>
 
 				<Person>
-					{person.map((person, index) => (
+					{people.map((person) => (
 						<ReleaseType
-							key={index}
-							onPress={() => handlePersonClick(index)}
+							key={person.idPessoaCliente}
+							onPress={() => handlePersonClick(person.idPessoaCliente)}
 							style={{
 								backgroundColor: colors.gray,
 							}}>
-							<LabelItems style={{color: selectedPerson === index ? colors.backgroundButton : colors.iconGray}}>
-								{person}
+							<LabelItems style={{color: selectedPerson === person.idPessoaCliente ? colors.backgroundButton : colors.iconGray}}>
+								{person.nomePessoaCliente}
 							</LabelItems>
 						</ReleaseType>
 					))}

@@ -49,7 +49,7 @@ import Category from './Category';
 
 //import Category from '@pages/MovementsTrash';
 
-import ReleaseFilters from './Filters';
+import ReleaseFilters from './Modal/ReleaseFilter';
 import CashFlowFilter from '../Finance/Modal/CashFlowFilter'
 import CategoryFilter from './Modal/CategoryFilter';
 
@@ -83,6 +83,7 @@ export default function Finance(props) {
 	const [filtering, setFiltering] = useState<Boolean>(false);
 
   const [dataFiltersCategory,setDataFiltersCategory] = useState();
+  const [dataFiltersRelease,setDataFiltersRelease] = useState();
  
   const [formattedData] = useState({});
 
