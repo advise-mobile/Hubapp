@@ -4,7 +4,7 @@ import 'moment/locale/pt-br';
 export const DateCurrent = moment();
 export const FormatDateEN = date => moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD');
 export const FormatFullDateEN = date => moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') + "T00:00:00";
-export const FormatFinalDateEN = date => moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') + " 23:59:59";
+export const FormatFinalDateEN = date => moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') + "T23:59:59";
 export const FormatInitialDateEN = date => moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') + " 00:00:00";
 export const FormatDateBR = date => moment(date).format('DD/MM/YYYY');
 export const FormatDateInFull = date => moment(date).format('LL');
@@ -19,18 +19,21 @@ export const isSameDateTime = (date1, date2) =>
 
 export const GetMonthPeriod = () => {
   return {
-    startOfMonth : moment().startOf('month').format('YYYY-MM-DD'),
-    endOfMonth: moment().endOf('month').format('YYYY-MM-DD')
+    startOfMonth : moment().startOf('month').format('YYYY-MM-DD')+ "T00:00:00",
+    endOfMonth: moment().endOf('month').format('YYYY-MM-DD')+ "T23:59:59",
   }
 } 
 
 export const GetToday = () => {
-  return moment().format("YYYY-MM-DD");
+  return {
+    startDay: moment().format("YYYY-MM-DD") + "T00:00:00",
+    endOfDay: moment().format("YYYY-MM-DD")+ "T23:59:59",
+  } 
 } 
 
 export const GetWeekPeriod = () => {
   return {
-    startOfWeek: moment().day(0).format('YYYY-MM-DD'),
-    endOfWeek:moment().day(6).format('YYYY-MM-DD'),
+    startOfWeek: moment().day(0).format('YYYY-MM-DD') + "T00:00:00",
+    endOfWeek:moment().day(6).format('YYYY-MM-DD')+ "T23:59:59",
   } 
 }

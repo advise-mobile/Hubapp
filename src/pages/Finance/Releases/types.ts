@@ -45,6 +45,7 @@ export interface ItemInstallmentsProps {
 	numeroProcesso: string;
 	categoriaFinanceiro: CategoryFinanceProps;
 	nomeTipoCategoriaFinanceiro: TypeCategoryProps;
+	totalRegistros:number;
 }
 
 export interface CategoryFinanceProps {
@@ -64,8 +65,18 @@ export interface DataItemsInstallmentsProps {
 	data: ItemsInstallmentsProps;
 }
 
-export interface FilterPeriodProps {
+export interface FiltersReleaseDataProps {
 	dataVencimento: string | null,
 	dataVencimentoFim: string | null,
 	currentPage: number | null
+	repeticaoFixa?: boolean,
+	parcelado?: boolean,
+	DebitoCredito?: string,
+	idCategoria?: number,
+	idProcesso?: number,
+	idPessoaCliente?: number,
+}
+
+export interface DataFiltersRelease {
+	dataFiltersRelease:FiltersReleaseDataProps | undefined
 }

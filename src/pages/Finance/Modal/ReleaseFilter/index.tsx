@@ -5,11 +5,15 @@ import {Dimensions} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 
 import Modal from '@components/Modal';
+
 import Datepicker from '@components/DatePicker';
 
-import {FormatFullDateEN} from '@helpers/DateFunctions';
+import {FormatFullDateEN,FormatFinalDateEN} from '@helpers/DateFunctions';
 
-import {ItemProps} from '@components/MultiSelectCheckBox/types';
+import { removeNull } from '@helpers/functions';
+
+
+import Spinner from '@components/Spinner';
 
 import { DataPopulateCategoriesProps, DataPopulateProcessProps, DataPopulatePeopleProps } from './types';
 
@@ -26,15 +30,12 @@ import {
 	Releases,
 	ReleaseType,
 	LabelItems,
-	Type,
 	ContainerCategories,
 	Process,
 	Person,
 } from './styles';
 
 import {FilterProps, DataFilterProps} from './types';
-
-import {useKeyWordsGet} from '@services/hooks/MovimentsTrash/useMovementsTrash';
 
 // Add Hook UseTheme para pegar o tema global addicionado
 import {useTheme} from 'styled-components';
@@ -44,57 +45,76 @@ import { useGetPopulatePeople } from '@services/hooks/Finances/usePeople';
 
 
 const launch = [
-'Despesas',
-'Despesas pagas',
-'Despesas não pagas',
-'Receitas recebidas',
-'Receitas não recebidas',
-'lançamentos Fixos',
-'Lançamentos Parcelados',
-'Todos lançamentos'
+	{
+		id:0,
+		label:'Todos os lançamentos',
+		debitoCredito:"null"
+	},
+	{
+		id:1,
+		label:"Despesas",
+		debitoCredito:"D"
+	},
+	{
+		id:2,
+		label:'Despesas pagas',
+		debitoCredito:"D"
+	},
+	{
+		id:3,
+		label:'Despesas não pagas',
+		debitoCredito:"D"
+	},
+	{
+		id:8,
+		label:'Receitas ',
+		debitoCredito:"C"
+	},
+	{
+		id:4,
+		label:'Receitas recebidas',
+		debitoCredito:"C"
+	},
+	{
+		id:5,
+		label:'Receitas não recebidas',
+		debitoCredito:"C"
+	},
+	{
+		id:6,
+		label:'Lançamentos Fixos',
+		debitoCredito:"D"
+	},
+	{
+		id:7,
+		label:'Lançamentos Parcelados',
+		debitoCredito:"D"
+	}
 ];
-
-
 
 export default Filters = forwardRef(
 	({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
-
 
 		const {isLoading, getCategoriesData} = useGetPopulateCategories();
 		const {isLoadingProcess, getProcessData} = useGetPopulateProcess();
 		const {isLoadingPeople, getPeopleData} = useGetPopulatePeople();
 		
+		const [idDebitCredit, setIdDebitCredit] = useState<number | null>(null);
+		const [idCategory, setIdCategory] = useState<number | null >(null);
+		const [idProcess, setIdProcess] = useState<number | null>(null);
+		const [idPeople, setIdPeople] = useState<number | null >(null);
+		const [minDate, setMinDate] = useState<string | null>(null);
+		const [maxDate, setMaxDate] = useState<string | null>(null);
 
-		const [selectedLaunch, setSelectedLaunch] = useState(null);
-		const [selectedCategory, setSelectedCategory] = useState(null);
-		const [selectedProcess, setSelectedProcess] = useState(null);
-		const [selectedPerson, setSelectedPerson] = useState(null);
+		
 
 		const [categories, setCategories] = useState<DataPopulateCategoriesProps[]>([]);
 		const [process, setProcess] = useState<DataPopulateProcessProps[]>([]);
 		const [people, setPeople] = useState<DataPopulatePeopleProps[]>([]);
 
-		const handleLaunchClick = index => {
-			setSelectedLaunch(index);
-		};
-
-		const handleCategoryClick = index => {
-			setSelectedCategory(index);
-		};
-
-		const handleProcessClick = index => {
-			setSelectedProcess(index);
-		};
-
-		const handlePersonClick = index => {
-			setSelectedPerson(index);
-		};
-
-
 		// Variavel para usar o hook
 		const colorUseTheme = useTheme();
 		const {colors} = colorUseTheme;
-
 
 		// Categories from hook called api
 		useEffect(() => {
@@ -120,64 +140,69 @@ export default Filters = forwardRef(
 		const fetchDataPeople = async () => {
 			try {
 				const responsePeople = await getPeopleData();
-				console.log("=== responsePeople",responsePeople);
 				setPeople(responsePeople);
 			} catch (error) {}
 		};
+
+		const handleLaunchClick = (idLaunch:number) => {
 		
+			// busca o debitCredit pelo id
+			const currentDebitCredit = launch.find(item => item.id === idLaunch);
+			setIdDebitCredit(idLaunch);
 
+			setValue('repeticaoFixa', false);	
+			setValue('parcelado', false);
 
-		// - Key Words from hook called api
-		const {dataKeyWords} = useKeyWordsGet();
+			if(idLaunch === 6){
+				setValue('repeticaoFixa', true);	
+				return
+			}
+			if(idLaunch === 7){
+				setValue('parcelado', true);	
+				return
+			}
 
-		// - Key Words states
+		
+			setValue('DebitoCredito', currentDebitCredit?.debitoCredito);
+		};
 
-		const [keyWords, setKeyWords] = useState<ItemProps[]>();
-		const [keyWordsCheckeds, setKeyWordsCheckeds] = useState<number[]>([]);
-		const [quantitySelected, setQuantitySelected] = useState<number>(0);
-		const [startAllChecked, setStartAllChecked] = useState<boolean>(false);
+		const handleCategoryClick = (idCategory:number) => {
+			setIdCategory(idCategory);
+		};
 
-		// - Diaries  states
-		const [quantityDiariesSelected, setQuantityDiariesSelected] = useState<number>(0);
+		const handleProcessClick = (idProcess:number | null) => {	
+			setIdProcess(idProcess);
+		};
 
-		const [dataDiariesCheckeds, setDataDiariesCheckeds] = useState<number[]>([]);
-
-		// - Journals  states
-		const [dataJournalsCheckeds, setDataJournalsCheckeds] = useState<number[]>([]);
-
-		const [situation, setSituation] = useState<number>(0);
-		const [idTipoMovProcesso, setIdTipoMovProcesso] = useState<number | null>(null);
-		const [minDate, setMinDate] = useState<string | null>(null);
-		const [maxDate, setMaxDate] = useState<string | null>(null);
+		const handlePeopleClick = (idPeople: number | null) => {
+			setIdPeople(idPeople);
+		};
 
 		const {control, handleSubmit, setValue, getValues} = useForm({
 			shouldUnregister: false,
 		});
 
 		const onSubmit = (data: DataFilterProps) => {
-			console.log("===",data);
-			//handleSubmitFilters(data);
+			handleSubmitFilters(removeNull(data));
 		};
 
 		const countFilters = useCallback(
 			() =>
 				checkNull([
-					situation,
 					minDate,
 					maxDate,
-					idTipoMovProcesso,
-					keyWordsCheckeds,
-					dataDiariesCheckeds,
-					dataJournalsCheckeds,
+					idDebitCredit,
+					idCategory,
+					idProcess,
+					idPeople,
 				]),
 			[
-				situation,
 				minDate,
 				maxDate,
-				idTipoMovProcesso,
-				keyWordsCheckeds,
-				dataDiariesCheckeds,
-				dataJournalsCheckeds,
+				idDebitCredit,
+				idCategory,
+				idProcess,
+				idPeople,
 			],
 		);
 
@@ -186,57 +211,36 @@ export default Filters = forwardRef(
 			[],
 		);
 
-		useEffect(() => {
-			setKeyWords(dataKeyWords);
-
-			setQuantitySelected(startAllChecked ? dataKeyWords.length : 0);
-
-			if (startAllChecked) {
-				const dataChecked = dataKeyWords.map((item: ItemProps) => {
-					return item.id;
-				});
-
-				setKeyWordsCheckeds(dataChecked);
-				setValue('idPalavraChave', dataChecked);
-			} else {
-				setKeyWordsCheckeds([]);
-			}
-		}, [dataKeyWords]);
-
 		const clearFilters = useCallback(() => {
 			handleClearFilters();
-			setSituation(0);
+
 			setMinDate(null);
 			setMaxDate(null);
+			setValue('dataVencimento', null);
+			setValue('dataVencimentoFim', null);
 
-			setValue('DataMovimentoInicio', null);
-			setValue('DataMovimentoFim', null);
+			setValue('DebitoCredito', null);
+			setIdDebitCredit(null);
 
-			setValue('idTipoMovProcesso', null);
+			setIdProcess(null);
+			setValue('idProcesso', null);
 
-			setValue('Lido', null);
+			setIdCategory(null);
+			setValue('idCategoria', null);
 
-			setIdTipoMovProcesso(null);
+			setIdPeople(null);
+			setValue('idPessoaCliente', null);
 
-			// - reset diaries
-			setDataDiariesCheckeds([]);
-			setQuantityDiariesSelected(0);
-			setValue('idDiario', []);
+			setValue('parcelado', null);	
+			setValue('repeticaoFixa', null);	
 
-			// - reset keywords
-			setQuantitySelected(0);
-			setKeyWordsCheckeds([]);
-			setValue('idPalavraChave', []);
-
-			// - reset journals
-			setDataJournalsCheckeds([]);
-			setQuantityDiariesSelected(0);
-			setValue('idJournals', []);
 		}, []);
 
 		const closeModal = useCallback(() => ref.current?.close(), []);
 
-		const footer = () => (
+		const footer = () => 
+			
+				
 			<Footer>
 				<Cancel onPress={() => closeModal()}>
 					<CancelText>Cancelar</CancelText>
@@ -245,8 +249,10 @@ export default Filters = forwardRef(
 				<ToSave onPress={handleSubmit(onSubmit)}>
 					<ToSaveText>Ver resultados</ToSaveText>
 				</ToSave>
+				
+				
 			</Footer>
-		);
+		;
 
 		const heightScreen = Dimensions.get('window').height;
 
@@ -260,6 +266,7 @@ export default Filters = forwardRef(
 				title="Filtros"
 				filters={countFilters()}
 				clear={clearFilters}>
+
 				<Row>
 					<Title>Período</Title>
 				</Row>
@@ -268,7 +275,7 @@ export default Filters = forwardRef(
 					<Column>
 						<Label>De</Label>
 						<Controller
-							name="DataMovimentoInicio"
+							name="dataVencimento"
 							control={control}
 							defaultValue={null}
 							render={({onChange}) => (
@@ -287,7 +294,7 @@ export default Filters = forwardRef(
 					<Column>
 						<Label>Até</Label>
 						<Controller
-							name="DataMovimentoFim"
+							name="dataVencimentoFim"
 							control={control}
 							defaultValue={null}
 							render={({onChange}) => (
@@ -298,7 +305,7 @@ export default Filters = forwardRef(
 									style={{maxWidth: 100}}
 									minDate={minDate || undefined}
 									onDateChange={date => {
-										setMaxDate(date), onChange(FormatFullDateEN(date));
+										setMaxDate(date), onChange(FormatFinalDateEN(date));
 									}}
 								/>
 							)}></Controller>
@@ -310,76 +317,145 @@ export default Filters = forwardRef(
 				</Row>
 
 				<Releases>
-					{launch.map((launch, index) => (
-						<ReleaseType
-							key={index}
-							onPress={() => handleLaunchClick(index)}
-							style={{
-								backgroundColor: colors.gray,
-							}}>
-							<LabelItems style={{color: selectedLaunch === index ? colors.backgroundButton : colors.iconGray}}>
-								{launch}
-							</LabelItems>
-						</ReleaseType>
-					))}
+					<Controller
+							name="DebitoCredito"
+							control={control}
+							defaultValue={null}
+							render={({onChange}) => (
+							<>
+								{launch.map((item) => (
+									<ReleaseType
+										key={item.id}
+										onPress={() => handleLaunchClick(item.id)}
+										style={{
+											backgroundColor: colors.gray,
+										}}>
+										<LabelItems style={{color: idDebitCredit === item.id ? colors.backgroundButton : colors.iconGray}}>
+											{item.label}
+										</LabelItems>
+									</ReleaseType>
+								))}
+							</>
+
+							)}>
+					</Controller>
 				</Releases>
 
 				<Row>
 					<Title>Categorias</Title>
 				</Row>
 
+				{ isLoading ? (
+					<Spinner height={50} color={colors.primary} transparent={true} />
+
+				) : 
+				(
 				<ContainerCategories>
-					{categories.map((category, index) => (
-						<ReleaseType
-							key={index}
-							onPress={() => handleCategoryClick(category.idCategoriaFinanceiro)}
-							style={{
-								backgroundColor: colors.gray,
-							}}>
-							<LabelItems style={{color: selectedCategory === category.idCategoriaFinanceiro ? colors.backgroundButton : colors.iconGray}}>
-								{category.nomeCategoriaFinanceiro}
-							</LabelItems>
-						</ReleaseType>
-					))}
+				<Controller
+							name="idCategoria"
+							control={control}
+							defaultValue={null}
+							render={({onChange}) => (
+								<>
+									{categories.map((category, index) => (
+										<ReleaseType
+											key={index}
+											onPress={() => {
+												handleCategoryClick(category.idCategoriaFinanceiro)
+												onChange(category.idCategoriaFinanceiro);
+											}}
+											style={{
+												backgroundColor: colors.gray,
+											}}>
+											<LabelItems style={{color: idCategory === category.idCategoriaFinanceiro ? colors.backgroundButton : colors.iconGray}}>
+												{category.nomeCategoriaFinanceiro}
+											</LabelItems>
+										</ReleaseType>
+									))}
+								</>
+
+						)}>
+								</Controller>
+
+					
 				</ContainerCategories>
+				)}
+
 
 				<Row>
 					<Title>Processos</Title>
 				</Row>
 
+				{ isLoadingProcess ? (
+					<Spinner height={50} color={colors.primary} transparent={true} />
+					
+				) : (
 				<Process>
-					{process.map((process, index) => (
-						<ReleaseType
-							key={index}
-							onPress={() => handleProcessClick(process.id)}
-							style={{
-								backgroundColor: colors.gray,
-							}}>
-							<LabelItems style={{color: selectedProcess === process.id ? colors.backgroundButton : colors.iconGray}}>
-								{process.numeroProcesso}
-							</LabelItems>
-						</ReleaseType>
-					))}
+				<Controller
+							name="idProcesso"
+							control={control}
+							defaultValue={null}
+							render={({onChange}) => (
+								<>
+								{process.map((process, index) => (
+									<ReleaseType
+										key={index}
+										onPress={() => {
+											handleProcessClick(process.idProcesso),
+											onChange(process.idProcesso)
+										}}
+										style={{
+											backgroundColor: colors.gray,
+										}}>
+										<LabelItems style={{color: idProcess === process.idProcesso ? colors.backgroundButton : colors.iconGray}}>
+											{process.numeroProcesso}
+										</LabelItems>
+									</ReleaseType>
+								))}
+					</>
+
+					)}>
+							</Controller>
 				</Process>
+				)}
 
 				<Row>
 					<Title>Pessoas</Title>
 				</Row>
 
+				{ isLoadingPeople ? (
+					<Spinner height={50} color={colors.primary} transparent={true} />
+					
+				) : (
 				<Person>
-					{people.map((person) => (
-						<ReleaseType
-							key={person.idPessoaCliente}
-							onPress={() => handlePersonClick(person.idPessoaCliente)}
-							style={{
-								backgroundColor: colors.gray,
-							}}>
-							<LabelItems style={{color: selectedPerson === person.idPessoaCliente ? colors.backgroundButton : colors.iconGray}}>
-								{person.nomePessoaCliente}
-							</LabelItems>
-						</ReleaseType>
-					))}
+				<Controller
+							name="idPessoaCliente"
+							control={control}
+							defaultValue={null}
+							render={({onChange}) => (
+								<>
+							{people.map((person) => (
+								<ReleaseType
+									key={person.idPessoaCliente}
+									onPress={() => {
+										handlePeopleClick(person.idPessoaCliente),
+										onChange(person.idPessoaCliente)
+									}}
+									style={{
+										backgroundColor: colors.gray,
+									}}>
+									<LabelItems style={{color: idPeople === person.idPessoaCliente ? colors.backgroundButton : colors.iconGray}}>
+										{person.nomePessoaCliente}
+									</LabelItems>
+								</ReleaseType>
+							))}
+					</>
+
+				)}>
+				</Controller>
+
 				</Person>
+				)}
 			</Modal>
 		);
 	},

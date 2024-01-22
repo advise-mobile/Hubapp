@@ -50,20 +50,17 @@ export const useGetPopulateCategories = () => {
 
 		try {
 			setIsLoading(true);
-
-			const { idUsuarioCliente } = await getLoggedUser();	
-
-			const params = `campos=*&idUsuarioCliente=${idUsuarioCliente}&idsTipoCategoriaFinanceiro=-2`;
+			
+			const params = `campos=nomeCategoriaFinanceiro,+idCategoriaFinanceiro&registrosPorPagina=9999`;
 			const response: DataItemsResumeProps = await Api.get(`/core/v1/categorias-financeiro?${params}`);
 
 			const { itens }: DataCategoryItemProps = response.data;
 
 			const formatedItens = itens.map((item) => {
-				
 				return {
-					idCategoriaFinanceiro: item.idCategoriaFinanceiro,
-					nomeCategoriaFinanceiro: item.nomeCategoriaFinanceiro
-						}
+						idCategoriaFinanceiro: item.idCategoriaFinanceiro,
+						nomeCategoriaFinanceiro: item.nomeCategoriaFinanceiro
+					}
 			});
 
 			

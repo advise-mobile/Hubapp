@@ -141,13 +141,6 @@ export const Releases = styled.View`
 	align-items: center;
 `;
 
-export const Type = styled.View`
-	width: 366px;
-	height: 72px;
-	flex-direction: row;
-	flex-wrap: wrap;
-	align-items: center;
-`;
 
 export const ContainerCategories = styled.View`
 	width: 366px;

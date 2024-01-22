@@ -46,18 +46,12 @@ export const useGetPopulatePeople = () => {
 		try {
 			setIsLoadingPeople(true);
 
-
-
-			const params = `?campos=nomePessoaCliente,idPessoaCliente,email,contato`;
+			const params = `?campos=nomePessoaCliente,idPessoaCliente,email,contato&registrosPorPagina=9999`;
 			const response: DataPersonItemProps = await Api.get(`/core/v1/contatos${params}`);
-
-
 			const { itens }: ItemPersonItemProps = response.data;
 
 			return itens;
-
-
-
+			
 		} catch (error) {
 			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estas pessoas', true));
 		} finally {

@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { Animated} from 'react-native';
 
-
-import { useSelector } from 'react-redux';
-
-import { PermissionsGroups, checkPermission, getLoggedUser } from 'helpers/Permissions';
+import { PermissionsGroups, checkPermission } from 'helpers/Permissions';
 
 import Spinner from 'components/Spinner';
+
 import HasNotPermission from 'components/HasNotPermission';
 
 import Add from './Modal/Add';
@@ -16,9 +13,6 @@ import {
   FiltersButton,
   FiltersText,
   FiltersActive,
-
-  NotFound,
-  Image,
   Content,
 } from './styles';
 
@@ -47,7 +41,6 @@ import CashFlow from './CashFlow';
 import Release from '../Finance/Releases'
 import Category from './Category';
 
-//import Category from '@pages/MovementsTrash';
 
 import ReleaseFilters from './Modal/ReleaseFilter';
 import CashFlowFilter from '../Finance/Modal/CashFlowFilter'
@@ -60,7 +53,7 @@ export default function Finance(props) {
 
   // Variavel para usar o hook
 	const colorUseTheme = useTheme();
-	const { colors } = colorUseTheme;
+	//const { colors } = colorUseTheme;
 
 	const filterCash = useRef(null);
 	const filterCategoryRef = useRef(null);
@@ -73,16 +66,16 @@ export default function Finance(props) {
 
   const headerFiltersRef = useRef(null);
 
-  const loading = useSelector(state => state.deadlines.loading);
+  const [loading,setLoading] = useState<boolean>(false);
 
   const [currentTab, setCurrentTab] = useState('release');
 
   const [trigger, setTrigger] = useState(false);
-  const [page, setPage] = useState(1);
-  const [havePermission, setPermission] = useState(false);
-	const [filtering, setFiltering] = useState<Boolean>(false);
 
+  const [havePermission, setPermission] = useState(false);
+	
   const [dataFiltersCategory,setDataFiltersCategory] = useState();
+
   const [dataFiltersRelease,setDataFiltersRelease] = useState();
  
   const [formattedData] = useState({});
@@ -91,20 +84,14 @@ export default function Finance(props) {
     const isFocused = props.navigation.isFocused();
 
     if ( !isFocused) return;
-
-    setPage(1);
+    
     setTrigger(!trigger);
   }, [props.navigation.isFocused()])
 
-
   useEffect(() => { checkPermission(PermissionsGroups.SCHEDULE).then(permission => setPermission(permission)) }, [props]);
-
-
 
   const handleFilter = useCallback((id, index) => {
     headerFiltersRef.current?.scrollToIndex({ animated: true, index: index });
-
-    setPage(1);
     setCurrentTab(id);
   }, []);
 
@@ -138,7 +125,7 @@ export default function Finance(props) {
 
 
 	const handleClearFilters = useCallback( () => {
-		setFiltering(false);
+		//setFiltering(false);
 	}, []);
 
 	const handleSubmitFiltersCategory = useCallback(async (data) => {
@@ -146,33 +133,25 @@ export default function Finance(props) {
     filterCategoryRef.current?.close();
 	}, []);
 
-  const handleSubmitFilters = useCallback(async (data) => {
-
-    console.log("===",data);
-    setDataFiltersCategory(data)
-		//setFiltering(true);
-		//filtersRef.current?.close();
-
-		// await getData({
-		// 	page:1,
-		// 	itens:data
-		// })
+  const handleSubmitFiltersRelease = useCallback(async (data) => {
+    
+    setDataFiltersRelease(data)
+    filtersReleaseRef.current?.close();  
 	}, []);
-
 
   const renderAddOptions = useCallback(() => <Add ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
 
 	/** RENDER FILTERS */
 	const renderReleaseFilters = useMemo(
 		() => (
-			<ReleaseFilters ref={filtersReleaseRef} handleSubmitFilters={handleSubmitFilters} handleClearFilters={handleClearFilters}/>
+			<ReleaseFilters ref={filtersReleaseRef} handleSubmitFilters={handleSubmitFiltersRelease} handleClearFilters={handleClearFilters}/>
 		),
 		[formattedData],
 	);
 
 	const renderFilterCashFlow = useMemo(
 		() => (
-			<CashFlowFilter ref={filterCash} handleSubmitFilters={handleSubmitFilters} handleClearFilters={handleClearFilters}/>
+			<CashFlowFilter ref={filterCash} handleSubmitFilters={() => {}} handleClearFilters={handleClearFilters}/>
 		),
 		[formattedData],
 	);
@@ -207,9 +186,9 @@ export default function Finance(props) {
               />
               <Content>
                 {
-                loading && page == 1 ? <Spinner height={'auto'} /> :
+                loading ? <Spinner height={'auto'} /> :
                   <>
-                    {currentTab === "release" && <Release /> }
+                    {currentTab === "release" && <Release dataFiltersRelease={dataFiltersRelease} /> }
                     {currentTab === "cash-flow" && <CashFlow /> }
                     {currentTab === "category" && <Category dataFiltersCategory={dataFiltersCategory} /> }
                   </>
