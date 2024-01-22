@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { fonts } from 'assets/styles';
 
 interface ColorTextProps {
 	colorText: string;
@@ -13,7 +14,7 @@ export const TextValue = styled.Text<ColorTextProps>`
 
 export const TextLabel = styled.Text`
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.realWhites};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font-weight: normal;
 `;
 
@@ -78,6 +79,32 @@ export const ContainerLabel = styled.View`
 
 
 export const FinanceList = styled.FlatList`
+`;
+
+export const NotFound = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Image = styled.Image`
+  width: 170px;
+  height: 170px;
+  resize-mode: contain;
+  margin-bottom: 12px;
+`;
+
+export const NotFoundText = styled.Text`
+  font-size: ${fonts.big};
+  color: ${({ theme }) => theme.colors.grayDarker};
+  font-family: ${fonts.circularStdBold};
+  margin-bottom: 8px;
+`;
+
+export const NotFoundDescription = styled.Text`
+  color:  ${({ theme }) => theme.colors.grayLight};
+  font-size: ${fonts.regular};
+  font-family: ${fonts.circularStdBook};
 `;
 
 

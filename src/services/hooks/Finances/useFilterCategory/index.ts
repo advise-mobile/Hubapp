@@ -15,8 +15,6 @@ export const useGetFilterCategory = () => {
 		try {
 			setIsLoadingFilterCategory(true);
 
-
-
 			const params = `?campos=*`;
 			const response: DataFilterCategoryProps = await Api.get(`core/v1/tipos-categorias-financeiro${params}`);
 

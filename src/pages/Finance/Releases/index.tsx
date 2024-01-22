@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useMemo } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FinanceDataItem from '@components/Finance/Installments';
-import { GetMonthPeriod, GetToday, GetWeekPeriod } from 'helpers/DateFunctions';
-import Spinner from 'components/Spinner';
+import { GetMonthPeriod, GetToday, GetWeekPeriod } from '@helpers/DateFunctions';
+import Spinner from '@components/Spinner';
 
 import {
   ContainerFinance,
@@ -17,9 +17,13 @@ import {
   ContainerLabel,
   ContainerIconReleases,
   FinanceList,
+  NotFound,
+  Image,
+  NotFoundText,
+  NotFoundDescription
 } from './styles';
-import { ItemProps, ItemResumeProps, ItemInstallmentsProps } from './types';
-import { Container } from 'assets/styles/global';
+import { ItemProps, ItemResumeProps, ItemInstallmentsProps, DataFiltersRelease } from './types';
+import { Container } from '@assets/styles/global';
 import { useTheme } from 'styled-components';
 import FilterScreen from '../tab-Filters';
 import {
@@ -28,12 +32,14 @@ import {
   useGetInstallments,
 } from '@services/hooks/Finances/useReleases';
 
-export default function Release() {
-
+export default function Release(dataFilters:DataFiltersRelease ) {
 
   const colorUseTheme = useTheme();
   const { colors } = colorUseTheme;
-  const [isFetching, setIsFetching] = useState(false);
+
+  const notFound = colorUseTheme.name === 'dark'
+		? require('assets/images/not_found/movements_white.png')
+		: require('assets/images/not_found/movements.png');
 
   const { isLoadingFinanceID, getFinanceDataID } = useGetFinanceID();
   const { isLoadingResumeRelease, getReleaseResume } = useGetResume();
@@ -44,16 +50,24 @@ export default function Release() {
   const [allInstallments, setAllInstallments] = useState<ItemInstallmentsProps[]>([]);
   const [selectedFilterPeriod, setSelectedFilterPeriod] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalData, setTotalData] = useState(0);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  
 
 	useEffect(() => {
     fetchDataResume();
   }, []);
 
   useEffect(() => {
-    fetchDataInstallments();
-  }, [selectedFilterPeriod]);
 
-
+    setCurrentPage(1);
+    setLoading(true);
+    setTimeout(() => {
+      fetchDataInstallments();    
+    }, 1000);
+  }, [selectedFilterPeriod,dataFilters]);
+  
 
 	const fetchDataResume = async () => {
     try {
@@ -74,36 +88,52 @@ export default function Release() {
 
   const fetchDataInstallments = async () => {
     try {
-      const parameterPeriod = getParametersPeriod(selectedFilterPeriod);
-			const installments = await getInstallments({ currentPage, ...parameterPeriod });
+      
+      let paramsFilters = {};
+      let parameterPeriod;
+      if(dataFilters.dataFiltersRelease === undefined ){
+        
+        parameterPeriod = getParametersPeriod(selectedFilterPeriod);
+        paramsFilters = {...parameterPeriod,currentPage};
+      }else{
 
-			setCurrentPage(currentPage + 1);
-			if(currentPage === 1 ){
+        const {dataVencimento} = dataFilters.dataFiltersRelease;
+        const {dataVencimentoFim} = dataFilters.dataFiltersRelease;
+
+        if(dataVencimento === undefined || dataVencimentoFim === undefined){
+           parameterPeriod = getParametersPeriod(selectedFilterPeriod);
+           paramsFilters = {...dataFilters.dataFiltersRelease, ...parameterPeriod,currentPage:currentPage}
+          
+        }else{
+          paramsFilters = {...dataFilters.dataFiltersRelease,currentPage:currentPage}
+        }  
+      }
+
+			const installments = await getInstallments(paramsFilters);
+      
+			setTotalData(installments?.length === 0 ? 0 :  installments[0].totalRegistros );     
+
+			if(currentPage === 1){
 				setAllInstallments(installments);
 			}else{
-				setAllInstallments((prevInstallments) => [...prevInstallments, ...installments]);
+        
+				setAllInstallments([...allInstallments,...installments]);
 			}
-
+      
     } catch (error) {
 
+    } finally {
+      setLoading(false)
     }
   };
 
   const handleLoadMore = async () => {
 
-    if (isFetching) {
+    if (allInstallments.length === totalData || isLoadingInstallments ) {
       return;
     }
-
-    setIsFetching(true);
-
-    try {
-
-       await fetchDataInstallments();
-
-    } finally {
-      setIsFetching(false);
-    }
+    setCurrentPage(currentPage + 1);
+    await fetchDataInstallments();
   };
 
   const getParametersPeriod = (id: number) => {
@@ -122,11 +152,11 @@ export default function Release() {
         };
         return period;
       case 2:
-        const today = GetToday();
 
+        const { startDay, endOfDay } = GetToday();
         period = {
-          dataVencimento: today,
-          dataVencimentoFim: today,
+          dataVencimento: startDay,
+          dataVencimentoFim: endOfDay,
         };
         return period;
       case 3:
@@ -149,13 +179,12 @@ export default function Release() {
 
   const renderFooter = () => {
     if (allInstallments.length < 20) return false;
-    return isFetching ? <Spinner height={50} color={colors.primary} transparent={true} /> : null;
+    return isLoadingInstallments ? <Spinner height={50} color={colors.primary} transparent={true} /> : null;
   };
 
-	const setPeriod = (period) => {
-		setCurrentPage(1);
+	const setPeriod = (period:any) => {
 		setSelectedFilterPeriod(period)
-	}
+  } 
 
   return (
     <Container>
@@ -220,18 +249,24 @@ export default function Release() {
           </>
         )}
 
-				{isLoadingInstallments && currentPage === 1 ? (
+				{(isLoadingInstallments || loading) && currentPage === 1 ? (
           <Spinner height={50} color={colors.primary} transparent={true} />
-        ) : (
+        ) : allInstallments.length > 0 ? (
         <FinanceList
           data={allInstallments}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.1}
+          onEndReachedThreshold={0.2}
           ListFooterComponent={renderFooter}
         />
-				)}
+				) : (
+          <NotFound>
+            <Image source={notFound} />
+            <NotFoundText>Não há resultados</NotFoundText>
+            <NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+          </NotFound>
+        )}
       </ContainerFinance>
     </Container>
   );

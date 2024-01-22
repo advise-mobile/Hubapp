@@ -33,3 +33,20 @@ export interface ItemsFilterProps {
 export interface DataItemsFilterProps {
 	data: ItemsFilterProps;
 }
+
+export interface DataPopulateCategoriesProps {
+	idCategoriaFinanceiro: number,
+	nomeCategoriaFinanceiro: string
+}
+
+export interface DataPopulateProcessProps {
+	id: number,
+	nome: string,
+	idProcesso?:number | null,
+	numeroProcesso?: string
+}
+
+export interface DataPopulatePeopleProps {
+	idPessoaCliente: number,
+	nomePessoaCliente: string,
+}

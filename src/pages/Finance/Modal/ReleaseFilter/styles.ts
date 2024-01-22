@@ -141,9 +141,10 @@ export const Releases = styled.View`
 	align-items: center;
 `;
 
-export const Type = styled.View`
+
+export const ContainerCategories = styled.View`
 	width: 366px;
-	height: 72px;
+	height: auto;
 	flex-direction: row;
 	flex-wrap: wrap;
 	align-items: center;
@@ -151,7 +152,7 @@ export const Type = styled.View`
 
 export const Process = styled.View`
 	width: 366px;
-	height: 76px;
+	height: auto;
 	flex-direction: row;
 	flex-wrap: wrap;
 	align-items: center;
@@ -159,7 +160,7 @@ export const Process = styled.View`
 
 export const Person = styled.View`
 	width: 366px;
-	height: 100px;
+	height: auto;
 	flex-direction: row;
 	flex-wrap: wrap;
 	align-items: center;
@@ -176,6 +177,7 @@ export const ReleaseType = styled.TouchableOpacity`
 	justify-content: center;
 	background-color: ${({ theme }) => theme.colors.gray};
 `;
+
 
 export const LabelItems = styled.Text`
  color: ${({ theme }) => theme.colors.realWhites};

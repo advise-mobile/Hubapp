@@ -7,13 +7,15 @@ import  { FormatReal }  from '@helpers/MoneyFunctions.ts';
 
 
 import { DataItemsProps, ItemsProps, ItemProps ,
-         DataItemsResumeProps, ItemsResumeProps,ItemResumeProps,
-         DataItemsInstallmentsProps,ItemsInstallmentsProps,ItemInstallmentsProps, FilterPeriodProps } from "@pages/Finance/Releases/types";
+         DataItemsResumeProps, ItemsResumeProps,
+         DataItemsInstallmentsProps,ItemsInstallmentsProps,ItemInstallmentsProps, FiltersReleaseDataProps } from "@pages/Finance/Releases/types";
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 
 import { useDispatch } from 'react-redux';
 import { DataItemsDetailsProps, ItemsDetailsProps } from "@pages/Finance/Details/types";
+import { removeNull } from "@helpers/functions";
+
 
 
 export const useGetFinanceID= () => {
@@ -86,20 +88,27 @@ export const useGetInstallments = () => {
 
     const dispatch = useDispatch();
 
-    const getInstallments = async (filters:FilterPeriodProps) => {
+    const getInstallments = async (filters:FiltersReleaseDataProps) => {
 
         try {
             setIsLoadingInstallments(true);
 
+            const filtersFormated = removeNull(filters);
+            let filtersParams = "";
+            Object.keys(filtersFormated).forEach(key => {
+                filtersParams += key + "=" +  filtersFormated[key] + "&";
+            });
+
             let currentPage = filters.currentPage ? filters.currentPage : 1;
-            let period = `dataVencimento=${filters.dataVencimento}&dataVencimentoFim=${filters.dataVencimentoFim}`;
+        
+            const params = `${filtersParams}campos=*&ativo=true&ordenacao=+dataVencimento&registrosPorPagina=20&paginaAtual=${currentPage}`;
 
-
-
-            const params = `campos=*&ativo=true&ordenacao=+dataVencimento&registrosPorPagina=20&paginaAtual=${currentPage}&${period}`;
             const response: DataItemsInstallmentsProps = await Api.get(`/core/v1/parcelas-financeiro?${params}`);
 
+            
+
             const { itens } : ItemsInstallmentsProps  = response.data;
+            
 
             const itensOptimized = itens.map((item:ItemInstallmentsProps) => {
 
@@ -109,10 +118,11 @@ export const useGetInstallments = () => {
                 return {
                             ...item,
                             dataVencimentoFormatada,
-                            value:FormatReal(item.valorAberto),
+                            value: FormatReal(item.valorAberto),
                             dataBaixaFormatada
                         }
             });
+
             return itensOptimized;
 
         } catch (error) {

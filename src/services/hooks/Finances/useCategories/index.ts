@@ -40,3 +40,40 @@ export const useGetCategories = () => {
 	return { isLoadingCategories, getCategoriesData };
 }
 
+export const useGetPopulateCategories = () => {
+
+	const [isLoading, setIsLoading] = useState(false);
+
+	const dispatch = useDispatch();
+
+	const getCategoriesData = async () => {
+
+		try {
+			setIsLoading(true);
+			
+			const params = `campos=nomeCategoriaFinanceiro,+idCategoriaFinanceiro&registrosPorPagina=9999`;
+			const response: DataItemsResumeProps = await Api.get(`/core/v1/categorias-financeiro?${params}`);
+
+			const { itens }: DataCategoryItemProps = response.data;
+
+			const formatedItens = itens.map((item) => {
+				return {
+						idCategoriaFinanceiro: item.idCategoriaFinanceiro,
+						nomeCategoriaFinanceiro: item.nomeCategoriaFinanceiro
+					}
+			});
+
+			
+			return formatedItens;
+
+		} catch (error) {
+			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível popular estas categorias', true));
+		} finally {
+			setTimeout(() => {
+				setIsLoading(false);
+			}, 2000);
+		}
+	};
+	return { isLoading, getCategoriesData };
+} 
+

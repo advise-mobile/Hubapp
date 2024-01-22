@@ -67,7 +67,9 @@ export default lightTheme  = {
       fadedWhite: 'rgba(255,255,255,0.69)',
       fadedBlack: 'rgba(0,0,0,0.6)',
 
-      backgroundDefault : "#000000"
+      backgroundDefault : "#000000",
+
+      textPrimary:'#000000'
     },
 		fonts: {
 			regular: 'Roboto_400Regular',
