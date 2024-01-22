@@ -58,10 +58,17 @@ export const Content = styled.View`
 	width: 414px;
 `;
 
-export const ContentCategory = styled.View`
+export const Category = styled.View`
   margin: 0 -24px;
 	border: ${({ theme }) => theme.colors.grayLighter};
-	min-height: 146px;
+	height: auto;
+	width: 414px;
+`;
+
+export const People = styled.View`
+  margin: 0 -24px;
+	border: ${({ theme }) => theme.colors.grayLighter};
+	height: auto;
 	width: 414px;
 `;
 
@@ -102,12 +109,13 @@ export const Input = styled.TextInput`
 `;
 
 export const ContainerItems = styled.View`
-	min-width: 435px;
-	height: 85px;
+	width: auto;
+	height: auto;
 	flex-direction: row;
 	flex-wrap: wrap;
-	margin-left: 25px;
+	margin-left: 21px;
 	margin-top: 5px;
+	margin-bottom: 5px;
 	align-items: center;
 `;
 
@@ -128,11 +136,12 @@ export const LabelItems = styled.Text`
 
 export const ContainerItemsPerson = styled.View`
 	width: 355px;
-	height: 55px;
+	height: auto;
 	flex-direction: row;
 	flex-wrap: wrap;
-	margin-left: 25px;
+	margin-left: 21px;
 	margin-top: 5px;
+	margin-bottom: 5px;
 	align-items: center;
 `;
 
@@ -148,16 +157,16 @@ export const ItemsPerson = styled.TouchableOpacity`
 `;
 
 export const ContainerItemsProcess = styled.View`
-	width: 365px;
+	width: auto;
 	height: 85px;
 	flex-direction: row;
 	flex-wrap: wrap;
-	margin-left: 25px;
+	margin-left: 21px;
 	margin-top: 5px;
 	align-items: center;
 `;
 
-export const ContentProcess = styled.View`
+export const Process = styled.View`
   margin: 0 -24px;
 	border: ${({ theme }) => theme.colors.grayLighter};
 	height: 190px;
@@ -183,11 +192,11 @@ export const LabelItemsProcess = styled.Text`
 `;
 
 export const ContainerItemsRepeat = styled.View`
-	width: 375px;
+	width: auto;
 	height: 55px;
 	flex-direction: row;
 	flex-wrap: wrap;
-	margin-left: 25px;
+	margin-left: 21px;
 	margin-top: 5px;
 	align-items: center;
 `;

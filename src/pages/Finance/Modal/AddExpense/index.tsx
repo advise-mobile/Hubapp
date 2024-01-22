@@ -8,7 +8,6 @@ import {
 	Row,
 	Label,
 	Input,
-	ContentCategory,
 	RowCategory,
 	ContainerItems,
 	Items,
@@ -31,6 +30,9 @@ import {
 	ContentRepeat,
 	ContainerInfo,
 	LabelDuringInfo,
+	People,
+	Category,
+	Process,
 } from './styles';
 
 // Add UseTheme para pegar o tema global adicionado
@@ -67,10 +69,6 @@ export default AddExpense = forwardRef((props, ref) => {
 		setSelectedRepeat(index);
 	};
 
-	// const handleRepeatClick = index => {
-	// 	setSelectedRepeat(data[index].value);
-	// };
-
 	useEffect(() => {
 		fetchData();
 	}, []);
@@ -106,27 +104,27 @@ export default AddExpense = forwardRef((props, ref) => {
 
 	const data = [
 		{
-			label: `Não se repete`,
+			label: "Não se repete",
 			value: '-1',
 		},
 		{
-			label: `Todos os dias`,
+			label: "Todos os dias",
 			value: '-9',
 		},
 		{
-			label: `Semanal`,
+			label: "Semanal",
 			value: '-8',
 		},
 		{
-			label: `Quinzenal`,
+			label: "Quinzenal",
 			value: '-7',
 		},
 		{
-			label: `Mensal`,
+			label: "Mensal",
 			value: '-6',
 		},
 		{
-			label: `Anual`,
+			label: "Anual",
 			value: '-2',
 		},
 	];
@@ -187,7 +185,7 @@ export default AddExpense = forwardRef((props, ref) => {
 				</Row>
 			</Content>
 
-			<ContentCategory>
+			<Category>
 				<RowCategory>
 					<Label>Categoria</Label>
 				</RowCategory>
@@ -207,9 +205,9 @@ export default AddExpense = forwardRef((props, ref) => {
 						</Items>
 					))}
 				</ContainerItems>
-			</ContentCategory>
+			</Category>
 
-			<ContentCategory>
+			<People>
 				<RowCategory>
 					<Label>Pessoa</Label>
 				</RowCategory>
@@ -231,9 +229,9 @@ export default AddExpense = forwardRef((props, ref) => {
 						</ItemsPerson>
 					))}
 				</ContainerItemsPerson>
-			</ContentCategory>
+			</People>
 
-			<ContentProcess>
+			<Process>
 				<RowCategory>
 					<Label>Processo</Label>
 				</RowCategory>
@@ -255,7 +253,7 @@ export default AddExpense = forwardRef((props, ref) => {
 						</ItemsProcess>
 					))}
 				</ContainerItemsProcess>
-			</ContentProcess>
+			</Process>
 
 			<ContentRepeat>
 				<RowCategory>
