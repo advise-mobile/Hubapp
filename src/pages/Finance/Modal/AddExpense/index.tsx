@@ -73,7 +73,8 @@ export default AddExpense = forwardRef((props, ref) => {
 
 	const handleRepeatClick = index => {
 		setSelectedRepeatValue(value);
-    handleChangeTypeDuration(value);
+		setIsRepeatSelected(value !== -1);
+		handleChangeTypeDuration(value);
 	};
 
 	useEffect(() => {
@@ -140,7 +141,7 @@ export default AddExpense = forwardRef((props, ref) => {
 		console.log('===', data);
 	};
 
-	const {control, handleSubmit, setValue, getValues} = useForm({
+	const {control, handleSubmit, setValue, getValues, register} = useForm({
 		shouldUnregister: false,
 	});
 
@@ -149,6 +150,8 @@ export default AddExpense = forwardRef((props, ref) => {
 	const {colors} = colorUseTheme;
 
 	const pickerSelectStyles = stylesPickerSelectStyles(colors);
+
+	const [isRepeatSelected, setIsRepeatSelected] = useState(false);
 
 	const closeModal = useCallback(() => ref.current?.close(), props);
 
@@ -277,35 +280,61 @@ export default AddExpense = forwardRef((props, ref) => {
 			<ContentDescription>
 				<Row>
 					<Label>Descrição</Label>
-					<Input
-						autoCorrect={false}
-						autoCapitalize="none"
-						placeholder="Título do lançamento"
-						placeholderTextColor={colors.grayLight}
-						returnKeyType="next"
+
+					<Controller
+						name="descricao"
+						control={control}
+						defaultValue={null}
+						render={({onChange}) => (
+							<Input
+								autoCorrect={false}
+								autoCapitalize="none"
+								placeholder="Título do lançamento"
+								placeholderTextColor={colors.grayLight}
+								returnKeyType="next"
+								onChangeText={value => onChange(value)}
+							/>
+						)}
 					/>
 				</Row>
 			</ContentDescription>
 			<Content>
 				<Row>
 					<Label>Valor</Label>
-					<Input
-						placeholder="R$ -"
-						placeholderTextColor={colors.grayLight}
-						keyboardType="numeric"
+
+					<Controller
+						name="valor"
+						control={control}
+						defaultValue={null}
+						render={({onChange}) => (
+							<Input
+								placeholder="R$ -"
+								placeholderTextColor={colors.grayLight}
+								keyboardType="numeric"
+								onChangeText={value => onChange(value)}
+							/>
+						)}
 					/>
 				</Row>
 			</Content>
 			<Content>
 				<Row>
 					<Label>Vencimento</Label>
-					<Input
-						autoCorrect={false}
-						autoCapitalize="none"
-						placeholder="dd/mm/aaaa"
-						placeholderTextColor={colors.grayLight}
-						returnKeyType="next"
-						keyboardType="numeric"
+					<Controller
+						name="dataVencimento"
+						control={control}
+						defaultValue={null}
+						render={({onChange}) => (
+							<Input
+								autoCorrect={false}
+								autoCapitalize="none"
+								placeholder="dd/mm/aaaa"
+								placeholderTextColor={colors.grayLight}
+								returnKeyType="next"
+								keyboardType="numeric"
+								onChangeText={value => onChange(value)}
+							/>
+						)}
 					/>
 				</Row>
 			</Content>
@@ -475,12 +504,20 @@ export default AddExpense = forwardRef((props, ref) => {
 				<Row>
 					<LabelComments>Observações</LabelComments>
 				</Row>
-				<InputDescription
-					autoCorrect={false}
-					autoCapitalize="none"
-					placeholder="Digite uma observação"
-					placeholderTextColor={colors.grayLight}
-					returnKeyType="next"
+				<Controller
+					name="obs"
+					control={control}
+					defaultValue={null}
+					render={({onChange}) => (
+						<InputDescription
+							autoCorrect={false}
+							autoCapitalize="none"
+							placeholder="Digite uma observação"
+							placeholderTextColor={colors.grayLight}
+							onChangeText={value => onChange(value)}
+							returnKeyType="next"
+						/>
+					)}
 				/>
 			</ContentComments>
 		</Modal>
