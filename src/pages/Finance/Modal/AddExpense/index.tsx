@@ -1,5 +1,7 @@
 import React, {forwardRef, useCallback, useEffect, useState} from 'react';
 import Modal from 'components/Modal';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { StyleSheet } from 'react-native';
 import {
 	Footer,
 	Cancel,
@@ -33,29 +35,39 @@ import {
 	People,
 	Category,
 	Process,
+	InfoContainer,
+	InfoTitle
 } from './styles';
 
 // Add UseTheme para pegar o tema global adicionado
 import {useTheme} from 'styled-components';
-import {useGetCategories} from '@services/hooks/Finances/useCategories';
-import {useGetPeople} from '@services/hooks/Finances/usePeople';
+import {useGetPopulateCategories} from '@services/hooks/Finances/useCategories';
+import {useGetPopulatePeople} from '@services/hooks/Finances/usePeople';
 import {CategoryProps, PersonProps, ProcessProps} from '@pages/Finance/Category/types';
-import {useGetProcess} from '@services/hooks/Finances/useProcess';
+import {useGetPopulateProcess} from '@services/hooks/Finances/useProcess';
 
+import RNPickerSelect from 'react-native-picker-select';
 
 export default AddExpense = forwardRef((props, ref) => {
-	const {isLoadingCategories, getCategoriesData} = useGetCategories();
-	const {isLoadingPeople, getPeopleData} = useGetPeople();
-	const {isLoadingProcess, getProcessData} = useGetProcess();
+	const {isLoadingCategories, getCategoriesData} = useGetPopulateCategories();
+	const {isLoadingPeople, getPeopleData} = useGetPopulatePeople();
+	const {isLoadingProcess, getProcessData} = useGetPopulateProcess();
 
 	const [dataResume, setDataResume] = useState<CategoryProps>([]);
 	const [PeopleResume, setPeopleResume] = useState<PersonProps[]>([]);
 	const [ProcessResume, setProcessResume] = useState<ProcessProps[]>([]);
 
-	const [selectedColor, setSelectedColor] = useState(null);
+	const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(null);
+
 	const [selectedPeople, setSelectedPeople] = useState(null);
 	const [selectedProcess, setSelectedProcess] = useState(null);
-	const [selectedRepeat, setSelectedRepeat] = useState(null);
+	const [selectedRepeat, setSelectedRepeat] = useState<number>(-1);
+	const [selectedDuring, setSelectedDuring] = useState(null);
+
+	const [duration, setDuration] = useState([]);
+	const [disableDuration, setDisableDuration] = useState(true);
+
+	
 
 	const handlePeopleClick = index => {
 		setSelectedPeople(index);
@@ -104,34 +116,36 @@ export default AddExpense = forwardRef((props, ref) => {
 
 	const data = [
 		{
-			label: "Não se repete",
-			value: '-1',
+			label: 'Não se repete',
+			value: -1,
 		},
 		{
-			label: "Todos os dias",
-			value: '-9',
+			label: 'Todos os dias',
+			value: -9,
 		},
 		{
-			label: "Semanal",
-			value: '-8',
+			label: 'Semanal',
+			value: -8,
 		},
 		{
-			label: "Quinzenal",
-			value: '-7',
+			label: 'Quinzenal',
+			value: -7,
 		},
 		{
-			label: "Mensal",
-			value: '-6',
+			label: 'Mensal',
+			value: -6,
 		},
 		{
-			label: "Anual",
-			value: '-2',
+			label: 'Anual',
+			value: -2,
 		},
 	];
 
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
+
+	const pickerSelectStyles = stylesPickerSelectStyles(colors);
 
 	const closeModal = useCallback(() => ref.current?.close(), props);
 	const footer = () => (
@@ -146,9 +160,120 @@ export default AddExpense = forwardRef((props, ref) => {
 		</Footer>
 	);
 
-	return (
+	const handleChangeTypeDuration = (selectedRepeat:number) => {
+		let i = 2;
+		switch (selectedRepeat) {
+			
+			case -1:
+				setDuration([{value:null,label:''}]);
+				setDisableDuration(true);
+				break;
+				case -9:
+					const days = [
+						{
+							value:'1',
+							label: 'Diariamente'
+						}
+					]
+					while (i < 1827) {
+						days.push({
+							value:`${i}`,
+							label: `${i} dias`
+						});
 
-		<Modal maxHeight={650} onClose={props.onClose} ref={ref} title="Cadastrar despesa" footer={footer()}>
+						i++;
+					}
+					setDuration(days);
+					setDisableDuration(false);
+				break;
+				case -7:
+					const fortnight = [
+						{
+							value:'1',
+							label: 'Quinzenalmente'
+						}
+					]
+					while (i < 122) {
+						fortnight.push({
+							value:`${i}`,
+							label: `${i} quinzenas`
+						});
+
+						i++;
+					}
+					setDuration(fortnight);
+					setDisableDuration(false);
+				break;
+				case -8:
+					const weekly = [
+						{
+							value:'1',
+							label: 'Semanalmente'
+						}
+					]
+					while (i < 261) {
+						weekly.push({
+							value:`${i}`,
+							label: `${i} semanas`
+						});
+
+						i++;
+					}
+					setDuration(weekly);
+					setDisableDuration(false);
+				break;
+				case -6:
+					const monthly = [
+						{
+							value:'1',
+							label: 'Mensalmente'
+						}
+					]
+					while (i < 61) {
+						monthly.push({
+							value:`${i}`,
+							label: `${i} meses`
+						});
+
+						i++;
+					}
+					setDuration(monthly);
+					setDisableDuration(false);
+				break;
+				case -2:
+					const annually = [
+						{
+							value:'1',
+							label: 'Anualmente'
+						}
+					]
+					while (i < 6) {
+						annually.push({
+							value:`${i}`,
+							label: `${i} anos`
+						});
+
+						i++;
+					}
+					setDuration(annually);
+					setDisableDuration(false);
+				break;
+
+		
+			default:
+				break;
+		}
+
+	};
+
+
+	return (
+		<Modal
+			maxHeight={650}
+			onClose={props.onClose}
+			ref={ref}
+			title="Cadastrar despesa"
+			footer={footer()}>
 			<ContentDescription>
 				<Row>
 					<Label>Descrição</Label>
@@ -196,10 +321,12 @@ export default AddExpense = forwardRef((props, ref) => {
 							key={index}
 							style={[
 								{backgroundColor: category.corCategoria},
-								selectedColor === colors.gray ? {borderWidth: 2, borderColor: colors.primary} : {},
+								selectedCategoryIndex === index
+									? {borderWidth: 2, borderColor: colors.primary}
+									: {},
 							]}
-							onPress={() => setSelectedColor(colors.gray)}>
-							<LabelItems style={[selectedColor === colors.gray ? {color: colors.primary} : {}]}>
+							onPress={() => setSelectedCategoryIndex(index)}>
+							<LabelItems style={[selectedCategoryIndex === index ? {color: colors.primary} : {}]}>
 								{category.nomeCategoriaFinanceiro}
 							</LabelItems>
 						</Items>
@@ -261,16 +388,19 @@ export default AddExpense = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsRepeat>
-					{data.map((repeat, index) => (
+					{data.map((repeat) => (
 						<ItemsProcess
-							key={index}
-							onPress={() => handleRepeatClick(index)}
+							key={repeat.value}
+							onPress={() =>{
+								handleRepeatClick(repeat.value);
+								handleChangeTypeDuration(repeat.value);
+							} }
 							style={{
 								backgroundColor: colors.gray,
 							}}>
 							<LabelItemsProcess
 								style={{
-									color: selectedRepeat === index ? colors.backgroundButton : colors.iconGray,
+									color: selectedRepeat === repeat.value ? colors.backgroundButton : colors.iconGray,
 								}}>
 								{repeat.label}
 							</LabelItemsProcess>
@@ -282,9 +412,25 @@ export default AddExpense = forwardRef((props, ref) => {
 			<ContentDuring>
 				<Row>
 					<LabelDuring>Durante</LabelDuring>
-					<ContainerInfo>
-						<LabelDuringInfo>02 semanas</LabelDuringInfo>
-					</ContainerInfo>
+	
+		                <ContainerInfo>
+
+						<RNPickerSelect
+                        placeholder={{
+							label: 'Selecione',
+							value: null,
+						}}
+                        disabled={disableDuration}
+                        doneText="Selecionar"
+                        style={pickerSelectStyles}
+                        value={selectedDuring}
+						onValueChange={value => setSelectedDuring(value)}
+                        useNativeAndroidPickerStyle={false}
+                        items={duration}
+                      />
+					  </ContainerInfo>
+        
+					
 				</Row>
 			</ContentDuring>
 
@@ -303,3 +449,23 @@ export default AddExpense = forwardRef((props, ref) => {
 		</Modal>
 	);
 });
+
+const stylesPickerSelectStyles =  (colors) => StyleSheet.create({
+	inputIOS: {
+	  fontSize: 14,
+	  color: colors.fadedBlack,
+	  marginTop:2
+	  //fontFamily: fonts.circularStdBook,
+	},
+	inputAndroid: {
+	  flex: 1,
+	  height: 22,
+	  marginTop: 5,
+	  lineHeight: 1,
+	  padding: 0,
+	  fontSize: 14,
+	  color: colors.fadedBlack,
+	  //fontFamily: fonts.circularStdBook,
+	  minWidth: 400,
+	},
+  });

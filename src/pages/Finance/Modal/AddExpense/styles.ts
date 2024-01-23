@@ -51,36 +51,64 @@ export const ContentDescription = styled.View`
 `;
 
 export const Content = styled.View`
-  margin: 0 -24px;
+  	margin: 0 -24px;
 	justify-content: center;
-	border: ${({ theme }) => theme.colors.grayLighter};
+	border-top-width: 1px;
+  	border-top-color: ${({ theme }) => theme.colors.grayLighter};
 	height: 60px;
 	width: 414px;
 `;
 
 export const Category = styled.View`
-  margin: 0 -24px;
-	border: ${({ theme }) => theme.colors.grayLighter};
+	margin: 0 -24px;
 	height: auto;
-	width: 414px;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+
+	border-top-width: 1px;
+	border-top-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
+export const ContainerCategories = styled.View`
+	width: 366px;
+	height: auto;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+`;
+
+export const ReleaseType = styled.TouchableOpacity`
+	border-radius: 10px;
+	max-width: 300px;
+	height: 20px;
+	margin-right: 7px;
+	margin-bottom: 7px;
+	align-items: center;
+	justify-content: center;
+	background-color: ${({ theme }) => theme.colors.gray};
+`;
+
+
+
 export const People = styled.View`
-  margin: 0 -24px;
-	border: ${({ theme }) => theme.colors.grayLighter};
+	margin: 0 -24px;
+	border-top-width: 1px;
+  	border-top-color: ${({ theme }) => theme.colors.grayLighter};
 	height: auto;
 	width: 414px;
 `;
 
 export const ContentRepeat = styled.View`
-  margin: 0 -24px;
+  	margin: 0 -24px;
 	height: 116px;
 	width: 414px;
-	border: ${({ theme }) => theme.colors.grayLighter};
+	border-top-width: 1px;
+  	border-top-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 export const Row = styled.View`
-  padding: 12px 24px;
+  	padding: 12px 24px;
 	width: 360px;
 	justify-content: space-between;
 	flex-direction: row;
@@ -121,12 +149,13 @@ export const ContainerItems = styled.View`
 
 export const Items = styled.TouchableOpacity`
 	border-radius: 10px;
-	width: 87px;
+	max-width: 300px;
 	height: 20px;
 	margin-right: 7px;
 	margin-bottom: 7px;
 	align-items: center;
 	justify-content: center;
+	background-color: ${({ theme }) => theme.colors.gray};
 `;
 
 export const LabelItems = styled.Text`
@@ -167,8 +196,9 @@ export const ContainerItemsProcess = styled.View`
 `;
 
 export const Process = styled.View`
-  margin: 0 -24px;
-	border: ${({ theme }) => theme.colors.grayLighter};
+	margin: 0 -24px;
+	border-top-width: 1px;
+  	border-top-color: ${({ theme }) => theme.colors.grayLighter};
 	height: 190px;
 	width: 434px;
 `;
@@ -206,7 +236,6 @@ export const ContentDuring = styled.View`
 	justify-content: center;
 	height: 60px;
 	width: 414px;
-	background-color: ${({ theme }) => theme.colors.during};
 `;
 
 export const LabelDuring = styled.Text`
@@ -219,6 +248,7 @@ export const LabelDuring = styled.Text`
 export const ContainerInfo = styled.View`
 	width: 237px;
 	height: 24px;
+	margin-left: 10px;
 `;
 
 export const LabelDuringInfo = styled.Text`
