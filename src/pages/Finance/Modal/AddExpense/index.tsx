@@ -1,7 +1,6 @@
 import React, {forwardRef, useCallback, useEffect, useState} from 'react';
 import Modal from 'components/Modal';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 import {
 	Footer,
 	Cancel,
@@ -17,7 +16,6 @@ import {
 	ContainerItemsPerson,
 	ItemsPerson,
 	ContainerItemsProcess,
-	ContentProcess,
 	ItemsProcess,
 	LabelItemsProcess,
 	ContainerItemsRepeat,
@@ -31,12 +29,9 @@ import {
 	ContentDescription,
 	ContentRepeat,
 	ContainerInfo,
-	LabelDuringInfo,
 	People,
 	Category,
 	Process,
-	InfoContainer,
-	InfoTitle
 } from './styles';
 
 // Add UseTheme para pegar o tema global adicionado
@@ -47,6 +42,7 @@ import {CategoryProps, PersonProps, ProcessProps} from '@pages/Finance/Category/
 import {useGetPopulateProcess} from '@services/hooks/Finances/useProcess';
 
 import RNPickerSelect from 'react-native-picker-select';
+import {Controller, useForm} from 'react-hook-form';
 
 export default AddExpense = forwardRef((props, ref) => {
 	const {isLoadingCategories, getCategoriesData} = useGetPopulateCategories();
@@ -67,8 +63,6 @@ export default AddExpense = forwardRef((props, ref) => {
 	const [duration, setDuration] = useState([]);
 	const [disableDuration, setDisableDuration] = useState(true);
 
-	
-
 	const handlePeopleClick = index => {
 		setSelectedPeople(index);
 	};
@@ -78,7 +72,8 @@ export default AddExpense = forwardRef((props, ref) => {
 	};
 
 	const handleRepeatClick = index => {
-		setSelectedRepeat(index);
+		setSelectedRepeatValue(value);
+    handleChangeTypeDuration(value);
 	};
 
 	useEffect(() => {
@@ -141,6 +136,14 @@ export default AddExpense = forwardRef((props, ref) => {
 		},
 	];
 
+	const onSubmit = data => {
+		console.log('===', data);
+	};
+
+	const {control, handleSubmit, setValue, getValues} = useForm({
+		shouldUnregister: false,
+	});
+
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
@@ -148,124 +151,121 @@ export default AddExpense = forwardRef((props, ref) => {
 	const pickerSelectStyles = stylesPickerSelectStyles(colors);
 
 	const closeModal = useCallback(() => ref.current?.close(), props);
+
 	const footer = () => (
 		<Footer>
 			<Cancel onPress={() => closeModal()}>
 				<CancelText>Cancelar</CancelText>
 			</Cancel>
 
-			<Register onPress={() => closeModal()}>
+			<Register onPress={handleSubmit(onSubmit)}>
 				<RegisterText>Cadastrar</RegisterText>
 			</Register>
 		</Footer>
 	);
 
-	const handleChangeTypeDuration = (selectedRepeat:number) => {
+	const handleChangeTypeDuration = (selectedRepeat: number) => {
 		let i = 2;
 		switch (selectedRepeat) {
-			
 			case -1:
-				setDuration([{value:null,label:''}]);
+				setDuration([{value: null, label: ''}]);
 				setDisableDuration(true);
 				break;
-				case -9:
-					const days = [
-						{
-							value:'1',
-							label: 'Diariamente'
-						}
-					]
-					while (i < 1827) {
-						days.push({
-							value:`${i}`,
-							label: `${i} dias`
-						});
+			case -9:
+				const days = [
+					{
+						value: '1',
+						label: 'Diariamente',
+					},
+				];
+				while (i < 1827) {
+					days.push({
+						value: `${i}`,
+						label: `${i} dias`,
+					});
 
-						i++;
-					}
-					setDuration(days);
-					setDisableDuration(false);
+					i++;
+				}
+				setDuration(days);
+				setDisableDuration(false);
 				break;
-				case -7:
-					const fortnight = [
-						{
-							value:'1',
-							label: 'Quinzenalmente'
-						}
-					]
-					while (i < 122) {
-						fortnight.push({
-							value:`${i}`,
-							label: `${i} quinzenas`
-						});
+			case -7:
+				const fortnight = [
+					{
+						value: '1',
+						label: 'Quinzenalmente',
+					},
+				];
+				while (i < 122) {
+					fortnight.push({
+						value: `${i}`,
+						label: `${i} quinzenas`,
+					});
 
-						i++;
-					}
-					setDuration(fortnight);
-					setDisableDuration(false);
+					i++;
+				}
+				setDuration(fortnight);
+				setDisableDuration(false);
 				break;
-				case -8:
-					const weekly = [
-						{
-							value:'1',
-							label: 'Semanalmente'
-						}
-					]
-					while (i < 261) {
-						weekly.push({
-							value:`${i}`,
-							label: `${i} semanas`
-						});
+			case -8:
+				const weekly = [
+					{
+						value: '1',
+						label: 'Semanalmente',
+					},
+				];
+				while (i < 261) {
+					weekly.push({
+						value: `${i}`,
+						label: `${i} semanas`,
+					});
 
-						i++;
-					}
-					setDuration(weekly);
-					setDisableDuration(false);
+					i++;
+				}
+				setDuration(weekly);
+				setDisableDuration(false);
 				break;
-				case -6:
-					const monthly = [
-						{
-							value:'1',
-							label: 'Mensalmente'
-						}
-					]
-					while (i < 61) {
-						monthly.push({
-							value:`${i}`,
-							label: `${i} meses`
-						});
+			case -6:
+				const monthly = [
+					{
+						value: '1',
+						label: 'Mensalmente',
+					},
+				];
+				while (i < 61) {
+					monthly.push({
+						value: `${i}`,
+						label: `${i} meses`,
+					});
 
-						i++;
-					}
-					setDuration(monthly);
-					setDisableDuration(false);
+					i++;
+				}
+				setDuration(monthly);
+				setDisableDuration(false);
 				break;
-				case -2:
-					const annually = [
-						{
-							value:'1',
-							label: 'Anualmente'
-						}
-					]
-					while (i < 6) {
-						annually.push({
-							value:`${i}`,
-							label: `${i} anos`
-						});
+			case -2:
+				const annually = [
+					{
+						value: '1',
+						label: 'Anualmente',
+					},
+				];
+				while (i < 6) {
+					annually.push({
+						value: `${i}`,
+						label: `${i} anos`,
+					});
 
-						i++;
-					}
-					setDuration(annually);
-					setDisableDuration(false);
+					i++;
+				}
+				setDuration(annually);
+				setDisableDuration(false);
 				break;
 
-		
 			default:
 				break;
 		}
-
 	};
-
 
 	return (
 		<Modal
@@ -316,21 +316,34 @@ export default AddExpense = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItems>
-					{dataResume.map((category, index) => (
-						<Items
-							key={index}
-							style={[
-								{backgroundColor: category.corCategoria},
-								selectedCategoryIndex === index
-									? {borderWidth: 2, borderColor: colors.primary}
-									: {},
-							]}
-							onPress={() => setSelectedCategoryIndex(index)}>
-							<LabelItems style={[selectedCategoryIndex === index ? {color: colors.primary} : {}]}>
-								{category.nomeCategoriaFinanceiro}
-							</LabelItems>
-						</Items>
-					))}
+					<Controller
+						name="idCategoria"
+						control={control}
+						defaultValue={null}
+						render={({onChange}) => (
+							<>
+								{dataResume.map((category, index) => (
+									<Items
+										key={index}
+										style={[
+											{backgroundColor: category.corCategoria},
+											selectedCategoryIndex === index
+												? {borderWidth: 2, borderColor: colors.primary}
+												: {},
+										]}
+										onPress={() => {
+											setSelectedCategoryIndex(index);
+											onChange(category.idCategoriaFinanceiro);
+										}}>
+										<LabelItems
+											style={[selectedCategoryIndex === index ? {color: colors.primary} : {}]}>
+											{category.nomeCategoriaFinanceiro}
+										</LabelItems>
+									</Items>
+								))}
+							</>
+						)}
+					/>
 				</ContainerItems>
 			</Category>
 
@@ -340,21 +353,33 @@ export default AddExpense = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsPerson>
-					{PeopleResume.map((person, index) => (
-						<ItemsPerson
-							key={index}
-							onPress={() => handlePeopleClick(index)}
-							style={{
-								backgroundColor: colors.gray,
-							}}>
-							<LabelItems
-								style={{
-									color: selectedPeople === index ? colors.backgroundButton : colors.iconGray,
-								}}>
-								{person.nomePessoaCliente}
-							</LabelItems>
-						</ItemsPerson>
-					))}
+					<Controller
+						name="idPessoa"
+						control={control}
+						defaultValue={null}
+						render={({onChange}) => (
+							<>
+								{PeopleResume.map((person, index) => (
+									<ItemsPerson
+										key={index}
+										onPress={() => {
+											handlePeopleClick(index);
+											onChange(person.id);
+										}}
+										style={{
+											backgroundColor: colors.gray,
+										}}>
+										<LabelItems
+											style={{
+												color: selectedPeople === index ? colors.backgroundButton : colors.iconGray,
+											}}>
+											{person.nomePessoaCliente}
+										</LabelItems>
+									</ItemsPerson>
+								))}
+							</>
+						)}
+					/>
 				</ContainerItemsPerson>
 			</People>
 
@@ -364,21 +389,35 @@ export default AddExpense = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsProcess>
-					{ProcessResume.map((process, index) => (
-						<ItemsProcess
-							key={index}
-							onPress={() => handleProcessClick(index)}
-							style={{
-								backgroundColor: colors.gray,
-							}}>
-							<LabelItemsProcess
-								style={{
-									color: selectedProcess === index ? colors.backgroundButton : colors.iconGray,
-								}}>
-								{process.numeroProcesso}
-							</LabelItemsProcess>
-						</ItemsProcess>
-					))}
+					<Controller
+						name="idProcesso"
+						control={control}
+						defaultValue={null}
+						render={({onChange}) => (
+							<>
+								{ProcessResume.map((process, index) => (
+									<ItemsProcess
+										key={index}
+										onPress={() => {
+											handleProcessClick(index);
+											onChange(process.id);
+											console.log('Process', process);
+										}}
+										style={{
+											backgroundColor: colors.gray,
+										}}>
+										<LabelItemsProcess
+											style={{
+												color:
+													selectedProcess === index ? colors.backgroundButton : colors.iconGray,
+											}}>
+											{process.numeroProcesso}
+										</LabelItemsProcess>
+									</ItemsProcess>
+								))}
+							</>
+						)}
+					/>
 				</ContainerItemsProcess>
 			</Process>
 
@@ -388,19 +427,20 @@ export default AddExpense = forwardRef((props, ref) => {
 				</RowCategory>
 
 				<ContainerItemsRepeat>
-					{data.map((repeat) => (
+					{data.map(repeat => (
 						<ItemsProcess
 							key={repeat.value}
-							onPress={() =>{
+							onPress={() => {
 								handleRepeatClick(repeat.value);
 								handleChangeTypeDuration(repeat.value);
-							} }
+							}}
 							style={{
 								backgroundColor: colors.gray,
 							}}>
 							<LabelItemsProcess
 								style={{
-									color: selectedRepeat === repeat.value ? colors.backgroundButton : colors.iconGray,
+									color:
+										selectedRepeat === repeat.value ? colors.backgroundButton : colors.iconGray,
 								}}>
 								{repeat.label}
 							</LabelItemsProcess>
@@ -412,25 +452,22 @@ export default AddExpense = forwardRef((props, ref) => {
 			<ContentDuring>
 				<Row>
 					<LabelDuring>Durante</LabelDuring>
-	
-		                <ContainerInfo>
 
+					<ContainerInfo>
 						<RNPickerSelect
-                        placeholder={{
-							label: 'Selecione',
-							value: null,
-						}}
-                        disabled={disableDuration}
-                        doneText="Selecionar"
-                        style={pickerSelectStyles}
-                        value={selectedDuring}
-						onValueChange={value => setSelectedDuring(value)}
-                        useNativeAndroidPickerStyle={false}
-                        items={duration}
-                      />
-					  </ContainerInfo>
-        
-					
+							placeholder={{
+								label: 'Selecione',
+								value: null,
+							}}
+							disabled={disableDuration}
+							doneText="Selecionar"
+							style={pickerSelectStyles}
+							value={selectedDuring}
+							onValueChange={value => setSelectedDuring(value)}
+							useNativeAndroidPickerStyle={false}
+							items={duration}
+						/>
+					</ContainerInfo>
 				</Row>
 			</ContentDuring>
 
@@ -450,22 +487,23 @@ export default AddExpense = forwardRef((props, ref) => {
 	);
 });
 
-const stylesPickerSelectStyles =  (colors) => StyleSheet.create({
-	inputIOS: {
-	  fontSize: 14,
-	  color: colors.fadedBlack,
-	  marginTop:2
-	  //fontFamily: fonts.circularStdBook,
-	},
-	inputAndroid: {
-	  flex: 1,
-	  height: 22,
-	  marginTop: 5,
-	  lineHeight: 1,
-	  padding: 0,
-	  fontSize: 14,
-	  color: colors.fadedBlack,
-	  //fontFamily: fonts.circularStdBook,
-	  minWidth: 400,
-	},
-  });
+const stylesPickerSelectStyles = colors =>
+	StyleSheet.create({
+		inputIOS: {
+			fontSize: 14,
+			color: colors.fadedBlack,
+			marginTop: 2,
+			//fontFamily: fonts.circularStdBook,
+		},
+		inputAndroid: {
+			flex: 1,
+			height: 22,
+			marginTop: 5,
+			lineHeight: 1,
+			padding: 0,
+			fontSize: 14,
+			color: colors.fadedBlack,
+			//fontFamily: fonts.circularStdBook,
+			minWidth: 400,
+		},
+	});

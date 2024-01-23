@@ -97,6 +97,7 @@ export const People = styled.View`
   	border-top-color: ${({ theme }) => theme.colors.grayLighter};
 	height: auto;
 	width: 414px;
+
 `;
 
 export const ContentRepeat = styled.View`
@@ -174,15 +175,18 @@ export const ContainerItemsPerson = styled.View`
 	align-items: center;
 `;
 
+
+
 export const ItemsPerson = styled.TouchableOpacity`
 	border-radius: 10px;
-	width: 80px;
+	max-width: 300px;
 	height: 20px;
-	margin-right: 7px;
-	margin-bottom: 7px;
+	margin-right: 3px;
+	margin-left: 1px;
+	margin-bottom: 9px;
 	align-items: center;
 	justify-content: center;
-
+	background-color: ${({ theme }) => theme.colors.gray};
 `;
 
 export const ContainerItemsProcess = styled.View`
@@ -198,7 +202,7 @@ export const ContainerItemsProcess = styled.View`
 export const Process = styled.View`
 	margin: 0 -24px;
 	border-top-width: 1px;
-  	border-top-color: ${({ theme }) => theme.colors.grayLighter};
+  border-top-color: ${({ theme }) => theme.colors.grayLighter};
 	height: 190px;
 	width: 434px;
 `;
@@ -236,6 +240,10 @@ export const ContentDuring = styled.View`
 	justify-content: center;
 	height: 60px;
 	width: 414px;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+  border-top-color: ${({ theme }) => theme.colors.grayLighter};
+	border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 export const LabelDuring = styled.Text`
