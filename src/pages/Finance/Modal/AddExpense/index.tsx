@@ -141,9 +141,25 @@ export default AddExpense = forwardRef((props, ref) => {
 		console.log('===', data);
 	};
 
-	const {control, handleSubmit, setValue, getValues, register} = useForm({
+	const {control, handleSubmit, setValue, getValues, register,watch} = useForm({
 		shouldUnregister: false,
 	});
+
+	const watchRepeat = watch('repetir', false);
+  const watchDuring = watch('durante', null);
+
+	const handleRepeatChange = (value) => {
+		// console.log('Repetir', value !== -1);
+		setSelectedRepeat(value);
+		setIsRepeatSelected(value !== -1);
+		handleChangeTypeDuration(value);
+	};
+
+	const handleDuringChange = (value) => {
+		// console.log('Durante', value);
+		setSelectedDuring(value);  // Correção
+		setValue('durante', value);
+	};
 
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
@@ -451,54 +467,55 @@ export default AddExpense = forwardRef((props, ref) => {
 			</Process>
 
 			<ContentRepeat>
-				<RowCategory>
-					<Label>Repetir</Label>
-				</RowCategory>
+        <RowCategory>
+          <Label>Repetir</Label>
+        </RowCategory>
 
-				<ContainerItemsRepeat>
-					{data.map(repeat => (
-						<ItemsProcess
-							key={repeat.value}
-							onPress={() => {
-								handleRepeatClick(repeat.value);
-								handleChangeTypeDuration(repeat.value);
-							}}
-							style={{
-								backgroundColor: colors.gray,
-							}}>
-							<LabelItemsProcess
-								style={{
-									color:
-										selectedRepeat === repeat.value ? colors.backgroundButton : colors.iconGray,
-								}}>
-								{repeat.label}
-							</LabelItemsProcess>
-						</ItemsProcess>
-					))}
-				</ContainerItemsRepeat>
-			</ContentRepeat>
+        <ContainerItemsRepeat>
+          {data.map((repeat) => (
+            <ItemsProcess
+              key={repeat.value}
+              onPress={() => handleRepeatChange(repeat.value)}
+              style={{
+                backgroundColor: colors.gray,
+              }}
+            >
+              <LabelItemsProcess
+                style={{
+                  color:
+                    selectedRepeat === repeat.value
+                      ? colors.backgroundButton
+                      : colors.iconGray,
+                }}
+              >
+                {repeat.label}
+              </LabelItemsProcess>
+            </ItemsProcess>
+          ))}
+        </ContainerItemsRepeat>
+      </ContentRepeat>
 
 			<ContentDuring>
-				<Row>
-					<LabelDuring>Durante</LabelDuring>
+        <Row>
+          <LabelDuring>Durante</LabelDuring>
 
-					<ContainerInfo>
-						<RNPickerSelect
-							placeholder={{
-								label: 'Selecione',
-								value: null,
-							}}
-							disabled={disableDuration}
-							doneText="Selecionar"
-							style={pickerSelectStyles}
-							value={selectedDuring}
-							onValueChange={value => setSelectedDuring(value)}
-							useNativeAndroidPickerStyle={false}
-							items={duration}
-						/>
-					</ContainerInfo>
-				</Row>
-			</ContentDuring>
+          <ContainerInfo>
+            <RNPickerSelect
+              placeholder={{
+                label: 'Selecione',
+                value: null,
+              }}
+              disabled={disableDuration}
+              doneText="Selecionar"
+              style={pickerSelectStyles}
+              value={selectedDuring}
+              onValueChange={(value) => handleDuringChange(value)}
+              useNativeAndroidPickerStyle={false}
+              items={duration}
+            />
+          </ContainerInfo>
+        </Row>
+      </ContentDuring>
 
 			<ContentComments>
 				<Row>
