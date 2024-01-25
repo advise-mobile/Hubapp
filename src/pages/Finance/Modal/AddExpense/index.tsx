@@ -1,9 +1,9 @@
 import React, {forwardRef, useCallback, useEffect, useState} from 'react';
 import Modal from '@components/Modal';
 import Datepicker from '@components/DatePicker';
-import { FormatFullDateEN ,CurrentTimeEN} from '@helpers/DateFunctions';
+import {FormatFullDateEN, CurrentTimeEN} from '@helpers/DateFunctions';
 import {StyleSheet} from 'react-native';
-import { MaskMoney } from 'helpers/Mask';
+import {MaskMoney} from 'helpers/Mask';
 
 import moment from 'moment';
 
@@ -46,15 +46,13 @@ import {useGetPopulateCategories} from '@services/hooks/Finances/useCategories';
 import {useGetPopulatePeople} from '@services/hooks/Finances/usePeople';
 import {CategoryProps, PersonProps, ProcessProps} from '@pages/Finance/Category/types';
 import {useGetPopulateProcess} from '@services/hooks/Finances/useProcess';
-import {useGetFinanceID,useRelease} from '@services/hooks/Finances/useReleases';
+import {useGetFinanceID, useRelease} from '@services/hooks/Finances/useReleases';
 
 import RNPickerSelect from 'react-native-picker-select';
 import {Controller, useForm} from 'react-hook-form';
 
 export default AddExpense = forwardRef((props, ref) => {
-
-
-	const [dataFinance,setDataFinance] = useState(null);
+	const [dataFinance, setDataFinance] = useState(null);
 
 	const {isLoadingCategories, getCategoriesData} = useGetPopulateCategories();
 	const {isLoadingPeople, getPeopleData} = useGetPopulatePeople();
@@ -75,11 +73,9 @@ export default AddExpense = forwardRef((props, ref) => {
 	const [duration, setDuration] = useState([]);
 	const [disableDuration, setDisableDuration] = useState(true);
 
-	const { isLoadingFinanceID, getFinanceDataID } = useGetFinanceID();
+	const {isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
 
-	const { isLoadingRelease, addRelease } = useRelease();;
-
-
+	const {isLoadingRelease, addRelease} = useRelease();
 
 	const handlePeopleClick = index => {
 		setSelectedPeople(index);
@@ -95,11 +91,9 @@ export default AddExpense = forwardRef((props, ref) => {
 		handleChangeTypeDuration(value);
 	};
 
-
-	  useEffect(() => {
+	useEffect(() => {
 		fetchInformationAcountUser();
 	}, []);
-
 
 	useEffect(() => {
 		fetchData();
@@ -115,12 +109,10 @@ export default AddExpense = forwardRef((props, ref) => {
 
 	const fetchInformationAcountUser = async () => {
 		try {
-		  const responseFinanceID = await getFinanceDataID();
-		  setDataFinance(responseFinanceID);
-		} catch (error) {
-
-		}
-	  };
+			const responseFinanceID = await getFinanceDataID();
+			setDataFinance(responseFinanceID);
+		} catch (error) {}
+	};
 
 	const fetchData = async () => {
 		try {
@@ -170,33 +162,40 @@ export default AddExpense = forwardRef((props, ref) => {
 		},
 	];
 
-	const onSubmit = (data) => {
+	const onSubmit = data => {
+		console.log('=== errors', errors);
 
-		const {idContaFinanceiro,idFinanceiro} = dataFinance[0];
-		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false:true;
-		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
-		const register ={ itens: [ {
-				DebitoCredito:"D",
-				repeticaoFixo,
-				dataEmissao,
-				idContaFinanceiro,
-				idFinanceiro,
-				...data,
-		}]}
+		// return;
 
-		addRelease(register,()=>closeModal());
+		// const {idContaFinanceiro, idFinanceiro} = dataFinance[0];
+		// const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
+		// const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
+		// const register = {
+		// 	itens: [
+		// 		{
+		// 			DebitoCredito: 'D',
+		// 			repeticaoFixo,
+		// 			dataEmissao,
+		// 			idContaFinanceiro,
+		// 			idFinanceiro,
+		// 			...data,
+		// 		},
+		// 	],
+		// };
+
+		// addRelease(register, () => closeModal());
 	};
 
-	const {control, handleSubmit} = useForm({
+	const {control, handleSubmit, errors, register} = useForm({
 		shouldUnregister: false,
 	});
 
-	const handleRepeatChange = (value) => {
+	const handleRepeatChange = value => {
 		setSelectedRepeat(value);
 		handleChangeTypeDuration(value);
 	};
 
-	const handleDuringChange = (value) => {
+	const handleDuringChange = value => {
 		setSelectedDuring(value);
 	};
 
@@ -358,20 +357,20 @@ export default AddExpense = forwardRef((props, ref) => {
 					<Label>Valor</Label>
 
 					<Controller
-          name="valor"
-          control={control}
-          defaultValue={null}
-          render={({ onChange, value }) => (
-            <Input
-              placeholder="R$ -"
-              placeholderTextColor={colors.grayLight}
-              keyboardType="numeric"
-              onChangeText={(text) => {
-								onChange(MaskMoney(text));
-								console.log('=== novo', MaskMoney(text));
-							}}
-              value={value}
-            />
+						name="valor"
+						TextColor={ colors.red}
+						control={control}
+						defaultValue={null}
+						render={({onChange, value}) => (
+							<Input
+								placeholder="R$ -"
+								placeholderTextColor={colors.grayLight}
+								keyboardType="numeric"
+								onChangeText={text => {
+									onChange(MaskMoney(text));
+								}}
+								value={value}
+							/>
 						)}
 					/>
 				</Row>
@@ -385,21 +384,21 @@ export default AddExpense = forwardRef((props, ref) => {
 						defaultValue={null}
 						render={({onChange}) => (
 							<Datepicker
-							date={dateExpiration}
-							enabled={true}
-							// error={dateErr}
-							title="Selecione uma data"
-							style={{
-							  marginTop:-2,
-							  flexGrow: 1,
-							  maxWidth: 200,
-							  height: 22
-							}}
-							onDateChange={date => {
-										setDateExpiration(date);
-										onChange(FormatFullDateEN(date))
-									}}
-						  />
+								date={dateExpiration}
+								enabled={true}
+								// error={dateErr}
+								title="Selecione uma data"
+								style={{
+									marginTop: -2,
+									flexGrow: 1,
+									maxWidth: 200,
+									height: 22,
+								}}
+								onDateChange={date => {
+									setDateExpiration(date);
+									onChange(FormatFullDateEN(date));
+								}}
+							/>
 						)}
 					/>
 				</Row>
@@ -517,78 +516,71 @@ export default AddExpense = forwardRef((props, ref) => {
 			</Process>
 
 			<ContentRepeat>
-        <RowCategory>
-          <Label>Repetir</Label>
-        </RowCategory>
+				<RowCategory>
+					<Label>Repetir</Label>
+				</RowCategory>
 
-		<Controller
-			name="IdTipoParcelamentoFinanceiro"
-			control={control}
-			defaultValue={null}
-			render={({onChange}) => (
-
-
-        <ContainerItemsRepeat>
-          {data.map((repeat) => (
-            <ItemsProcess
-              key={repeat.value}
-              onPress={() => {
-				handleRepeatChange(repeat.value);
-				onChange(repeat.value)}
-		      }
-              style={{
-                backgroundColor: colors.gray,
-              }}
-            >
-              <LabelItemsProcess
-                style={{
-                  color:
-                    selectedRepeat === repeat.value
-                      ? colors.backgroundButton
-                      : colors.iconGray,
-                }}
-              >
-                {repeat.label}
-              </LabelItemsProcess>
-            </ItemsProcess>
-          ))}
-        </ContainerItemsRepeat>
-				)}
+				<Controller
+					name="IdTipoParcelamentoFinanceiro"
+					control={control}
+					defaultValue={null}
+					render={({onChange}) => (
+						<ContainerItemsRepeat>
+							{data.map(repeat => (
+								<ItemsProcess
+									key={repeat.value}
+									onPress={() => {
+										handleRepeatChange(repeat.value);
+										onChange(repeat.value);
+									}}
+									style={{
+										backgroundColor: colors.gray,
+									}}>
+									<LabelItemsProcess
+										style={{
+											color:
+												selectedRepeat === repeat.value ? colors.backgroundButton : colors.iconGray,
+										}}>
+										{repeat.label}
+									</LabelItemsProcess>
+								</ItemsProcess>
+							))}
+						</ContainerItemsRepeat>
+					)}
 				/>
-      </ContentRepeat>
+			</ContentRepeat>
 
 			<ContentDuring>
-        <Row>
-          <LabelDuring>Durante</LabelDuring>
+				<Row>
+					<LabelDuring>Durante</LabelDuring>
 
-		  <Controller
-			name="quantidadeParcelas"
-			control={control}
-			defaultValue={null}
-			render={({onChange}) => (
-
-          <ContainerInfo>
-            <RNPickerSelect
-              placeholder={{
-                label: 'Selecione',
-                value: null,
-              }}
-              disabled={disableDuration}
-              doneText="Selecionar"
-              style={pickerSelectStyles}
-              value={selectedDuring}
-              onValueChange={(value) => {
-				handleDuringChange(value);
-				onChange(value)}
-			}
-              useNativeAndroidPickerStyle={false}
-              items={duration}
-            />
-          </ContainerInfo>
-		  )}
-		  />
-        </Row>
-      </ContentDuring>
+					<Controller
+						name="quantidadeParcelas"
+						control={control}
+						defaultValue={null}
+						render={({onChange}) => (
+							<ContainerInfo>
+								<RNPickerSelect
+									placeholder={{
+										label: 'Selecione',
+										value: null,
+									}}
+									disabled={disableDuration}
+									doneText="Selecionar"
+									style={pickerSelectStyles}
+									value={selectedDuring}
+									onValueChange={value => {
+										handleDuringChange(value);
+										onChange(value);
+									}}
+									useNativeAndroidPickerStyle={false}
+									items={duration}
+								/>
+							</ContainerInfo>
+						)}
+					/>
+				</Row>
+			</ContentDuring>
 
 			<ContentComments>
 				<Row>
