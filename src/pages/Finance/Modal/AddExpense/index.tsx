@@ -3,6 +3,7 @@ import Modal from '@components/Modal';
 import Datepicker from '@components/DatePicker';
 import { FormatFullDateEN ,CurrentTimeEN} from '@helpers/DateFunctions';
 import {StyleSheet} from 'react-native';
+import { MaskMoney } from 'helpers/Mask';
 
 import moment from 'moment';
 
@@ -51,7 +52,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import {Controller, useForm} from 'react-hook-form';
 
 export default AddExpense = forwardRef((props, ref) => {
-	
+
 
 	const [dataFinance,setDataFinance] = useState(null);
 
@@ -78,7 +79,7 @@ export default AddExpense = forwardRef((props, ref) => {
 
 	const { isLoadingRelease, addRelease } = useRelease();;
 
-	
+
 
 	const handlePeopleClick = index => {
 		setSelectedPeople(index);
@@ -94,7 +95,7 @@ export default AddExpense = forwardRef((props, ref) => {
 		handleChangeTypeDuration(value);
 	};
 
-	
+
 	  useEffect(() => {
 		fetchInformationAcountUser();
 	}, []);
@@ -117,7 +118,7 @@ export default AddExpense = forwardRef((props, ref) => {
 		  const responseFinanceID = await getFinanceDataID();
 		  setDataFinance(responseFinanceID);
 		} catch (error) {
-	
+
 		}
 	  };
 
@@ -170,7 +171,7 @@ export default AddExpense = forwardRef((props, ref) => {
 	];
 
 	const onSubmit = (data) => {
-		
+
 		const {idContaFinanceiro,idFinanceiro} = dataFinance[0];
 		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false:true;
 		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
@@ -357,16 +358,20 @@ export default AddExpense = forwardRef((props, ref) => {
 					<Label>Valor</Label>
 
 					<Controller
-						name="valor"
-						control={control}
-						defaultValue={null}
-						render={({onChange}) => (
-							<Input
-								placeholder="R$ -"
-								placeholderTextColor={colors.grayLight}
-								keyboardType="numeric"
-								onChangeText={value => onChange(value)}
-							/>
+          name="valor"
+          control={control}
+          defaultValue={null}
+          render={({ onChange, value }) => (
+            <Input
+              placeholder="R$ -"
+              placeholderTextColor={colors.grayLight}
+              keyboardType="numeric"
+              onChangeText={(text) => {
+								onChange(MaskMoney(text));
+								console.log('=== novo', MaskMoney(text));
+							}}
+              value={value}
+            />
 						)}
 					/>
 				</Row>
@@ -390,9 +395,9 @@ export default AddExpense = forwardRef((props, ref) => {
 							  maxWidth: 200,
 							  height: 22
 							}}
-							onDateChange={date => { 
+							onDateChange={date => {
 										setDateExpiration(date);
-										onChange(FormatFullDateEN(date)) 
+										onChange(FormatFullDateEN(date))
 									}}
 						  />
 						)}
