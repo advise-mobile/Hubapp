@@ -1,6 +1,11 @@
 import React, {forwardRef, useCallback, useEffect, useState} from 'react';
-import Modal from 'components/Modal';
+import Modal from '@components/Modal';
+import Datepicker from '@components/DatePicker';
+import { FormatFullDateEN ,CurrentTimeEN} from '@helpers/DateFunctions';
 import {StyleSheet} from 'react-native';
+
+import moment from 'moment';
+
 import {
 	Footer,
 	Cancel,
@@ -40,11 +45,16 @@ import {useGetPopulateCategories} from '@services/hooks/Finances/useCategories';
 import {useGetPopulatePeople} from '@services/hooks/Finances/usePeople';
 import {CategoryProps, PersonProps, ProcessProps} from '@pages/Finance/Category/types';
 import {useGetPopulateProcess} from '@services/hooks/Finances/useProcess';
+import {useGetFinanceID,useRelease} from '@services/hooks/Finances/useReleases';
 
 import RNPickerSelect from 'react-native-picker-select';
 import {Controller, useForm} from 'react-hook-form';
 
 export default AddExpense = forwardRef((props, ref) => {
+	
+
+	const [dataFinance,setDataFinance] = useState(null);
+
 	const {isLoadingCategories, getCategoriesData} = useGetPopulateCategories();
 	const {isLoadingPeople, getPeopleData} = useGetPopulatePeople();
 	const {isLoadingProcess, getProcessData} = useGetPopulateProcess();
@@ -59,9 +69,16 @@ export default AddExpense = forwardRef((props, ref) => {
 	const [selectedProcess, setSelectedProcess] = useState(null);
 	const [selectedRepeat, setSelectedRepeat] = useState<number>(-1);
 	const [selectedDuring, setSelectedDuring] = useState(null);
+	const [dateExpiration, setDateExpiration] = useState(null);
 
 	const [duration, setDuration] = useState([]);
 	const [disableDuration, setDisableDuration] = useState(true);
+
+	const { isLoadingFinanceID, getFinanceDataID } = useGetFinanceID();
+
+	const { isLoadingRelease, addRelease } = useRelease();;
+
+	
 
 	const handlePeopleClick = index => {
 		setSelectedPeople(index);
@@ -77,6 +94,12 @@ export default AddExpense = forwardRef((props, ref) => {
 		handleChangeTypeDuration(value);
 	};
 
+	
+	  useEffect(() => {
+		fetchInformationAcountUser();
+	}, []);
+
+
 	useEffect(() => {
 		fetchData();
 	}, []);
@@ -88,6 +111,15 @@ export default AddExpense = forwardRef((props, ref) => {
 	useEffect(() => {
 		fetchProcess();
 	}, []);
+
+	const fetchInformationAcountUser = async () => {
+		try {
+		  const responseFinanceID = await getFinanceDataID();
+		  setDataFinance(responseFinanceID);
+		} catch (error) {
+	
+		}
+	  };
 
 	const fetchData = async () => {
 		try {
@@ -137,28 +169,34 @@ export default AddExpense = forwardRef((props, ref) => {
 		},
 	];
 
-	const onSubmit = data => {
-		console.log('===', data);
+	const onSubmit = (data) => {
+		
+		const {idContaFinanceiro,idFinanceiro} = dataFinance[0];
+		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false:true;
+		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
+		const register ={ itens: [ {
+				DebitoCredito:"D",
+				repeticaoFixo,
+				dataEmissao,
+				idContaFinanceiro,
+				idFinanceiro,
+				...data,
+		}]}
+
+		addRelease(register,()=>closeModal());
 	};
 
-	const {control, handleSubmit, setValue, getValues, register,watch} = useForm({
+	const {control, handleSubmit} = useForm({
 		shouldUnregister: false,
 	});
 
-	const watchRepeat = watch('repetir', false);
-  const watchDuring = watch('durante', null);
-
 	const handleRepeatChange = (value) => {
-		// console.log('Repetir', value !== -1);
 		setSelectedRepeat(value);
-		setIsRepeatSelected(value !== -1);
 		handleChangeTypeDuration(value);
 	};
 
 	const handleDuringChange = (value) => {
-		// console.log('Durante', value);
-		setSelectedDuring(value);  // Correção
-		setValue('durante', value);
+		setSelectedDuring(value);
 	};
 
 	// Variavel para usar o hook
@@ -337,19 +375,26 @@ export default AddExpense = forwardRef((props, ref) => {
 				<Row>
 					<Label>Vencimento</Label>
 					<Controller
-						name="dataVencimento"
+						name="DataVencimento"
 						control={control}
 						defaultValue={null}
 						render={({onChange}) => (
-							<Input
-								autoCorrect={false}
-								autoCapitalize="none"
-								placeholder="dd/mm/aaaa"
-								placeholderTextColor={colors.grayLight}
-								returnKeyType="next"
-								keyboardType="numeric"
-								onChangeText={value => onChange(value)}
-							/>
+							<Datepicker
+							date={dateExpiration}
+							enabled={true}
+							// error={dateErr}
+							title="Selecione uma data"
+							style={{
+							  marginTop:-2,
+							  flexGrow: 1,
+							  maxWidth: 200,
+							  height: 22
+							}}
+							onDateChange={date => { 
+										setDateExpiration(date);
+										onChange(FormatFullDateEN(date)) 
+									}}
+						  />
 						)}
 					/>
 				</Row>
@@ -362,7 +407,7 @@ export default AddExpense = forwardRef((props, ref) => {
 
 				<ContainerItems>
 					<Controller
-						name="idCategoria"
+						name="idCategoriaFinanceiro"
 						control={control}
 						defaultValue={null}
 						render={({onChange}) => (
@@ -399,7 +444,7 @@ export default AddExpense = forwardRef((props, ref) => {
 
 				<ContainerItemsPerson>
 					<Controller
-						name="idPessoa"
+						name="idPessoaCliente"
 						control={control}
 						defaultValue={null}
 						render={({onChange}) => (
@@ -409,7 +454,7 @@ export default AddExpense = forwardRef((props, ref) => {
 										key={index}
 										onPress={() => {
 											handlePeopleClick(index);
-											onChange(person.id);
+											onChange(person.idPessoaCliente);
 										}}
 										style={{
 											backgroundColor: colors.gray,
@@ -471,11 +516,21 @@ export default AddExpense = forwardRef((props, ref) => {
           <Label>Repetir</Label>
         </RowCategory>
 
+		<Controller
+			name="IdTipoParcelamentoFinanceiro"
+			control={control}
+			defaultValue={null}
+			render={({onChange}) => (
+
+
         <ContainerItemsRepeat>
           {data.map((repeat) => (
             <ItemsProcess
               key={repeat.value}
-              onPress={() => handleRepeatChange(repeat.value)}
+              onPress={() => {
+				handleRepeatChange(repeat.value);
+				onChange(repeat.value)}
+		      }
               style={{
                 backgroundColor: colors.gray,
               }}
@@ -493,11 +548,19 @@ export default AddExpense = forwardRef((props, ref) => {
             </ItemsProcess>
           ))}
         </ContainerItemsRepeat>
+				)}
+				/>
       </ContentRepeat>
 
 			<ContentDuring>
         <Row>
           <LabelDuring>Durante</LabelDuring>
+
+		  <Controller
+			name="quantidadeParcelas"
+			control={control}
+			defaultValue={null}
+			render={({onChange}) => (
 
           <ContainerInfo>
             <RNPickerSelect
@@ -509,11 +572,16 @@ export default AddExpense = forwardRef((props, ref) => {
               doneText="Selecionar"
               style={pickerSelectStyles}
               value={selectedDuring}
-              onValueChange={(value) => handleDuringChange(value)}
+              onValueChange={(value) => {
+				handleDuringChange(value);
+				onChange(value)}
+			}
               useNativeAndroidPickerStyle={false}
               items={duration}
             />
           </ContainerInfo>
+		  )}
+		  />
         </Row>
       </ContentDuring>
 
@@ -522,7 +590,7 @@ export default AddExpense = forwardRef((props, ref) => {
 					<LabelComments>Observações</LabelComments>
 				</Row>
 				<Controller
-					name="obs"
+					name="observacao"
 					control={control}
 					defaultValue={null}
 					render={({onChange}) => (

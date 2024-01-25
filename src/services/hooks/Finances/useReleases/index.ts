@@ -189,3 +189,35 @@ export const useGetInstallmentsDetails = () => {
 	return { isLoadingInstallmentsDetails, getInstallmentsDetails };
 }
 
+export const useRelease = () => {
+    
+    const [isLoadingRelease, setIsLoadingRelease] = useState(false);
+    
+    const dispatch = useDispatch();
+
+    const addRelease = useCallback( async (data:ItemProps, handleCallback:() => void) => {
+        
+        try {
+            setIsLoadingRelease(true);
+            
+            const response = await Api.post(`/core/v1/lancamentos-financeiro`,data);
+
+            dispatch(ToastNotifyActions.toastNotifyShow('Lançamento cadastrado com sucesso!',false));
+
+            return true;
+
+        } catch (error) {
+            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar este lançamento',true));
+        }finally {
+            setTimeout(() => {
+                setIsLoadingRelease(false);
+                handleCallback(); 
+            }, 1000); 
+
+            
+        }
+    }, [isLoadingRelease])
+    
+    return {isLoadingRelease, addRelease};
+}
+

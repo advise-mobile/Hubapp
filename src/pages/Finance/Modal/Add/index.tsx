@@ -119,9 +119,9 @@ useEffect(() => {
     </Modal >
 
 
+		
+		{modalExpenseOpen && <AddExpense dataFinance={props.dataFinance} ref={expenseRef} onClose={closeExpense}/>}
 		{modalRevenueOpen && <AddRevenue ref={revenueRef} onClose={closeRevenue}/>}
-		{modalExpenseOpen && <AddExpense ref={expenseRef} onClose={closeExpense}/>
-		}
 		{modalCategoriesOpen && <AddCategory ref={categoryRef} onClose={closeCategory}/>}
 		</>
   );

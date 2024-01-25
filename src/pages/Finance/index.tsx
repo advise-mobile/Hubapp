@@ -139,7 +139,7 @@ export default function Finance(props) {
     filtersReleaseRef.current?.close();  
 	}, []);
 
-  const renderAddOptions = useCallback(() => <Add ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
+  const renderAddOptions = useCallback(() => <Add ref={addRef}  onAdd={() => {}} />, []);
 
 	/** RENDER FILTERS */
 	const renderReleaseFilters = useMemo(
