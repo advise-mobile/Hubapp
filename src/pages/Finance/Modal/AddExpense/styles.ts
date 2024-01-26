@@ -43,18 +43,26 @@ export const RegisterText = styled.Text`
   font-family: ${fonts.circularStdBold};
 `;
 
-export const ContentDescription = styled.View`
+interface IsErrorProps {
+	isError:boolean;
+  }
+  
+
+export const ContentDescription = styled.View<IsErrorProps>`
   margin: 0 -24px;
 	justify-content: center;
 	height: 60px;
 	width: 414px;
+	border-bottom-width: 1px;
+	border-bottom-color: ${({ isError,theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter) };
+	
 `;
 
-export const Content = styled.View`
+export const Content = styled.View<IsErrorProps>`
   	margin: 0 -24px;
 	justify-content: center;
-	border-top-width: 1px;
-  	border-top-color: ${({ theme }) => theme.colors.grayLighter};
+	border-bottom-width: 1px;
+	border-bottom-color: ${({ isError,theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter) };
 	height: 60px;
 	width: 414px;
 `;

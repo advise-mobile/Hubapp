@@ -1,7 +1,7 @@
 import React, {forwardRef, useCallback, useEffect, useState} from 'react';
 import Modal from '@components/Modal';
 import Datepicker from '@components/DatePicker';
-import {FormatFullDateEN, CurrentTimeEN} from '@helpers/DateFunctions';
+import {FormatFullDateEN} from '@helpers/DateFunctions';
 import {StyleSheet} from 'react-native';
 import {MaskMoney} from 'helpers/Mask';
 
@@ -163,7 +163,15 @@ export default AddExpense = forwardRef((props, ref) => {
 	];
 
 	const onSubmit = data => {
-		console.log('=== errors', errors);
+
+		console.log('=== errors', data);
+
+		// if(data.valor === "0,00"){
+		// 	setError("valor",{ type:"manual",message:"Campo valor não pode ser 0,00"});
+		// 	return;
+		// }
+		
+		
 
 		// return;
 
@@ -186,7 +194,7 @@ export default AddExpense = forwardRef((props, ref) => {
 		// addRelease(register, () => closeModal());
 	};
 
-	const {control, handleSubmit, errors, register} = useForm({
+	const {control, handleSubmit, setError,formState: { errors }} = useForm({
 		shouldUnregister: false,
 	});
 
@@ -331,12 +339,15 @@ export default AddExpense = forwardRef((props, ref) => {
 			ref={ref}
 			title="Cadastrar despesa"
 			footer={footer()}>
-			<ContentDescription>
+			<ContentDescription isError={errors.descricao}>
 				<Row>
 					<Label>Descrição</Label>
 
 					<Controller
 						name="descricao"
+						rules={{
+							required: true,
+					    }}
 						control={control}
 						defaultValue={null}
 						render={({onChange}) => (
@@ -344,30 +355,37 @@ export default AddExpense = forwardRef((props, ref) => {
 								autoCorrect={false}
 								autoCapitalize="none"
 								placeholder="Título do lançamento"
-								placeholderTextColor={colors.grayLight}
+								placeholderTextColor={errors.descricao ? colors.red200 : colors.grayLight}
 								returnKeyType="next"
 								onChangeText={value => onChange(value)}
 							/>
 						)}
 					/>
+{/* {errors.descricao && <Text>This is required.</Text>} */}
 				</Row>
+				
 			</ContentDescription>
-			<Content>
+			<Content isError={errors.valor}>
 				<Row>
 					<Label>Valor</Label>
 
 					<Controller
 						name="valor"
+						rules={{
+							required: true,
+					    }}
 						TextColor={ colors.red}
 						control={control}
 						defaultValue={null}
 						render={({onChange, value}) => (
 							<Input
+								color={colors.red200}
 								placeholder="R$ -"
-								placeholderTextColor={colors.grayLight}
+								placeholderTextColor={errors.valor ? colors.red200 : colors.grayLight}
 								keyboardType="numeric"
 								onChangeText={text => {
-									onChange(MaskMoney(text));
+									
+									onChange(text !== "0,0" ? MaskMoney(text) : "");
 								}}
 								value={value}
 							/>
