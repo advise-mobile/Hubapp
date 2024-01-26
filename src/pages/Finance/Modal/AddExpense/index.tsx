@@ -1,8 +1,8 @@
-import React, {forwardRef, useCallback, useEffect, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
 import Modal from '@components/Modal';
 import Datepicker from '@components/DatePicker';
 import {FormatFullDateEN} from '@helpers/DateFunctions';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import {MaskMoney} from 'helpers/Mask';
 
 import moment from 'moment';
@@ -76,6 +76,8 @@ export default AddExpense = forwardRef((props, ref) => {
 	const {isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
 
 	const {isLoadingRelease, addRelease} = useRelease();
+
+	const valueInputRef = useRef(null);
 
 	const handlePeopleClick = index => {
 		setSelectedPeople(index);
@@ -163,38 +165,38 @@ export default AddExpense = forwardRef((props, ref) => {
 	];
 
 	const onSubmit = data => {
+		// console.log('=== errors', data);
 
-		console.log('=== errors', data);
+		if (data.valor === '0,00') {
+			setError('valor', {type: 'manual', message: 'Campo valor não pode ser 0,00'});
+			return;
+		}
 
-		// if(data.valor === "0,00"){
-		// 	setError("valor",{ type:"manual",message:"Campo valor não pode ser 0,00"});
-		// 	return;
-		// }
-		
-		
+		const {idContaFinanceiro, idFinanceiro} = dataFinance[0];
+		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
+		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
+		const register = {
+			itens: [
+				{
+					DebitoCredito: 'D',
+					repeticaoFixo,
+					dataEmissao,
+					idContaFinanceiro,
+					idFinanceiro,
+					...data,
+				},
+			],
+		};
 
-		// return;
-
-		// const {idContaFinanceiro, idFinanceiro} = dataFinance[0];
-		// const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
-		// const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
-		// const register = {
-		// 	itens: [
-		// 		{
-		// 			DebitoCredito: 'D',
-		// 			repeticaoFixo,
-		// 			dataEmissao,
-		// 			idContaFinanceiro,
-		// 			idFinanceiro,
-		// 			...data,
-		// 		},
-		// 	],
-		// };
-
-		// addRelease(register, () => closeModal());
+		addRelease(register, () => closeModal());
 	};
 
-	const {control, handleSubmit, setError,formState: { errors }} = useForm({
+	const {
+		control,
+		handleSubmit,
+		setError,
+		formState: {errors},
+	} = useForm({
 		shouldUnregister: false,
 	});
 
@@ -342,12 +344,11 @@ export default AddExpense = forwardRef((props, ref) => {
 			<ContentDescription isError={errors.descricao}>
 				<Row>
 					<Label>Descrição</Label>
-
 					<Controller
 						name="descricao"
 						rules={{
 							required: true,
-					    }}
+						}}
 						control={control}
 						defaultValue={null}
 						render={({onChange}) => (
@@ -357,55 +358,71 @@ export default AddExpense = forwardRef((props, ref) => {
 								placeholder="Título do lançamento"
 								placeholderTextColor={errors.descricao ? colors.red200 : colors.grayLight}
 								returnKeyType="next"
+								onSubmitEditing={() => {
+									valueInputRef.current?.focus();
+								}}
 								onChangeText={value => onChange(value)}
 							/>
 						)}
 					/>
-{/* {errors.descricao && <Text>This is required.</Text>} */}
 				</Row>
-				
 			</ContentDescription>
+
 			<Content isError={errors.valor}>
 				<Row>
 					<Label>Valor</Label>
-
 					<Controller
 						name="valor"
 						rules={{
 							required: true,
-					    }}
-						TextColor={ colors.red}
+						}}
 						control={control}
 						defaultValue={null}
 						render={({onChange, value}) => (
-							<Input
-								color={colors.red200}
-								placeholder="R$ -"
-								placeholderTextColor={errors.valor ? colors.red200 : colors.grayLight}
-								keyboardType="numeric"
-								onChangeText={text => {
-									
-									onChange(text !== "0,0" ? MaskMoney(text) : "");
+							<Controller
+								name="valor"
+								rules={{
+									required: true,
 								}}
-								value={value}
+								control={control}
+								defaultValue={null}
+								render={({onChange, value}) => (
+									<Input
+										ref={valueInputRef}
+										placeholder="R$ -"
+										placeholderTextColor={errors.valor ? colors.red200 : colors.grayLight}
+										keyboardType="numeric"
+										onChangeText={text => {
+											onChange(text !== '0,0' ? MaskMoney(text) : '');
+										}}
+										value={value}
+									/>
+								)}
 							/>
 						)}
 					/>
 				</Row>
 			</Content>
-			<Content>
+
+			<Content isError={errors.DataVencimento}>
 				<Row>
 					<Label>Vencimento</Label>
 					<Controller
 						name="DataVencimento"
+						rules={{
+							required: true,
+						}}
 						control={control}
 						defaultValue={null}
-						render={({onChange}) => (
+						render={({onChange, value}) => (
 							<Datepicker
 								date={dateExpiration}
 								enabled={true}
-								// error={dateErr}
-								title="Selecione uma data"
+								title={
+									<Text style={{color: errors.DataVencimento ? colors.red200 : colors.black}}>
+										Selecione uma data
+									</Text>
+								}
 								style={{
 									marginTop: -2,
 									flexGrow: 1,
@@ -416,13 +433,14 @@ export default AddExpense = forwardRef((props, ref) => {
 									setDateExpiration(date);
 									onChange(FormatFullDateEN(date));
 								}}
+								value={value}
 							/>
 						)}
 					/>
 				</Row>
 			</Content>
 
-			<Category>
+			<Category isError={errors.idCategoriaFinanceiro}>
 				<RowCategory>
 					<Label>Categoria</Label>
 				</RowCategory>
@@ -430,6 +448,9 @@ export default AddExpense = forwardRef((props, ref) => {
 				<ContainerItems>
 					<Controller
 						name="idCategoriaFinanceiro"
+						rules={{
+							required: true,
+						}}
 						control={control}
 						defaultValue={null}
 						render={({onChange}) => (
@@ -439,6 +460,7 @@ export default AddExpense = forwardRef((props, ref) => {
 										key={index}
 										style={[
 											{backgroundColor: category.corCategoria},
+											errors.idCategoriaFinanceiro ? {backgroundColor: colors.red200} : {},
 											selectedCategoryIndex === index
 												? {borderWidth: 2, borderColor: colors.primary}
 												: {},
@@ -459,7 +481,7 @@ export default AddExpense = forwardRef((props, ref) => {
 				</ContainerItems>
 			</Category>
 
-			<People>
+			<People isError={errors.idPessoaCliente}>
 				<RowCategory>
 					<Label>Pessoa</Label>
 				</RowCategory>
@@ -533,13 +555,16 @@ export default AddExpense = forwardRef((props, ref) => {
 				</ContainerItemsProcess>
 			</Process>
 
-			<ContentRepeat>
+			<ContentRepeat isError={errors.IdTipoParcelamentoFinanceiro}>
 				<RowCategory>
 					<Label>Repetir</Label>
 				</RowCategory>
 
 				<Controller
 					name="IdTipoParcelamentoFinanceiro"
+					rules={{
+						required: true,
+					}}
 					control={control}
 					defaultValue={null}
 					render={({onChange}) => (
@@ -551,9 +576,13 @@ export default AddExpense = forwardRef((props, ref) => {
 										handleRepeatChange(repeat.value);
 										onChange(repeat.value);
 									}}
-									style={{
-										backgroundColor: colors.gray,
-									}}>
+									style={[
+										{
+											backgroundColor: errors.IdTipoParcelamentoFinanceiro
+												? colors.red
+												: colors.gray,
+										},
+									]}>
 									<LabelItemsProcess
 										style={{
 											color:
@@ -568,12 +597,15 @@ export default AddExpense = forwardRef((props, ref) => {
 				/>
 			</ContentRepeat>
 
-			<ContentDuring>
+			<ContentDuring isError={errors.quantidadeParcelas}>
 				<Row>
 					<LabelDuring>Durante</LabelDuring>
 
 					<Controller
 						name="quantidadeParcelas"
+						rules={{
+							required: true,
+						}}
 						control={control}
 						defaultValue={null}
 						render={({onChange}) => (
@@ -585,7 +617,12 @@ export default AddExpense = forwardRef((props, ref) => {
 									}}
 									disabled={disableDuration}
 									doneText="Selecionar"
-									style={pickerSelectStyles}
+									style={{
+										...pickerSelectStyles,
+										placeholder: {
+											color: errors.quantidadeParcelas ? colors.red : colors.gray,
+										},
+									}}
 									value={selectedDuring}
 									onValueChange={value => {
 										handleDuringChange(value);
@@ -600,12 +637,15 @@ export default AddExpense = forwardRef((props, ref) => {
 				</Row>
 			</ContentDuring>
 
-			<ContentComments>
+			<ContentComments isError={errors.observacao}>
 				<Row>
 					<LabelComments>Observações</LabelComments>
 				</Row>
 				<Controller
 					name="observacao"
+					rules={{
+						required: true,
+					}}
 					control={control}
 					defaultValue={null}
 					render={({onChange}) => (
@@ -613,9 +653,10 @@ export default AddExpense = forwardRef((props, ref) => {
 							autoCorrect={false}
 							autoCapitalize="none"
 							placeholder="Digite uma observação"
-							placeholderTextColor={colors.grayLight}
+							placeholderTextColor={errors.descricao ? colors.red200 : colors.grayLight}
 							onChangeText={value => onChange(value)}
 							returnKeyType="next"
+							onSubmitEditing={handleSubmit(onSubmit)}
 						/>
 					)}
 				/>
@@ -630,7 +671,6 @@ const stylesPickerSelectStyles = colors =>
 			fontSize: 14,
 			color: colors.fadedBlack,
 			marginTop: 2,
-			//fontFamily: fonts.circularStdBook,
 		},
 		inputAndroid: {
 			flex: 1,
@@ -640,7 +680,7 @@ const stylesPickerSelectStyles = colors =>
 			padding: 0,
 			fontSize: 14,
 			color: colors.fadedBlack,
-			//fontFamily: fonts.circularStdBook,
+
 			minWidth: 400,
 		},
 	});

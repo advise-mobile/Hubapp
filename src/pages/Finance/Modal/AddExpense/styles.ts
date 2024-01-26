@@ -1,6 +1,10 @@
 import styled from 'styled-components/native';
 import { fonts } from 'assets/styles';
 
+interface IsErrorProps {
+	isError: boolean;
+}
+
 export const Footer = styled.View`
   flex-direction: row;
   align-items: center;
@@ -43,39 +47,33 @@ export const RegisterText = styled.Text`
   font-family: ${fonts.circularStdBold};
 `;
 
-interface IsErrorProps {
-	isError:boolean;
-  }
-  
-
 export const ContentDescription = styled.View<IsErrorProps>`
   margin: 0 -24px;
 	justify-content: center;
 	height: 60px;
 	width: 414px;
 	border-bottom-width: 1px;
-	border-bottom-color: ${({ isError,theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter) };
-	
+	border-bottom-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
+
 `;
 
 export const Content = styled.View<IsErrorProps>`
-  	margin: 0 -24px;
+  margin: 0 -24px;
 	justify-content: center;
 	border-bottom-width: 1px;
-	border-bottom-color: ${({ isError,theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter) };
+	border-bottom-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
 	height: 60px;
 	width: 414px;
 `;
 
-export const Category = styled.View`
+export const Category = styled.View<IsErrorProps>`
 	margin: 0 -24px;
 	height: auto;
 	flex-direction: row;
 	flex-wrap: wrap;
 	align-items: center;
-
 	border-top-width: 1px;
-	border-top-color: ${({ theme }) => theme.colors.grayLighter};
+	border-top-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
 `;
 
 export const ContainerCategories = styled.View`
@@ -102,22 +100,22 @@ export const ReleaseType = styled.TouchableOpacity`
 export const People = styled.View`
 	margin: 0 -24px;
 	border-top-width: 1px;
-  	border-top-color: ${({ theme }) => theme.colors.grayLighter};
+  border-top-color: ${({ theme }) => theme.colors.grayLighter};
 	height: auto;
 	width: 414px;
-
 `;
 
-export const ContentRepeat = styled.View`
-  	margin: 0 -24px;
-	height: 116px;
-	width: 414px;
+export const ContentRepeat = styled.View<IsErrorProps>`
+  margin: 0 -24px;
+  height: 116px;
+  width: 414px;
+  border-bottom-width: 1px;
 	border-top-width: 1px;
-  	border-top-color: ${({ theme }) => theme.colors.grayLighter};
+  border-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
 `;
 
 export const Row = styled.View`
-  	padding: 12px 24px;
+  padding: 12px 24px;
 	width: 360px;
 	justify-content: space-between;
 	flex-direction: row;
@@ -223,7 +221,6 @@ export const ItemsProcess = styled.TouchableOpacity`
 	margin-bottom: 7px;
 	align-items: center;
 	justify-content: center;
-
 `;
 
 export const LabelItemsProcess = styled.Text`
@@ -243,15 +240,14 @@ export const ContainerItemsRepeat = styled.View`
 	align-items: center;
 `;
 
-export const ContentDuring = styled.View`
+export const ContentDuring = styled.View<IsErrorProps>`
   margin: 0 -24px;
 	justify-content: center;
 	height: 60px;
 	width: 414px;
+  border-bottom-width: 1px;
 	border-top-width: 1px;
-	border-bottom-width: 1px;
-  border-top-color: ${({ theme }) => theme.colors.grayLighter};
-	border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
+	border-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
 `;
 
 export const LabelDuring = styled.Text`
@@ -273,12 +269,13 @@ export const LabelDuringInfo = styled.Text`
   font-size: ${fonts.regular};
 `;
 
-export const ContentComments = styled.View`
+export const ContentComments = styled.View<IsErrorProps>`
   margin: 0 -24px;
 	height: 110px;
 	width: 414px;
 	border-bottom-width: 1px;
-	border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
+	border-top-width: 1px;
+	border-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
 `;
 
 export const LabelComments = styled.Text`
