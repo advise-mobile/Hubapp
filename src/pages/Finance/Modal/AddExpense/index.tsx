@@ -87,11 +87,6 @@ export default AddExpense = forwardRef((props, ref) => {
 		setSelectedProcess(index);
 	};
 
-	const handleRepeatClick = index => {
-		setSelectedRepeatValue(value);
-		setIsRepeatSelected(value !== -1);
-		handleChangeTypeDuration(value);
-	};
 
 	useEffect(() => {
 		fetchInformationAcountUser();
