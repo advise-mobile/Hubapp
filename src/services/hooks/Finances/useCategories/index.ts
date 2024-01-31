@@ -7,6 +7,7 @@ import { DataCategoryItemProps, DataItemsResumeProps } from "@pages/Finance/Cate
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import { useDispatch } from 'react-redux';
+import { useTheme } from "styled-components";
 
 
 export const useGetCategories = () => {
@@ -22,7 +23,7 @@ export const useGetCategories = () => {
 
 			const { idUsuarioCliente } = await getLoggedUser();
 
-			console.log("=== id", idUsuarioCliente)
+
 			const params = `ativo=true&campos=*&idUsuarioCliente=${idUsuarioCliente}&idsTipoCategoriaFinanceiro=-2&ordenacao=+nomeCategoriaFinanceiro`;
 			const response: DataItemsResumeProps = await Api.get(`/core/v1/categorias-financeiro?${params}`);
 
@@ -42,6 +43,11 @@ export const useGetCategories = () => {
 
 export const useGetPopulateCategories = () => {
 
+		// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+
+	const {colors} = colorUseTheme;
+
 	const [isLoading, setIsLoading] = useState(false);
 
 	const dispatch = useDispatch();
@@ -50,20 +56,22 @@ export const useGetPopulateCategories = () => {
 
 		try {
 			setIsLoading(true);
-			
-			const params = `campos=nomeCategoriaFinanceiro,+idCategoriaFinanceiro&registrosPorPagina=9999`;
+
+			const params = `campos=nomeCategoriaFinanceiro,corCategoria,+idCategoriaFinanceiro&registrosPorPagina=9999`;
 			const response: DataItemsResumeProps = await Api.get(`/core/v1/categorias-financeiro?${params}`);
 
 			const { itens }: DataCategoryItemProps = response.data;
 
 			const formatedItens = itens.map((item) => {
+
 				return {
 						idCategoriaFinanceiro: item.idCategoriaFinanceiro,
-						nomeCategoriaFinanceiro: item.nomeCategoriaFinanceiro
+						nomeCategoriaFinanceiro: item.nomeCategoriaFinanceiro,
+						corCategoria: item.corCategoria !== undefined ? item.corCategoria : colors.gray
 					}
 			});
 
-			
+
 			return formatedItens;
 
 		} catch (error) {
@@ -75,5 +83,5 @@ export const useGetPopulateCategories = () => {
 		}
 	};
 	return { isLoading, getCategoriesData };
-} 
+}
 

@@ -31,7 +31,10 @@ export const useGetFinanceID= () => {
 
             const params = `ativo=true&campos=idContaFinanceiro,idFinanceiro`;
             const response: DataItemsProps = await Api.get(`/core/v1/contas-financeiro?${params}`);
+
+
             const { itens } : ItemsProps  = response.data;
+
             return itens
 
         } catch (error) {
@@ -100,15 +103,15 @@ export const useGetInstallments = () => {
             });
 
             let currentPage = filters.currentPage ? filters.currentPage : 1;
-        
+
             const params = `${filtersParams}campos=*&ativo=true&ordenacao=+dataVencimento&registrosPorPagina=20&paginaAtual=${currentPage}`;
 
             const response: DataItemsInstallmentsProps = await Api.get(`/core/v1/parcelas-financeiro?${params}`);
 
-            
+
 
             const { itens } : ItemsInstallmentsProps  = response.data;
-            
+
 
             const itensOptimized = itens.map((item:ItemInstallmentsProps) => {
 
@@ -187,5 +190,37 @@ export const useGetInstallmentsDetails = () => {
 	};
 
 	return { isLoadingInstallmentsDetails, getInstallmentsDetails };
+}
+
+export const useRelease = () => {
+
+    const [isLoadingRelease, setIsLoadingRelease] = useState(false);
+
+    const dispatch = useDispatch();
+
+    const addRelease = useCallback( async (data:ItemProps, handleCallback:() => void) => {
+
+        try {
+            setIsLoadingRelease(true);
+
+            const response = await Api.post(`/core/v1/lancamentos-financeiro`,data);
+
+            dispatch(ToastNotifyActions.toastNotifyShow('Lançamento cadastrado com sucesso!',false));
+
+            return true;
+
+        } catch (error) {
+            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar este lançamento',true));
+        }finally {
+            setTimeout(() => {
+                setIsLoadingRelease(false);
+                handleCallback();
+            }, 1000);
+
+
+        }
+    }, [isLoadingRelease])
+
+    return {isLoadingRelease, addRelease};
 }
 

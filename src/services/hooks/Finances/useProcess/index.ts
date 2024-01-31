@@ -45,15 +45,18 @@ export const useGetPopulateProcess = () => {
 		try {
 			setIsLoadingProcess(true);
 
-			const { idUsuarioCliente } = await getLoggedUser();	
+			const { idUsuarioCliente } = await getLoggedUser();
+
+
 
 			const params = `?campos=*&idUsuarioCliente=${idUsuarioCliente}&ativo=true&idTipoPasta=-3`;
 			const response: DataProcessProps = await Api.get(`core/v1/pastas-usuarios-clientes${params}`);
 
 			const { itens }: ItemProcessProps = response.data;
 
+
 			const formatedItens = itens.map((item) => {
-				
+
 				return {
 					id: item.id,
 					nome:item.nome,

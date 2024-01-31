@@ -1,6 +1,10 @@
 import styled from 'styled-components/native';
 import { fonts } from 'assets/styles';
 
+interface IsErrorProps {
+	isError: boolean;
+}
+
 export const Footer = styled.View`
   flex-direction: row;
   align-items: center;
@@ -43,33 +47,71 @@ export const RegisterText = styled.Text`
   font-family: ${fonts.circularStdBold};
 `;
 
-export const ContentDescription = styled.View`
+export const ContentDescription = styled.View<IsErrorProps>`
   margin: 0 -24px;
 	justify-content: center;
 	height: 60px;
 	width: 414px;
+	border-bottom-width: 1px;
+	border-bottom-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
+
 `;
 
-export const Content = styled.View`
+export const Content = styled.View<IsErrorProps>`
   margin: 0 -24px;
 	justify-content: center;
-	border: ${({ theme }) => theme.colors.grayLighter};
+	border-bottom-width: 1px;
+	border-bottom-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
 	height: 60px;
 	width: 414px;
 `;
 
-export const ContentCategory = styled.View`
-  margin: 0 -24px;
-	border: ${({ theme }) => theme.colors.grayLighter};
-	min-height: 146px;
+export const Category = styled.View<IsErrorProps>`
+	margin: 0 -24px;
+	height: auto;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	border-top-width: 1px;
+	border-top-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
+`;
+
+export const ContainerCategories = styled.View`
+	width: 366px;
+	height: auto;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+`;
+
+export const ReleaseType = styled.TouchableOpacity`
+	border-radius: 10px;
+	max-width: 300px;
+	height: 20px;
+	margin-right: 7px;
+	margin-bottom: 7px;
+	align-items: center;
+	justify-content: center;
+	background-color: ${({ theme }) => theme.colors.gray};
+`;
+
+
+
+export const People = styled.View`
+	margin: 0 -24px;
+	border-top-width: 1px;
+  border-top-color: ${({ theme }) => theme.colors.grayLighter};
+	height: auto;
 	width: 414px;
 `;
 
-export const ContentRepeat = styled.View`
+export const ContentRepeat = styled.View<IsErrorProps>`
   margin: 0 -24px;
-	height: 116px;
-	width: 414px;
-	border: ${({ theme }) => theme.colors.grayLighter};
+  height: 116px;
+  width: 414px;
+  border-bottom-width: 1px;
+	border-top-width: 1px;
+  border-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
 `;
 
 export const Row = styled.View`
@@ -102,23 +144,25 @@ export const Input = styled.TextInput`
 `;
 
 export const ContainerItems = styled.View`
-	min-width: 435px;
-	height: 85px;
+	width: auto;
+	height: auto;
 	flex-direction: row;
 	flex-wrap: wrap;
-	margin-left: 25px;
+	margin-left: 21px;
 	margin-top: 5px;
+	margin-bottom: 5px;
 	align-items: center;
 `;
 
 export const Items = styled.TouchableOpacity`
 	border-radius: 10px;
-	width: 87px;
+	max-width: 300px;
 	height: 20px;
 	margin-right: 7px;
 	margin-bottom: 7px;
 	align-items: center;
 	justify-content: center;
+	background-color: ${({ theme }) => theme.colors.gray};
 `;
 
 export const LabelItems = styled.Text`
@@ -128,38 +172,43 @@ export const LabelItems = styled.Text`
 
 export const ContainerItemsPerson = styled.View`
 	width: 355px;
-	height: 55px;
+	height: auto;
 	flex-direction: row;
 	flex-wrap: wrap;
-	margin-left: 25px;
+	margin-left: 21px;
 	margin-top: 5px;
+	margin-bottom: 5px;
 	align-items: center;
 `;
+
+
 
 export const ItemsPerson = styled.TouchableOpacity`
 	border-radius: 10px;
-	width: 80px;
+	max-width: 300px;
 	height: 20px;
-	margin-right: 7px;
-	margin-bottom: 7px;
+	margin-right: 3px;
+	margin-left: 1px;
+	margin-bottom: 9px;
 	align-items: center;
 	justify-content: center;
-
+	background-color: ${({ theme }) => theme.colors.gray};
 `;
 
 export const ContainerItemsProcess = styled.View`
-	width: 365px;
+	width: auto;
 	height: 85px;
 	flex-direction: row;
 	flex-wrap: wrap;
-	margin-left: 25px;
+	margin-left: 21px;
 	margin-top: 5px;
 	align-items: center;
 `;
 
-export const ContentProcess = styled.View`
-  margin: 0 -24px;
-	border: ${({ theme }) => theme.colors.grayLighter};
+export const Process = styled.View`
+	margin: 0 -24px;
+	border-top-width: 1px;
+  border-top-color: ${({ theme }) => theme.colors.grayLighter};
 	height: 190px;
 	width: 434px;
 `;
@@ -172,7 +221,6 @@ export const ItemsProcess = styled.TouchableOpacity`
 	margin-bottom: 7px;
 	align-items: center;
 	justify-content: center;
-
 `;
 
 export const LabelItemsProcess = styled.Text`
@@ -183,21 +231,23 @@ export const LabelItemsProcess = styled.Text`
 `;
 
 export const ContainerItemsRepeat = styled.View`
-	width: 375px;
+	width: auto;
 	height: 55px;
 	flex-direction: row;
 	flex-wrap: wrap;
-	margin-left: 25px;
+	margin-left: 21px;
 	margin-top: 5px;
 	align-items: center;
 `;
 
-export const ContentDuring = styled.View`
+export const ContentDuring = styled.View<IsErrorProps>`
   margin: 0 -24px;
 	justify-content: center;
 	height: 60px;
 	width: 414px;
-	background-color: ${({ theme }) => theme.colors.during};
+  border-bottom-width: 1px;
+	border-top-width: 1px;
+	border-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
 `;
 
 export const LabelDuring = styled.Text`
@@ -210,6 +260,7 @@ export const LabelDuring = styled.Text`
 export const ContainerInfo = styled.View`
 	width: 237px;
 	height: 24px;
+	margin-left: 10px;
 `;
 
 export const LabelDuringInfo = styled.Text`
@@ -218,12 +269,13 @@ export const LabelDuringInfo = styled.Text`
   font-size: ${fonts.regular};
 `;
 
-export const ContentComments = styled.View`
+export const ContentComments = styled.View<IsErrorProps>`
   margin: 0 -24px;
 	height: 110px;
 	width: 414px;
 	border-bottom-width: 1px;
-	border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
+	border-top-width: 1px;
+	border-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
 `;
 
 export const LabelComments = styled.Text`
