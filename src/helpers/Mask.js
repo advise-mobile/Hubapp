@@ -18,9 +18,16 @@ export const MaskMoney = value => VanillaMasker.toMoney(value, {
 	zeroCents: false
 });
 
+export const MaskMoneyForRegister = value => {
+	const formattedValue = value.replace(/\./g, '').replace(/,/g, '.');
+	return formattedValue;
+};
+
 export const MaskCnj = value => {
 	if (value.length == 20 && !isNaN(value))
 		return value.replace(/(\d{7})(\d{2})(\d{4})(\d{1})(\d{2})(\d{4})/, '$1-$2.$3.$4.$5.$6');
 
 	return value;
 }
+
+

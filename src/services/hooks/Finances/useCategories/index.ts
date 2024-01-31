@@ -23,7 +23,7 @@ export const useGetCategories = () => {
 
 			const { idUsuarioCliente } = await getLoggedUser();
 
-			console.log("=== id", idUsuarioCliente)
+
 			const params = `ativo=true&campos=*&idUsuarioCliente=${idUsuarioCliente}&idsTipoCategoriaFinanceiro=-2&ordenacao=+nomeCategoriaFinanceiro`;
 			const response: DataItemsResumeProps = await Api.get(`/core/v1/categorias-financeiro?${params}`);
 
@@ -56,14 +56,14 @@ export const useGetPopulateCategories = () => {
 
 		try {
 			setIsLoading(true);
-			
+
 			const params = `campos=nomeCategoriaFinanceiro,corCategoria,+idCategoriaFinanceiro&registrosPorPagina=9999`;
 			const response: DataItemsResumeProps = await Api.get(`/core/v1/categorias-financeiro?${params}`);
 
 			const { itens }: DataCategoryItemProps = response.data;
 
 			const formatedItens = itens.map((item) => {
-				
+
 				return {
 						idCategoriaFinanceiro: item.idCategoriaFinanceiro,
 						nomeCategoriaFinanceiro: item.nomeCategoriaFinanceiro,
@@ -71,7 +71,7 @@ export const useGetPopulateCategories = () => {
 					}
 			});
 
-			
+
 			return formatedItens;
 
 		} catch (error) {
@@ -83,5 +83,5 @@ export const useGetPopulateCategories = () => {
 		}
 	};
 	return { isLoading, getCategoriesData };
-} 
+}
 

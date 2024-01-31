@@ -47,13 +47,13 @@ export const useGetPopulateProcess = () => {
 
 			const { idUsuarioCliente } = await getLoggedUser();
 
-			console.log("===idUsuarioCliente", idUsuarioCliente)
+
 
 			const params = `?campos=*&idUsuarioCliente=${idUsuarioCliente}&ativo=true&idTipoPasta=-3`;
 			const response: DataProcessProps = await Api.get(`core/v1/pastas-usuarios-clientes${params}`);
 
 			const { itens }: ItemProcessProps = response.data;
-			console.log('=== process', itens)
+
 
 			const formatedItens = itens.map((item) => {
 

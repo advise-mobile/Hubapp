@@ -3,7 +3,7 @@ import Modal from '@components/Modal';
 import Datepicker from '@components/DatePicker';
 import {FormatFullDateEN} from '@helpers/DateFunctions';
 import {StyleSheet, Text} from 'react-native';
-import {MaskMoney} from 'helpers/Mask';
+import {MaskMoney, MaskMoneyForRegister} from 'helpers/Mask';
 
 import moment from 'moment';
 
@@ -167,6 +167,8 @@ export default AddRevenue = forwardRef((props, ref) => {
 			return;
 		}
 
+		data.valor = MaskMoneyForRegister(data.valor);
+
 		const {idContaFinanceiro, idFinanceiro} = dataFinance[0];
 		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
 		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
@@ -184,6 +186,7 @@ export default AddRevenue = forwardRef((props, ref) => {
 				},
 			],
 		};
+
 
 		addRelease(register, () => closeModal());
 	};
@@ -532,7 +535,7 @@ export default AddRevenue = forwardRef((props, ref) => {
 										onPress={() => {
 											handleProcessClick(index);
 											onChange(process.id);
-											console.log('Process', process);
+
 										}}
 										style={{
 											backgroundColor: colors.gray,
