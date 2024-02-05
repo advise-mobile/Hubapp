@@ -159,7 +159,7 @@ export default AddExpense = forwardRef((props, ref) => {
 	];
 
 	const onSubmit = data => {
-		// console.log('=== errors', data);
+
 
 		if (data.valor === '0,00') {
 			setError('valor', {type: 'manual', message: 'Campo valor não pode ser 0,00'});

@@ -1,4 +1,4 @@
-import React, {forwardRef, useCallback, useState} from 'react';
+import React, {forwardRef, useCallback, useRef, useState} from 'react';
 
 import Modal from 'components/Modal';
 import {StyleSheet} from 'react-native';
@@ -19,16 +19,20 @@ import {
 	Label,
 	Input,
 	ToSave,
-	ContentDescription,
+	ContentName,
 	ContentType,
 	ContainerColor,
 	ColorsItem,
 	ToSaveText,
 	RBRow,
+	Color,
+	ContentColor,
 } from './styles';
 
 // Add UseTheme para pegar o tema global adicionado
 import {useTheme} from 'styled-components';
+import {useForm, Controller} from 'react-hook-form';
+import {useCategory} from '@services/hooks/Finances/useCategory';
 
 export default AddCategory = forwardRef((props, ref) => {
 	// Variavel para usar o hook
@@ -37,17 +41,53 @@ export default AddCategory = forwardRef((props, ref) => {
 
 	const [type, setType] = useState<number>(null);
 	const [selectedColor, setSelectedColor] = useState(null);
+	const {isLoadingCategory, addCategory} = useCategory();
 
 	const type_props = [
 		{label: 'Despesas -', value: false},
 		{label: 'Receitas +', value: false},
 	];
 
+	const colorData = [
+		{id: 1, color: colors.colorBackGround},
+		{id: 2, color: colors.pinkRed},
+		{id: 3, color: colors.pink},
+		{id: 4, color: colors.pinkTag},
+		{id: 5, color: colors.purple},
+		{id: 6, color: colors.typecolor},
+	];
+
+
 	const clearFilters = useCallback(() => {
 		setType(0);
 	}, [type]);
 
+	const {
+		control,
+		handleSubmit,
+		setValue,
+		getValues,
+		formState: {errors},
+	} = useForm({
+		shouldUnregister: false,
+	});
+
 	const RBLabel = stylesRBLabel(colors);
+
+	const onSubmit = data => {
+		const register = {
+			itens: [
+				{
+					...type_props,
+				},
+			],
+		};
+
+		if (!Object.keys(errors).length) {
+			console.log('=== register category', register);
+			addCategory(register, () => closeModal());
+		}
+	};
 
 	const closeModal = useCallback(() => ref.current?.close(), props);
 	const footer = () => (
@@ -56,7 +96,7 @@ export default AddCategory = forwardRef((props, ref) => {
 				<CancelText>Cancelar</CancelText>
 			</Cancel>
 
-			<ToSave onPress={() => closeModal()}>
+			<ToSave onPress={handleSubmit(onSubmit)}>
 				<ToSaveText>Salvar</ToSaveText>
 			</ToSave>
 		</Footer>
@@ -69,20 +109,32 @@ export default AddCategory = forwardRef((props, ref) => {
 			title="Cadastrar categoria"
 			footer={footer()}
 			clear={clearFilters}
-			onClose={props.onClose}
-			>
-			<ContentDescription>
+			onClose={props.onClose}>
+			<ContentName isError={errors.nomeCategoriaFinanceiro}>
 				<Row>
 					<Label>Nome</Label>
-					<Input
-						autoCorrect={false}
-						autoCapitalize="none"
-						placeholder="Nome"
-						placeholderTextColor={colors.grayLight}
-						returnKeyType="next"
+					<Controller
+						name="nomeCategoriaFinanceiro"
+						rules={{
+							required: true,
+						}}
+						control={control}
+						defaultValue={null}
+						render={({onChange}) => (
+							<Input
+								autoCorrect={false}
+								autoCapitalize="none"
+								placeholder="Nome"
+								placeholderTextColor={
+									errors.nomeCategoriaFinanceiro ? colors.red200 : colors.grayLight
+								}
+								returnKeyType="next"
+								onChangeText={value => onChange(value)}
+							/>
+						)}
 					/>
 				</Row>
-			</ContentDescription>
+			</ContentName>
 
 			<ContentType>
 				<Row>
@@ -90,72 +142,84 @@ export default AddCategory = forwardRef((props, ref) => {
 				</Row>
 			</ContentType>
 
-			<RadioForm animation={true} style={{flex: 1}}>
-				{type_props.map((obj, i) => (
-					<RBRow as={RadioButton} key={i}>
-						<RadioButtonInput
-							obj={obj}
-							isSelected={type === i}
-							onPress={value => {
-								setType(i);
-							}}
-							borderWidth={1}
-							buttonInnerColor={colors.primary}
-							buttonOuterColor={colors.primary}
-							buttonSize={12}
-							buttonOuterSize={18}
-						/>
-						<RadioButtonLabel
-							obj={obj}
-							labelStyle={RBLabel.label}
-							onPress={value => {
-								setType(i);
-							}}
-						/>
-					</RBRow>
-				))}
-			</RadioForm>
+			<Controller
+				name="idTipoCategoriaFinanceiro"
+				rules={{
+					required: true,
+				}}
+				control={control}
+				defaultValue={null}
+				render={({onChange}) => (
+					<RadioForm animation={true} style={{flex: 1}}>
+						{type_props.map((obj, i) => (
+							<RBRow as={RadioButton} key={i}>
+								<RadioButtonInput
+									obj={obj}
+									isSelected={type === i}
+									onPress={() => {
+										setType(i);
+										onChange(obj.value);
+									}}
+									borderWidth={1}
+									buttonInnerColor={colors.primary}
+									buttonOuterColor={colors.primary}
+									buttonSize={12}
+									buttonOuterSize={18}
+								/>
+								<RadioButtonLabel
+									isError={errors.idTipoCategoriaFinanceiro && type === null}
+									obj={obj}
+									labelStyle={[
+										RBLabel.label,
+										{
+											color:
+												errors.idTipoCategoriaFinanceiro && type === null
+													? colors.red200
+													: colors.grayLight,
+										},
+									]}
+									onPress={() => {
+										setType(i);
+										onChange(obj.value);
+									}}
+								/>
+							</RBRow>
+						))}
+					</RadioForm>
+				)}
+			/>
 
-			<ContentType>
+			<Color>
 				<Row>
 					<Label>Cor</Label>
 				</Row>
-			</ContentType>
+			</Color>
 
-			<ContentType>
-				<ContainerColor>
-					<ColorsItem
-						isSelected={selectedColor === colors.colorBackGround}
-						onPress={() => setSelectedColor(colors.colorBackGround)}
-						PropsColorsItem={colors.colorBackGround}
-					/>
-					<ColorsItem
-						isSelected={selectedColor === colors.pinkRed}
-						onPress={() => setSelectedColor(colors.pinkRed)}
-						PropsColorsItem={colors.pinkRed}
-					/>
-					<ColorsItem
-						isSelected={selectedColor === colors.pink}
-						onPress={() => setSelectedColor(colors.pink)}
-						PropsColorsItem={colors.pink}
-					/>
-					<ColorsItem
-						isSelected={selectedColor === colors.pinkTag}
-						onPress={() => setSelectedColor(colors.pinkTag)}
-						PropsColorsItem={colors.pinkTag}
-					/>
-					<ColorsItem
-						isSelected={selectedColor === colors.purple}
-						onPress={() => setSelectedColor(colors.purple)}
-						PropsColorsItem={colors.purple}
-					/>
-					<ColorsItem
-						isSelected={selectedColor === colors.typecolor}
-						onPress={() => setSelectedColor(colors.typecolor)}
-						PropsColorsItem={colors.typecolor}
-					/>
-				</ContainerColor>
-			</ContentType>
+			<Controller
+				name="corCategoria"
+				rules={{
+					required: true,
+				}}
+				control={control}
+				defaultValue={null}
+				render={({onChange}) => (
+					<ContentColor>
+						<ContainerColor>
+							{colorData.map(({id, color}) => (
+								<ColorsItem
+								isError={errors.corCategoria}
+								key={id}
+								isSelected={selectedColor === color}
+								onPress={() => {
+									setSelectedColor(color);
+							}}
+								PropsColorsItem={color}
+						/>
+							))}
+						</ContainerColor>
+					</ContentColor>
+				)}
+			/>
 		</Modal>
 	);
 });

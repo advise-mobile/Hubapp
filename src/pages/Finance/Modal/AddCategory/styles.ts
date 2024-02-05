@@ -7,6 +7,10 @@ interface PropsColorsItem {
 	borderColor: string;
 }
 
+interface IsErrorProps {
+	isError: boolean;
+}
+
 export const Footer = styled.View`
   flex-direction: row;
   align-items: center;
@@ -49,16 +53,30 @@ export const ToSaveText = styled.Text`
   font-family: ${fonts.circularStdBold};
 `;
 
-export const ContentDescription = styled.View`
+export const ContentName = styled.View<IsErrorProps>`
   margin: 0 -24px;
 	justify-content: center;
 	height: 60px;
 	width: 414px;
 	border-bottom-width: 1px;
-	border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
+	border-bottom-color: ${({ isError, theme }) => (isError ? theme.colors.red200 : theme.colors.grayLighter)};
 `;
 
 export const ContentType = styled.View`
+  margin: 0 -24px;
+	justify-content: center;
+	height: 48px;
+	width: 414px;
+`;
+
+export const Color = styled.View`
+  margin: 0 -24px;
+	justify-content: center;
+	height: 48px;
+	width: 414px;
+`;
+
+export const ContentColor = styled.View`
   margin: 0 -24px;
 	justify-content: center;
 	height: 48px;
@@ -125,13 +143,14 @@ export const ContainerColor = styled.View`
 	flex-direction: row;
 `;
 
-export const ColorsItem = styled.TouchableOpacity<PropsColorsItem>`
+export const ColorsItem = styled.TouchableOpacity<PropsColorsItem, IsErrorProps>`
   width: 51px;
   height: 20px;
   border-radius: 17px;
-  background-color: ${({ PropsColorsItem, theme }) => PropsColorsItem ? PropsColorsItem : theme.colors.textvalue};
+  background-color: ${({ PropsColorsItem, theme, isError }) => isError ? theme.colors.red200 : PropsColorsItem || theme.colors.textvalue};
   margin-right: 7px;
   border-width: 5px;
-  border-color: ${({ isSelected, theme }) => isSelected ? 'transparent' : theme.colors.colorSelect};
+  border-color: ${({ isSelected, theme, isError }) => isSelected ? 'transparent' : (isError ? theme.colors.red200 : theme.colors.colorSelect)};
 `;
+
 
