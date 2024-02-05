@@ -191,7 +191,7 @@ export default AddCategory = forwardRef((props, ref) => {
 
 			<Color>
 				<Row>
-					<Label>Cor</Label>
+					<Label>Cor </Label>
 				</Row>
 			</Color>
 
@@ -205,17 +205,21 @@ export default AddCategory = forwardRef((props, ref) => {
 				render={({onChange}) => (
 					<ContentColor>
 						<ContainerColor>
-							{colorData.map(({id, color}) => (
+							{
+								colorData.map(({id, color}) => (
 								<ColorsItem
-								isError={errors.corCategoria}
-								key={id}
-								isSelected={selectedColor === color}
-								onPress={() => {
-									setSelectedColor(color);
-							}}
-								PropsColorsItem={color}
-						/>
+									key={id}
+									isError={errors.corCategoria}
+									isSelected={selectedColor === color}
+									backgroundColor={color}
+									onPress={() => {
+										setSelectedColor(color);
+										onChange(color);
+									}}
+									
+								/>
 							))}
+							
 						</ContainerColor>
 					</ContentColor>
 				)}

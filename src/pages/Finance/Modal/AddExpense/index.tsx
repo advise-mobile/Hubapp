@@ -184,6 +184,8 @@ export default AddExpense = forwardRef((props, ref) => {
 			],
 		};
 
+		console.log("=== register" ,register);
+
 		addRelease(register, () => closeModal());
 	};
 
@@ -616,7 +618,7 @@ export default AddExpense = forwardRef((props, ref) => {
 									style={{
 										...pickerSelectStyles,
 										placeholder: {
-											color: errors.quantidadeParcelas ? colors.red : colors.gray,
+											color: errors.quantidadeParcelas ? colors.red : colors.black,
 										},
 									}}
 									value={selectedDuring}

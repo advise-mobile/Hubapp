@@ -1,15 +1,14 @@
 import styled from 'styled-components/native';
 import { fonts } from 'assets/styles';
 
-interface PropsColorsItem {
+interface ColorsItemProps {
 	backgroundColor: string;
 	borderWidth: string;
 	borderColor: string;
+  isError: boolean;
+  isSelected:boolean;
 }
 
-interface IsErrorProps {
-	isError: boolean;
-}
 
 export const Footer = styled.View`
   flex-direction: row;
@@ -143,14 +142,14 @@ export const ContainerColor = styled.View`
 	flex-direction: row;
 `;
 
-export const ColorsItem = styled.TouchableOpacity<PropsColorsItem, IsErrorProps>`
+export const ColorsItem = styled.TouchableOpacity<ColorsItemProps>`
   width: 51px;
   height: 20px;
   border-radius: 17px;
-  background-color: ${({ PropsColorsItem, theme, isError }) => isError ? theme.colors.red200 : PropsColorsItem || theme.colors.textvalue};
+  background-color: ${({ backgroundColor,isError, theme }) => isError ? theme.colors.red200 : backgroundColor};
   margin-right: 7px;
   border-width: 5px;
-  border-color: ${({ isSelected, theme, isError }) => isSelected ? 'transparent' : (isError ? theme.colors.red200 : theme.colors.colorSelect)};
+  border-color: ${({ isError,isSelected, theme }) => isSelected ? 'transparent' : (isError ? theme.colors.red200 : theme.colors.colorSelect)};
 `;
 
 
