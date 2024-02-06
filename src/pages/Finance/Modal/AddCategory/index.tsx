@@ -44,8 +44,8 @@ export default AddCategory = forwardRef((props, ref) => {
 	const {isLoadingCategory, addcategorylaunch} = useCategory();
 
 	const type_props = [
-		{label: 'Despesas -', value: false},
-		{label: 'Receitas +', value: false},
+		{label: 'Despesas -', value: -2},
+		{label: 'Receitas +', value: -1},
 	];
 
 	const colorData = [

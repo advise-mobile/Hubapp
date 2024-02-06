@@ -1,12 +1,12 @@
 import styled from 'styled-components/native';
 import { fonts } from 'assets/styles';
 
-interface ValidationProps {
-	backgroundColor?: string;
-	borderWidth?: string;
-	borderColor?: string;
+interface ColorsItemProps {
+	backgroundColor: string;
+	borderWidth: string;
+	borderColor: string;
   isError: boolean;
-  isSelected?:boolean;
+  isSelected:boolean;
 }
 
 
@@ -142,7 +142,7 @@ export const ContainerColor = styled.View`
 	flex-direction: row;
 `;
 
-export const ColorsItem = styled.TouchableOpacity<ValidationProps>`
+export const ColorsItem = styled.TouchableOpacity<ColorsItemProps>`
   width: 51px;
   height: 20px;
   border-radius: 17px;
