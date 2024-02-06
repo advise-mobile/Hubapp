@@ -1,12 +1,12 @@
 import styled from 'styled-components/native';
 import { fonts } from 'assets/styles';
 
-interface ColorsItemProps {
-	backgroundColor: string;
-	borderWidth: string;
-	borderColor: string;
+interface ValidationProps {
+	backgroundColor?: string;
+	borderWidth?: string;
+	borderColor?: string;
   isError: boolean;
-  isSelected:boolean;
+  isSelected?:boolean;
 }
 
 
@@ -52,7 +52,7 @@ export const ToSaveText = styled.Text`
   font-family: ${fonts.circularStdBold};
 `;
 
-export const ContentName = styled.View<IsErrorProps>`
+export const ContentName = styled.View<ValidationProps>`
   margin: 0 -24px;
 	justify-content: center;
 	height: 60px;
@@ -142,7 +142,7 @@ export const ContainerColor = styled.View`
 	flex-direction: row;
 `;
 
-export const ColorsItem = styled.TouchableOpacity<ColorsItemProps>`
+export const ColorsItem = styled.TouchableOpacity<ValidationProps>`
   width: 51px;
   height: 20px;
   border-radius: 17px;

@@ -41,7 +41,7 @@ export default AddCategory = forwardRef((props, ref) => {
 
 	const [type, setType] = useState<number>(null);
 	const [selectedColor, setSelectedColor] = useState(null);
-	const {isLoadingCategory, addCategory} = useCategory();
+	const {isLoadingCategory, addcategorylaunch} = useCategory();
 
 	const type_props = [
 		{label: 'Despesas -', value: false},
@@ -57,7 +57,6 @@ export default AddCategory = forwardRef((props, ref) => {
 		{id: 6, color: colors.typecolor},
 	];
 
-
 	const clearFilters = useCallback(() => {
 		setType(0);
 	}, [type]);
@@ -65,38 +64,46 @@ export default AddCategory = forwardRef((props, ref) => {
 	const {
 		control,
 		handleSubmit,
-		setValue,
-		getValues,
+		setError,
 		formState: {errors},
 	} = useForm({
 		shouldUnregister: false,
 	});
 
+
 	const RBLabel = stylesRBLabel(colors);
 
-	const onSubmit = data => {
-		const register = {
-			itens: [
-				{
-					...type_props,
-				},
-			],
-		};
+	const onSubmit = (data:any) => {
+		console.log("=== onSubmit", data);
+    // const register = {
+    //     itens: [
+    //         {
+    //             nomeCategoriaFinanceiro: data.nomeCategoriaFinanceiro,
+    //             idTipoCategoriaFinanceiro: type_props[type].value,
+    //             corCategoria: selectedColor,
+    //         },
+    //     ],
+    // };
 
-		if (!Object.keys(errors).length) {
-			console.log('=== register category', register);
-			addCategory(register, () => closeModal());
-		}
-	};
+    // if (!Object.keys(errors).length) {
+    //     console.log('=== register category', register);
+    //     addcategorylaunch(register, () => closeModal());
+    // }
+
+};
+
+
 
 	const closeModal = useCallback(() => ref.current?.close(), props);
+
 	const footer = () => (
 		<Footer>
 			<Cancel onPress={() => closeModal()}>
 				<CancelText>Cancelar</CancelText>
 			</Cancel>
 
-			<ToSave onPress={handleSubmit(onSubmit)}>
+{/* <ToSave onPress={()=> alert("teu cu")}> */}
+			<ToSave onPress={()=> handleSubmit(onSubmit)}>
 				<ToSaveText>Salvar</ToSaveText>
 			</ToSave>
 		</Footer>
@@ -205,8 +212,7 @@ export default AddCategory = forwardRef((props, ref) => {
 				render={({onChange}) => (
 					<ContentColor>
 						<ContainerColor>
-							{
-								colorData.map(({id, color}) => (
+							{colorData.map(({id, color}) => (
 								<ColorsItem
 									key={id}
 									isError={errors.corCategoria}
@@ -216,10 +222,8 @@ export default AddCategory = forwardRef((props, ref) => {
 										setSelectedColor(color);
 										onChange(color);
 									}}
-									
 								/>
 							))}
-							
 						</ContainerColor>
 					</ContentColor>
 				)}
