@@ -8,6 +8,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useGetCategory} from '@services/hooks/Finances/useCategory';
 import {CategoryProps,DataFiltersCategory} from './types';
 
+import {useNavigation} from '@react-navigation/native';
+
 import Spinner from '@components/Spinner';
 import {
 	Container,
@@ -19,6 +21,7 @@ import {
 	TextTitle,
 	ContainerSpinner
 } from './styles';
+import EditCategory from '../Modal/EditCategory';
 
 export default function Category(props:DataFiltersCategory ) {
 
@@ -26,11 +29,19 @@ export default function Category(props:DataFiltersCategory ) {
 
 	const [dataResume, setDataResume] = useState<CategoryProps[] | undefined>([]);
 
-	const colorUseTheme = useTheme();
+	const [categoryEdit,setCategoryEdit] = useState<CategoryProps>();
 
+	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
 
+	const editCategoryRef = useRef();
 
+	// const closeCategory = ()=>{
+	// 	alert('fechar');
+	// 	editCategoryRef.current?.close();
+	// }		
+
+	// const navigation = useNavigation();
 
 	useEffect(() => {
 		fetchData();
@@ -46,6 +57,14 @@ export default function Category(props:DataFiltersCategory ) {
 
 	const listRef = useRef(null);
 
+
+	const handleEditCategory = (item:CategoryProps) => {
+		setCategoryEdit(item);
+		editCategoryRef.current?.open();
+	}
+
+	const handleModalEditCategory = useCallback(() => editCategoryRef.current?.close(),[]);
+
 	const renderHiddenItem = useCallback(
 		({item}: {item: CategoryProps}) => (
 			<Actions
@@ -53,7 +72,7 @@ export default function Category(props:DataFiltersCategory ) {
 				style={{
 					overflow: 'hidden',
 				}}>
-				<ActionButton>
+				<ActionButton onPress={() => handleEditCategory(item)}>
 					<MaterialIcons name="edit" size={24} color={colors.fadedBlack} />
 				</ActionButton>
 				<ActionButton>
@@ -137,6 +156,8 @@ export default function Category(props:DataFiltersCategory ) {
 				initialNumToRender={20}
 			/>)
 		}
+
+			<EditCategory item={categoryEdit} ref={editCategoryRef} onClose={handleModalEditCategory}/>
 
 		</>
 	);

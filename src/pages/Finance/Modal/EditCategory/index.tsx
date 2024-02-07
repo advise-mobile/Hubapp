@@ -1,6 +1,9 @@
 import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
+
 import Modal from '@components/Modal';
+
 import {StyleSheet} from 'react-native';
+
 import RadioForm, {
 	RadioButton,
 	RadioButtonInput,
@@ -15,8 +18,6 @@ import {Controller, useForm} from 'react-hook-form';
 import { CategoryProps } from '@pages/Finance/Category/types';
 
 import Spinner from '@components/Spinner';
-
-
 
 import {fonts} from 'assets/styles';
 
@@ -39,13 +40,24 @@ import {
 } from './styles';
 import { useCategory } from '@services/hooks/Finances/useCategory';
 
-export default AddCategory = forwardRef((props, ref) => {
+export default EditCategory = forwardRef((props,ref) => {
+
+	const categoryRef = useRef(null);
 
     // Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-    const {isSavingCategory, saveCategory} = useCategory();
+	const item = props.item;
+
+	// idCategoriaFinanceiro?: number,
+	// nomeCategoriaFinanceiro: string,
+	// corCategoria;
+	// tipoCategoriaFinanceiro;
+
+	//  console.log("=== editing",item.nomeCategoriaFinanceiro )
+
+    const {isSavingCategory, updateCategory} = useCategory();
 
 	const type_props = [
 		{label: 'Despesas -', value: -2},
@@ -67,24 +79,30 @@ export default AddCategory = forwardRef((props, ref) => {
             itens: [data],
         };
 
-        saveCategory(register, () => closeModal());
+        updateCategory(register, () => closeModal());
         };
 
 	const {
 		control,
 		handleSubmit,
+		setValue,
 		formState: {errors},
 	} = useForm({
-		shouldUnregister: false,
+		
+			defaultValues: { nomeCategoriaFinanceiro: 'Meu ovo'},
+			// useForm({ defaultValues: { data1: education?.data1 } });
+
+		
+		// shouldUnregister: false,
 	});
 
     const RBLabel = stylesRBLabel(colors);
 
     const [type, setType] = useState<number | null>(null);
 
-    const [selectedColor, setSelectedColor] = useState(null);
+    const [selectedColor, setSelectedColor] = useState(item.corCategoria);
 
-	const closeModal = useCallback(() => ref.current?.close(), props);
+	
 
 	const footer = () => (
         
@@ -92,30 +110,29 @@ export default AddCategory = forwardRef((props, ref) => {
             : (
                 <Footer>
                     
-                    <Cancel onPress={() => closeModal()}>
+                    <Cancel onPress={() => props.onClose()}>
                         <CancelText>Cancelar</CancelText>
                     </Cancel>
 
                     <Register onPress={handleSubmit(onSubmit)}>
-                        {/* {isSavingCategory ? ( <Spinner height={10} color={colors.white} transparent={true} /> ) : (<RegisterText>Salvar</RegisterText>) } */}
-
-                        {/* {isSavingCategory ? ( <Spinner height={15} color={colors.white} transparent={true} /> ) : (<Spinner height={17.5} color={colors.white} transparent={true} />) } */}
                         <RegisterText>Salvar</RegisterText>
-                        
                     </Register>
                 </Footer>
               )
     );
-	
 
-	
+	// useEffect(() => {
+	// 	// alert(item.nomeCategoriaFinanceiro);
+		
+	// 	setValue("nomeCategoriaFinanceiro",);
+	// })
+
 
 	return (
 		<Modal
 			maxHeight={650}
-			onClose={props.onClose}
 			ref={ref}
-			title="Cadastrar categoria"
+			title="Alterar categoria"
 			footer={footer()}>
 			<ContentName isError={errors.nomeCategoriaFinanceiro}>
 				<Row>
@@ -126,9 +143,9 @@ export default AddCategory = forwardRef((props, ref) => {
 							required: true,
 						}}
 						control={control}
-						defaultValue={null}
 						render={({onChange}) => (
 							<Input
+								
 								autoCorrect={false}
 								autoCapitalize="none"
 								placeholder="Nome"
@@ -205,7 +222,7 @@ export default AddCategory = forwardRef((props, ref) => {
 					required: true,
 				}}
 				control={control}
-				defaultValue={null}
+				defaultValue={item.corCategoria}
 				render={({onChange}) => (
 					<ContentColorItem>
 						<ContainerColor>

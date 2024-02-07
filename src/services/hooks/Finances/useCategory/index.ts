@@ -59,14 +59,14 @@ export const useGetCategory = () => {
 
 export const useCategory = () => {
 
-	const [isLoadingCategory, setIsLoadingCategory] = useState(false);
+	const [isSavingCategory, setIsSavingCategory] = useState(false);
 
 	const dispatch = useDispatch();
 
-	const addCategorylaunch = useCallback( async (data:CategoryProps, handleCallback:() => void) => {
+	const saveCategory =  async (data:DataCategoryItemProps, handleCallback:() => void) => {
 
 			try {
-					setIsLoadingCategory(true);
+					setIsSavingCategory(true);
 
 					const response = await Api.post(`core/v1/categorias-financeiro`,data);
 
@@ -78,14 +78,41 @@ export const useCategory = () => {
 					dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria',true));
 			}finally {
 					setTimeout(() => {
-							setIsLoadingCategory(false);
+							setIsSavingCategory(false);
 							handleCallback();
 					}, 1000);
 
 
 			}
-	}, [isLoadingCategory])
+	};
 
-	return {isLoadingCategory, addCategorylaunch};
+	const updateCategory =  async (data:DataCategoryItemProps, handleCallback:() => void) => {
+
+		console.log("=== cheguei no update",data);
+
+		// try {
+		// 		setIsSavingCategory(true);
+
+		// 		const response = await Api.post(`core/v1/categorias-financeiro`,data);
+
+		// 		dispatch(ToastNotifyActions.toastNotifyShow('Categoria cadastrada com sucesso!',false));
+
+		// 		return true;
+
+		// } catch (error) {
+		// 		dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria',true));
+		// }finally {
+		// 		setTimeout(() => {
+		// 				setIsSavingCategory(false);
+		// 				handleCallback();
+		// 		}, 1000);
+
+
+		// }
+};
+
+
+
+	return {isSavingCategory, saveCategory, updateCategory};
 }
 
