@@ -63,7 +63,7 @@ export const useCategory = () => {
 
 	const dispatch = useDispatch();
 
-	const addcategorylaunch = useCallback( async (data:CategoryProps, handleCallback:() => void) => {
+	const addCategorylaunch = useCallback( async (data:CategoryProps, handleCallback:() => void) => {
 
 			try {
 					setIsLoadingCategory(true);
@@ -86,6 +86,6 @@ export const useCategory = () => {
 			}
 	}, [isLoadingCategory])
 
-	return {isLoadingCategory, addcategorylaunch};
+	return {isLoadingCategory, addCategorylaunch};
 }
 

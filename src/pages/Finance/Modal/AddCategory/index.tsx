@@ -1,13 +1,18 @@
-import React, {forwardRef, useCallback, useRef, useState} from 'react';
-
-import Modal from 'components/Modal';
+import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
+import Modal from '@components/Modal';
 import {StyleSheet} from 'react-native';
-
 import RadioForm, {
 	RadioButton,
 	RadioButtonInput,
 	RadioButtonLabel,
 } from 'react-native-simple-radio-button';
+
+// Add UseTheme para pegar o tema global adicionado
+import {useTheme} from 'styled-components';
+import {useGetFinanceID, useRelease} from '@services/hooks/Finances/useReleases';
+import {Controller, useForm} from 'react-hook-form';
+
+
 
 import {fonts} from 'assets/styles';
 
@@ -18,37 +23,35 @@ import {
 	Row,
 	Label,
 	Input,
-	ToSave,
-	ContentName,
-	ContentType,
-	ContainerColor,
-	ColorsItem,
-	ToSaveText,
-	RBRow,
-	Color,
-	ContentColor,
+	RegisterText,
+	Register,
+    ContentName,
+    ContentType,
+    RBRow,
+    ContentColorItem,
+    ContainerColor,
+    ContentColor,
+    ColorsItem,
 } from './styles';
-
-// Add UseTheme para pegar o tema global adicionado
-import {useTheme} from 'styled-components';
-import {useForm, Controller} from 'react-hook-form';
-import {useCategory} from '@services/hooks/Finances/useCategory';
+import { useCategory } from '@services/hooks/Finances/useCategory';
 
 export default AddCategory = forwardRef((props, ref) => {
-	// Variavel para usar o hook
+
+    // Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const [type, setType] = useState<number>(null);
-	const [selectedColor, setSelectedColor] = useState(null);
-	const {isLoadingCategory, addcategorylaunch} = useCategory();
+
+    const {isLoadingCategory, addCategorylaunch} = useCategory();
+
+
 
 	const type_props = [
 		{label: 'Despesas -', value: -2},
 		{label: 'Receitas +', value: -1},
 	];
 
-	const colorData = [
+    const colorData = [
 		{id: 1, color: colors.colorBackGround},
 		{id: 2, color: colors.pinkRed},
 		{id: 3, color: colors.pink},
@@ -57,9 +60,25 @@ export default AddCategory = forwardRef((props, ref) => {
 		{id: 6, color: colors.typecolor},
 	];
 
-	const clearFilters = useCallback(() => {
-		setType(0);
-	}, [type]);
+	const onSubmit = data => {
+		console.log("=== ENVIOU", data);
+
+        const register = {
+        itens: [
+            {
+                nomeCategoriaFinanceiro: data.nomeCategoriaFinanceiro,
+                idTipoCategoriaFinanceiro: type_props[type].value,
+                corCategoria: selectedColor,
+            },
+        ],
+    };
+
+   
+        console.log('=== REGISTROU', register);
+        addCategorylaunch(register, () => closeModal());
+    
+
+};
 
 	const {
 		control,
@@ -71,28 +90,12 @@ export default AddCategory = forwardRef((props, ref) => {
 	});
 
 
-	const RBLabel = stylesRBLabel(colors);
+	
 
-	const onSubmit = (data:any) => {
-		console.log("=== onSubmit", data);
-    // const register = {
-    //     itens: [
-    //         {
-    //             nomeCategoriaFinanceiro: data.nomeCategoriaFinanceiro,
-    //             idTipoCategoriaFinanceiro: type_props[type].value,
-    //             corCategoria: selectedColor,
-    //         },
-    //     ],
-    // };
+    const RBLabel = stylesRBLabel(colors);
 
-    // if (!Object.keys(errors).length) {
-    //     console.log('=== register category', register);
-    //     addcategorylaunch(register, () => closeModal());
-    // }
-
-};
-
-
+    const [type, setType] = useState<number>(null);
+    const [selectedColor, setSelectedColor] = useState(null);
 
 	const closeModal = useCallback(() => ref.current?.close(), props);
 
@@ -102,21 +105,21 @@ export default AddCategory = forwardRef((props, ref) => {
 				<CancelText>Cancelar</CancelText>
 			</Cancel>
 
-{/* <ToSave onPress={()=> alert("teu cu")}> */}
-			<ToSave onPress={()=> handleSubmit(onSubmit)}>
-				<ToSaveText>Salvar</ToSaveText>
-			</ToSave>
+			<Register onPress={handleSubmit(onSubmit)}>
+				<RegisterText>Salvar</RegisterText>
+			</Register>
 		</Footer>
 	);
 
+	
+
 	return (
 		<Modal
-			maxHeight={750}
+			maxHeight={650}
+			onClose={props.onClose}
 			ref={ref}
 			title="Cadastrar categoria"
-			footer={footer()}
-			clear={clearFilters}
-			onClose={props.onClose}>
+			footer={footer()}>
 			<ContentName isError={errors.nomeCategoriaFinanceiro}>
 				<Row>
 					<Label>Nome</Label>
@@ -143,13 +146,11 @@ export default AddCategory = forwardRef((props, ref) => {
 				</Row>
 			</ContentName>
 
-			<ContentType>
-				<Row>
-					<Label>Tipo da Categoria</Label>
-				</Row>
-			</ContentType>
-
-			<Controller
+            <ContentType>
+				
+				<Label>Tipo da Categoria</Label>
+				
+                <Controller
 				name="idTipoCategoriaFinanceiro"
 				rules={{
 					required: true,
@@ -182,7 +183,7 @@ export default AddCategory = forwardRef((props, ref) => {
 											color:
 												errors.idTipoCategoriaFinanceiro && type === null
 													? colors.red200
-													: colors.grayLight,
+													: colors.textPrimary,
 										},
 									]}
 									onPress={() => {
@@ -195,14 +196,13 @@ export default AddCategory = forwardRef((props, ref) => {
 					</RadioForm>
 				)}
 			/>
+			</ContentType>
 
-			<Color>
-				<Row>
+            <ContentColor>
+				
 					<Label>Cor </Label>
-				</Row>
-			</Color>
-
-			<Controller
+				
+                <Controller
 				name="corCategoria"
 				rules={{
 					required: true,
@@ -210,7 +210,7 @@ export default AddCategory = forwardRef((props, ref) => {
 				control={control}
 				defaultValue={null}
 				render={({onChange}) => (
-					<ContentColor>
+					<ContentColorItem>
 						<ContainerColor>
 							{colorData.map(({id, color}) => (
 								<ColorsItem
@@ -225,9 +225,17 @@ export default AddCategory = forwardRef((props, ref) => {
 								/>
 							))}
 						</ContainerColor>
-					</ContentColor>
+					</ContentColorItem>
 				)}
 			/>
+			</ContentColor>
+
+			
+
+
+
+
+			
 		</Modal>
 	);
 });
