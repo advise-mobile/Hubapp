@@ -8,8 +8,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useGetCategory} from '@services/hooks/Finances/useCategory';
 import {CategoryProps,DataFiltersCategory} from './types';
 
-import {useNavigation} from '@react-navigation/native';
-
 import Spinner from '@components/Spinner';
 import {
 	Container,
@@ -29,19 +27,13 @@ export default function Category(props:DataFiltersCategory ) {
 
 	const [dataResume, setDataResume] = useState<CategoryProps[] | undefined>([]);
 
-	const [categoryEdit,setCategoryEdit] = useState<CategoryProps>();
-
+	const [categoryEdit,setCategoryEdit] = useState<CategoryProps | null >(null);
+	
 	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
 
 	const editCategoryRef = useRef();
-
-	// const closeCategory = ()=>{
-	// 	alert('fechar');
-	// 	editCategoryRef.current?.close();
-	// }		
-
-	// const navigation = useNavigation();
+	const listRef = useRef(null);
 
 	useEffect(() => {
 		fetchData();
@@ -55,15 +47,19 @@ export default function Category(props:DataFiltersCategory ) {
 		} catch (error) {}
 	};
 
-	const listRef = useRef(null);
-
-
+	
 	const handleEditCategory = (item:CategoryProps) => {
 		setCategoryEdit(item);
-		editCategoryRef.current?.open();
+		setTimeout(() => {
+			editCategoryRef.current?.open();	
+		}, 300);
+		
 	}
 
-	const handleModalEditCategory = useCallback(() => editCategoryRef.current?.close(),[]);
+	const handleModalEditCategory = useCallback(() =>{
+		fetchData();
+		editCategoryRef.current?.close();
+	},[]);
 
 	const renderHiddenItem = useCallback(
 		({item}: {item: CategoryProps}) => (
@@ -111,7 +107,7 @@ export default function Category(props:DataFiltersCategory ) {
 							onPress={() => openRow(item)}
 							underlayColor={colors.white}
 							activeOpacity={1}>
-							<TextTitle>{item.nomeCategoriaFinanceiro.substr(0,14)}</TextTitle>
+							<TextTitle>{item.nomeCategoriaFinanceiroShow}</TextTitle>
 						</ContainerTitle>
 
 						<ContainerSubtitle>
@@ -157,7 +153,7 @@ export default function Category(props:DataFiltersCategory ) {
 			/>)
 		}
 
-			<EditCategory item={categoryEdit} ref={editCategoryRef} onClose={handleModalEditCategory}/>
+			{categoryEdit && <EditCategory item={categoryEdit} ref={editCategoryRef} onClose={handleModalEditCategory}/>}
 
 		</>
 	);

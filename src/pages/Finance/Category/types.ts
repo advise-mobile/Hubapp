@@ -3,7 +3,7 @@ export interface CategoryProps {
 	idCategoriaFinanceiro?: number,
 	nomeCategoriaFinanceiro: string,
 	corCategoria: string,
-	tipoCategoriaFinanceiro: TypeCategoryProps;
+	idTipoCategoriaFinanceiro: TypeCategoryProps;
 }
 
 export interface TypeCategoryProps{

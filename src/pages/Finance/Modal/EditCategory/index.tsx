@@ -36,26 +36,22 @@ import {
     ContentColorItem,
     ContainerColor,
     ContentColor,
-    ColorsItem,
+    ColorsItem
 } from './styles';
 import { useCategory } from '@services/hooks/Finances/useCategory';
 
 export default EditCategory = forwardRef((props,ref) => {
 
-	const categoryRef = useRef(null);
-
     // Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const item = props.item;
+	const { item } = props;
 
-	// idCategoriaFinanceiro?: number,
-	// nomeCategoriaFinanceiro: string,
-	// corCategoria;
-	// tipoCategoriaFinanceiro;
-
-	//  console.log("=== editing",item.nomeCategoriaFinanceiro )
+	const [nomeCategoriaFinanceiro, setNomeCategoriaFinanceiro] = useState<string>();
+	const [idTipoCategoriaFinanceiro, setIdTipoCategoriaFinanceiro] = useState<number>();
+	const [corCategoria, setCorCategoria] = useState<string>();
+	
 
     const {isSavingCategory, updateCategory} = useCategory();
 
@@ -73,36 +69,33 @@ export default EditCategory = forwardRef((props,ref) => {
 		{id: 6, color: colors.typecolor},
 	];
 
-	const onSubmit = (data:CategoryProps) => {
-	
-        const register = {
-            itens: [data],
-        };
+	const onSubmit = (data: CategoryProps) => {
 
-        updateCategory(register, () => closeModal());
-        };
+		const updatedCategory = {
+			corCategoria: data.corCategoria,
+			idCategoriaFinanceiro:item.idCategoriaFinanceiro,
+			idTipoCategoriaFinanceiro: data.idTipoCategoriaFinanceiro,		
+			nomeCategoriaFinanceiro: data.nomeCategoriaFinanceiro,				
+		};
+ 
+		const register = {
+		  itens: [updatedCategory],
+		};
+	  
+	  
+		 updateCategory(register, () => props.onClose());
+	  };
 
 	const {
 		control,
 		handleSubmit,
-		setValue,
 		formState: {errors},
+		setValue
 	} = useForm({
-		
-			defaultValues: { nomeCategoriaFinanceiro: 'Meu ovo'},
-			// useForm({ defaultValues: { data1: education?.data1 } });
-
-		
-		// shouldUnregister: false,
+		shouldUnregister: false,
 	});
 
     const RBLabel = stylesRBLabel(colors);
-
-    const [type, setType] = useState<number | null>(null);
-
-    const [selectedColor, setSelectedColor] = useState(item.corCategoria);
-
-	
 
 	const footer = () => (
         
@@ -121,11 +114,16 @@ export default EditCategory = forwardRef((props,ref) => {
               )
     );
 
-	// useEffect(() => {
-	// 	// alert(item.nomeCategoriaFinanceiro);
-		
-	// 	setValue("nomeCategoriaFinanceiro",);
-	// })
+	useEffect(() => {
+		setNomeCategoriaFinanceiro(item.nomeCategoriaFinanceiro);
+		setIdTipoCategoriaFinanceiro(item.tipoCategoriaFinanceiro.idTipoCategoriaFinanceiro);
+		setCorCategoria(item.corCategoria);
+
+		setValue('nomeCategoriaFinanceiro', item.nomeCategoriaFinanceiro);
+		setValue('idTipoCategoriaFinanceiro', item.tipoCategoriaFinanceiro.idTipoCategoriaFinanceiro);
+		setValue('corCategoria', item.corCategoria);
+
+	},[item])
 
 
 	return (
@@ -142,18 +140,22 @@ export default EditCategory = forwardRef((props,ref) => {
 						rules={{
 							required: true,
 						}}
+						defaultValue={item.nomeCategoriaFinanceiro}
 						control={control}
 						render={({onChange}) => (
 							<Input
-								
+								value={nomeCategoriaFinanceiro}
 								autoCorrect={false}
 								autoCapitalize="none"
-								placeholder="Nome"
+								placeholder={"Nome"}
 								placeholderTextColor={
 									errors.nomeCategoriaFinanceiro ? colors.red200 : colors.grayLight
 								}
 								returnKeyType="next"
-								onChangeText={value => onChange(value)}
+								onChangeText={value => {
+									onChange(value)
+									setNomeCategoriaFinanceiro(value)
+								}}
 							/>
 						)}
 					/>
@@ -176,10 +178,11 @@ export default EditCategory = forwardRef((props,ref) => {
 						{type_props.map((obj, i) => (
 							<RBRow as={RadioButton} key={i}>
 								<RadioButtonInput
-									obj={obj}
-									isSelected={type === i}
+									value={idTipoCategoriaFinanceiro}
+									obj={{ ...obj, value: obj.value }} 
+									isSelected={idTipoCategoriaFinanceiro === obj.value}
 									onPress={() => {
-										setType(i);
+										setIdTipoCategoriaFinanceiro(obj.value);
 										onChange(obj.value);
 									}}
 									borderWidth={1}
@@ -189,19 +192,19 @@ export default EditCategory = forwardRef((props,ref) => {
 									buttonOuterSize={18}
 								/>
 								<RadioButtonLabel
-									isError={errors.idTipoCategoriaFinanceiro && type === null}
+									isError={errors.idTipoCategoriaFinanceiro && idTipoCategoriaFinanceiro === null}
 									obj={obj}
 									labelStyle={[
 										RBLabel.label,
 										{
 											color:
-												errors.idTipoCategoriaFinanceiro && type === null
+												errors.idTipoCategoriaFinanceiro && idTipoCategoriaFinanceiro === null
 													? colors.red200
 													: colors.textPrimary,
 										},
 									]}
 									onPress={() => {
-										setType(i);
+										setIdTipoCategoriaFinanceiro(obj.value);
 										onChange(obj.value);
 									}}
 								/>
@@ -214,42 +217,38 @@ export default EditCategory = forwardRef((props,ref) => {
 
             <ContentColor>
 				
-					<Label>Cor </Label>
+				<Label>Cor </Label>
 				
                 <Controller
-				name="corCategoria"
-				rules={{
-					required: true,
-				}}
-				control={control}
-				defaultValue={item.corCategoria}
-				render={({onChange}) => (
-					<ContentColorItem>
-						<ContainerColor>
-							{colorData.map(({id, color}) => (
-								<ColorsItem
-									key={id}
-									isError={errors.corCategoria}
-									isSelected={selectedColor === color}
-									backgroundColor={color}
-									onPress={() => {
-										setSelectedColor(color);
-										onChange(color);
-									}}
-								/>
-							))}
-						</ContainerColor>
-					</ContentColorItem>
-				)}
-			/>
+					name="corCategoria"
+					rules={{
+						required: true,
+					}}
+					control={control}
+					render={({ value, onChange, ...fieldProps } ) => (
+						<ContentColorItem>
+							<ContainerColor>
+								{colorData.map(({id, color}) => (
+									<ColorsItem
+											key={id}
+											isError={errors.corCategoria}
+											isSelected={corCategoria.toUpperCase() === color}
+											backgroundColor={color}
+											onPress={() => {
+												onChange(color);
+												setCorCategoria(color);
+											}}
+											>
+									</ColorsItem>
+									
+								))}
+
+							</ContainerColor>
+						</ContentColorItem>
+					)}
+				/>
 			</ContentColor>
 
-			
-
-
-
-
-			
 		</Modal>
 	);
 });

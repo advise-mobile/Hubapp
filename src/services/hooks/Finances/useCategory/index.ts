@@ -39,7 +39,7 @@ export const useGetCategory = () => {
 
                 return {
                             ...item,
-  							nomeCategoriaFinanceiro:item.nomeCategoriaFinanceiro.length > 13 ?
+  							nomeCategoriaFinanceiroShow:item.nomeCategoriaFinanceiro.length > 13 ?
 							  toCamelCase(item.nomeCategoriaFinanceiro.substr(0,10)) + " ...":
 							  toCamelCase(item.nomeCategoriaFinanceiro)
                         }
@@ -88,27 +88,25 @@ export const useCategory = () => {
 
 	const updateCategory =  async (data:DataCategoryItemProps, handleCallback:() => void) => {
 
-		console.log("=== cheguei no update",data);
+		try {
+				setIsSavingCategory(true);
 
-		// try {
-		// 		setIsSavingCategory(true);
+				const response = await Api.put(`core/v1/categorias-financeiro`,data);
 
-		// 		const response = await Api.post(`core/v1/categorias-financeiro`,data);
+				dispatch(ToastNotifyActions.toastNotifyShow('Categoria alterada com sucesso!',false));
 
-		// 		dispatch(ToastNotifyActions.toastNotifyShow('Categoria cadastrada com sucesso!',false));
+				return true;
 
-		// 		return true;
-
-		// } catch (error) {
-		// 		dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria',true));
-		// }finally {
-		// 		setTimeout(() => {
-		// 				setIsSavingCategory(false);
-		// 				handleCallback();
-		// 		}, 1000);
+		} catch (error) {
+				dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria',true));
+		}finally {
+				setTimeout(() => {
+						setIsSavingCategory(false);
+						handleCallback();
+				}, 1000);
 
 
-		// }
+		}
 };
 
 
