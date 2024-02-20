@@ -4,6 +4,7 @@ export interface CategoryProps {
 	nomeCategoriaFinanceiro: string,
 	corCategoria: string,
 	idTipoCategoriaFinanceiro: TypeCategoryProps;
+	ativo:boolean;
 }
 
 export interface TypeCategoryProps{
