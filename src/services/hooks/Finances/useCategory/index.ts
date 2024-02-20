@@ -107,10 +107,68 @@ export const useCategory = () => {
 
 
 		}
-};
+	};
+
+	const inactivateCategory =  async (data:CategoryProps, handleCallback:() => void) => {
+
+		try {
+				setIsSavingCategory(true);
+
+				const categoryIds = {
+					"ids":[data.idCategoriaFinanceiro]
+				}
+
+				const response = await Api.put(`core/v1/categorias-financeiro/inativar`,categoryIds);
+
+				dispatch(ToastNotifyActions.toastNotifyShow('Categoria inativada com sucesso!',false));
+
+				return true;
+
+		} catch (error) {
+				dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível inativar esta categoria',true));
+		}finally {
+				setTimeout(() => {
+						setIsSavingCategory(false);
+						handleCallback();
+				}, 1000);
+
+
+		}
+	};
+
+	const activateCategory = async (data:CategoryProps, handleCallback:() => void) => {
+
+		try {
+				setIsSavingCategory(true);
+
+				const categoryIds = {
+					"ids":[data.idCategoriaFinanceiro]
+				}
+
+				console.log("===",categoryIds)
+
+				const response = await Api.put(`core/v1/categorias-financeiro/ativar`,categoryIds);
+
+				dispatch(ToastNotifyActions.toastNotifyShow('Categoria ativada com sucesso!',false));
+
+				return true;
+
+		} catch (error) {
+				dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível ativar esta categoria',true));
+		}finally {
+				setTimeout(() => {
+						setIsSavingCategory(false);
+						handleCallback();
+				}, 1000);
+
+
+		}
+	};
 
 
 
-	return {isSavingCategory, saveCategory, updateCategory};
+
+
+	return {isSavingCategory, saveCategory, updateCategory, inactivateCategory,activateCategory};
 }
 

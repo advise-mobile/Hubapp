@@ -1,5 +1,9 @@
 import styled from 'styled-components/native';
 
+interface ContainerProps {
+	active:boolean
+}
+
 export const ContainerIcon = styled.View`
 	height: 25px;
 	width: 24px;
@@ -21,8 +25,8 @@ export const ContainerSubtitle = styled.View`
 	width: 80px;
 `;
 
-export const Container = styled.View`
-  background-color:  ${({ theme }) => theme.colors.white};
+export const Container = styled.View<ContainerProps>`
+  background-color:  ${({ active,theme }) => active ? theme.colors.white :theme.colors.gray };
   padding: 12px 17px;
   border-bottom-width: 0.7px;
   border-bottom-color: ${({ theme }) => theme.colors.grayLighter};

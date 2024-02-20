@@ -97,11 +97,7 @@ export default AddCategory = forwardRef((props, ref) => {
                     </Cancel>
 
                     <Register onPress={handleSubmit(onSubmit)}>
-                        {/* {isSavingCategory ? ( <Spinner height={10} color={colors.white} transparent={true} /> ) : (<RegisterText>Salvar</RegisterText>) } */}
-
-                        {/* {isSavingCategory ? ( <Spinner height={15} color={colors.white} transparent={true} /> ) : (<Spinner height={17.5} color={colors.white} transparent={true} />) } */}
                         <RegisterText>Salvar</RegisterText>
-                        
                     </Register>
                 </Footer>
               )
@@ -148,10 +144,10 @@ export default AddCategory = forwardRef((props, ref) => {
 				<Label>Tipo da Categoria</Label>
 				
                 <Controller
-				name="idTipoCategoriaFinanceiro"
-				rules={{
-					required: true,
-				}}
+					name="idTipoCategoriaFinanceiro"
+					rules={{
+						required: true,
+					}}
 				control={control}
 				defaultValue={null}
 				render={({onChange}) => (
@@ -197,7 +193,7 @@ export default AddCategory = forwardRef((props, ref) => {
 
             <ContentColor>
 				
-					<Label>Cor </Label>
+				<Label>Cor </Label>
 				
                 <Controller
 				name="corCategoria"
