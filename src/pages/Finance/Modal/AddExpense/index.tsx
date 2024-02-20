@@ -159,7 +159,7 @@ export default AddExpense = forwardRef((props, ref) => {
 	];
 
 	const onSubmit = data => {
-		// console.log('=== errors', data);
+
 
 		if (data.valor === '0,00') {
 			setError('valor', {type: 'manual', message: 'Campo valor não pode ser 0,00'});
@@ -183,6 +183,8 @@ export default AddExpense = forwardRef((props, ref) => {
 				},
 			],
 		};
+
+		console.log("=== register" ,register);
 
 		addRelease(register, () => closeModal());
 	};
@@ -616,7 +618,7 @@ export default AddExpense = forwardRef((props, ref) => {
 									style={{
 										...pickerSelectStyles,
 										placeholder: {
-											color: errors.quantidadeParcelas ? colors.red : colors.gray,
+											color: errors.quantidadeParcelas ? colors.red : colors.black,
 										},
 									}}
 									value={selectedDuring}

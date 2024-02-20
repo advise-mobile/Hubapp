@@ -1,6 +1,9 @@
 import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
+
 import Modal from '@components/Modal';
+
 import {StyleSheet} from 'react-native';
+
 import RadioForm, {
 	RadioButton,
 	RadioButtonInput,
@@ -15,8 +18,6 @@ import {Controller, useForm} from 'react-hook-form';
 import { CategoryProps } from '@pages/Finance/Category/types';
 
 import Spinner from '@components/Spinner';
-
-
 
 import {fonts} from 'assets/styles';
 
@@ -35,17 +36,24 @@ import {
     ContentColorItem,
     ContainerColor,
     ContentColor,
-    ColorsItem,
+    ColorsItem
 } from './styles';
 import { useCategory } from '@services/hooks/Finances/useCategory';
 
-export default AddCategory = forwardRef((props, ref) => {
+export default EditCategory = forwardRef((props,ref) => {
 
     // Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-    const {isSavingCategory, saveCategory} = useCategory();
+	const { item } = props;
+
+	const [nomeCategoriaFinanceiro, setNomeCategoriaFinanceiro] = useState<string>();
+	const [idTipoCategoriaFinanceiro, setIdTipoCategoriaFinanceiro] = useState<number>();
+	const [corCategoria, setCorCategoria] = useState<string>();
+	
+
+    const {isSavingCategory, updateCategory} = useCategory();
 
 	const type_props = [
 		{label: 'Despesas -', value: -2},
@@ -61,30 +69,33 @@ export default AddCategory = forwardRef((props, ref) => {
 		{id: 6, color: colors.typecolor},
 	];
 
-	const onSubmit = (data:CategoryProps) => {
-	
-        const register = {
-            itens: [data],
-        };
+	const onSubmit = (data: CategoryProps) => {
 
-        saveCategory(register, () => closeModal());
-        };
+		const updatedCategory = {
+			corCategoria: data.corCategoria,
+			idCategoriaFinanceiro:item.idCategoriaFinanceiro,
+			idTipoCategoriaFinanceiro: data.idTipoCategoriaFinanceiro,		
+			nomeCategoriaFinanceiro: data.nomeCategoriaFinanceiro,				
+		};
+ 
+		const register = {
+		  itens: [updatedCategory],
+		};
+	  
+	  
+		 updateCategory(register, () => props.onClose());
+	  };
 
 	const {
 		control,
 		handleSubmit,
 		formState: {errors},
+		setValue
 	} = useForm({
 		shouldUnregister: false,
 	});
 
     const RBLabel = stylesRBLabel(colors);
-
-    const [type, setType] = useState<number | null>(null);
-
-    const [selectedColor, setSelectedColor] = useState(null);
-
-	const closeModal = useCallback(() => ref.current?.close(), props);
 
 	const footer = () => (
         
@@ -92,30 +103,34 @@ export default AddCategory = forwardRef((props, ref) => {
             : (
                 <Footer>
                     
-                    <Cancel onPress={() => closeModal()}>
+                    <Cancel onPress={() => props.onClose()}>
                         <CancelText>Cancelar</CancelText>
                     </Cancel>
 
                     <Register onPress={handleSubmit(onSubmit)}>
-                        {/* {isSavingCategory ? ( <Spinner height={10} color={colors.white} transparent={true} /> ) : (<RegisterText>Salvar</RegisterText>) } */}
-
-                        {/* {isSavingCategory ? ( <Spinner height={15} color={colors.white} transparent={true} /> ) : (<Spinner height={17.5} color={colors.white} transparent={true} />) } */}
                         <RegisterText>Salvar</RegisterText>
-                        
                     </Register>
                 </Footer>
               )
     );
-	
 
-	
+	useEffect(() => {
+		setNomeCategoriaFinanceiro(item.nomeCategoriaFinanceiro);
+		setIdTipoCategoriaFinanceiro(item.tipoCategoriaFinanceiro.idTipoCategoriaFinanceiro);
+		setCorCategoria(item.corCategoria);
+
+		setValue('nomeCategoriaFinanceiro', item.nomeCategoriaFinanceiro);
+		setValue('idTipoCategoriaFinanceiro', item.tipoCategoriaFinanceiro.idTipoCategoriaFinanceiro);
+		setValue('corCategoria', item.corCategoria);
+
+	},[item])
+
 
 	return (
 		<Modal
 			maxHeight={650}
-			onClose={props.onClose}
 			ref={ref}
-			title="Cadastrar categoria"
+			title="Alterar categoria"
 			footer={footer()}>
 			<ContentName isError={errors.nomeCategoriaFinanceiro}>
 				<Row>
@@ -125,18 +140,22 @@ export default AddCategory = forwardRef((props, ref) => {
 						rules={{
 							required: true,
 						}}
+						defaultValue={item.nomeCategoriaFinanceiro}
 						control={control}
-						defaultValue={null}
 						render={({onChange}) => (
 							<Input
+								value={nomeCategoriaFinanceiro}
 								autoCorrect={false}
 								autoCapitalize="none"
-								placeholder="Nome"
+								placeholder={"Nome"}
 								placeholderTextColor={
 									errors.nomeCategoriaFinanceiro ? colors.red200 : colors.grayLight
 								}
 								returnKeyType="next"
-								onChangeText={value => onChange(value)}
+								onChangeText={value => {
+									onChange(value)
+									setNomeCategoriaFinanceiro(value)
+								}}
 							/>
 						)}
 					/>
@@ -159,10 +178,11 @@ export default AddCategory = forwardRef((props, ref) => {
 						{type_props.map((obj, i) => (
 							<RBRow as={RadioButton} key={i}>
 								<RadioButtonInput
-									obj={obj}
-									isSelected={type === i}
+									value={idTipoCategoriaFinanceiro}
+									obj={{ ...obj, value: obj.value }} 
+									isSelected={idTipoCategoriaFinanceiro === obj.value}
 									onPress={() => {
-										setType(i);
+										setIdTipoCategoriaFinanceiro(obj.value);
 										onChange(obj.value);
 									}}
 									borderWidth={1}
@@ -172,19 +192,19 @@ export default AddCategory = forwardRef((props, ref) => {
 									buttonOuterSize={18}
 								/>
 								<RadioButtonLabel
-									isError={errors.idTipoCategoriaFinanceiro && type === null}
+									isError={errors.idTipoCategoriaFinanceiro && idTipoCategoriaFinanceiro === null}
 									obj={obj}
 									labelStyle={[
 										RBLabel.label,
 										{
 											color:
-												errors.idTipoCategoriaFinanceiro && type === null
+												errors.idTipoCategoriaFinanceiro && idTipoCategoriaFinanceiro === null
 													? colors.red200
 													: colors.textPrimary,
 										},
 									]}
 									onPress={() => {
-										setType(i);
+										setIdTipoCategoriaFinanceiro(obj.value);
 										onChange(obj.value);
 									}}
 								/>
@@ -197,42 +217,38 @@ export default AddCategory = forwardRef((props, ref) => {
 
             <ContentColor>
 				
-					<Label>Cor </Label>
+				<Label>Cor </Label>
 				
                 <Controller
-				name="corCategoria"
-				rules={{
-					required: true,
-				}}
-				control={control}
-				defaultValue={null}
-				render={({onChange}) => (
-					<ContentColorItem>
-						<ContainerColor>
-							{colorData.map(({id, color}) => (
-								<ColorsItem
-									key={id}
-									isError={errors.corCategoria}
-									isSelected={selectedColor === color}
-									backgroundColor={color}
-									onPress={() => {
-										setSelectedColor(color);
-										onChange(color);
-									}}
-								/>
-							))}
-						</ContainerColor>
-					</ContentColorItem>
-				)}
-			/>
+					name="corCategoria"
+					rules={{
+						required: true,
+					}}
+					control={control}
+					render={({ value, onChange, ...fieldProps } ) => (
+						<ContentColorItem>
+							<ContainerColor>
+								{colorData.map(({id, color}) => (
+									<ColorsItem
+											key={id}
+											isError={errors.corCategoria}
+											isSelected={corCategoria.toUpperCase() === color}
+											backgroundColor={color}
+											onPress={() => {
+												onChange(color);
+												setCorCategoria(color);
+											}}
+											>
+									</ColorsItem>
+									
+								))}
+
+							</ContainerColor>
+						</ContentColorItem>
+					)}
+				/>
 			</ContentColor>
 
-			
-
-
-
-
-			
 		</Modal>
 	);
 });

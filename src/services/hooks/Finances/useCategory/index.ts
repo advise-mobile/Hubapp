@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { getLoggedUser } from '@helpers/Permissions';
 import { toCamelCase } from "@helpers/functions";
 
 import Api from '@services/Api';
 
-import { DataCategoryItemProps, DataCategoryProps, CategoryDataProps } from "@pages/Finance/Category/types";
+import { DataCategoryItemProps, DataCategoryProps, CategoryDataProps, CategoryProps } from "@pages/Finance/Category/types";
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import { useDispatch } from 'react-redux';
@@ -39,7 +39,7 @@ export const useGetCategory = () => {
 
                 return {
                             ...item,
-  							nomeCategoriaFinanceiro:item.nomeCategoriaFinanceiro.length > 13 ? 
+  							nomeCategoriaFinanceiroShow:item.nomeCategoriaFinanceiro.length > 13 ?
 							  toCamelCase(item.nomeCategoriaFinanceiro.substr(0,10)) + " ...":
 							  toCamelCase(item.nomeCategoriaFinanceiro)
                         }
@@ -55,5 +55,62 @@ export const useGetCategory = () => {
 		}
 	};
 	return { isLoadingCategory, getCategoryData };
+}
+
+export const useCategory = () => {
+
+	const [isSavingCategory, setIsSavingCategory] = useState(false);
+
+	const dispatch = useDispatch();
+
+	const saveCategory =  async (data:DataCategoryItemProps, handleCallback:() => void) => {
+
+			try {
+					setIsSavingCategory(true);
+
+					const response = await Api.post(`core/v1/categorias-financeiro`,data);
+
+					dispatch(ToastNotifyActions.toastNotifyShow('Categoria cadastrada com sucesso!',false));
+
+					return true;
+
+			} catch (error) {
+					dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria',true));
+			}finally {
+					setTimeout(() => {
+							setIsSavingCategory(false);
+							handleCallback();
+					}, 1000);
+
+
+			}
+	};
+
+	const updateCategory =  async (data:DataCategoryItemProps, handleCallback:() => void) => {
+
+		try {
+				setIsSavingCategory(true);
+
+				const response = await Api.put(`core/v1/categorias-financeiro`,data);
+
+				dispatch(ToastNotifyActions.toastNotifyShow('Categoria alterada com sucesso!',false));
+
+				return true;
+
+		} catch (error) {
+				dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria',true));
+		}finally {
+				setTimeout(() => {
+						setIsSavingCategory(false);
+						handleCallback();
+				}, 1000);
+
+
+		}
+};
+
+
+
+	return {isSavingCategory, saveCategory, updateCategory};
 }
 
