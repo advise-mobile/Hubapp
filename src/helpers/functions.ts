@@ -1,5 +1,6 @@
 export const toCamelCase = function(str:string) {
     
+     if(str.length === 0) return 'N/I';
      const first = str[0].toUpperCase();
      const strLower = str.toLowerCase();
 

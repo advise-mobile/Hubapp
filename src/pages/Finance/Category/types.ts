@@ -37,6 +37,8 @@ export interface DataPersonItemProps{
 
 
 export interface ProcessProps{
+	id:number;
+	idProcesso:number,
 	numeroProcesso: string;
 }
 

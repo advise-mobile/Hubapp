@@ -145,8 +145,6 @@ export const useCategory = () => {
 					"ids":[data.idCategoriaFinanceiro]
 				}
 
-				console.log("===",categoryIds)
-
 				const response = await Api.put(`core/v1/categorias-financeiro/ativar`,categoryIds);
 
 				dispatch(ToastNotifyActions.toastNotifyShow('Categoria ativada com sucesso!',false));

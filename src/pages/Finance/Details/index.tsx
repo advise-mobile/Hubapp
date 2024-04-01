@@ -8,6 +8,15 @@ import HeaderGlobals from '../../../components/HeaderGlobals';
 
 import {Container} from '../../../assets/styles/global';
 
+import LauchActionsMenu from '../Modal/LaunchActions';
+
+import {
+  useGetInstallmentsDetails,
+} from '@services/hooks/Finances/useReleases';
+
+import { ItemsInstallmentsDetailsProps } from './types';
+
+
 import {
 	ContainerDate,
 	ContainerScreen,
@@ -27,13 +36,6 @@ import {
 	DescriptionOfObservationsContainer,
 	DescriptionOfObservationsText,
 } from './styles';
-import More from '../Modal/LaunchActions';
-
-import {
-  useGetInstallmentsDetails,
-} from '@services/hooks/Finances/useReleases';
-
-import { ItemsInstallmentsDetailsProps } from './types';
 
 export default function Details(props) {
 
@@ -41,34 +43,38 @@ export default function Details(props) {
 
 	const [dataDetails, setDataDetails] = useState<ItemsInstallmentsDetailsProps>();
 
-	const addRef = useRef(null);
+	const [itemComplete, setItemComplete] = useState();
 
-	const {item} = props.route.params;
+	const LauchActionsMenuRef = useRef(null);
 
-
-
-	const renderAddOptions = useCallback(() => <More ref={addRef} idAgenda={null} onAdd={() => {}} />, []);
+	const { item } = props.route.params;
 
 	//chama o hook
 	useEffect(() => {
-    fetchDataInstallmentsDetails();
-  }, []);
+		LauchActionsMenuRef.current?.close()
+		fetchDataInstallmentsDetails();
+	}, [item]);
 
 
 	//busca a informação
 	const fetchDataInstallmentsDetails = async () => {
     try {
 
-      const installmentsDetails = await getInstallmentsDetails({idFinanceiro:item.idLancamentoFinanceiro});
-
-			setDataDetails(installmentsDetails);
-
+		const installmentsDetails = await getInstallmentsDetails({
+			idFinanceiro: item.idLancamentoFinanceiro
+		});
+		setDataDetails(installmentsDetails);
+		const itemComplete = {...item,
+								dataEmissaofull:installmentsDetails?.dataEmissaofull,
+								idTipoParcelamentoFinanceiro:installmentsDetails?.idTipoParcelamentoFinanceiro,
+								observacao:installmentsDetails?.observacao};			
+		setItemComplete(itemComplete)
     } catch (error) {
 
     }
   };
 
-
+  	const renderActionsOptions = useCallback(() => <LauchActionsMenu item={itemComplete}  ref={LauchActionsMenuRef} />, [itemComplete]);
 
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
@@ -78,18 +84,16 @@ export default function Details(props) {
 		return item.debitoCredito === 'C' ? 'Receita' : 'Despesa';
 	};
 
-
-
 	return (
 		<Container>
 			<HeaderGlobals
 					title={getTransactionTitle()}
 					back={() => props.navigation.goBack()}
 					lower={true}
-					more={() => addRef.current?.open()}
+					more={() => LauchActionsMenuRef.current?.open()}
 
 				/>
-				{renderAddOptions()}
+				{renderActionsOptions()}
 
 			<ContainerScreen>
 				<FirstContainer>
@@ -127,7 +131,7 @@ export default function Details(props) {
 					</InformationTitleTextContainer>
 
 					<InformationTextContainer>
-						<InformationText>{dataDetails?.valor || 'N/I'}</InformationText>
+						<InformationText>{item?.value || 'N/I'}</InformationText>
 					</InformationTextContainer>
 
 					<InformationTitleTextContainer>

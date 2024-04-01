@@ -1,11 +1,14 @@
 import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
 import Modal from '@components/Modal';
 import Datepicker from '@components/DatePicker';
-import {FormatFullDateEN} from '@helpers/DateFunctions';
+import {FormatFullDateEN,FormatDateBR} from '@helpers/DateFunctions';
+import {toCamelCase} from '@helpers/functions';
 import {StyleSheet, Text} from 'react-native';
-import {MaskMoney, MaskMoneyForRegister} from 'helpers/Mask';
+import {MaskMoney, MaskMoneyForRegister} from '@helpers/Mask';
 
-import moment from 'moment';
+import { NavigationActions, StackActions,NavigationNavigateAction } from 'react-navigation';
+
+import {useNavigation} from '@react-navigation/native';
 
 import {
 	Footer,
@@ -51,31 +54,60 @@ import {useGetFinanceID, useRelease} from '@services/hooks/Finances/useReleases'
 import RNPickerSelect from 'react-native-picker-select';
 import {Controller, useForm} from 'react-hook-form';
 
-export default AddExpense = forwardRef((props, ref) => {
+interface ReleaseEditProps {
+	onClose: () => void;
+	item:any
+}
+
+export default ReleaseEdit = forwardRef((props, ref) => {
+
+	const navigation = useNavigation();
+
+	const closeModal = useCallback(() => {
+		ref.current?.close();
+		navigation.reset({
+			index:0,
+			routes:[{name:'FinanceTab'}]
+		})
+	}, props);
+
+
+	const {item} = props;
+	
+
+	const [titleModal, setTitleModal] = useState(item.debitoCredito === "C" ? "Editar Receita":"Editar Despesa");
+
+	const [descriptionRelease, setDescriptionRelease] = useState(null);
+	const [valueRelease, setValueRelease] = useState(null);
+	const [dateExpiration, setDateExpiration] = useState(null);
+	const [selectedCategory, setSelectedCategory] = useState(null);
+	const [selectedPeople, setSelectedPeople] = useState(null);
+	const [selectedProcess, setSelectedProcess] = useState(null);
+	const [observation, setObservation] = useState<number>(-1);
+	
+	
+	const [selectedRepeat, setSelectedRepeat] = useState<number>(-1);
+	const [selectedDuring, setSelectedDuring] = useState(item.quantidadeParcelas);
+	
+
 	const [dataFinance, setDataFinance] = useState(null);
 
 	const {isLoadingCategories, getCategoriesData} = useGetPopulateCategories();
 	const {isLoadingPeople, getPeopleData} = useGetPopulatePeople();
 	const {isLoadingProcess, getProcessData} = useGetPopulateProcess();
 
-	const [dataResume, setDataResume] = useState<CategoryProps>([]);
-	const [PeopleResume, setPeopleResume] = useState<PersonProps[]>([]);
-	const [ProcessResume, setProcessResume] = useState<ProcessProps[]>([]);
-
-	const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(null);
-
-	const [selectedPeople, setSelectedPeople] = useState(null);
-	const [selectedProcess, setSelectedProcess] = useState(null);
-	const [selectedRepeat, setSelectedRepeat] = useState<number>(-1);
-	const [selectedDuring, setSelectedDuring] = useState(null);
-	const [dateExpiration, setDateExpiration] = useState(null);
+	const [categoryResume, setCategoryResume] = useState<CategoryProps>([]);
+	const [peopleResume, setPeopleResume] = useState<PersonProps[]>([]);
+	const [processResume, setProcessResume] = useState<ProcessProps[]>([]);
+	
+	
 
 	const [duration, setDuration] = useState([]);
 	const [disableDuration, setDisableDuration] = useState(true);
 
 	const {isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
 
-	const {isLoadingRelease, addRelease} = useRelease();
+	const {isLoadingRelease, updateRelease} = useRelease();
 
 	const valueInputRef = useRef(null);
 
@@ -83,8 +115,8 @@ export default AddExpense = forwardRef((props, ref) => {
 		setSelectedPeople(index);
 	};
 
-	const handleProcessClick = index => {
-		setSelectedProcess(index);
+	const handleProcessClick = idProcesso => {
+		setSelectedProcess(idProcesso);
 	};
 
 	useEffect(() => {
@@ -92,7 +124,7 @@ export default AddExpense = forwardRef((props, ref) => {
 	}, []);
 
 	useEffect(() => {
-		fetchData();
+		fetchDataCategory();
 	}, []);
 
 	useEffect(() => {
@@ -110,10 +142,10 @@ export default AddExpense = forwardRef((props, ref) => {
 		} catch (error) {}
 	};
 
-	const fetchData = async () => {
+	const fetchDataCategory = async () => {
 		try {
 			const responseCategories = await getCategoriesData();
-			setDataResume(responseCategories);
+			setCategoryResume(responseCategories);
 		} catch (error) {}
 	};
 
@@ -131,7 +163,7 @@ export default AddExpense = forwardRef((props, ref) => {
 		} catch (error) {}
 	};
 
-	const data = [
+	const dataRepeatOption = [
 		{
 			label: 'Não se repete',
 			value: -1,
@@ -160,31 +192,45 @@ export default AddExpense = forwardRef((props, ref) => {
 
 	const onSubmit = data => {
 
-
+		
 		if (data.valor === '0,00') {
 			setError('valor', {type: 'manual', message: 'Campo valor não pode ser 0,00'});
 			return;
 		}
 
-		data.valor = MaskMoneyForRegister(data.valor);
+		 data.valor = MaskMoneyForRegister(MaskMoney(data.valor));
 
 		const {idContaFinanceiro, idFinanceiro} = dataFinance[0];
-		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
-		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
+		const repeticaoFixo = data.idTipoParcelamentoFinanceiro === -1 ? false : true;
+		
 		const register = {
-			itens: [
+			"itens": [
 				{
-					DebitoCredito: 'D',
-					repeticaoFixo,
-					dataEmissao,
+					idProcesso: data.idProcesso,
+					alterarEsteEProximosLancamentos: "true",
+					dataEmissao:item.dataEmissaofull,
+					dataVencimento:data.DataVencimento,
+					debitoCredito: item.debitoCredito,
+					descricao: data.descricao,
+					idCategoriaFinanceiro:data.idCategoriaFinanceiro,
 					idContaFinanceiro,
 					idFinanceiro,
-					...data,
+					idLancamentoFinanceiro:item.idLancamentoFinanceiro,
+					idParcelaFinanceiro:item.idParcelaFinanceiro,
+					idPessoaCliente: data.idPessoaCliente,
+					idTipoParcelamentoFinanceiro:data.idTipoParcelamentoFinanceiro,
+					observacao:data.observacao,
+					quantidadeParcelas:data.quantidadeParcelas,
+					repeticaoFixo,
+							
+					
+					valorOriginal:data.valor,
+					valor:data.valor
 				},
 			],
-		};
-
-		addRelease(register, () => closeModal());
+		};	
+		
+		updateRelease(register, () => closeModal());
 	};
 
 	const {
@@ -192,9 +238,40 @@ export default AddExpense = forwardRef((props, ref) => {
 		handleSubmit,
 		setError,
 		formState: {errors},
+		setValue
 	} = useForm({
 		shouldUnregister: false,
 	});
+
+	useEffect(() => {
+		handleChangeTypeDuration(item.idTipoParcelamentoFinanceiro)
+
+		setDescriptionRelease(item.descricaoLancamento);
+		setValueRelease(item.value);
+		setDateExpiration(FormatDateBR(item.dataVencimento));
+		setSelectedCategory(item.categoriaFinanceiro.idCategoriaFinanceiro)
+		setSelectedPeople(item.idPessoaCliente)
+		setSelectedProcess(item.idProcesso)		
+		setSelectedRepeat(item.idTipoParcelamentoFinanceiro)
+		setDisableDuration(item.idTipoParcelamentoFinanceiro === -1)
+		setSelectedDuring(item.quantidadeParcelas)
+		setObservation(item.observacao)
+		
+
+		// pass props value to controller react hook form
+		setValue('descricao', item.descricaoLancamento);
+		setValue('valor', item.value);
+		setValue('DataVencimento', item.dataVencimento);
+		setValue('idCategoriaFinanceiro', item.categoriaFinanceiro.idCategoriaFinanceiro);
+		setValue('idPessoaCliente', item.idPessoaCliente);
+		setValue('idProcesso', item.idProcesso);
+		setValue('idTipoParcelamentoFinanceiro', item.idTipoParcelamentoFinanceiro);
+		setValue('quantidadeParcelas', item.quantidadeParcelas);
+		setValue('observacao', item.observacao);
+		
+
+	},[item])
+
 
 	const handleRepeatChange = value => {
 		setSelectedRepeat(value);
@@ -211,10 +288,6 @@ export default AddExpense = forwardRef((props, ref) => {
 
 	const pickerSelectStyles = stylesPickerSelectStyles(colors);
 
-	const [isRepeatSelected, setIsRepeatSelected] = useState(false);
-
-	const closeModal = useCallback(() => ref.current?.close(), props);
-
 	const footer = () => (
 		<Footer>
 			<Cancel onPress={() => closeModal()}>
@@ -222,7 +295,7 @@ export default AddExpense = forwardRef((props, ref) => {
 			</Cancel>
 
 			<Register onPress={handleSubmit(onSubmit)}>
-				<RegisterText>Cadastrar</RegisterText>
+				<RegisterText>Alterar</RegisterText>
 			</Register>
 		</Footer>
 	);
@@ -335,7 +408,7 @@ export default AddExpense = forwardRef((props, ref) => {
 			maxHeight={650}
 			onClose={props.onClose}
 			ref={ref}
-			title="Cadastrar despesa"
+			title={titleModal}
 			footer={footer()}>
 			<ContentDescription isError={errors.descricao}>
 				<Row>
@@ -349,6 +422,7 @@ export default AddExpense = forwardRef((props, ref) => {
 						defaultValue={null}
 						render={({onChange}) => (
 							<Input
+								value={descriptionRelease}
 								autoCorrect={false}
 								autoCapitalize="none"
 								placeholder="Título do lançamento"
@@ -357,7 +431,10 @@ export default AddExpense = forwardRef((props, ref) => {
 								onSubmitEditing={() => {
 									valueInputRef.current?.focus();
 								}}
-								onChangeText={value => onChange(value)}
+								onChangeText={value => {
+									onChange(value);
+									setDescriptionRelease(value);
+								}}
 							/>
 						)}
 					/>
@@ -384,14 +461,16 @@ export default AddExpense = forwardRef((props, ref) => {
 								defaultValue={null}
 								render={({onChange, value}) => (
 									<Input
+										value={valueRelease}
 										ref={valueInputRef}
 										placeholder="R$ -"
 										placeholderTextColor={errors.valor ? colors.red200 : colors.grayLight}
 										keyboardType="numeric"
 										onChangeText={text => {
 											onChange(text !== '0,0' ? MaskMoney(text) : '');
+											setValueRelease(text !== '0,0' ? MaskMoney(text) : '')
 										}}
-										value={value}
+										
 									/>
 								)}
 							/>
@@ -451,23 +530,23 @@ export default AddExpense = forwardRef((props, ref) => {
 						defaultValue={null}
 						render={({onChange}) => (
 							<>
-								{dataResume.map((category, index) => (
+								{categoryResume.map((category) => (
 									<Items
-										key={index}
+										key={category.idCategoriaFinanceiro}
 										style={[
 											{backgroundColor: category.corCategoria},
 											errors.idCategoriaFinanceiro ? {backgroundColor: colors.red200} : {},
-											selectedCategoryIndex === index
+											selectedCategory === category.idCategoriaFinanceiro
 												? {borderWidth: 2, borderColor: colors.primary}
 												: {},
 										]}
 										onPress={() => {
-											setSelectedCategoryIndex(index);
+											setSelectedCategory(category.idCategoriaFinanceiro);
 											onChange(category.idCategoriaFinanceiro);
 										}}>
 										<LabelItems
-											style={[selectedCategoryIndex === index ? {color: colors.primary} : {}]}>
-											{category.nomeCategoriaFinanceiro}
+											style={[selectedCategory === category.idCategoriaFinanceiro ? {color: colors.primary} : {}]}>
+											{toCamelCase(category.nomeCategoriaFinanceiro)}
 										</LabelItems>
 									</Items>
 								))}
@@ -489,11 +568,11 @@ export default AddExpense = forwardRef((props, ref) => {
 						defaultValue={null}
 						render={({onChange}) => (
 							<>
-								{PeopleResume.map((person, index) => (
+								{peopleResume.map((person) => (
 									<ItemsPerson
-										key={index}
+										key={person.idPessoaCliente}
 										onPress={() => {
-											handlePeopleClick(index);
+											handlePeopleClick(person.idPessoaCliente);
 											onChange(person.idPessoaCliente);
 										}}
 										style={{
@@ -501,9 +580,11 @@ export default AddExpense = forwardRef((props, ref) => {
 										}}>
 										<LabelItems
 											style={{
-												color: selectedPeople === index ? colors.backgroundButton : colors.iconGray,
+												color: selectedPeople === person.idPessoaCliente ? colors.backgroundButton : colors.iconGray,
 											}}>
-											{person.nomePessoaCliente}
+											{
+												person.nomePessoaCliente !== undefined 
+											 ? toCamelCase(person.nomePessoaCliente) : 'N/I'}
 										</LabelItems>
 									</ItemsPerson>
 								))}
@@ -525,12 +606,12 @@ export default AddExpense = forwardRef((props, ref) => {
 						defaultValue={null}
 						render={({onChange}) => (
 							<>
-								{ProcessResume.map((process, index) => (
+								{processResume.map((process) => (
 									<ItemsProcess
-										key={index}
+										key={process.id}
 										onPress={() => {
-											handleProcessClick(index);
-											onChange(process.id);
+											handleProcessClick(process.idProcesso);
+											onChange(process.idProcesso);
 										}}
 										style={{
 											backgroundColor: colors.gray,
@@ -538,7 +619,7 @@ export default AddExpense = forwardRef((props, ref) => {
 										<LabelItemsProcess
 											style={{
 												color:
-													selectedProcess === index ? colors.backgroundButton : colors.iconGray,
+													selectedProcess === process.idProcesso ? colors.backgroundButton : colors.iconGray,
 											}}>
 											{process.numeroProcesso}
 										</LabelItemsProcess>
@@ -550,13 +631,13 @@ export default AddExpense = forwardRef((props, ref) => {
 				</ContainerItemsProcess>
 			</Process>
 
-			<ContentRepeat isError={errors.IdTipoParcelamentoFinanceiro}>
+			<ContentRepeat isError={errors.idTipoParcelamentoFinanceiro}>
 				<RowCategory>
 					<Label>Repetir</Label>
 				</RowCategory>
 
 				<Controller
-					name="IdTipoParcelamentoFinanceiro"
+					name="idTipoParcelamentoFinanceiro"
 					rules={{
 						required: true,
 					}}
@@ -564,7 +645,7 @@ export default AddExpense = forwardRef((props, ref) => {
 					defaultValue={null}
 					render={({onChange}) => (
 						<ContainerItemsRepeat>
-							{data.map(repeat => (
+							{dataRepeatOption.map(repeat => (
 								<ItemsProcess
 									key={repeat.value}
 									onPress={() => {
@@ -573,7 +654,7 @@ export default AddExpense = forwardRef((props, ref) => {
 									}}
 									style={[
 										{
-											backgroundColor: errors.IdTipoParcelamentoFinanceiro
+											backgroundColor: errors.idTipoParcelamentoFinanceiro
 												? colors.red
 												: colors.gray,
 										},
@@ -605,12 +686,14 @@ export default AddExpense = forwardRef((props, ref) => {
 						defaultValue={null}
 						render={({onChange}) => (
 							<ContainerInfo>
+								{/* {renderRNPickerSelect(onChange)} */}
 								<RNPickerSelect
+															
 									placeholder={{
 										label: 'Selecione',
 										value: null,
 									}}
-									disabled={disableDuration}
+									// disabled={disableDuration}
 									doneText="Selecionar"
 									style={{
 										...pickerSelectStyles,
@@ -618,14 +701,16 @@ export default AddExpense = forwardRef((props, ref) => {
 											color: errors.quantidadeParcelas ? colors.red : colors.black,
 										},
 									}}
-									value={selectedDuring}
+									
 									onValueChange={value => {
 										handleDuringChange(value);
 										onChange(value);
 									}}
 									useNativeAndroidPickerStyle={false}
 									items={duration}
+									value={selectedDuring.toString()}
 								/>
+								
 							</ContainerInfo>
 						)}
 					/>
@@ -645,11 +730,15 @@ export default AddExpense = forwardRef((props, ref) => {
 					defaultValue={null}
 					render={({onChange}) => (
 						<InputDescription
+							value={observation}
 							autoCorrect={false}
 							autoCapitalize="none"
 							placeholder="Digite uma observação"
 							placeholderTextColor={errors.descricao ? colors.red200 : colors.grayLight}
-							onChangeText={value => onChange(value)}
+							onChangeText={value => {
+								onChange(value);
+								setObservation(value)
+							}}
 							returnKeyType="next"
 							onSubmitEditing={handleSubmit(onSubmit)}
 						/>

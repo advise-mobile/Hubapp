@@ -30,10 +30,6 @@ export default Add = forwardRef((props, ref) => {
 	const [modalExpenseOpen, setModalExpenseOpen] = useState(false);
 	const [modalRevenueOpen, setModalRevenueOpen] = useState(false);
 
-
-
-
-
   // Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
