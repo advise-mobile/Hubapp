@@ -112,9 +112,7 @@ export const useGetInstallments = () => {
 
             const { itens } : ItemsInstallmentsProps  = response.data;
 
-
             const itensOptimized = itens.map((item:ItemInstallmentsProps) => {
-
                 const dataVencimentoFormatada =  FormatDateBR(item.dataVencimento);
                 const dataBaixaFormatada =  FormatDateBR(item.dataBaixa);
 
@@ -156,10 +154,7 @@ export const useGetInstallmentsDetails = () => {
 					const params = `campos=*`;
 					const response: DataItemsDetailsProps = await Api.get(`/core/v1/lancamentos-financeiro?${params}&IdsLancamentoFinanceiro=${filters.idFinanceiro}`);
 
-
-
 					const { itens } : ItemsDetailsProps  = response.data;
-
 
 					if (itens.length > 0) {
 							const item = itens[0];
@@ -167,13 +162,14 @@ export const useGetInstallmentsDetails = () => {
 							return {
 									idLancamentoFinanceiro: item.idLancamentoFinanceiro,
 									idCliente: (item.idCliente),
-									idFinanceiro: (item.idFinanceiro),
-									valor: FormatReal (item.valor),
+									idFinanceiro: (item.idFinanceiro),                                    
 									dataEmissao:FormatDateBR (item.dataEmissao),
 									idProcesso: (item.idProcesso),
 									quantidadeParcelas: (item.quantidadeParcelas),
 									observacao: (item.observacao),
 									categoria: (item.categoriaFinanceiro.nomeCategoriaFinanceiro),
+                                    idTipoParcelamentoFinanceiro: item.tipoParcelamentoFinanceiro.idTipoParcelamentoFinanceiro,
+                                    dataEmissaofull:item.dataEmissao
 							};
 					} else {
 							dispatch(ToastNotifyActions.toastNotifyShow('Lançamento não encontrado', true));
@@ -221,6 +217,29 @@ export const useRelease = () => {
         }
     }, [isLoadingRelease])
 
-    return {isLoadingRelease, addRelease};
+    const updateRelease = useCallback( async (data:ItemProps, handleCallback:() => void) => {
+
+        try {
+            setIsLoadingRelease(true);
+
+            const response = await Api.put(`/core/v1/lancamentos-financeiro`,data);
+
+            dispatch(ToastNotifyActions.toastNotifyShow('Lançamento alterado com sucesso!',false));
+
+            return true;
+
+        } catch (error) {
+            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível alterar este lançamento',true));
+        }finally {
+            setTimeout(() => {
+                setIsLoadingRelease(false);
+                handleCallback();
+            }, 1000);
+
+
+        }
+    }, [isLoadingRelease])
+
+    return {isLoadingRelease, addRelease, updateRelease};
 }
 

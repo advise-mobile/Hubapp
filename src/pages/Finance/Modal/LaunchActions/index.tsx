@@ -1,4 +1,4 @@
-import React, { forwardRef,useCallback, useState} from 'react';
+import React, {useEffect, forwardRef,useCallback, useState, useRef} from 'react';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Modal from 'components/Modal';
@@ -16,16 +16,32 @@ import {
 // Add UseTheme para pegar o tema global adicionado
 import { useTheme } from 'styled-components';
 
+import ReleaseEdit from '../ReleaseEdit';
 
-export default More = forwardRef((props, ref) => {
+export default LauchActionsMenu = forwardRef(({item}, ref) => {
 
 	const [editMode, setEditMode] = useState(false);
+
+  const modalReleaseEditRef = useRef(null);
+
 
   // Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
 
   const closeModal = useCallback(() => ref.current?.close(), []);
+
+  const [modalReleaseEditOpen, setModalReleaseEditOpen] = useState(false);
+
+  const closeReleaseEditModal = ()=>{
+		setModalReleaseEditOpen(false);
+	}
+  useEffect(() => {
+    if(modalReleaseEditOpen){
+      // alert(modalReleaseEditOpen)
+      modalReleaseEditRef.current?.open();
+    }
+}, [modalReleaseEditOpen]);
 
   const footer = () => (
     <Footer>
@@ -36,10 +52,11 @@ export default More = forwardRef((props, ref) => {
   );
 
 
-  return (
+  return (<>
+  
     <Modal maxHeight={500} ref={ref} footer={footer()} >
 
-      <Content>
+      <Content onPress={() => setModalReleaseEditOpen(true) }>
 			<Icon>
 				<MaterialIcons name={"edit"} size={24} color={colors.fadedBlack}/>
 				</Icon>
@@ -86,5 +103,13 @@ export default More = forwardRef((props, ref) => {
 
 
     </Modal >
+
+    {
+      modalReleaseEditOpen && <ReleaseEdit item={item} ref={modalReleaseEditRef} onClose={closeReleaseEditModal}/> 
+    }
+
+  </>
+
+    
   );
 });

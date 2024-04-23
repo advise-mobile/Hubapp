@@ -53,8 +53,7 @@ export const useGetPopulateProcess = () => {
 			const response: DataProcessProps = await Api.get(`core/v1/pastas-usuarios-clientes${params}`);
 
 			const { itens }: ItemProcessProps = response.data;
-
-
+			
 			const formatedItens = itens.map((item) => {
 
 				return {

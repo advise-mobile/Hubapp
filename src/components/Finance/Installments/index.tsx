@@ -38,8 +38,6 @@ const FinanceDataItem =  (  { item } : { item: ItemInstallmentsProps }) => {
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-
-
 	return (
 
 			<ContainerReleases onPress={Details}>
