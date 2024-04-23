@@ -6,8 +6,6 @@ import {toCamelCase} from '@helpers/functions';
 import {StyleSheet, Text} from 'react-native';
 import {MaskMoney, MaskMoneyForRegister} from '@helpers/Mask';
 
-import { NavigationActions, StackActions,NavigationNavigateAction } from 'react-navigation';
-
 import {useNavigation} from '@react-navigation/native';
 
 import {
@@ -72,8 +70,7 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 	}, props);
 
 
-	const {item} = props;
-	
+	const {item} = props;	
 
 	const [titleModal, setTitleModal] = useState(item.debitoCredito === "C" ? "Editar Receita":"Editar Despesa");
 
@@ -103,7 +100,6 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 	
 
 	const [duration, setDuration] = useState([]);
-	const [disableDuration, setDisableDuration] = useState(true);
 
 	const {isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
 
@@ -206,7 +202,6 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 		const register = {
 			"itens": [
 				{
-					idProcesso: data.idProcesso,
 					alterarEsteEProximosLancamentos: "true",
 					dataEmissao:item.dataEmissaofull,
 					dataVencimento:data.DataVencimento,
@@ -222,14 +217,13 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 					observacao:data.observacao,
 					quantidadeParcelas:data.quantidadeParcelas,
 					repeticaoFixo,
-							
-					
+					idProcesso: data.idProcesso,
 					valorOriginal:data.valor,
 					valor:data.valor
 				},
 			],
 		};	
-		
+	
 		updateRelease(register, () => closeModal());
 	};
 
@@ -253,7 +247,6 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 		setSelectedPeople(item.idPessoaCliente)
 		setSelectedProcess(item.idProcesso)		
 		setSelectedRepeat(item.idTipoParcelamentoFinanceiro)
-		setDisableDuration(item.idTipoParcelamentoFinanceiro === -1)
 		setSelectedDuring(item.quantidadeParcelas)
 		setObservation(item.observacao)
 		
@@ -305,7 +298,6 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 		switch (selectedRepeat) {
 			case -1:
 				setDuration([{value: null, label: ''}]);
-				setDisableDuration(true);
 				break;
 			case -9:
 				const days = [
@@ -323,7 +315,6 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 					i++;
 				}
 				setDuration(days);
-				setDisableDuration(false);
 				break;
 			case -7:
 				const fortnight = [
@@ -359,7 +350,6 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 					i++;
 				}
 				setDuration(weekly);
-				setDisableDuration(false);
 				break;
 			case -6:
 				const monthly = [
@@ -377,7 +367,6 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 					i++;
 				}
 				setDuration(monthly);
-				setDisableDuration(false);
 				break;
 			case -2:
 				const annually = [
@@ -395,7 +384,6 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 					i++;
 				}
 				setDuration(annually);
-				setDisableDuration(false);
 				break;
 
 			default:
@@ -647,6 +635,7 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 						<ContainerItemsRepeat>
 							{dataRepeatOption.map(repeat => (
 								<ItemsProcess
+									disabled={item.numeroParcela !== 1}
 									key={repeat.value}
 									onPress={() => {
 										handleRepeatChange(repeat.value);
@@ -686,14 +675,13 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 						defaultValue={null}
 						render={({onChange}) => (
 							<ContainerInfo>
-								{/* {renderRNPickerSelect(onChange)} */}
 								<RNPickerSelect
 															
 									placeholder={{
 										label: 'Selecione',
 										value: null,
 									}}
-									// disabled={disableDuration}
+									disabled={item.numeroParcela !== 1}
 									doneText="Selecionar"
 									style={{
 										...pickerSelectStyles,
