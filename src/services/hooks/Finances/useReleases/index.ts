@@ -158,7 +158,6 @@ export const useGetInstallmentsDetails = () => {
 
 					if (itens.length > 0) {
 							const item = itens[0];
-
 							return {
 									idLancamentoFinanceiro: item.idLancamentoFinanceiro,
 									idCliente: (item.idCliente),
@@ -235,11 +234,39 @@ export const useRelease = () => {
                 setIsLoadingRelease(false);
                 handleCallback();
             }, 1000);
-
-
         }
     }, [isLoadingRelease])
 
-    return {isLoadingRelease, addRelease, updateRelease};
+    
+    const deleteRelease = useCallback( async (item:ItemProps, handleCallback:() => void) => {
+        
+        try {
+            setIsLoadingRelease(true);
+
+            const data = {
+                Ids:item.idParcelaFinanceiro,
+                inativaEsteEProximosLancamentos:"true"
+            };
+            
+            const response = await Api.put(`core/v1/parcelas-financeiro/inativar`,data);
+
+            dispatch(ToastNotifyActions.toastNotifyShow('Lançamento excluído com sucesso!',false));
+
+            return true;
+        } catch (error) {
+            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível excluir este lançamento',true));
+        }finally {
+            setTimeout(() => {
+                setIsLoadingRelease(false);
+                handleCallback();
+            }, 1000);
+        }
+    }, [isLoadingRelease])
+    
+
+
+
+
+    return {isLoadingRelease, addRelease, updateRelease,deleteRelease};
 }
 

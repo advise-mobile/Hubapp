@@ -1,7 +1,14 @@
-import React, {useEffect, forwardRef,useCallback, useState, useRef} from 'react';
+import React, {useEffect, forwardRef,useCallback, useState, useRef, useMemo} from 'react';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import Modal from 'components/Modal';
+
+import ConfirmModal from '@components/ConfirmModal';
+
+import { useNavigation } from '@react-navigation/native';
+
+import { useRelease } from '@services/hooks/Finances/useReleases';
 
 import {
   Footer,
@@ -18,7 +25,15 @@ import { useTheme } from 'styled-components';
 
 import ReleaseEdit from '../ReleaseEdit';
 
+
+
 export default LauchActionsMenu = forwardRef(({item}, ref) => {
+
+  const navigation = useNavigation();
+
+  const {isLoadingRelease, deleteRelease} = useRelease();
+
+  const confirmationDeleteModalRef = useRef();
 
 	const [editMode, setEditMode] = useState(false);
 
@@ -38,7 +53,6 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
 	}
   useEffect(() => {
     if(modalReleaseEditOpen){
-      // alert(modalReleaseEditOpen)
       modalReleaseEditRef.current?.open();
     }
 }, [modalReleaseEditOpen]);
@@ -51,8 +65,45 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
     </Footer>
   );
 
+  const handleDeleteModalCancel = useCallback(() => confirmationDeleteModalRef.current?.close(),[]);
 
-  return (<>
+  const handleDeleteModalSubmit = useCallback(async() => {
+		
+    
+		if(item){
+			const trash = await deleteRelease(item,handleDeleteModalCancel);		
+			if(trash){
+        navigation.reset({
+          index:0,
+          routes:[{name:'FinanceTab'}]
+        })
+			}
+		}
+	},[item]);
+
+  const renderDeleteConfirmation = useMemo(
+		() =>   		
+			<ConfirmModal
+				ref={confirmationDeleteModalRef}
+				onCancel={handleDeleteModalCancel}
+				onSubmit={handleDeleteModalSubmit} 
+				cancelText='Cancelar'
+				submitText='Sim, quero excluir'
+				title='Deseja excluir?'
+				description='Ao excluir um lançamento, você elimina todas as informações referentes ao mesmoo. A ação de excluir é definitiva e irreversível.'
+				loading={isLoadingRelease}
+			/>
+		,
+		[item,isLoadingRelease],
+	);
+
+  const handleDelete = useCallback(() => {
+    confirmationDeleteModalRef.current?.open();			
+	},[]);
+
+
+  return (
+  <>
   
     <Modal maxHeight={500} ref={ref} footer={footer()} >
 
@@ -92,7 +143,7 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
         </Row>
       </Content>
 
-			<Content>
+			<Content onPress={handleDelete}>
 			<Icon>
 				<MaterialIcons name={"delete"} size={24} color={colors.fadedBlack}/>
 				</Icon>
@@ -107,6 +158,8 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
     {
       modalReleaseEditOpen && <ReleaseEdit item={item} ref={modalReleaseEditRef} onClose={closeReleaseEditModal}/> 
     }
+
+  {renderDeleteConfirmation}
 
   </>
 

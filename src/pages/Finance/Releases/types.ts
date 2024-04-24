@@ -1,6 +1,7 @@
 export interface ItemProps {
 	idContaFinanceiro: number,
-	idFinanceiro: number
+	idFinanceiro: number,
+	idParcelaFinanceiro?:number
 }
 
 export interface ItemsProps {
