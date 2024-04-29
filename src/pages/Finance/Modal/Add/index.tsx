@@ -1,7 +1,7 @@
 import React, { forwardRef,useCallback, useRef,useState,useEffect} from 'react';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Modal from 'components/Modal';
+import Modal from '@components/Modal';
 
 import {
   Footer,
@@ -17,15 +17,20 @@ import {
 import { useTheme } from 'styled-components';
 import AddRevenue from '../AddRevenue';
 import AddExpense from '../AddExpense';
+
 import AddCategory from '../AddCategory';
+import ReleaseAdd from '../ReleaseAdd';
+
+
+
 
 
 export default Add = forwardRef((props, ref) => {
 
+	const categoryRef = useRef(null);
 	const revenueRef = useRef(null);
 	const expenseRef = useRef(null);
-	const categoryRef = useRef(null);
-
+	
 	const [modalCategoriesOpen, setModalCategoriesOpen] = useState(false);
 	const [modalExpenseOpen, setModalExpenseOpen] = useState(false);
 	const [modalRevenueOpen, setModalRevenueOpen] = useState(false);
@@ -37,32 +42,31 @@ export default Add = forwardRef((props, ref) => {
   const closeModal = useCallback(() => ref.current?.close(), []);
 
 	useEffect(() => {
-			if(modalExpenseOpen){
-				expenseRef.current?.open();
-			}
-  }, [modalExpenseOpen]);
+		if(modalExpenseOpen){
+			expenseRef.current?.open();
+		}
+  	}, [modalExpenseOpen]);
 
 	useEffect(() => {
 		if(modalRevenueOpen){
 			revenueRef.current?.open();
 		}
-}, [modalRevenueOpen]);
+	}, [modalRevenueOpen]);
 
-useEffect(() => {
-	if(modalCategoriesOpen){
-		categoryRef.current?.open();
-	}
-}, [modalCategoriesOpen]);
+	useEffect(() => {
+		if(modalCategoriesOpen){
+			categoryRef.current?.open();
+		}
+	}, [modalCategoriesOpen]);
 
 
-  const footer = () => (
-    <Footer>
-      <Cancel onPress={() => closeModal()}>
-        <CancelText>Cancelar</CancelText>
-      </Cancel>
-    </Footer>
-  );
-
+	const footer = () => (
+		<Footer>
+		<Cancel onPress={() => closeModal()}>
+			<CancelText>Cancelar</CancelText>
+		</Cancel>
+		</Footer>
+	);
 
 	const closeExpense = ()=>{
 		setModalExpenseOpen(false);
@@ -77,48 +81,43 @@ useEffect(() => {
 	}
 
 
+	return (
+			<>
+				<Modal maxHeight={500} ref={ref} title="Cadastrar" footer={footer()} >
+
+					<Content onPress={() => setModalExpenseOpen(true) }>
+						<Row >
+							<Label>Despesa</Label>
+						</Row>
+						<Icon>
+							<FontAwesome name="chevron-right" color={colors.inactiveDetails}/>
+						</Icon>
+					</Content>
+
+					<Content onPress={() => setModalRevenueOpen(true)}>
+						<Row >
+							<Label>Receita</Label>
+						</Row>
+						<Icon>
+							<FontAwesome name="chevron-right" color={colors.inactiveDetails}/>
+						</Icon>
+					</Content>
+
+					<Content onPress={() => setModalCategoriesOpen(true)}>
+						<Row >
+							<Label>Categoria</Label>
+						</Row>
+						<Icon>
+						<FontAwesome name="chevron-right" color={colors.inactiveDetails}/>
+						</Icon>
+					</Content>
+				</Modal >
 
 
-  return (
-		<>
-    <Modal maxHeight={500} ref={ref} title="Cadastrar" footer={footer()} >
-
-      <Content onPress={() => setModalExpenseOpen(true) }>
-        <Row >
-          <Label>Despesa</Label>
-        </Row>
-				<Icon>
-				<FontAwesome name="chevron-right" color={colors.inactiveDetails}/>
-				</Icon>
-
-      </Content>
-
-
-
-			<Content onPress={() => setModalRevenueOpen(true)}>
-        <Row >
-          <Label>Receita</Label>
-        </Row>
-				<Icon>
-				<FontAwesome name="chevron-right" color={colors.inactiveDetails}/>
-				</Icon>
-      </Content>
-
-			<Content onPress={() => setModalCategoriesOpen(true)}>
-        <Row >
-          <Label>Categoria</Label>
-        </Row>
-				<Icon>
-				<FontAwesome name="chevron-right" color={colors.inactiveDetails}/>
-				</Icon>
-      </Content>
-    </Modal >
-
-
-		
-		{modalExpenseOpen && <AddExpense dataFinance={props.dataFinance} ref={expenseRef} onClose={closeExpense}/>}
-		{modalRevenueOpen && <AddRevenue ref={revenueRef} onClose={closeRevenue}/>}
-		{modalCategoriesOpen && <AddCategory ref={categoryRef} onClose={closeCategory}/>}
-		</>
-  );
-});
+					
+				{modalExpenseOpen && <ReleaseAdd ref={expenseRef} onClose={closeExpense} type={"D"} />}
+				{modalRevenueOpen && <AddRevenue ref={revenueRef} onClose={closeRevenue}/>}
+				{modalCategoriesOpen && <AddCategory ref={categoryRef} onClose={closeCategory}/>}
+			</>
+		);
+	});

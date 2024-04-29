@@ -24,6 +24,7 @@ import {
 import { useTheme } from 'styled-components';
 
 import ReleaseEdit from '../ReleaseEdit';
+import ReleaseDuplicate from '../ReleaseDuplicate';
 
 
 
@@ -35,9 +36,8 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
 
   const confirmationDeleteModalRef = useRef();
 
-	const [editMode, setEditMode] = useState(false);
-
   const modalReleaseEditRef = useRef(null);
+  const modalReleaseDuplicateRef = useRef(null);
 
 
   // Variavel para usar o hook
@@ -47,15 +47,24 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
   const closeModal = useCallback(() => ref.current?.close(), []);
 
   const [modalReleaseEditOpen, setModalReleaseEditOpen] = useState(false);
+  const [modalReleaseDuplicateOpen, setModalReleaseDuplicateOpen] = useState(false);
 
   const closeReleaseEditModal = ()=>{
 		setModalReleaseEditOpen(false);
 	}
+  const closeReleaseDuplicateModal = ()=>{
+		setModalReleaseDuplicateOpen(false);
+	}
+
   useEffect(() => {
     if(modalReleaseEditOpen){
       modalReleaseEditRef.current?.open();
     }
-}, [modalReleaseEditOpen]);
+    if(modalReleaseDuplicateOpen){
+      modalReleaseDuplicateRef.current?.open();
+    }
+
+  }, [modalReleaseEditOpen,modalReleaseDuplicateOpen]);
 
   const footer = () => (
     <Footer>
@@ -99,7 +108,7 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
 
   const handleDelete = useCallback(() => {
     confirmationDeleteModalRef.current?.open();			
-	},[]);
+	},[item]);
 
 
   return (
@@ -134,7 +143,7 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
         </Row>
       </Content>
 
-			<Content>
+			<Content onPress={() => setModalReleaseDuplicateOpen(true)}>
 			<Icon>
 				<MaterialIcons name={"file-copy"} size={24} color={colors.fadedBlack}/>
 				</Icon>
@@ -155,9 +164,9 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
 
     </Modal >
 
-    {
-      modalReleaseEditOpen && <ReleaseEdit item={item} ref={modalReleaseEditRef} onClose={closeReleaseEditModal}/> 
-    }
+    {modalReleaseEditOpen && <ReleaseEdit item={item} ref={modalReleaseEditRef} onClose={closeReleaseEditModal}/>}
+    {modalReleaseDuplicateOpen && <ReleaseDuplicate item={item} ref={modalReleaseDuplicateRef} onClose={closeReleaseDuplicateModal}/>}
+
 
   {renderDeleteConfirmation}
 
