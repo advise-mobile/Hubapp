@@ -1,12 +1,17 @@
 import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
+import {StyleSheet, Text} from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
+
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+import moment from 'moment';
+
 import Modal from '@components/Modal';
 import Datepicker from '@components/DatePicker';
-import {FormatFullDateEN,FormatDateBR} from '@helpers/DateFunctions';
-import {toCamelCase} from '@helpers/functions';
-import {StyleSheet, Text} from 'react-native';
-import {MaskMoney, MaskMoneyForRegister} from '@helpers/Mask';
+import {FormatDateEN} from '@helpers/DateFunctions';
 
-import {useNavigation} from '@react-navigation/native';
+import {MaskMoney, MaskMoneyForRegister} from 'helpers/Mask';
 
 import {
 	Footer,
@@ -15,17 +20,13 @@ import {
 	Content,
 	Row,
 	Label,
+	LabelError,
 	Input,
-	RowCategory,
+	RowLabel,
 	ContainerItems,
-	Items,
 	LabelItems,
-	ContainerItemsPerson,
-	ItemsPerson,
-	ContainerItemsProcess,
-	ItemsProcess,
+	ContainerItemsOptions,
 	LabelItemsProcess,
-	ContainerItemsRepeat,
 	ContentDuring,
 	LabelDuring,
 	ContentComments,
@@ -39,6 +40,7 @@ import {
 	People,
 	Category,
 	Process,
+	ItemsOptions,
 } from './styles';
 
 // Add UseTheme para pegar o tema global adicionado
@@ -52,10 +54,6 @@ import {useGetFinanceID, useRelease} from '@services/hooks/Finances/useReleases'
 import RNPickerSelect from 'react-native-picker-select';
 import {Controller, useForm} from 'react-hook-form';
 
-interface ReleaseEditProps {
-	onClose: () => void;
-	item:any
-}
 
 export default ReleaseEdit = forwardRef((props, ref) => {
 
@@ -70,228 +68,37 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 	}, props);
 
 
-	const {item} = props;	
+	const {item, onClose} = props;	
 
-	const [titleModal, setTitleModal] = useState(item.debitoCredito === "C" ? "Editar Receita":"Editar Despesa");
+    const  type = item.debitoCredito;
 
-	const [descriptionRelease, setDescriptionRelease] = useState(null);
-	const [valueRelease, setValueRelease] = useState(null);
-	const [dateExpiration, setDateExpiration] = useState(null);
-	const [selectedCategory, setSelectedCategory] = useState(null);
-	const [selectedPeople, setSelectedPeople] = useState(null);
-	const [selectedProcess, setSelectedProcess] = useState(null);
-	const [observation, setObservation] = useState<number>(-1);
-	
-	
-	const [selectedRepeat, setSelectedRepeat] = useState<number>(-1);
-	const [selectedDuring, setSelectedDuring] = useState(item.quantidadeParcelas);
-	
-
-	const [dataFinance, setDataFinance] = useState(null);
-
-	const {isLoadingCategories, getCategoriesData} = useGetPopulateCategories();
-	const {isLoadingPeople, getPeopleData} = useGetPopulatePeople();
-	const {isLoadingProcess, getProcessData} = useGetPopulateProcess();
-
-	const [categoryResume, setCategoryResume] = useState<CategoryProps>([]);
-	const [peopleResume, setPeopleResume] = useState<PersonProps[]>([]);
-	const [processResume, setProcessResume] = useState<ProcessProps[]>([]);
-	
-	
-
-	const [duration, setDuration] = useState([]);
-
-	const {isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
-
-	const {isLoadingRelease, updateRelease} = useRelease();
+    // // Variavel para usar o hook
+    const colorUseTheme = useTheme();
+    const {colors} = colorUseTheme;
 
 	const valueInputRef = useRef(null);
 
-	const handlePeopleClick = index => {
-		setSelectedPeople(index);
-	};
+	const [dataCategories, setDataCategoriesResume] = useState<CategoryProps[]>([]);
+	const [dataPeople, setDataPeople] = useState<PersonProps[]>([]);
+	const [dataProcess, setDataProcess] = useState<ProcessProps[]>([]);
 
-	const handleProcessClick = idProcesso => {
-		setSelectedProcess(idProcesso);
-	};
+	// - Loading Categories
+	const {isLoadingCategories, getCategoriesData} = useGetPopulateCategories();
 
-	useEffect(() => {
-		fetchInformationAcountUser();
-	}, []);
+	// - Loading People
+	const {isLoadingPeople, getPeopleData} = useGetPopulatePeople();
 
-	useEffect(() => {
-		fetchDataCategory();
-	}, []);
+	// - Loading Process
+	const {isLoadingProcess, getProcessData} = useGetPopulateProcess();
 
-	useEffect(() => {
-		fetchPeople();
-	}, []);
+	// - Loading data finance
+	const {isLoadingFinanceID, getFinanceDataID} = useGetFinanceID();
 
-	useEffect(() => {
-		fetchProcess();
-	}, []);
+	// import add function hook
+	const {isLoadingRelease, updateRelease} = useRelease();
 
-	const fetchInformationAcountUser = async () => {
-		try {
-			const responseFinanceID = await getFinanceDataID();
-			setDataFinance(responseFinanceID);
-		} catch (error) {}
-	};
-
-	const fetchDataCategory = async () => {
-		try {
-			const responseCategories = await getCategoriesData();
-			setCategoryResume(responseCategories);
-		} catch (error) {}
-	};
-
-	const fetchPeople = async () => {
-		try {
-			const responsePeople = await getPeopleData();
-			setPeopleResume(responsePeople);
-		} catch (error) {}
-	};
-
-	const fetchProcess = async () => {
-		try {
-			const responseProcess = await getProcessData();
-			setProcessResume(responseProcess);
-		} catch (error) {}
-	};
-
-	const dataRepeatOption = [
-		{
-			label: 'Não se repete',
-			value: -1,
-		},
-		{
-			label: 'Todos os dias',
-			value: -9,
-		},
-		{
-			label: 'Semanal',
-			value: -8,
-		},
-		{
-			label: 'Quinzenal',
-			value: -7,
-		},
-		{
-			label: 'Mensal',
-			value: -6,
-		},
-		{
-			label: 'Anual',
-			value: -2,
-		},
-	];
-
-	const onSubmit = data => {
-
-		
-		if (data.valor === '0,00') {
-			setError('valor', {type: 'manual', message: 'Campo valor não pode ser 0,00'});
-			return;
-		}
-
-		 data.valor = MaskMoneyForRegister(MaskMoney(data.valor));
-
-		const {idContaFinanceiro, idFinanceiro} = dataFinance[0];
-		const repeticaoFixo = data.idTipoParcelamentoFinanceiro === -1 ? false : true;
-		
-		const register = {
-			"itens": [
-				{
-					alterarEsteEProximosLancamentos: "true",
-					dataEmissao:item.dataEmissaofull,
-					dataVencimento:data.DataVencimento,
-					debitoCredito: item.debitoCredito,
-					descricao: data.descricao,
-					idCategoriaFinanceiro:data.idCategoriaFinanceiro,
-					idContaFinanceiro,
-					idFinanceiro,
-					idLancamentoFinanceiro:item.idLancamentoFinanceiro,
-					idParcelaFinanceiro:item.idParcelaFinanceiro,
-					idPessoaCliente: data.idPessoaCliente,
-					idTipoParcelamentoFinanceiro:data.idTipoParcelamentoFinanceiro,
-					observacao:data.observacao,
-					quantidadeParcelas:data.quantidadeParcelas,
-					repeticaoFixo,
-					idProcesso: data.idProcesso,
-					valorOriginal:data.valor,
-					valor:data.valor
-				},
-			],
-		};	
-	
-		updateRelease(register, () => closeModal());
-	};
-
-	const {
-		control,
-		handleSubmit,
-		setError,
-		formState: {errors},
-		setValue
-	} = useForm({
-		shouldUnregister: false,
-	});
-
-	useEffect(() => {
-		handleChangeTypeDuration(item.idTipoParcelamentoFinanceiro)
-
-		setDescriptionRelease(item.descricaoLancamento);
-		setValueRelease(item.value);
-		setDateExpiration(FormatDateBR(item.dataVencimento));
-		setSelectedCategory(item.categoriaFinanceiro.idCategoriaFinanceiro)
-		setSelectedPeople(item.idPessoaCliente)
-		setSelectedProcess(item.idProcesso)		
-		setSelectedRepeat(item.idTipoParcelamentoFinanceiro)
-		setSelectedDuring(item.quantidadeParcelas)
-		setObservation(item.observacao)
-		
-
-		// pass props value to controller react hook form
-		setValue('descricao', item.descricaoLancamento);
-		setValue('valor', item.value);
-		setValue('DataVencimento', item.dataVencimento);
-		setValue('idCategoriaFinanceiro', item.categoriaFinanceiro.idCategoriaFinanceiro);
-		setValue('idPessoaCliente', item.idPessoaCliente);
-		setValue('idProcesso', item.idProcesso);
-		setValue('idTipoParcelamentoFinanceiro', item.idTipoParcelamentoFinanceiro);
-		setValue('quantidadeParcelas', item.quantidadeParcelas);
-		setValue('observacao', item.observacao);
-		
-
-	},[item])
-
-
-	const handleRepeatChange = value => {
-		setSelectedRepeat(value);
-		handleChangeTypeDuration(value);
-	};
-
-	const handleDuringChange = value => {
-		setSelectedDuring(value);
-	};
-
-	// Variavel para usar o hook
-	const colorUseTheme = useTheme();
-	const {colors} = colorUseTheme;
-
-	const pickerSelectStyles = stylesPickerSelectStyles(colors);
-
-	const footer = () => (
-		<Footer>
-			<Cancel onPress={() => closeModal()}>
-				<CancelText>Cancelar</CancelText>
-			</Cancel>
-
-			<Register onPress={handleSubmit(onSubmit)}>
-				<RegisterText>Alterar</RegisterText>
-			</Register>
-		</Footer>
-	);
+	// Set Durantion starting empty array
+	const [duration, setDuration] = useState([]);
 
 	const handleChangeTypeDuration = (selectedRepeat: number) => {
 		let i = 2;
@@ -332,7 +139,6 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 					i++;
 				}
 				setDuration(fortnight);
-				setDisableDuration(false);
 				break;
 			case -8:
 				const weekly = [
@@ -391,13 +197,163 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 		}
 	};
 
+	const pickerSelectStyles = stylesPickerSelectStyles(colors);
+
+	useEffect(() => {
+
+		handleChangeTypeDuration(item.idTipoParcelamentoFinanceiro);
+		fetchDataCategories();
+		fetchPeople();
+		fetchProcess();
+		fetchInformationAcountUser();
+
+		setValue('descricao', item.descricaoLancamento);
+		setValue('valor',item.value);
+		setValue('DataVencimento',item.dataVencimentoFormatada);
+		
+		setValue('idCategoriaFinanceiro',item.categoriaFinanceiro.idCategoriaFinanceiro);
+		setValue('idPessoaCliente',item.idPessoaCliente);
+		setValue('idProcesso',item.idProcesso);
+		setValue('IdTipoParcelamentoFinanceiro',item.idTipoParcelamentoFinanceiro);
+		setValue('quantidadeParcelas',item.quantidadeParcelas.toString());
+		setValue('observacao',item.observacao);
+		
+	}, []);
+
+	const fetchDataCategories = async () => {
+		try {
+			const responseCategories = await getCategoriesData();
+			setDataCategoriesResume(responseCategories);
+		} catch (error) {}
+	};
+
+	const fetchPeople = async () => {
+		try {
+			const responsePeople = await getPeopleData();
+			setDataPeople(responsePeople);
+		} catch (error) {}
+	};
+
+	const fetchProcess = async () => {
+		try {
+			const responseProcess = await getProcessData();	
+			setDataProcess(responseProcess);
+		} catch (error) {}
+	};
+
+	const fetchInformationAcountUser = async () => {
+		try {
+			const responseFinanceData = await getFinanceDataID();
+			setValue('idContaFinanceiro',responseFinanceData[0].idContaFinanceiro);
+			setValue('idFinanceiro',responseFinanceData[0].idFinanceiro);
+		} catch (error) {}
+	};
+
+	const dataOptionsRepeat = [
+		{
+			label: 'Não se repete',
+			value: -1,
+		},
+		{
+			label: 'Todos os dias',
+			value: -9,
+		},
+		{
+			label: 'Semanal',
+			value: -8,
+		},
+		{
+			label: 'Quinzenal',
+			value: -7,
+		},
+		{
+			label: 'Mensal',
+			value: -6,
+		},
+		{
+			label: 'Anual',
+			value: -2,
+		},
+	];
+
+	const {
+		control,
+		handleSubmit,
+		setError,
+		setValue,
+		getValues,
+		formState: {errors},
+	} = useForm({
+		shouldUnregister: false,
+	});
+
+	const footer = () => (
+		<Footer>
+			<Cancel onPress={() => onClose()}>
+				<CancelText>Cancelar</CancelText>
+			</Cancel>
+
+			<Register onPress={handleSubmit(onSubmit)}>
+				<RegisterText>Alterar</RegisterText>
+			</Register>
+		</Footer>
+	);
+
+	
+	const handleOnClose = useCallback(() => {
+		onClose();
+		navigation.reset({
+			index:0,
+			routes:[{name:'FinanceTab'}]
+		})
+	}, props);
+	
+
+	const onSubmit = data => {
+
+		if (data.valor === '0,00') {
+			setError('valor', {type: 'manual', message: 'Campo valor não pode ser 0,00'});
+			return;
+		}
+
+		data.DataVencimento = FormatDateEN(data.DataVencimento);
+
+		data.valor = MaskMoneyForRegister(data.valor);	
+		
+
+		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
+		const quantidadeParcelas =  data.IdTipoParcelamentoFinanceiro === -1 ? 1 : data.quantidadeParcelas;
+		const observacao = data.observacao === null ? '' : data.observacao;
+		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');			
+		const register = {
+			itens: [
+					{
+						...data,
+						DebitoCredito: type,
+						repeticaoFixo,
+						dataEmissao,
+						quantidadeParcelas,
+						valorOriginal:data.valor,
+						alterarEsteEProximosLancamentos: "false",
+						idLancamentoFinanceiro:item.idLancamentoFinanceiro,
+						idParcelaFinanceiro:item.idParcelaFinanceiro,
+						observacao,
+						idProcesso:''
+					},
+				],
+		};
+			
+		updateRelease(register, () => handleOnClose());
+	}
+
 	return (
 		<Modal
 			maxHeight={650}
-			onClose={props.onClose}
+			// onClose={onClose}
 			ref={ref}
-			title={titleModal}
+			title={type === 'D'? "Editar despesa": "Editar Receita"}
 			footer={footer()}>
+				
 			<ContentDescription isError={errors.descricao}>
 				<Row>
 					<Label>Descrição</Label>
@@ -408,9 +364,9 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 						}}
 						control={control}
 						defaultValue={null}
-						render={({onChange}) => (
+						render={({ onChange, value }) => (
 							<Input
-								value={descriptionRelease}
+								value={value}
 								autoCorrect={false}
 								autoCapitalize="none"
 								placeholder="Título do lançamento"
@@ -419,10 +375,7 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 								onSubmitEditing={() => {
 									valueInputRef.current?.focus();
 								}}
-								onChangeText={value => {
-									onChange(value);
-									setDescriptionRelease(value);
-								}}
+								onChangeText={value => onChange(value)}
 							/>
 						)}
 					/>
@@ -432,40 +385,32 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 			<Content isError={errors.valor}>
 				<Row>
 					<Label>Valor</Label>
-					<Controller
-						name="valor"
-						rules={{
-							required: true,
-						}}
-						control={control}
-						defaultValue={null}
-						render={({onChange, value}) => (
-							<Controller
-								name="valor"
-								rules={{
-									required: true,
-								}}
-								control={control}
-								defaultValue={null}
-								render={({onChange, value}) => (
-									<Input
-										value={valueRelease}
-										ref={valueInputRef}
-										placeholder="R$ -"
-										placeholderTextColor={errors.valor ? colors.red200 : colors.grayLight}
-										keyboardType="numeric"
-										onChangeText={text => {
-											onChange(text !== '0,0' ? MaskMoney(text) : '');
-											setValueRelease(text !== '0,0' ? MaskMoney(text) : '')
-										}}
-										
-									/>
-								)}
-							/>
-						)}
-					/>
+					
+						<Controller
+							name="valor"
+							rules={{
+								required: true,
+							}}
+							control={control}
+							defaultValue={null}
+							render={({onChange, value}) => (
+								<Input
+									ref={valueInputRef}
+									placeholder="R$ -"
+									placeholderTextColor={errors.valor ? colors.red200 : colors.grayLight}
+									keyboardType="numeric"
+									onChangeText={text => {
+										onChange(text !== '0,0' ? MaskMoney(text) : '');
+									}}
+									value={value}
+								/>
+							)}
+						/>
+						
+					
 				</Row>
 			</Content>
+			
 
 			<Content isError={errors.DataVencimento}>
 				<Row>
@@ -476,10 +421,9 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 							required: true,
 						}}
 						control={control}
-						defaultValue={null}
 						render={({onChange, value}) => (
 							<Datepicker
-								date={dateExpiration}
+								date={value}
 								enabled={true}
 								title={
 									<Text style={{color: errors.DataVencimento ? colors.red200 : colors.black}}>
@@ -493,8 +437,7 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 									height: 22,
 								}}
 								onDateChange={date => {
-									setDateExpiration(date);
-									onChange(FormatFullDateEN(date));
+									onChange(date);
 								}}
 								value={value}
 							/>
@@ -503,10 +446,12 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 				</Row>
 			</Content>
 
+
 			<Category isError={errors.idCategoriaFinanceiro}>
-				<RowCategory>
+				<RowLabel>
 					<Label>Categoria</Label>
-				</RowCategory>
+					{errors.idCategoriaFinanceiro &&  <LabelError>Selecione uma categoria</LabelError>}
+				</RowLabel>
 
 				<ContainerItems>
 					<Controller
@@ -515,28 +460,34 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 							required: true,
 						}}
 						control={control}
-						defaultValue={null}
-						render={({onChange}) => (
+						render={({onChange,value}) => (
 							<>
-								{categoryResume.map((category) => (
-									<Items
+								{dataCategories.map((category) => (
+									<>
+									<ItemsOptions
 										key={category.idCategoriaFinanceiro}
 										style={[
-											{backgroundColor: category.corCategoria},
-											errors.idCategoriaFinanceiro ? {backgroundColor: colors.red200} : {},
-											selectedCategory === category.idCategoriaFinanceiro
-												? {borderWidth: 2, borderColor: colors.primary}
-												: {},
+											value === category.idCategoriaFinanceiro
+												? {
+														borderWidth: 2,
+														borderColor: colors.primary,
+														backgroundColor: category.corCategoria
+												  }
+												: {backgroundColor: category.corCategoria},
 										]}
 										onPress={() => {
-											setSelectedCategory(category.idCategoriaFinanceiro);
 											onChange(category.idCategoriaFinanceiro);
 										}}>
-										<LabelItems
-											style={[selectedCategory === category.idCategoriaFinanceiro ? {color: colors.primary} : {}]}>
-											{toCamelCase(category.nomeCategoriaFinanceiro)}
+										<LabelItems>
+											{category.nomeCategoriaFinanceiro}											
 										</LabelItems>
-									</Items>
+										{
+											value === category.idCategoriaFinanceiro && 
+											<MaterialIcons  name={"check"} size={15} color={colors.primary}  />
+										}
+									</ItemsOptions>
+									
+									</>
 								))}
 							</>
 						)}
@@ -545,122 +496,138 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 			</Category>
 
 			<People isError={errors.idPessoaCliente}>
-				<RowCategory>
+				<RowLabel>
 					<Label>Pessoa</Label>
-				</RowCategory>
+				</RowLabel>
 
-				<ContainerItemsPerson>
+				<ContainerItemsOptions>
 					<Controller
 						name="idPessoaCliente"
 						control={control}
 						defaultValue={null}
-						render={({onChange}) => (
+						render={({onChange,value}) => (
 							<>
-								{peopleResume.map((person) => (
-									<ItemsPerson
+								{dataPeople.map((person) => (
+									<ItemsOptions
 										key={person.idPessoaCliente}
-										onPress={() => {
-											handlePeopleClick(person.idPessoaCliente);
+										onPress={() => {	
 											onChange(person.idPessoaCliente);
 										}}
-										style={{
-											backgroundColor: colors.gray,
-										}}>
-										<LabelItems
-											style={{
-												color: selectedPeople === person.idPessoaCliente ? colors.backgroundButton : colors.iconGray,
-											}}>
-											{
-												person.nomePessoaCliente !== undefined 
-											 ? toCamelCase(person.nomePessoaCliente) : 'N/I'}
+										style={[
+											value === person.idPessoaCliente
+												? {
+														borderWidth: 2,
+														borderColor: colors.primary,
+														backgroundColor: colors.gray
+												  }
+												: {backgroundColor: colors.gray},
+										]}
+										>
+										<LabelItems>
+											{person.nomePessoaCliente}
 										</LabelItems>
-									</ItemsPerson>
+
+										{
+											value === person.idPessoaCliente && 
+											<MaterialIcons  name={"check"} size={15} color={colors.primary}  />
+										}
+									</ItemsOptions>
 								))}
 							</>
 						)}
 					/>
-				</ContainerItemsPerson>
+				</ContainerItemsOptions>
 			</People>
-
+		
 			<Process>
-				<RowCategory>
+				<RowLabel>
 					<Label>Processo</Label>
-				</RowCategory>
+				</RowLabel>
 
-				<ContainerItemsProcess>
+				<ContainerItemsOptions>
 					<Controller
 						name="idProcesso"
 						control={control}
-						defaultValue={null}
-						render={({onChange}) => (
+						render={({onChange,value}) => (
 							<>
-								{processResume.map((process) => (
-									<ItemsProcess
-										key={process.id}
+								{dataProcess.map((process) => (
+									<ItemsOptions
+										key={process.idProcesso}
 										onPress={() => {
-											handleProcessClick(process.idProcesso);
 											onChange(process.idProcesso);
 										}}
-										style={{
-											backgroundColor: colors.gray,
-										}}>
-										<LabelItemsProcess
-											style={{
-												color:
-													selectedProcess === process.idProcesso ? colors.backgroundButton : colors.iconGray,
-											}}>
+									
+										style={[
+											value === process.idProcesso
+												? {
+														borderWidth: 2,
+														borderColor: colors.primary,
+														backgroundColor: colors.gray
+												  }
+												: {backgroundColor: colors.gray},
+										]}
+
+										>
+										<LabelItemsProcess>
 											{process.numeroProcesso}
 										</LabelItemsProcess>
-									</ItemsProcess>
+
+										{
+											value === process.idProcesso && 
+											<MaterialIcons  name={"check"} size={15} color={colors.primary}  />
+										}
+									</ItemsOptions>
 								))}
 							</>
 						)}
 					/>
-				</ContainerItemsProcess>
+				</ContainerItemsOptions>
 			</Process>
 
-			<ContentRepeat isError={errors.idTipoParcelamentoFinanceiro}>
-				<RowCategory>
+			<ContentRepeat isError={errors.IdTipoParcelamentoFinanceiro}>
+				<RowLabel>
 					<Label>Repetir</Label>
-				</RowCategory>
+					{errors.IdTipoParcelamentoFinanceiro &&  <LabelError>Selecione um periodo</LabelError>}
+				</RowLabel>
 
 				<Controller
-					name="idTipoParcelamentoFinanceiro"
+					name="IdTipoParcelamentoFinanceiro"
 					rules={{
 						required: true,
 					}}
 					control={control}
-					defaultValue={null}
-					render={({onChange}) => (
-						<ContainerItemsRepeat>
-							{dataRepeatOption.map(repeat => (
-								<ItemsProcess
-									disabled={item.numeroParcela !== 1}
+					render={({onChange,value}) => (
+						<ContainerItemsOptions>
+							{dataOptionsRepeat.map(repeat => (
+								<ItemsOptions
 									key={repeat.value}
 									onPress={() => {
-										handleRepeatChange(repeat.value);
 										onChange(repeat.value);
+										handleChangeTypeDuration(repeat.value);
 									}}
+
 									style={[
-										{
-											backgroundColor: errors.idTipoParcelamentoFinanceiro
-												? colors.red
-												: colors.gray,
-										},
+										value === repeat.value
+											? {
+													borderWidth: 2,
+													borderColor: colors.primary,
+													backgroundColor: colors.gray
+											  }
+											: {backgroundColor: colors.gray},
 									]}>
-									<LabelItemsProcess
-										style={{
-											color:
-												selectedRepeat === repeat.value ? colors.backgroundButton : colors.iconGray,
-										}}>
+									<LabelItems>
 										{repeat.label}
-									</LabelItemsProcess>
-								</ItemsProcess>
+									</LabelItems>
+
+									{ value === repeat.value &&  <MaterialIcons  name={"check"} size={15} color={colors.primary}  />}
+								</ItemsOptions>
 							))}
-						</ContainerItemsRepeat>
+						</ContainerItemsOptions>
 					)}
 				/>
 			</ContentRepeat>
+
+			
 
 			<ContentDuring isError={errors.quantidadeParcelas}>
 				<Row>
@@ -669,19 +636,18 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 					<Controller
 						name="quantidadeParcelas"
 						rules={{
-							required: true,
+							required: getValues("IdTipoParcelamentoFinanceiro") !== -1,
 						}}
 						control={control}
 						defaultValue={null}
-						render={({onChange}) => (
+						render={({onChange,value}) => (
 							<ContainerInfo>
 								<RNPickerSelect
-															
 									placeholder={{
 										label: 'Selecione',
 										value: null,
 									}}
-									disabled={item.numeroParcela !== 1}
+									disabled={getValues("IdTipoParcelamentoFinanceiro") === -1}
 									doneText="Selecionar"
 									style={{
 										...pickerSelectStyles,
@@ -689,44 +655,36 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 											color: errors.quantidadeParcelas ? colors.red : colors.black,
 										},
 									}}
-									
+									value={value}
 									onValueChange={value => {
-										handleDuringChange(value);
 										onChange(value);
 									}}
 									useNativeAndroidPickerStyle={false}
 									items={duration}
-									value={selectedDuring.toString()}
 								/>
-								
 							</ContainerInfo>
 						)}
 					/>
 				</Row>
 			</ContentDuring>
 
-			<ContentComments isError={errors.observacao}>
+
+		<ContentComments isError={errors.observacao}>
 				<Row>
 					<LabelComments>Observações</LabelComments>
 				</Row>
 				<Controller
 					name="observacao"
-					rules={{
-						required: true,
-					}}
 					control={control}
 					defaultValue={null}
-					render={({onChange}) => (
+					render={({onChange,value}) => (
 						<InputDescription
-							value={observation}
+							value={value}
 							autoCorrect={false}
 							autoCapitalize="none"
 							placeholder="Digite uma observação"
 							placeholderTextColor={errors.descricao ? colors.red200 : colors.grayLight}
-							onChangeText={value => {
-								onChange(value);
-								setObservation(value)
-							}}
+							onChangeText={value => onChange(value)}
 							returnKeyType="next"
 							onSubmitEditing={handleSubmit(onSubmit)}
 						/>

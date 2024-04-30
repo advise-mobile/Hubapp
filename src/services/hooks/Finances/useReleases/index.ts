@@ -145,9 +145,6 @@ export const useGetInstallmentsDetails = () => {
 	const dispatch = useDispatch();
 
 	const getInstallmentsDetails = async (filters: ItemProps) => {
-
-
-
 			try {
 					setIsLoadingInstallmentsDetails(true);
 
@@ -262,10 +259,6 @@ export const useRelease = () => {
             }, 1000);
         }
     }, [isLoadingRelease])
-    
-
-
-
 
     return {isLoadingRelease, addRelease, updateRelease,deleteRelease};
 }

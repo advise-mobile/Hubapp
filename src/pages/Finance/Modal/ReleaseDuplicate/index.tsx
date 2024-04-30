@@ -1,13 +1,17 @@
 import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
-import Modal from '@components/Modal';
-import Datepicker from '@components/DatePicker';
-import {FormatFullDateEN,FormatDateBR} from '@helpers/DateFunctions';
 import {StyleSheet, Text} from 'react-native';
-import {MaskMoney, MaskMoneyForRegister} from 'helpers/Mask';
+
+import { useNavigation } from '@react-navigation/native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import moment from 'moment';
+
+import Modal from '@components/Modal';
+import Datepicker from '@components/DatePicker';
+import {FormatDateEN} from '@helpers/DateFunctions';
+
+import {MaskMoney, MaskMoneyForRegister} from 'helpers/Mask';
 
 import {
 	Footer,
@@ -50,15 +54,16 @@ import {useGetFinanceID, useRelease} from '@services/hooks/Finances/useReleases'
 import RNPickerSelect from 'react-native-picker-select';
 import {Controller, useForm} from 'react-hook-form';
 
-import { useNavigation } from '@react-navigation/native';
 
-export default ReleaseAdd = forwardRef((props, ref) => {
+export default ReleaseDuplicate = forwardRef((props, ref) => {
 
 	const navigation = useNavigation();
 
-    const { type, onClose} = props;
+	const {item, onClose} = props;	
 
-    	// // Variavel para usar o hook
+    const  type = item.debitoCredito;
+
+    // // Variavel para usar o hook
     const colorUseTheme = useTheme();
     const {colors} = colorUseTheme;
 
@@ -186,11 +191,24 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 	const pickerSelectStyles = stylesPickerSelectStyles(colors);
 
 	useEffect(() => {
-		
+
+		handleChangeTypeDuration(item.idTipoParcelamentoFinanceiro);
 		fetchDataCategories();
 		fetchPeople();
 		fetchProcess();
 		fetchInformationAcountUser();
+
+		setValue('descricao', item.descricaoLancamento);
+		setValue('valor',item.value);
+		setValue('DataVencimento',item.dataVencimentoFormatada);
+		
+		setValue('idCategoriaFinanceiro',item.categoriaFinanceiro.idCategoriaFinanceiro);
+		setValue('idPessoaCliente',item.idPessoaCliente);
+		setValue('idProcesso',item.idProcesso);
+		setValue('IdTipoParcelamentoFinanceiro',item.idTipoParcelamentoFinanceiro);
+		setValue('quantidadeParcelas',item.quantidadeParcelas.toString());
+		setValue('observacao',item.observacao);
+		
 	}, []);
 
 	const fetchDataCategories = async () => {
@@ -209,7 +227,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 	const fetchProcess = async () => {
 		try {
-			const responseProcess = await getProcessData();
+			const responseProcess = await getProcessData();	
 			setDataProcess(responseProcess);
 		} catch (error) {}
 	};
@@ -267,11 +285,12 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 			</Cancel>
 
 			<Register onPress={handleSubmit(onSubmit)}>
-				<RegisterText>Cadastrar</RegisterText>
+				<RegisterText>Salvar</RegisterText>
 			</Register>
 		</Footer>
 	);
 
+	
 	const handleOnClose = useCallback(() => {
 		onClose();
 		navigation.reset({
@@ -279,6 +298,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 			routes:[{name:'FinanceTab'}]
 		})
 	}, props);
+	
 
 	const onSubmit = data => {
 
@@ -287,11 +307,14 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 			return;
 		}
 
-		data.DataVencimento = FormatFullDateEN(data.DataVencimento);
-		data.valor = MaskMoneyForRegister(data.valor);
+		data.DataVencimento = FormatDateEN(data.DataVencimento);
+
+		data.valor = MaskMoneyForRegister(data.valor);	
 		
+
 		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
 		const quantidadeParcelas =  data.IdTipoParcelamentoFinanceiro === -1 ? 1 : data.quantidadeParcelas;
+		const observacao = data.observacao === null ? '' : data.observacao;
 		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');			
 		const register = {
 			itens: [
@@ -301,6 +324,12 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 						repeticaoFixo,
 						dataEmissao,
 						quantidadeParcelas,
+						valorOriginal:data.valor,
+						alterarEsteEProximosLancamentos: "false",
+						idLancamentoFinanceiro:item.idLancamentoFinanceiro,
+						idParcelaFinanceiro:item.idParcelaFinanceiro,
+						observacao,
+						idProcesso:''
 					},
 				],
 		};
@@ -311,9 +340,9 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 	return (
 		<Modal
 			maxHeight={650}
-			onClose={onClose}
+			// onClose={onClose}
 			ref={ref}
-			title={type === 'D'? "Cadastrar despesa": "Cadastrar Receita"}
+			title={type === 'D'? "Editar despesa": "Editar Receita"}
 			footer={footer()}>
 				
 			<ContentDescription isError={errors.descricao}>
@@ -637,13 +666,11 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 				</Row>
 				<Controller
 					name="observacao"
-					// rules={{
-					// 	required: true,
-					// }}
 					control={control}
 					defaultValue={null}
-					render={({onChange}) => (
+					render={({onChange,value}) => (
 						<InputDescription
+							value={value}
 							autoCorrect={false}
 							autoCapitalize="none"
 							placeholder="Digite uma observação"

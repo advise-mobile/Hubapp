@@ -15,14 +15,10 @@ import {
 
 // Add UseTheme para pegar o tema global adicionado
 import { useTheme } from 'styled-components';
-import AddRevenue from '../AddRevenue';
-import AddExpense from '../AddExpense';
 
 import AddCategory from '../AddCategory';
+
 import ReleaseAdd from '../ReleaseAdd';
-
-
-
 
 
 export default Add = forwardRef((props, ref) => {
@@ -116,7 +112,7 @@ export default Add = forwardRef((props, ref) => {
 
 					
 				{modalExpenseOpen && <ReleaseAdd ref={expenseRef} onClose={closeExpense} type={"D"} />}
-				{modalRevenueOpen && <AddRevenue ref={revenueRef} onClose={closeRevenue}/>}
+				{modalRevenueOpen && <ReleaseAdd ref={revenueRef} onClose={closeRevenue} type={"C"}/>}
 				{modalCategoriesOpen && <AddCategory ref={categoryRef} onClose={closeCategory}/>}
 			</>
 		);

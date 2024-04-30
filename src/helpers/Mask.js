@@ -19,7 +19,7 @@ export const MaskMoney = value => VanillaMasker.toMoney(value, {
 });
 
 export const MaskMoneyForRegister = value => {
-	const formattedValue = value.replace(/\./g, '').replace(/,/g, '.');
+	const formattedValue = value.replace(/\./g, '').replace(/,/g, '.').replace('R$','').trim();
 	return formattedValue;
 };
 
