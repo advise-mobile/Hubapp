@@ -1,5 +1,15 @@
 import React, {useEffect, forwardRef,useCallback, useState, useRef, useMemo} from 'react';
 
+import {Platform, PermissionsAndroid} from 'react-native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import RNFetchBlob from 'rn-fetch-blob';
+
+import {TOKEN} from '@helpers/StorageKeys';
+
+import Toast from 'react-native-simple-toast';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Modal from 'components/Modal';
@@ -9,6 +19,10 @@ import ConfirmModal from '@components/ConfirmModal';
 import { useNavigation } from '@react-navigation/native';
 
 import { useRelease } from '@services/hooks/Finances/useReleases';
+
+import {useDispatch} from 'react-redux';
+
+import ToastNotifyActions from 'store/ducks/ToastNotify';
 
 import {
   Footer,
@@ -25,20 +39,25 @@ import { useTheme } from 'styled-components';
 
 import ReleaseEdit from '../ReleaseEdit';
 import ReleaseDuplicate from '../ReleaseDuplicate';
+import ReleaseSendEmail from '../ReleaseSendEmail'
 
-
+import {BASE_URL} from '@services/Api';
 
 export default LauchActionsMenu = forwardRef(({item}, ref) => {
 
   const navigation = useNavigation();
 
-  const {isLoadingRelease, deleteRelease} = useRelease();
+  const dispatch = useDispatch();
+
+  const {isLoadingRelease, deleteRelease, downloadRelease} = useRelease();
 
   const confirmationDeleteModalRef = useRef();
 
   const modalReleaseEditRef = useRef(null);
   const modalReleaseDuplicateRef = useRef(null);
-
+  const modalReleaseSendEmailRef = useRef(null);
+  
+  const dirs = RNFetchBlob.fs.dirs;
 
   // Variavel para usar o hook
 	const colorUseTheme = useTheme();
@@ -48,6 +67,7 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
 
   const [modalReleaseEditOpen, setModalReleaseEditOpen] = useState(false);
   const [modalReleaseDuplicateOpen, setModalReleaseDuplicateOpen] = useState(false);
+  const [modalReleaseSendEmailOpen, setModalReleaseSendEmailOpen] = useState(false);
 
   const closeReleaseEditModal = ()=>{
 		setModalReleaseEditOpen(false);
@@ -56,6 +76,11 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
 		setModalReleaseDuplicateOpen(false);
 	}
 
+  const closeReleaseSendEmailModal = ()=>{
+		setModalReleaseSendEmailOpen(false);
+	}
+  
+
   useEffect(() => {
     if(modalReleaseEditOpen){
       modalReleaseEditRef.current?.open();
@@ -63,8 +88,12 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
     if(modalReleaseDuplicateOpen){
       modalReleaseDuplicateRef.current?.open();
     }
+    if(modalReleaseSendEmailOpen){
+      modalReleaseSendEmailRef.current?.open();
+    }
 
-  }, [modalReleaseEditOpen,modalReleaseDuplicateOpen]);
+
+  }, [modalReleaseEditOpen, modalReleaseDuplicateOpen, modalReleaseSendEmailOpen]);
 
   const footer = () => (
     <Footer>
@@ -110,6 +139,83 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
     confirmationDeleteModalRef.current?.open();			
 	},[item]);
 
+  const requestPermission = useCallback(async () => {
+		try {
+			const granted = await PermissionsAndroid.request(
+				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+			);
+
+			return granted === PermissionsAndroid.RESULTS.GRANTED;
+		} catch (err) {
+			alert("Erro ao solicitar permissão de download!")
+		}
+
+		return false;
+	});
+
+	const handleDownloadRelease = useCallback(
+		async () => {
+			const downloadPromise = new Promise(async (resolve, reject) => {
+				const havePermission = Platform.OS == 'ios' || (await requestPermission());
+
+				if (!havePermission) return ;
+
+				const token = await AsyncStorage.getItem(TOKEN);
+
+				Toast.show('Download do lançamento iniciado, por favor, aguarde.');
+				
+
+				const filename = `${Date.now()}.pdf`;
+
+				const path =
+					Platform.OS == 'ios' ? dirs.DocumentDir + `/${filename}` : dirs.DCIMDir + `/${filename}`;
+
+				RNFetchBlob.config({
+					fileCache: true,
+					path: path,
+					addAndroidDownloads: {
+						useDownloadManager: true,
+						notification: true,
+						mediaScannable: true,
+						description: 'Lançamento disponibilizado via Advise Hub App',
+						path: dirs.DCIMDir + `/${filename}`,
+					},
+				})
+					.fetch(
+						'GET',
+						`${BASE_URL}/core/v1/parcelas-download?idsParcelas=${item.idParcelaFinanceiro}&tipoArquivo=pdf`,
+						{
+							Authorization: `Bearer ${token}`,
+						},
+					)
+					.then(res => {
+            dispatch(ToastNotifyActions.toastNotifyShow('Lançamento baixado com sucesso!',false));
+							
+						if (Platform.OS === 'ios') {
+							RNFetchBlob.fs.writeFile(path, res.data, 'base64');
+							RNFetchBlob.ios.openDocument(path);
+						}
+
+						
+            RNFetchBlob.fs.readFile(res.data, 'base64').then(file => {
+              resolve({
+                file,
+                fileName: filename,
+              });
+            });
+						
+					})
+					.catch(err => {
+            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível baixar este lançamento',true));
+
+						reject();
+					});
+			});
+
+			return downloadPromise;
+		},
+		[item],
+	);
 
   return (
   <>
@@ -125,7 +231,7 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
         </Row>
       </Content>
 
-			<Content>
+      <Content onPress={() => setModalReleaseSendEmailOpen(true) }>
 			<Icon>
 				<MaterialIcons name={"mail"} size={24} color={colors.fadedBlack}/>
 				</Icon>
@@ -134,7 +240,7 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
         </Row>
       </Content>
 
-			<Content>
+			<Content onPress={() => handleDownloadRelease()}>
 			<Icon>
 				<MaterialIcons name={"file-download"} size={24} color={colors.fadedBlack}/>
 				</Icon>
@@ -166,12 +272,10 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
 
     {modalReleaseEditOpen && <ReleaseEdit item={item} ref={modalReleaseEditRef} onClose={closeReleaseEditModal}/>}
     {modalReleaseDuplicateOpen && <ReleaseDuplicate item={item} ref={modalReleaseDuplicateRef} onClose={closeReleaseDuplicateModal}/>}
-
-
-  {renderDeleteConfirmation}
+    {modalReleaseSendEmailOpen && <ReleaseSendEmail item={item} ref={modalReleaseSendEmailRef} onClose={closeReleaseSendEmailModal}/>}
+  
+    {renderDeleteConfirmation}
 
   </>
-
-    
   );
 });

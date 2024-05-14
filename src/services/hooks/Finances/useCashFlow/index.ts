@@ -42,8 +42,12 @@ export const useGetCashFlow = () => {
 					totalSaidas: FormatReal(itens[0].itens[index].totalSaidas),
 					valorSaldo: FormatReal(itens[0].itens[index].valorSaldo),
 					saldoAnterior: FormatReal(saldoAnterior),
+					// totalEntradas: itens[0].itens[index].totalEntradas,
+					// totalSaidas: itens[0].itens[index].totalSaidas,
+					// valorSaldo: itens[0].itens[index].valorSald,
+					// saldoAnterior: saldoAnterior,
 				}
-				x
+				
 
 			});
 

@@ -16,6 +16,11 @@ import { useDispatch } from 'react-redux';
 import { DataItemsDetailsProps, ItemsDetailsProps } from "@pages/Finance/Details/types";
 import { removeNull } from "@helpers/functions";
 
+interface DataEmailProps {
+    destinatarios: string[],
+    idParcela: number
+}
+
 
 
 export const useGetFinanceID= () => {
@@ -260,6 +265,30 @@ export const useRelease = () => {
         }
     }, [isLoadingRelease])
 
-    return {isLoadingRelease, addRelease, updateRelease,deleteRelease};
+    const sendReleaseEmail = useCallback( async (data:DataEmailProps, handleCallback:() => void) => {
+
+        try {
+            setIsLoadingRelease(true);
+
+            const response = await Api.post(`/core/v1/envio-email-parcelas`,data);
+
+            dispatch(ToastNotifyActions.toastNotifyShow('Lançamento enviado com sucesso!',false));
+
+            return true;
+
+        } catch (error) {
+            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível enviar este lançamento',true));
+        }finally {
+            setTimeout(() => {
+                setIsLoadingRelease(false);
+                handleCallback();
+            }, 1000);
+
+
+        }
+    }, [isLoadingRelease])
+    
+
+    return {isLoadingRelease, addRelease, updateRelease, deleteRelease,sendReleaseEmail};
 }
 

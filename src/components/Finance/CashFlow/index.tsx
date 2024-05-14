@@ -27,19 +27,16 @@ const CashFlowDataItem = (  { item } : { item: CashFlowProps }) => {
 					<ContainerDescriptionReleases>
 						<ContainerDescriptionItems>
 							<TextLabelDescription>Entrada</TextLabelDescription>
-
 							<TextValueDescriptionProhibited>{item.totalEntradas}</TextValueDescriptionProhibited>
 						</ContainerDescriptionItems>
 
 						<ContainerDescriptionItems>
 							<TextLabelDescription>Saída</TextLabelDescription>
-
 							<TextValueDescriptionExit>{item.totalSaidas}</TextValueDescriptionExit>
 						</ContainerDescriptionItems>
 
 						<ContainerDescriptionItems>
 							<TextLabelDescription>Saldo</TextLabelDescription>
-
 							<TextValueDescriptionBalance>{item.valorSaldo}</TextValueDescriptionBalance>
 						</ContainerDescriptionItems>
 					</ContainerDescriptionReleases>
