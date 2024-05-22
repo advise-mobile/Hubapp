@@ -1,55 +1,62 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import HasNotPermission from 'components/HasNotPermission';
+import Spinner from '@components/Spinner';
 import {Container, Warp} from 'assets/styles/global';
-import Blocked from 'pages/Blocked';
 
-import {useTheme} from 'styled-components';
+import { useTheme } from 'styled-components';
 import {FlatList} from 'react-native';
+
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import CashFlowDataItem from '@components/Finance/CashFlow';
+import CashFlowActions from '../Modal/CashFlowActions';
+import {useGetCashFlow} from '@services/hooks/Finances/useCashFlow';
+import {CashFlowProps, DataFiltersCashFlowProps, FiltersCashFlowDataProps} from './types';
+import { FormatReal } from '@helpers/MoneyFunctions';
 
 import {
 	ContainerIconMore,
 	ContainerMainInformation,
 	ContainerScreen,
-	ContainerValueInformation,
 	TextLabel,
 	TextValue,
 	TopContainer,
+	NotFound,
+	ImageNotFound,
+	NotFoundText,
+	NotFoundDescription
 } from './styles';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import CashFlowDataItem from '@components/Finance/CashFlow';
-import StockCashFlow from '../Modal/StockCashFlow';
-import {useGetCashFlow} from '@services/hooks/Finances/useCashFlow';
-import {CashFlowProps} from './types';
-import { FormatReal } from '@helpers/MoneyFunctions';
 
-export default function CashFlow() {
-	const {isLoadingCashFlow, getCashFlowData} = useGetCashFlow();
-	const [CashFlowResume, setCashFlowResume] = useState<CashFlowProps[]>([]);
-	const [saldoAnterior, setSaldoAnterior] = useState('');
-
-	const CategoryRef = useRef(null);
-
-	const addCategory = useCallback(
-		() => <StockCashFlow ref={CategoryRef} idAgenda={null} onAdd={() => {}} />,
-		[],
-	);
+export default function CashFlow({dataFiltersCashFlow} : DataFiltersCashFlowProps ) {
 
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const havePermission = true;
-	const active = true;
+	const notFound = colorUseTheme.name === 'dark'
+	? require('assets/images/not_found/movements_white.png')
+	: require('assets/images/not_found/movements.png');
+
+	const {isLoadingCashFlow, getCashFlowData} = useGetCashFlow();
+	const [CashFlowResume, setCashFlowResume] = useState<CashFlowProps[]>([]);
+	const [saldoAnterior, setSaldoAnterior] = useState(0);
+	const [registroTotal, setRegistroTotal] = useState(0);
+
+	const ModalActionsRef = useRef(null);
+
+	const actionsMenu = useCallback(
+		() => <CashFlowActions ref={ModalActionsRef} filters={dataFiltersCashFlow} />,[dataFiltersCashFlow]
+	);
 
 	useEffect(() => {
-		fetchCashFlow();
-	}, []);
+		fetchCashFlow(dataFiltersCashFlow!);
+	}, [dataFiltersCashFlow]);
 
-	const fetchCashFlow = async () => {
+	const fetchCashFlow = async (dataFilters:FiltersCashFlowDataProps) => {
 		try {
-			const responseCashFlow = await getCashFlowData();
+			const responseCashFlow = await getCashFlowData(dataFilters);
+
 			if (responseCashFlow !== undefined) {
 				setCashFlowResume(responseCashFlow);
 				setSaldoAnterior(responseCashFlow[0].saldoAnterior);
+				setRegistroTotal(responseCashFlow[0].registroTotal);
 			}
 		} catch (error) {
 
@@ -62,44 +69,41 @@ export default function CashFlow() {
 
 	return (
 		<Container>
-			{active ? (
-				<>
-					{havePermission ? (
-						<Warp>
-							<ContainerScreen style={{flex: 1}}>
-								<TopContainer>
-									<ContainerMainInformation>
-										<TextLabel WeightTextProps>Saldo Anterior</TextLabel>
+			
+			<Warp>
+				<ContainerScreen style={{flex: 1}}>
+					<TopContainer>
+						<ContainerMainInformation>
+							<TextLabel WeightTextProps>Saldo Anterior</TextLabel>
+							<TextValue>{FormatReal(saldoAnterior)}</TextValue>
+						</ContainerMainInformation>
 
-										<ContainerValueInformation>
-											<TextValue>{FormatReal(saldoAnterior)}</TextValue>
-										</ContainerValueInformation>
-									</ContainerMainInformation>
-
-									<ContainerIconMore onPress={() => CategoryRef.current?.open()}>
-										<MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
-									</ContainerIconMore>
-								</TopContainer>
-
-								<FlatList
-									data={CashFlowResume}
-									renderItem={renderItem}
-									showsVerticalScrollIndicator={false}
-								/>
-							</ContainerScreen>
-
-							{addCategory()}
-						</Warp>
+						<ContainerIconMore onPress={() => ModalActionsRef.current?.open()}>
+							<MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
+						</ContainerIconMore>
+					</TopContainer>
+					{
+						isLoadingCashFlow ? <Spinner	/> : 
+						registroTotal > 0 ? (
+									
+							<FlatList
+								data={CashFlowResume}
+								renderItem={renderItem}
+								showsVerticalScrollIndicator={false}
+							/>
 					) : (
-						<HasNotPermission
-							title="A sua rotina totalmente organizada!"
-							body="Tenha a facilidade de cadastrar um prazo judicial, uma audiência ou uma reunião diretamente na sua ferramenta de monitoramento de informações jurídicas"
-						/>
+						<NotFound>
+							<ImageNotFound source={notFound}  width={120} height={120}/>
+							<NotFoundText>Não há resultados</NotFoundText>
+							<NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+						</NotFound>
 					)}
-				</>
-			) : (
-				<Blocked />
-			)}
+				
+				</ContainerScreen>
+
+				{actionsMenu()}
+			</Warp>
+					
 		</Container>
 	);
 }

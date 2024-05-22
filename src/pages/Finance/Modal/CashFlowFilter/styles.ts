@@ -59,8 +59,8 @@ export const Label = styled.Text`
 export const LabelPeriod = styled.Text`
   font-size: 15px;
   font-family: ${fonts.circularStdBold};
-	margin-left: 10px;
-	margin-right: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
 `;
 
 export const Row = styled.View`
@@ -102,15 +102,13 @@ export const SpaceRow = styled.View`
 `;
 
 export const PeriodItemsContainer = styled.View`
-	width: 414px;
 	height: 44px;
 	flex-direction: row;
 	align-items: center;
 `;
 
 export const PeriodItems = styled.TouchableOpacity`
-	max-width: 300px;
-	min-width: 50px;
+	
 	height: 20px;
 	border-radius: 17px;
 	align-items: center;
@@ -150,6 +148,8 @@ export const ClearButtomText = styled.Text`
 	color:  ${({ theme }) => theme.colors.grayLight};
 	font-family: ${fonts.circularStdBold};
 `;
+
+export const Container = styled.View``;
 
 
 

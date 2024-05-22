@@ -1,11 +1,7 @@
 export interface DataFilterProps {
-    DataMovimentoInicio: string,
-    DataMovimentoFim: string,
-    idTipoMovProcesso: string,
-    Lido: boolean,
-    idPalavraChave: Array<number>,
-    idDiario: Array<number>,
-    idJournals: Array<number>,
+    dataSaldo?: string,
+    dataFim?: string,
+    period?:number
 }
 
 export interface FilterProps {

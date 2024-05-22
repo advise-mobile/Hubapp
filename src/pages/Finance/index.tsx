@@ -46,6 +46,9 @@ import ReleaseFilters from './Modal/ReleaseFilter';
 import CashFlowFilter from '../Finance/Modal/CashFlowFilter'
 import CategoryFilter from './Modal/CategoryFilter';
 
+import { GetMonthPeriod } from '@helpers/DateFunctions';
+
+const { startOfMonth, endOfMonth } = GetMonthPeriod(true);
 
 import HeaderGlobals from '@components/HeaderGlobals';
 
@@ -77,6 +80,11 @@ export default function Finance(props) {
   const [dataFiltersCategory,setDataFiltersCategory] = useState();
 
   const [dataFiltersRelease,setDataFiltersRelease] = useState();
+
+  // period = 3 = mensal filtro inicial conforme doc solicitada
+  const [dataFiltersCashFlow,setDataFiltersCashFlow] = useState(
+    {'dataSaldo':startOfMonth,'dataFim':endOfMonth, period: 3}
+  );
  
   const [formattedData] = useState({});
 
@@ -129,14 +137,20 @@ export default function Finance(props) {
 	}, []);
 
 	const handleSubmitFiltersCategory = useCallback(async (data) => {
+
+    
     setDataFiltersCategory(data)
     filterCategoryRef.current?.close();
 	}, []);
 
   const handleSubmitFiltersRelease = useCallback(async (data) => {
-    
     setDataFiltersRelease(data)
     filtersReleaseRef.current?.close();  
+	}, []);
+
+  const handleSubmitFiltersCashFlow = useCallback(async (data) => {
+    setDataFiltersCashFlow(data)
+    filterCash.current?.close();  
 	}, []);
 
   const renderAddOptions = useCallback(() => <Add ref={addRef}  onAdd={() => {}} />, []);
@@ -151,7 +165,7 @@ export default function Finance(props) {
 
 	const renderFilterCashFlow = useMemo(
 		() => (
-			<CashFlowFilter ref={filterCash} handleSubmitFilters={() => {}} handleClearFilters={handleClearFilters}/>
+			<CashFlowFilter ref={filterCash} handleSubmitFilters={handleSubmitFiltersCashFlow} handleClearFilters={handleClearFilters}/>
 		),
 		[formattedData],
 	);
@@ -189,16 +203,16 @@ export default function Finance(props) {
                 loading ? <Spinner height={'auto'} /> :
                   <>
                     {currentTab === "release" && <Release dataFiltersRelease={dataFiltersRelease} /> }
-                    {currentTab === "cash-flow" && <CashFlow /> }
+                    {currentTab === "cash-flow" && <CashFlow dataFiltersCashFlow={dataFiltersCashFlow} /> }
                     {currentTab === "category" && <Category dataFiltersCategory={dataFiltersCategory} /> }
                   </>
 		  		    }
               </Content>
 
       {renderAddOptions()}
-			{renderReleaseFilters}
-			{renderFilterCashFlow}
-			{renderFilterCategory}
+			{currentTab === "release" && renderReleaseFilters}
+			{currentTab === "cash-flow" && renderFilterCashFlow}
+			{currentTab === "category" && renderFilterCategory}
 
             </Warp>
             :

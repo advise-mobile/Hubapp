@@ -19,23 +19,37 @@ export const isSameDateTime = (date1, date2) =>
   moment(date1, 'YYYY-MM-DD H:mm:ss').format('YYYY-MM-DD H:mm:ss') ===
   moment(date2, 'YYYY-MM-DD H:mm:ss').format('YYYY-MM-DD H:mm:ss');
 
-export const GetMonthPeriod = () => {
+export const GetMonthPeriod = (onlyData = false) => {
   return {
-    startOfMonth : moment().startOf('month').format('YYYY-MM-DD')+ "T00:00:00",
-    endOfMonth: moment().endOf('month').format('YYYY-MM-DD')+ "T23:59:59",
+    startOfMonth : onlyData ? moment().startOf('month').format('YYYY-MM-DD') : moment().startOf('month').format('YYYY-MM-DD') + "T00:00:00",
+    endOfMonth: onlyData ? moment().endOf('month').format('YYYY-MM-DD') : moment().endOf('month').format('YYYY-MM-DD') + "T23:59:59",
   }
 } 
 
-export const GetToday = () => {
+export const GetToday = (onlyData = false) => {
   return {
-    startDay: moment().format("YYYY-MM-DD") + "T00:00:00",
-    endOfDay: moment().format("YYYY-MM-DD")+ "T23:59:59",
+    startDay: onlyData ? moment().format("YYYY-MM-DD") : moment().format("YYYY-MM-DD") + "T00:00:00",
+    endOfDay: onlyData ? moment().format("YYYY-MM-DD") : moment().format("YYYY-MM-DD")+ "T23:59:59",
   } 
 } 
 
-export const GetWeekPeriod = () => {
+export const GetWeekPeriod = (onlyData = false) => {
   return {
-    startOfWeek: moment().day(0).format('YYYY-MM-DD') + "T00:00:00",
-    endOfWeek:moment().day(6).format('YYYY-MM-DD')+ "T23:59:59",
+    startOfWeek: onlyData ? moment().day(0).format('YYYY-MM-DD') :  moment().day(0).format('YYYY-MM-DD') + "T00:00:00",
+    endOfWeek: onlyData ?  moment().day(6).format('YYYY-MM-DD') : moment().day(6).format('YYYY-MM-DD')+ "T23:59:59",
   } 
 }
+
+export const GetYearPeriod = () => {
+  return {
+    startOfYear : moment().startOf('year').format('YYYY-MM-DD')+ "T00:00:00",
+    endOfYear: moment().endOf('year').format('YYYY-MM-DD')+ "T23:59:59",
+  }
+} 
+
+export const GetYearOnlyMonthsPeriod = () => {
+  return {
+    startOfYear : moment().startOf('year').format('YYYY-MM'),
+    endOfYear: moment().endOf('year').format('YYYY-MM'),
+  }
+} 

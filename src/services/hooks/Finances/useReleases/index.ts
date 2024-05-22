@@ -21,8 +21,6 @@ interface DataEmailProps {
     idParcela: number
 }
 
-
-
 export const useGetFinanceID= () => {
 
     const [isLoadingFinanceID, setIsLoadingFinanceID] = useState(false);

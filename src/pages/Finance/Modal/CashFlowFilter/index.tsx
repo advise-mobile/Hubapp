@@ -2,14 +2,14 @@ import React, {forwardRef, useState, useCallback, useEffect} from 'react';
 
 import {StyleSheet, Dimensions} from 'react-native';
 
-import {useForm, Controller} from 'react-hook-form';
+import {useForm, Controller, useWatch} from 'react-hook-form';
 
 import Modal from '@components/Modal';
 import Datepicker from '@components/DatePicker';
 
-import {FormatFullDateEN} from '@helpers/DateFunctions';
+import {FormatDateEN} from '@helpers/DateFunctions';
 
-import {ItemProps} from '@components/MultiSelectCheckBox/types';
+import { GetMonthPeriod, GetToday, GetWeekPeriod, GetYearOnlyMonthsPeriod } from '@helpers/DateFunctions';
 
 import {fonts} from 'assets/styles';
 
@@ -26,133 +26,118 @@ import {
 	PeriodItemsContainer,
 	PeriodItems,
 	LabelPeriod,
+	Container
 } from './styles';
 
 import {FilterProps, DataFilterProps} from './types';
 
-import {useKeyWordsGet} from '@services/hooks/MovimentsTrash/useMovementsTrash';
-
 // Add Hook UseTheme para pegar o tema global addicionado
 import {useTheme} from 'styled-components';
 
-const periods = ['Hoje', 'Esta semana', 'Este mês', 'Este ano'];
+const periods = [
+	{
+		value:1,
+		label:'Hoje'
+	},
+	{
+		value:2,
+		label:'Esta semana'
+	},
+	{
+		value:3,
+		label:'Este mês'
+	},
+	{
+		value:4,
+		label:'Este ano'
+	}
+];
+const heightScreen = Dimensions.get('window').height;
+
+const modalHeight = (heightScreen * 70) / 100;
 
 export default CashFlowFilter = forwardRef(
 	({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
-		const [selectedPeriod, setSelectedPeriod] = useState(null);
 
-		const handlePeriodClick = index => {
-			setSelectedPeriod(index);
-		};
+		const {
+			control,
+			handleSubmit,
+			setError,
+			setValue,
+			getValues,
+		} = useForm({
+			shouldUnregister: false,
+		});
+
+		const changesForm = useWatch({
+			control,
+			name: ['period', 'dataSaldo','dataFim']
+		  })
 
 		// Variavel para usar o hook
 		const colorUseTheme = useTheme();
 		const {colors} = colorUseTheme;
 
-		// - Key Words from hook called api
-		const {dataKeyWords} = useKeyWordsGet();
-
-		// - Key Words states
-
-		const [keyWords, setKeyWords] = useState<ItemProps[]>();
-		const [keyWordsCheckeds, setKeyWordsCheckeds] = useState<number[]>([]);
-		const [quantitySelected, setQuantitySelected] = useState<number>(0);
-		const [startAllChecked] = useState<boolean>(false);
-
-		// - Diaries  states
-		const [quantityDiariesSelected, setQuantityDiariesSelected] = useState<number>(0);
-
-		const [dataDiariesCheckeds, setDataDiariesCheckeds] = useState<number[]>([]);
-
-		// - Journals  states
-		const [dataJournalsCheckeds, setDataJournalsCheckeds] = useState<number[]>([]);
-
-		const [situation, setSituation] = useState<number>(0);
-		const [idTipoMovProcesso, setIdTipoMovProcesso] = useState<number | null>(null);
-		const [minDate, setMinDate] = useState<string | null>(null);
-		const [maxDate, setMaxDate] = useState<string | null>(null);
-
-		const {control, handleSubmit, setValue, getValues} = useForm({
-			shouldUnregister: false,
-		});
-
 		const onSubmit = (data: DataFilterProps) => {
-			handleSubmitFilters(data);
+
+			let filterPeriod:DataFilterProps = [];
+
+			filterPeriod.dataSaldo = FormatDateEN(data.dataSaldo);
+			filterPeriod.dataFim = FormatDateEN(data.dataFim);
+			
+			
+
+			if(data.dataSaldo === null && data.dataFim === null ) {
+				filterPeriod = getParametersPeriod(data.period!);
+			}
+
+			if(data.dataSaldo !== null && data.dataFim === null ) {
+				filterPeriod = getParametersPeriod(data.period!);
+				filterPeriod.dataSaldo = FormatDateEN(data.dataSaldo);
+			}
+
+			if(data.dataSaldo === null && data.dataFim !== null ) {
+				filterPeriod = getParametersPeriod(data.period!);
+				filterPeriod.dataFim = FormatDateEN(data.dataFim);
+			}
+			filterPeriod.period = data.period;
+			handleSubmitFilters(filterPeriod);
 		};
 
 		const countFilters = useCallback(
-			() =>
-				checkNull([
-					situation,
-					minDate,
-					maxDate,
-					idTipoMovProcesso,
-					keyWordsCheckeds,
-					dataDiariesCheckeds,
-					dataJournalsCheckeds,
-				]),
+			() => {
+				let count = getValues();
+				
+				if(Object.keys(count).length === 0){
+						setValue('period', 3);
+						count.period = 3;
+				}
+				
+				return checkNull([
+					count.period,
+					count.dataSaldo,
+					count.dataFim
+				])
+			},
 			[
-				situation,
-				minDate,
-				maxDate,
-				idTipoMovProcesso,
-				keyWordsCheckeds,
-				dataDiariesCheckeds,
-				dataJournalsCheckeds,
+				changesForm,
 			],
 		);
 
 		const checkNull = useCallback(
-			states => states.filter(state => state != null && state != 0).length,
+			(states) => {
+				 return states.filter(state => state != null && state != 0).length
+				},
 			[],
 		);
 
-		useEffect(() => {
-			setKeyWords(dataKeyWords);
-
-			setQuantitySelected(startAllChecked ? dataKeyWords.length : 0);
-
-			if (startAllChecked) {
-				const dataChecked = dataKeyWords.map((item: ItemProps) => {
-					return item.id;
-				});
-
-				setKeyWordsCheckeds(dataChecked);
-				setValue('idPalavraChave', dataChecked);
-			} else {
-				setKeyWordsCheckeds([]);
-			}
-		}, [dataKeyWords]);
-
 		const clearFilters = useCallback(() => {
+			
+			setValue('period', 3);
+			setValue('dataSaldo', null);
+			setValue('dataFim', null);
+			countFilters();
 			handleClearFilters();
-			setSituation(0);
-			setMinDate(null);
-			setMaxDate(null);
-
-			setValue('DataMovimentoInicio', null);
-			setValue('DataMovimentoFim', null);
-
-			setValue('idTipoMovProcesso', null);
-
-			setValue('Lido', null);
-
-			setIdTipoMovProcesso(null);
-
-			// - reset diaries
-			setDataDiariesCheckeds([]);
-			setQuantityDiariesSelected(0);
-			setValue('idDiario', []);
-
-			// - reset keywords
-			setQuantitySelected(0);
-			setKeyWordsCheckeds([]);
-			setValue('idPalavraChave', []);
-
-			// - reset journals
-			setDataJournalsCheckeds([]);
-			setQuantityDiariesSelected(0);
-			setValue('idJournals', []);
 		}, []);
 
 		const closeModal = useCallback(() => ref.current?.close(), []);
@@ -169,9 +154,52 @@ export default CashFlowFilter = forwardRef(
 			</Footer>
 		);
 
-		const heightScreen = Dimensions.get('window').height;
+		const getParametersPeriod = (id: number) => {
+			let period = {
+			  dataSaldo: null,
+			  dataFim: null,
+			};
+		
+			switch (id) {
+				case 1:
+		
+				const { startDay, endOfDay } = GetToday(true);
+				period = {
+				  dataSaldo: startDay,
+				  dataFim: endOfDay,
+				};
+				return period;
+			  case 2:
+				const { startOfWeek, endOfWeek } = GetWeekPeriod(true);
+		
+				period = {
+				  dataSaldo: startOfWeek,
+				  dataFim: endOfWeek,
+				};
+		
+				return period;
+			  case 3:
+				const { startOfMonth, endOfMonth } = GetMonthPeriod(true);
+		
+				period = {
+				  dataSaldo: startOfMonth,
+				  dataFim: endOfMonth,
+				};
+				return period;
 
-		const modalHeight = (heightScreen * 70) / 100;
+				case 4:
+					const { startOfYear, endOfYear } = GetYearOnlyMonthsPeriod();
+
+					period = {
+						dataSaldo: startOfYear,
+						dataFim: endOfYear,
+					};
+
+				return period;
+			  default:
+				return period;
+			}
+		  };
 
 		return (
 			<Modal
@@ -181,65 +209,76 @@ export default CashFlowFilter = forwardRef(
 				title="Filtros"
 				filters={countFilters()}
 				clear={clearFilters}>
-				<Row>
-					<Title>Período</Title>
-				</Row>
+				
+				<Container>
+					<Row>
+						<Title>Período</Title>
+					</Row>
 
-				<PeriodItemsContainer>
-					{periods.map((period, index) => (
-						<PeriodItems
-							key={index}
-							onPress={() => handlePeriodClick(index)}
-							style={{
-								backgroundColor: colors.gray,
-							}}>
-							<LabelPeriod style={{color: selectedPeriod === index ? colors.backgroundButton : colors.iconGray}}>
-								{period}
-							</LabelPeriod>
-						</PeriodItems>
-					))}
-				</PeriodItemsContainer>
+					<Controller
+						name="period"
+						control={control}
+						render={({onChange,value}) => (
+							<PeriodItemsContainer>
+								{periods.map((period) => (
+									<PeriodItems
+										value={value}
+										key={period.value}
+										onPress={() => {
+											onChange(period.value);
+										}}
+										style={{
+											backgroundColor: colors.gray,
+										}}>
+										<LabelPeriod style={{color: period.value === value ? colors.backgroundButton : colors.iconGray}}>
+											{period.label}
+										</LabelPeriod>
+									</PeriodItems>
+								))}
+							</PeriodItemsContainer>
 
-				<Row>
-					<Column>
-						<Label>De</Label>
-						<Controller
-							name="DataMovimentoInicio"
-							control={control}
-							defaultValue={null}
-							render={({onChange}) => (
-								<Datepicker
-									date={minDate}
-									enabled={true}
-									title="dd/mm/aaaa"
-									style={{maxWidth: 100}}
-									maxDate={maxDate || undefined}
-									onDateChange={date => {
-										setMinDate(date), onChange(FormatFullDateEN(date));
-									}}
-								/>
-							)}></Controller>
-					</Column>
-					<Column>
-						<Label>Até</Label>
-						<Controller
-							name="DataMovimentoFim"
-							control={control}
-							defaultValue={null}
-							render={({onChange}) => (
-								<Datepicker
-									date={maxDate}
-									enabled={true}
-									title="dd/mm/aaaa"
-									style={{maxWidth: 100}}
-									minDate={minDate || undefined}
-									onDateChange={date => {
-										setMaxDate(date), onChange(FormatFullDateEN(date));
-									}}
-								/>
-							)}></Controller>
-					</Column>
-				</Row>
+				)}
+					/>
+
+				</Container>
+
+				<Container>
+
+					<Row>
+						<Column>
+							<Label>De</Label>
+							<Controller
+								name="dataSaldo"
+								control={control}
+								defaultValue={null}
+								render={({onChange,value}) => (
+									<Datepicker
+										date={value}
+										enabled={true}
+										title="dd/mm/aaaa"
+										style={{maxWidth: 100}}	
+										onDateChange={date => onChange(date)}
+									/>
+								)}/>
+						</Column>
+						<Column>
+							<Label>Até</Label>
+							<Controller
+								name="dataFim"
+								control={control}
+								defaultValue={null}
+								render={({onChange,value}) => (
+									<Datepicker
+										date={value}
+										enabled={true}
+										title="dd/mm/aaaa"
+										style={{maxWidth: 100}}
+										onDateChange={date => onChange(date)}
+									/>
+								)}/>
+						</Column>
+					</Row>
+				</Container>
 			</Modal>
 		);
 	},

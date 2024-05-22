@@ -21,3 +21,12 @@ export interface DataCashFlowProps {
 export interface saldoAnteriorProps{
 	saldoAnterior: number;
 }
+
+export interface FiltersCashFlowDataProps {
+	dataSaldo: string | null,
+	dataFim: string | null,
+}
+
+export interface DataFiltersCashFlowProps {
+	dataFiltersCashFlow : FiltersCashFlowDataProps | undefined
+}
