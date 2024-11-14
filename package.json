@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"android": "react-native run-android",
+		"android": "npx react-native run-android",
 		"ios": "react-native run-ios",
 		"android:build": "cd android && ./gradlew clean && ./gradlew bundleRelease && cd ..",
 		"android:test": "cd android && ./gradlew clean && ./gradlew assembleRelease && cd ..",
@@ -40,7 +40,7 @@
 		"react-native-modal": "^11.10.0",
 		"react-native-modal-datetime-picker": "^9.1.0",
 		"react-native-modalize": "^2.0.8",
-		"react-native-onesignal": "^5.2.4",
+		"react-native-onesignal": "4.5.4",
 		"react-native-picker-select": "^8.0.4",
 		"react-native-popup-menu": "^0.16.1",
 		"react-native-reanimated": "^1.13.2",
