@@ -19,6 +19,5 @@ target 'Advise Hub' do
 end
 
 target 'OneSignalNotificationServiceExtension' do
-  pod 'OneSignal/OneSignal', '>= 5.0.0', '< 6.0'
-  pod 'OneSignal/OneSignalInAppMessages', '>= 5.0.0', '< 6.0'
+  pod 'OneSignalXCFramework', '3.12.10'
 end
