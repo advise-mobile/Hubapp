@@ -18,9 +18,8 @@ import Spinner from 'components/Spinner';
 import {registerNotification} from 'helpers/Pushs';
 import {AVATAR, TOKEN, REFRESH_TOKEN, SHOW_PROMOTION} from 'helpers/StorageKeys';
 
-
 // Add Hook UseTheme para pegar o tema global addicionado
-import { useTheme } from 'styled-components';
+import {useTheme} from 'styled-components';
 
 import {
 	Container,
@@ -42,35 +41,35 @@ import {
 	AnotherOption,
 } from './styles';
 
-const stylesLogin = (colors) => StyleSheet.create({
-	hasIcon: {
-		color: colors.fadedBlack,
-		paddingTop: 7,
-		textAlign: 'center',
-		zIndex: 100,
-	},
+const stylesLogin = colors =>
+	StyleSheet.create({
+		hasIcon: {
+			color: colors.fadedBlack,
+			paddingTop: 7,
+			textAlign: 'center',
+			zIndex: 100,
+		},
 
-	hasIconError: {
-		color: colors.red,
-		paddingTop: 7,
-		textAlign: 'center',
-		zIndex: 100,
-	},
+		hasIconError: {
+			color: colors.red,
+			paddingTop: 7,
+			textAlign: 'center',
+			zIndex: 100,
+		},
 
-	hasError: {
-		borderColor: colors.red,
-	},
+		hasError: {
+			borderColor: colors.red,
+		},
 
-	hasSuccess: {
-		borderColor: colors.backgroundButton,
-	},
-});
+		hasSuccess: {
+			borderColor: colors.backgroundButton,
+		},
+	});
 
 export default function Login(props) {
-
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
-	const { colors } = colorUseTheme;
+	const {colors} = colorUseTheme;
 	const style = stylesLogin(colors);
 
 	// const [email, setEmail] = useState('testehubv1@emailna.co');
@@ -79,6 +78,8 @@ export default function Login(props) {
 	const [email, setEmail] = useState('valid.ti@mailna.co');
 	const [password, setPassword] = useState('Teste@1234');
 
+	// const [email, setEmail] = useState('');
+	// const [password, setPassword] = useState('');
 
 	// const [email, setEmail] = useState('');
 	// const [password, setPassword] = useState('');
@@ -102,7 +103,8 @@ export default function Login(props) {
 
 	const dispatch = useDispatch();
 
-	const logoImage = colorUseTheme.name === 'dark'
+	const logoImage =
+		colorUseTheme.name === 'dark'
 			? require('assets/images/logo_hub_branca.png')
 			: require('assets/images/logo_hub.png');
 
@@ -138,7 +140,7 @@ export default function Login(props) {
 
 	const resetPromotion = async () => {
 		await AsyncStorage.setItem(SHOW_PROMOTION, JSON.stringify(true));
-	}
+	};
 
 	const handleLoginPress = useCallback(() => {
 		setDisabled(true);
