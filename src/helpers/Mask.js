@@ -10,9 +10,24 @@ export const MaskCep = value => VanillaMasker.toPattern(value, '99999-999');
 
 export const MaskDate = value => VanillaMasker.toPattern(value, '99/99/9999');
 
-export const MaskCnj = value => {
-  if (value.length == 20 && !isNaN(value))
-    return value.replace(/(\d{7})(\d{2})(\d{4})(\d{1})(\d{2})(\d{4})/, '$1-$2.$3.$4.$5.$6');
+export const MaskMoney = value => VanillaMasker.toMoney(value, {
+	precision: 2,
+	separator: ',',
+	delimiter: '.',
+	unit: '',
+	zeroCents: false
+});
 
-  return value;
+export const MaskMoneyForRegister = value => {
+	const formattedValue = value.replace(/\./g, '').replace(/,/g, '.').replace('R$','').trim();
+	return formattedValue;
+};
+
+export const MaskCnj = value => {
+	if (value.length == 20 && !isNaN(value))
+		return value.replace(/(\d{7})(\d{2})(\d{4})(\d{1})(\d{2})(\d{4})/, '$1-$2.$3.$4.$5.$6');
+
+	return value;
 }
+
+

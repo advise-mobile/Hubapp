@@ -48,7 +48,7 @@ import {
 	NotFoundText,
 	NotFoundDescription,
 } from './styles';
-import {DateCurrent, isBefore} from '../../helpers/DateFunctions';
+
 import moment from 'moment';
 
 export default function Folders(props) {

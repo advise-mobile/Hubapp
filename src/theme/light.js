@@ -3,10 +3,12 @@ export default lightTheme  = {
     colors:{
       white: '#FEFEFE',
       realWhite: '#FFFFFF',
+			realWhites: '#000000',
       darkGray: '#666666',
       gray: '#EEEEEE',
       trueGray: '#EEEEEE',
       textInactive: '#BBBBBB',
+			BlackInactive: '#000000',
       red: '#D32F2F',
       advise: '#FF5800',
       adviseDarker: '#E64C00',
@@ -28,16 +30,49 @@ export default lightTheme  = {
       secondary: '#2D2D2D',
       forgetLink: '#1976D2',
       inactive: '#565656',
+			inactiveDetails: '#565656',
       blue200: '#81D4FA',
       orange200: '#FFAB91',
       toastError: '#FFCDD2',
+			red200: '#D32F2F',
+			green200: '#689F38',
+			blueIcon: '#90CAF9',
+			colorBackGround: '#EEEEEE',
+			colorIconThumbdown: '#E0E0E0',
+			blueValue: '#1E88E5',
+			pinkTag: '#CE93D8',
+			greenTag: '#80CBC4',
+			purple: '#B39DDB',
+			pink: '#F48FB1',
+			pinkRed: '#EF9A9A',
+			neutral: '#F5F5F5',
+			typecolor: '#9FA8DA',
+			during: '#F5F5F5',
+
+			bordercolor: '#ABABAB',
+			tabcolor: '#000000',
+			textTab: '#ffff',
+			textvalue: '#666666',
+			colorSelect: '#ffff',
+
+
+
 
       grayLighter: 'rgba(0, 0, 0, .12)',
       grayLight: 'rgba(0, 0, 0, .5)',
       grayDarker: 'rgba(0, 0, 0, .8)',
+			Darkesgray: 'rgba(0, 0, 0, .8)',
       disabled: 'rgba(0, 0, 0, 0.38)',
       disabledText: 'rgba(255, 255, 255, 0.5)',
       fadedWhite: 'rgba(255,255,255,0.69)',
       fadedBlack: 'rgba(0,0,0,0.6)',
-    }
+
+      backgroundDefault : "#000000",
+
+      textPrimary:'#000000'
+    },
+		fonts: {
+			regular: 'Roboto_400Regular',
+			bold: 'Roboto_700Bold'
+		},
   }

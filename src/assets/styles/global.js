@@ -111,7 +111,7 @@ const MessageTitle = styled.Text`
 `;
 
 const MessageSubtitle = styled.Text`
-  color: ${({ theme }) => theme.colors.grayDarker}; 
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-family: ${fonts.circularStdMedium};
   font-size: ${fonts.regular};
   line-height: 20px;
@@ -168,13 +168,13 @@ const Actions = styled.View`
   flex-direction: row;
   padding-horizontal: 8px;
   border-bottom-width: 1px;
-  background:  ${({ theme }) => theme.colors.white}; 
+  background:  ${({ theme }) => theme.colors.white};
   border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
 `;
 
 const ActionButton = styled.TouchableOpacity`
   padding: 12px;
-  background:${({ theme }) => theme.colors.white}; 
+  background:${({ theme }) => theme.colors.white};
 `;
 
 export {

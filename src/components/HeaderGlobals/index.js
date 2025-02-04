@@ -38,7 +38,12 @@ export default HeaderGlobals = props => {
             <HeaderActionsRight>
               {props.add && (
                 <HeaderAction>
-                  <MaterialIcons name="add-circle" size={20} color={colors.fadedBlack} onPress={() => props.add()} />
+                  <MaterialIcons name="add-circle" size={20} color={colors.green200} onPress={() => props.add()} />
+                </HeaderAction>
+              )}
+							{props.more && (
+                <HeaderAction>
+                  <MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} onPress={() => props.more()} />
                 </HeaderAction>
               )}
               {props.edit && (

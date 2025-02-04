@@ -35,8 +35,14 @@ import PrivacyPolicy from '../pages/PrivacyPolicy';
 import Folders from '../pages/Folders';
 import Movements from '../pages/Movements';
 import MovementDetail from '../pages/Movements/Details';
-
 import MovementsTrash from '../pages/MovementsTrash';
+
+
+import FinanceTab from '../pages/Finance';
+import Finance from '../pages/Finance/Releases';
+import Details from '../pages/Finance/Details';
+import CashFlow from '../pages/Finance/CashFlow';
+import Category from '../pages/Finance/Category';
 
 
 import Jurisprudence from '../pages/Jurisprudence';
@@ -60,6 +66,9 @@ const TabsStack = createBottomTabNavigator();
 
 const FoldersStack = createStackNavigator();
 
+const FinanceStack = createStackNavigator();
+
+
 const FoldersScreens = () => (
 	<FoldersStack.Navigator headerMode="none">
 		<FoldersStack.Screen name="Folders" component={Folders} />
@@ -67,6 +76,17 @@ const FoldersScreens = () => (
 		<FoldersStack.Screen name="MovementsTrash" component={MovementsTrash} />
 		<FoldersStack.Screen name="MovementDetail" component={MovementDetail} />
 	</FoldersStack.Navigator>
+);
+
+
+const FinanceScreens = () => (
+	<FinanceStack.Navigator headerMode="none">
+		<FinanceStack.Screen name="FinanceTab" component={FinanceTab} />
+		<FinanceStack.Screen name="Finance" component={Finance} />
+		<FinanceStack.Screen name="Details" component={Details} />
+		<FinanceStack.Screen name="CashFlow" component={CashFlow} />
+		<FinanceStack.Screen name="Category" component={Category} />
+	</FinanceStack.Navigator>
 );
 
 const DeadlinesStack = createStackNavigator();
@@ -99,7 +119,7 @@ const AccountScreens = () => (
 );
 
 const AppScreens = () => (
-	
+
 	// Variavel para usar o hook
 	colorUseTheme = useTheme(),
 
@@ -162,6 +182,20 @@ const AppScreens = () => (
 				),
 			}}
 		/>*/}
+
+			<TabsStack.Screen
+			component={FinanceScreens}
+			name="Finance"
+			options={{
+				tabBarIcon: ({color}) => (
+					<CustomIcon group={PermissionsGroups.SCHEDULE}>
+						<MaterialIcons name="attach-money" size={25} color={color} />
+					</CustomIcon>
+				),
+			}}
+		/>
+
+
 		<TabsStack.Screen
 			component={AccountScreens}
 			name="Account"
@@ -169,6 +203,7 @@ const AppScreens = () => (
 				tabBarIcon: ({color}) => <UserIcon color={color} />,
 			}}
 		/>
+
 	</TabsStack.Navigator>
 );
 
