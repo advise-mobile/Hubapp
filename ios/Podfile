@@ -19,5 +19,5 @@ target 'Advise Hub' do
 end
 
 target 'OneSignalNotificationServiceExtension' do
-  pod 'OneSignalXCFramework', '3.12.10'
+  pod 'OneSignalXCFramework', '~> 3.12.10'
 end

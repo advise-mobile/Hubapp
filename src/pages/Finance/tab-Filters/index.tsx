@@ -12,36 +12,38 @@ const filters = [
 
 const FilterScreen = ({onFilterSelect}) => {
 	const [selectedFilter, setSelectedFilter] = useState(1);
-
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const renderFilter = ({item}) => {
-		const isSelected = selectedFilter === item.id;
+	const renderFilter = React.useCallback(
+		({item}) => {
+			const isSelected = selectedFilter === item.id;
 
-		return (
-			<Container>
-				<ContainerItems
-					onPress={() => {
-						if (!isSelected) {
-							setSelectedFilter(item.id);
-							onFilterSelect(item.id);
-						}
-					}}
-
-					style={{
-						backgroundColor: isSelected ? colors.tabcolor : colors.realWhite,
-					}}>
-					<TextItems
+			return (
+				<Container>
+					<ContainerItems
+						onPress={() => {
+							if (!isSelected) {
+								setSelectedFilter(item.id);
+								onFilterSelect(item.id);
+							}
+						}}
+						activeOpacity={0.7}
 						style={{
-							color: isSelected ? colors.textTab : colors.BlackInactive,
+							backgroundColor: isSelected ? colors.tabcolor : colors.realWhite,
 						}}>
-						{item.name}
-					</TextItems>
-				</ContainerItems>
-			</Container>
-		);
-	};
+						<TextItems
+							style={{
+								color: isSelected ? colors.textTab : colors.BlackInactive,
+							}}>
+							{item.name}
+						</TextItems>
+					</ContainerItems>
+				</Container>
+			);
+		},
+		[selectedFilter, colors, onFilterSelect],
+	);
 
 	return (
 		<View>
@@ -53,7 +55,11 @@ const FilterScreen = ({onFilterSelect}) => {
 				showsHorizontalScrollIndicator={false}
 				style={{
 					overflow: 'hidden',
+
+					marginTop: 10,
 				}}
+				removeClippedSubviews={true}
+				initialNumToRender={4}
 			/>
 		</View>
 	);

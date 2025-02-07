@@ -1,10 +1,18 @@
+export const FormatReal = (price: number) => {
+	try {
+		const formatter = new Intl.NumberFormat('pt-BR', {
+			style: 'currency',
+			currency: 'BRL',
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
 
-
-import { Platform } from 'react-native';
-
-  export const FormatReal = (price: number) => {
-    const parsedPrice =  price .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); 
-    return Platform.OS === 'android' ? `R$ ${parsedPrice.toFixed(2) }` : parsedPrice;
- };
- 
- 
+		return formatter.format(price);
+	} catch (error) {
+		// Fallback básico caso o Intl.NumberFormat falhe
+		return `R$ ${price
+			.toFixed(2)
+			.replace('.', ',')
+			.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+	}
+};
