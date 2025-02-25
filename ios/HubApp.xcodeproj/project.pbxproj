@@ -21,32 +21,9 @@
 		17F87FEB25CB2BF8000F6AC5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17F87FEA25CB2BF8000F6AC5 /* Launch Screen.storyboard */; };
 		5B55B2507EEBBC09425185CD /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8248EE97CBBDB2B7D3755E57 /* libPods-OneSignalNotificationServiceExtension.a */; };
 		A13F7B2477B20C89DA0F3939 /* libPods-Advise Hub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22D52FCE841FBD36AD0A320B /* libPods-Advise Hub.a */; };
-		CEC851CD2D52CDF500DAE921 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CEC851C62D52CDF500DAE921 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CED6352E2D5B739A003B3CE1 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = CED6352D2D5B739A003B3CE1 /* main.jsbundle */; };
+		CED635302D5B73AA003B3CE1 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = CED6352F2D5B73AA003B3CE1 /* assets */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		CEC851CB2D52CDF500DAE921 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CEC851C52D52CDF500DAE921;
-			remoteInfo = OneSignalNotificationServiceExtension;
-		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		17B3623A2590C08200EB8399 /* Embed App Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				CEC851CD2D52CDF500DAE921 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */,
-			);
-			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
@@ -87,6 +64,8 @@
 		BD5AAE8EB13244598CCCBCC7 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		C25624281DAC4DE99AD2CC58 /* CircularStd-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CircularStd-Black.otf"; path = "../src/assets/fonts/CircularStd-Black.otf"; sourceTree = "<group>"; };
 		CEC851C62D52CDF500DAE921 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CED6352D2D5B739A003B3CE1 /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
+		CED6352F2D5B73AA003B3CE1 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = src/assets; sourceTree = "<group>"; };
 		CF423A37E4524FE6893439AD /* CircularStd-MediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CircularStd-MediumItalic.otf"; path = "../src/assets/fonts/CircularStd-MediumItalic.otf"; sourceTree = "<group>"; };
 		D6A861FEA6504D078276B25C /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		DC1CBB6EEF0449D0BAB77C96 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -216,6 +195,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				CED6352F2D5B73AA003B3CE1 /* assets */,
+				CED6352D2D5B739A003B3CE1 /* main.jsbundle */,
 				17B4313A2666C1A4001DD841 /* HubAppRelease.entitlements */,
 				13B07FAE1A68108700A75B9A /* HubApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -251,14 +232,12 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				17B3623A2590C08200EB8399 /* Embed App Extensions */,
 				7EC46456B837A59AA7025C35 /* [CP] Embed Pods Frameworks */,
 				DEC71BAB0E0D72B1B98296D0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CEC851CC2D52CDF500DAE921 /* PBXTargetDependency */,
 			);
 			name = "Advise Hub";
 			productName = HubApp;
@@ -300,7 +279,7 @@
 					CEC851C52D52CDF500DAE921 = {
 						CreatedOnToolsVersion = 16.2;
 						DevelopmentTeam = DF8CC9QK2Y;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -338,6 +317,8 @@
 				17962E0B256D3FA300928E90 /* CircularStd-Bold.otf in Resources */,
 				17F87FEB25CB2BF8000F6AC5 /* Launch Screen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				CED635302D5B73AA003B3CE1 /* assets in Resources */,
+				CED6352E2D5B739A003B3CE1 /* main.jsbundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,7 +357,6 @@
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignalCore/OneSignalCore.framework/OneSignalCore",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignalExtension/OneSignalExtension.framework/OneSignalExtension",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignalOutcomes/OneSignalOutcomes.framework/OneSignalOutcomes",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Smartlook/Smartlook.framework/Smartlook",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -384,7 +364,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignalCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignalExtension.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignalOutcomes.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Smartlook.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -527,14 +506,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		CEC851CC2D52CDF500DAE921 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CEC851C52D52CDF500DAE921 /* OneSignalNotificationServiceExtension */;
-			targetProxy = CEC851CB2D52CDF500DAE921 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -553,7 +524,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.1.19;
+				MARKETING_VERSION = 2.3.45;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -562,7 +533,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.advise.hub;
 				PRODUCT_NAME = HubApp;
 				PROVISIONING_PROFILE_SPECIFIER = "Advise Hub";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Hub - Homolog - Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "2024 - Hub - Production - Profile";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -588,7 +559,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.1.19;
+				MARKETING_VERSION = 2.3.45;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -598,7 +569,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.advise.hub;
 				PRODUCT_NAME = HubApp;
 				PROVISIONING_PROFILE_SPECIFIER = "Advise Hub";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Hub - Production - Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "2024 - Hub - Production - Profile";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_WORKSPACE = NO;
@@ -738,10 +709,11 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = DF8CC9QK2Y;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = DF8CC9QK2Y;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -756,6 +728,8 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.advise.hub.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "2024 - Hub- OneSignal - Production";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -777,11 +751,12 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = DF8CC9QK2Y;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = DF8CC9QK2Y;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -795,6 +770,8 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.advise.hub.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "2024 - Hub- OneSignal - Production";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
