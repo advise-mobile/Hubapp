@@ -41,23 +41,24 @@ import {
 import {MaskCnj} from 'helpers/Mask';
 
 // Add Hook UseTheme para pegar o tema global addicionado
-import { useTheme } from 'styled-components';
+import {useTheme} from 'styled-components';
 
 // Hook para buscar os dias de delete da lixeira
-import { useMovementsGetDeleteTrash } from '@services/hooks/Movements/useMovements'
+import {useMovementsGetDeleteTrash} from '@services/hooks/Movements/useMovements';
+
+import RNShareFile from 'react-native-share-pdf';
 
 export default MovementDetail = props => {
-
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
-	const { colors } = colorUseTheme;
-
+	const {colors} = colorUseTheme;
 
 	const [movementType] = useState(props.route.params.movementType);
 	const [movement, setMovement] = useState(props.route.params.movement);
 	const [moveReference, setMoveReference] = useState(null);
 	const [loadingDetails, setLoading] = useState(true);
 	const [downloading, setDownloading] = useState(false);
+	const [sharing, setSharing] = useState(false);
 
 	const {loadingDeleteTrash, currentDayDeleteMovTrash} = useMovementsGetDeleteTrash();
 	const [daysDeleteMovTrash, setDaysDeleteMovTrash] = useState(30);
@@ -75,13 +76,14 @@ export default MovementDetail = props => {
 		setMoveReference(movement);
 
 		const endpoint = movementType === -1 ? 'andamentos' : 'publicacoes';
-
 		const {idMovProcessoCliente} = movement;
 
-		Api.get(
-			`/core/v1/detalhes-movimentacoes/${endpoint}?IDs=${movement.idMovProcessoCliente}&campos=*&registrosPorPagina=-1`,
-		)
-			.then(({data}) => {
+		const buscarDados = async () => {
+			try {
+				const {data} = await Api.get(
+					`/core/v1/detalhes-movimentacoes/${endpoint}?IDs=${movement.idMovProcessoCliente}&campos=*&registrosPorPagina=-1`,
+				);
+
 				const move = data.itens[0];
 
 				if (!movement.lido) {
@@ -120,24 +122,41 @@ export default MovementDetail = props => {
 				}
 
 				setMovement({...move, idMovProcessoCliente});
-			})
-			.finally(() => setLoading(false));
+			} catch (erro) {
+				console.error('Erro ao buscar detalhes do movimento:', erro);
+			} finally {
+				setLoading(false);
+			}
+		};
 
-		return;
+		buscarDados();
+
+		// Função de limpeza simplificada
+		return () => {
+			// Fecha os modais ao desmontar o componente
+			if (menuRef.current?.close) menuRef.current.close();
+			if (emailRef.current?.close) emailRef.current.close();
+			if (deadlineRef.current?.close) deadlineRef.current.close();
+			if (confirmationRef.current?.close) confirmationRef.current.close();
+		};
 	}, []);
 
-	useEffect(() => {		
+	useEffect(() => {
 		setDaysDeleteMovTrash(currentDayDeleteMovTrash);
 	}, [currentDayDeleteMovTrash]);
 
-
 	const requestPermission = useCallback(async () => {
 		try {
-			const granted = await PermissionsAndroid.request(
+			const permissions = await PermissionsAndroid.requestMultiple([
+				PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
 				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+			]);
+
+			const granted = Object.values(permissions).every(
+				value => value === PermissionsAndroid.RESULTS.GRANTED,
 			);
 
-			return granted === PermissionsAndroid.RESULTS.GRANTED;
+			return granted;
 		} catch (err) {
 			console.warn(err);
 		}
@@ -148,9 +167,12 @@ export default MovementDetail = props => {
 	const downloadMovement = useCallback(
 		async (item, sharing = false) => {
 			const downloadPromise = new Promise(async (resolve, reject) => {
-				const havePermission = Platform.OS == 'ios' || (await requestPermission());
+				const havePermission = Platform.OS === 'ios' || (await requestPermission());
 
-				if (!havePermission) setDownloading(false);
+				if (!havePermission) {
+					setDownloading(false);
+					return;
+				}
 
 				await getLogin();
 
@@ -169,10 +191,11 @@ export default MovementDetail = props => {
 				const filename = `${Date.now()}.pdf`;
 
 				const path =
-					Platform.OS == 'ios' ? dirs.DocumentDir + `/${filename}` : dirs.DCIMDir + `/${filename}`;
+					Platform.OS == 'ios'
+						? dirs.DocumentDir + `/${filename}`
+						: dirs.DownloadDir + `/${filename}`;
 
 				RNFetchBlob.config({
-					fileCache: true,
 					path: path,
 					addAndroidDownloads: {
 						useDownloadManager: true,
@@ -183,7 +206,7 @@ export default MovementDetail = props => {
 								? 'Andamento disponibilizado'
 								: 'Publicação disponibilizada'
 						} via Advise Hub App`,
-						path: dirs.DCIMDir + `/${filename}`,
+						path: dirs.DownloadDir + `/${filename}`,
 					},
 				})
 					.fetch(
@@ -219,15 +242,26 @@ export default MovementDetail = props => {
 							});
 						}
 					})
-					.catch(err => {
-						dispatch(
-							ToastNotifyActions.toastNotifyShow(
-								`Erro ao baixar ${
-									item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'
-								}, tente novamente mais tarde.`,
-								true,
-							),
-						);
+					.catch(() => {
+						if (!sharing) {
+							dispatch(
+								ToastNotifyActions.toastNotifyShow(
+									`Erro ao baixar ${
+										item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'
+									}, tente novamente mais tarde.`,
+									true,
+								),
+							);
+						} else {
+							dispatch(
+								ToastNotifyActions.toastNotifyShow(
+									`Erro ao compartilhar ${
+										item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'
+									}, tente novamente mais tarde.`,
+									true,
+								),
+							);
+						}
 
 						reject();
 					})
@@ -253,6 +287,34 @@ export default MovementDetail = props => {
 		[colors],
 	);
 
+	const share = useCallback(async () => {
+		try {
+			setSharing(true);
+			const havePermission = Platform.OS === 'ios' || (await requestPermission());
+
+			if (havePermission) {
+				const {file, fileName} = await downloadMovement(movement, true);
+				await RNShareFile(file, fileName);
+
+				if (!movement.lido) {
+					handleMarkAsRead(movement);
+				}
+			}
+		} catch (error) {
+			console.error('Erro detalhado:', error);
+			dispatch(
+				ToastNotifyActions.toastNotifyShow(
+					`Erro ao compartilhar ${
+						movement.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'
+					}, tente novamente mais tarde.`,
+					true,
+				),
+			);
+		} finally {
+			setSharing(false);
+		}
+	}, [movement]);
+
 	const renderMenu = useMemo(
 		() => (
 			<Menu
@@ -263,10 +325,11 @@ export default MovementDetail = props => {
 				openConfirmation={() => confirmationRef.current?.open()}
 				openDeadline={() => deadlineRef.current?.open()}
 				download={(move, sharing) => downloadMovement(move, sharing)}
+				share={share}
 				isDownloading={downloading}
 			/>
 		),
-		[movement, movementType, downloading],
+		[movement, movementType, downloading, share],
 	);
 
 	const renderEmail = useMemo(
@@ -285,15 +348,15 @@ export default MovementDetail = props => {
 				ref={confirmationRef}
 				movement={moveReference}
 				remove={id => removeFromList(id)}
-				daysDeleteMovTrash = {daysDeleteMovTrash}
+				daysDeleteMovTrash={daysDeleteMovTrash}
 			/>
 		),
-		[moveReference,daysDeleteMovTrash],
+		[moveReference, daysDeleteMovTrash],
 	);
 
 	const renderAddDeadline = useMemo(
 		() => <AddDeadline ref={deadlineRef} movement={moveReference} />,
-		[moveReference,colors],
+		[moveReference, colors],
 	);
 
 	const removeFromList = useCallback(() => {

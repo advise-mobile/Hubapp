@@ -17,7 +17,7 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 
 import {TOKEN} from 'helpers/StorageKeys';
 
-import  {BASE_URL, getLogin} from 'services/Api';
+import {BASE_URL, getLogin} from 'services/Api';
 
 import Header from 'components/Header';
 import Spinner from 'components/Spinner';
@@ -30,7 +30,6 @@ import AddDeadline from './Modals/AddDeadline';
 import MarkAsRead from './Modals/MarkAsRead';
 
 import {Container, Warp, Actions, ActionButton} from 'assets/styles/global';
-
 
 import {
 	Heading,
@@ -59,24 +58,24 @@ import {
 import {MaskCnj} from 'helpers/Mask';
 
 // Add Hook UseTheme para pegar o tema global addicionado
-import { useTheme } from 'styled-components';
+import {useTheme} from 'styled-components';
 
 const movementsRef = {};
 
 const dirs = RNFetchBlob.fs.dirs;
 
 // Hook para buscar os dias de delete da lixeira
-import { useMovementsGetDeleteTrash } from '@services/hooks/Movements/useMovements'
+import {useMovementsGetDeleteTrash} from '@services/hooks/Movements/useMovements';
 
 export default Movements = props => {
-
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
-	const { colors } = colorUseTheme;
+	const {colors} = colorUseTheme;
 
-	const notFound = colorUseTheme.name === 'dark'
-		? require('assets/images/not_found/movements_white.png')
-		: require('assets/images/not_found/movements.png');
+	const notFound =
+		colorUseTheme.name === 'dark'
+			? require('assets/images/not_found/movements_white.png')
+			: require('assets/images/not_found/movements.png');
 
 	const listRef = useRef(null);
 	const emailRef = useRef(null);
@@ -91,8 +90,6 @@ export default Movements = props => {
 	const {loadingDeleteTrash, currentDayDeleteMovTrash} = useMovementsGetDeleteTrash();
 	const [daysDeleteMovTrash, setDaysDeleteMovTrash] = useState(30);
 
-	
-
 	const movements = useSelector(state =>
 		state.movements.data.map(movement => {
 			if (!movementsRef[movement.id]) movementsRef[movement.id] = new Animated.Value(1);
@@ -100,7 +97,6 @@ export default Movements = props => {
 			return movement;
 		}),
 	);
-
 
 	const endReached = useSelector(state => state.movements.endReached);
 	const loading = useSelector(state => state.movements.loading);
@@ -117,6 +113,8 @@ export default Movements = props => {
 	const [formattedData, setFormattedData] = useState({});
 	// const [selecteds, setSelecteds] = useState(0);
 	// const [selectAll, setSelectedAll] = useState(selecteds > 0 ? true : false);
+
+	const [sharing, setSharing] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -159,7 +157,7 @@ export default Movements = props => {
 	//   );
 	// }, [trigger, filters]);
 
-	useEffect(() => {		
+	useEffect(() => {
 		const custom =
 			folder.idTipoPasta == -2
 				? {
@@ -187,8 +185,7 @@ export default Movements = props => {
 		[movements],
 	);
 
-	useEffect(() => {		
-		
+	useEffect(() => {
 		setDaysDeleteMovTrash(currentDayDeleteMovTrash);
 	}, [currentDayDeleteMovTrash]);
 
@@ -236,59 +233,34 @@ export default Movements = props => {
 
 	/** COMPARTILHAR */
 	const share = useCallback(async data => {
-		// if (Platform.OS === 'ios') {
+		try {
+			setSharing(true);
+			const havePermission = Platform.OS === 'ios' || (await requestPermission());
 
-		const havePermission = Platform.OS === 'ios' || (await requestPermission());
+			if (havePermission) {
+				const {file, fileName} = await downloadMovement(data, true);
+				const error = await RNShareFile(file, fileName);
 
-		if (havePermission) {
-			const {file, fileName} = await downloadMovement(data, true);
+				if (error) {
+					console.error('Erro ao compartilhar:', error);
+					throw error;
+				}
 
-			const error = await RNShareFile.sharePDF(file, fileName);
-
-			if (error) console.error('error');
+				handleMarkAsRead(data.item);
+			}
+		} catch (error) {
+			console.error('Erro detalhado:', error);
+			dispatch(
+				ToastNotifyActions.toastNotifyShow(
+					`Erro ao compartilhar ${
+						data.item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'
+					}, tente novamente mais tarde.`,
+					true,
+				),
+			);
+		} finally {
+			setSharing(false);
 		}
-		// });
-		// } else {
-		// 	const {item} = data;
-		// 	setCurrentMove(item);
-
-		// 	const endpoint = item.idTipoMovProcesso == -1 ? 'andamentos' : 'publicacoes';
-
-		// 	Api.get(
-		// 		`/core/v1/detalhes-movimentacoes/${endpoint}?IDs=${item.idMovProcessoCliente}&campos=*&registrosPorPagina=-1`,
-		// 	).then(({data}) => {
-		// 		const movimento = data.itens[0];
-
-		// 		if (item.idTipoMovProcesso == -1) {
-		// 			const messageShare = `${movimento.orgaoJudiciario}, ${
-		// 				movimento.dataDisponibilizacaoSemHora || ''
-		// 			} \n\n${movimento.descricaoAndamento}`;
-
-		// 			const infoShare = `\n\n\nFonte: ${movimento.fonte}\nIdentificador: ${
-		// 				movimento.identificadorClasseFonteProcesso || 'Não informado'
-		// 			}`;
-
-		// 			Share({
-		// 				message: messageShare + infoShare,
-		// 				title: 'Processo',
-		// 			});
-		// 		} else {
-		// 			const messageShare = `${movimento.diarioDescricao}, ${movimento.dataPublicacaoFormatada} \n\n${movimento.conteudo} \n\n${movimento.despacho}`;
-
-		// 			const infoShare = `\n\n\nCaderno: ${movimento.cadernoDescricao}\nVara: ${movimento.varaDescricao}\nComarca: ${movimento.cidadeComarcaDescricao}\nPágina: ${movimento.paginaInicial} a ${movimento.paginaFinal}`;
-
-		// 			Share(
-		// 				{
-		// 					message: messageShare + infoShare,
-		// 					title: 'Publicação',
-		// 				},
-		// 				() => handleMarkAsRead(item),
-		// 			);
-		// 		}
-		// 	});
-		// }
-
-		return;
 	});
 
 	/** CRIAR PRAZO */
@@ -504,16 +476,13 @@ export default Movements = props => {
 	);
 
 	const renderConfirmation = useMemo(
-		() =>  (
-			
+		() => (
 			<Confirmation
 				ref={confirmationRef}
 				movement={currentMove}
 				remove={id => removeFromList(id)}
-				daysDeleteMovTrash = {daysDeleteMovTrash}
+				daysDeleteMovTrash={daysDeleteMovTrash}
 			/>
-
-			
 		),
 		[currentMove],
 	);
@@ -559,8 +528,12 @@ export default Movements = props => {
 					<MaterialIcons name="file-download" size={24} color={colors.fadedBlack} />
 				)}
 			</ActionButton>
-			<ActionButton onPress={() => share(data)}>
-				<MaterialIcons name="share" size={24} color={colors.fadedBlack} />
+			<ActionButton onPress={() => !sharing && share(data)}>
+				{sharing ? (
+					<Spinner height={24} />
+				) : (
+					<MaterialIcons name="share" size={24} color={colors.fadedBlack} />
+				)}
 			</ActionButton>
 			<ActionButton onPress={() => handleDelete(data)}>
 				<MaterialIcons name="delete" size={24} color={colors.fadedBlack} />
@@ -569,10 +542,7 @@ export default Movements = props => {
 	));
 
 	const renderItem = useCallback(
-		({item}) => 
-			
-			 (
-				
+		({item}) => (
 			<Animated.View
 				style={{
 					overflow: 'hidden',
@@ -689,7 +659,6 @@ export default Movements = props => {
 						onPress={() => {
 							setCurrentPage(1);
 							props.navigation.goBack();
-							
 						}}>
 						<MaterialIcons name="arrow-back" size={20} color={colors.fadedBlack} />
 					</BackButton>

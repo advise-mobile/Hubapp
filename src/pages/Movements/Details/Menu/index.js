@@ -8,15 +8,12 @@ import RNShareFile from 'react-native-share-pdf';
 import {Footer, Cancel, CancelText, Content, Item, ItemText} from './styles';
 
 // Add Hook UseTheme para pegar o tema global addicionado
-import { useTheme } from 'styled-components';
-
+import {useTheme} from 'styled-components';
 
 export default Menu = forwardRef((props, ref) => {
-
-
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
-	const { colors } = colorUseTheme;
+	const {colors} = colorUseTheme;
 
 	const [movement, setMovement] = useState(props.movement);
 	const [type, setType] = useState(props.type);
@@ -27,32 +24,9 @@ export default Menu = forwardRef((props, ref) => {
 	}, [props]);
 
 	const share = useCallback(async () => {
-		const {file, fileName} = await props.download(movement, true);
-
-		const error = await RNShareFile.sharePDF(file, fileName);
-
-		if (error) console.error('error');
-
-		// if (type == -1) {
-		//   const messageShare = `${movement.orgaoJudiciario}, ${movement.dataDisponibilizacaoSemHora || ''} \n\n${movement.descricaoAndamento}`;
-
-		//   const infoShare = `\n\n\nFonte: ${movement.fonte}\nIdentificador: ${movement.identificadorClasseFonteProcesso || 'Não informado'}`;
-
-		//   Share({
-		//     message: messageShare + infoShare,
-		//     title: 'Processo',
-		//   });
-		// } else {
-		//   const messageShare = `${movement.diarioDescricao}, ${movement.dataPublicacaoFormatada} \n\n${movement.conteudo} \n\n${movement.despacho}`;
-
-		//   const infoShare = `\n\n\nCaderno: ${movement.cadernoDescricao}\nVara: ${movement.varaDescricao}\nComarca: ${movement.cidadeComarcaDescricao}\nPágina: ${movement.paginaInicial} a ${movement.paginaFinal}`;
-
-		//   Share({
-		//     message: messageShare + infoShare,
-		//     title: 'Publicação',
-		//   });
-		// }
-	});
+		closeModal();
+		setTimeout(() => props.share(), 200);
+	}, [props.share]);
 
 	const download = useCallback(() => {
 		if (props.isDownloading) return;
@@ -66,7 +40,7 @@ export default Menu = forwardRef((props, ref) => {
 		closeModal();
 
 		setTimeout(() => props.openDeadline(), 200);
-	},[colors]);
+	}, [colors]);
 
 	const openConfirmation = useCallback(() => {
 		closeModal();
