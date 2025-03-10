@@ -145,24 +145,31 @@ export default MovementDetail = props => {
 		setDaysDeleteMovTrash(currentDayDeleteMovTrash);
 	}, [currentDayDeleteMovTrash]);
 
-	const requestPermission = useCallback(async () => {
+	const requestPermission = async () => {
 		try {
-			const permissions = await PermissionsAndroid.requestMultiple([
-				PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-			]);
+			if (Platform.OS === 'android') {
+				// Para Android 13 (API 33) e superior, não precisamos de permissão para downloads
+				if (Platform.Version >= 33) {
+					return true;
+				}
 
-			const granted = Object.values(permissions).every(
-				value => value === PermissionsAndroid.RESULTS.GRANTED,
-			);
+				// Para Android 12 e inferior, precisamos da permissão de armazenamento
+				const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
 
-			return granted;
+				const status = await PermissionsAndroid.request(permission, {
+					title: 'Permissão necessária',
+					message: 'O app precisa de acesso ao armazenamento para baixar e compartilhar arquivos.',
+					buttonPositive: 'OK',
+				});
+
+				return status === PermissionsAndroid.RESULTS.GRANTED;
+			}
+			return true;
 		} catch (err) {
-			console.warn(err);
+			console.error('=== PERMISSIONS DEBUG: Error:', err);
+			return false;
 		}
-
-		return false;
-	});
+	};
 
 	const downloadMovement = useCallback(
 		async (item, sharing = false) => {

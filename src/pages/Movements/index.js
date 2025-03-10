@@ -1,6 +1,6 @@
 import React, {useState, useRef, useCallback, useEffect, createRef, useMemo} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {Appearance, Animated, Platform, PermissionsAndroid} from 'react-native';
+import {Appearance, Animated, Platform, PermissionsAndroid, Alert} from 'react-native';
 
 import RNShareFile from 'react-native-share-pdf';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -232,29 +232,67 @@ export default Movements = props => {
 	});
 
 	/** COMPARTILHAR */
-	const share = useCallback(async data => {
+	const requestPermission = async () => {
 		try {
-			setSharing(true);
-			const havePermission = Platform.OS === 'ios' || (await requestPermission());
-
-			if (havePermission) {
-				const {file, fileName} = await downloadMovement(data, true);
-				const error = await RNShareFile(file, fileName);
-
-				if (error) {
-					console.error('Erro ao compartilhar:', error);
-					throw error;
+			if (Platform.OS === 'android') {
+				// Para Android 13 (API 33) e superior, não precisamos de permissão para downloads
+				if (Platform.Version >= 33) {
+					return true;
 				}
 
-				handleMarkAsRead(data.item);
+				// Para Android 12 e inferior, precisamos da permissão de armazenamento
+				const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
+				const status = await PermissionsAndroid.request(permission, {
+					title: 'Permissão necessária',
+					message: 'O app precisa de acesso ao armazenamento para baixar e compartilhar arquivos.',
+					buttonPositive: 'OK',
+				});
+
+				return status === PermissionsAndroid.RESULTS.GRANTED;
 			}
+			return true;
+		} catch (err) {
+			return false;
+		}
+	};
+
+	const share = useCallback(async data => {
+		try {
+			const hasPermissions = await requestPermission();
+			if (!hasPermissions) {
+				Alert.alert(
+					'Permissão Necessária',
+					'Para compartilhar arquivos, é necessário permitir o acesso ao armazenamento.',
+					[
+						{
+							text: 'Cancelar',
+							style: 'cancel',
+						},
+						{
+							text: 'Tentar Novamente',
+							onPress: () => requestPermission(),
+						},
+					],
+				);
+				return;
+			}
+
+			setSharing(true);
+			const {file, fileName} = await downloadMovement(data, true);
+			const error = await RNShareFile(file, fileName);
+
+			if (error) {
+				throw error;
+			}
+
+			handleMarkAsRead(data.item);
 		} catch (error) {
-			console.error('Erro detalhado:', error);
 			dispatch(
 				ToastNotifyActions.toastNotifyShow(
 					`Erro ao compartilhar ${
 						data.item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'
-					}, tente novamente mais tarde.`,
+					}, tente novamente mais tarde. (${error.message})`,
 					true,
 				),
 			);
@@ -283,131 +321,112 @@ export default Movements = props => {
 	}, []);
 
 	/** DOWNLOAD */
-	const requestPermission = useCallback(async () => {
-		try {
-			const permissions = await PermissionsAndroid.requestMultiple([
-				PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-			]);
-
-			const granted = Object.values(permissions).every(
-				value => value === PermissionsAndroid.RESULTS.GRANTED,
-			);
-
-			return granted;
-		} catch (err) {
-			console.warn(err);
-		}
-
-		return false;
-	});
-
 	const downloadMovement = useCallback(async ({item}, sharing = false) => {
 		const downloadPromise = new Promise(async (resolve, reject) => {
-			const havePermission = Platform.OS === 'ios' || (await requestPermission());
+			try {
+				const havePermission = Platform.OS === 'ios' || (await requestPermission());
 
-			if (!havePermission) {
-				setDownloading(false);
-			}
+				await getLogin();
 
-			await getLogin();
+				const token = await AsyncStorage.getItem(TOKEN);
 
-			const token = await AsyncStorage.getItem(TOKEN);
+				setCurrentMove(item);
 
-			setCurrentMove(item);
+				if (!sharing) {
+					setDownloading(true);
 
-			if (!sharing) {
-				setDownloading(true);
+					Toast.show(
+						`Download ${
+							item.idTipoMovProcesso === -1 ? 'do andamento' : 'da publicação'
+						} iniciado, por favor, aguarde.`,
+					);
+				}
 
-				Toast.show(
-					`Download ${
-						item.idTipoMovProcesso === -1 ? 'do andamento' : 'da publicação'
-					} iniciado, por favor, aguarde.`,
-				);
-			}
+				const filename = `${Date.now()}.pdf`;
 
-			const filename = `${Date.now()}.pdf`;
+				const path =
+					Platform.OS == 'ios'
+						? dirs.DocumentDir + `/${filename}`
+						: dirs.DownloadDir + `/${filename}`;
 
-			const path =
-				Platform.OS == 'ios'
-					? dirs.DocumentDir + `/${filename}`
-					: dirs.DownloadDir + `/${filename}`;
-
-			RNFetchBlob.config({
-				path: path,
-				addAndroidDownloads: {
-					useDownloadManager: true,
-					notification: true,
-					mediaScannable: true,
-					description: `${
-						item.idTipoMovProcesso === -1
-							? 'Andamento disponibilizado'
-							: 'Publicação disponibilizada'
-					} via Advise Hub App`,
-					path: dirs.DownloadDir + `/${filename}`,
-				},
-			})
-				.fetch(
-					'GET',
-					`${BASE_URL}/core/v1/movimentos-download?ids=${item.idMovProcessoCliente}&tipoArquivo=pdf`,
-					{
-						Authorization: `Bearer ${token}`,
+				RNFetchBlob.config({
+					path: path,
+					addAndroidDownloads: {
+						useDownloadManager: true,
+						notification: true,
+						mediaScannable: true,
+						description: `${
+							item.idTipoMovProcesso === -1
+								? 'Andamento disponibilizado'
+								: 'Publicação disponibilizada'
+						} via Advise Hub App`,
+						path: dirs.DownloadDir + `/${filename}`,
 					},
-				)
-				.then(res => {
-					if (!sharing) {
-						dispatch(
-							ToastNotifyActions.toastNotifyShow(
-								`${
-									item.idTipoMovProcesso === -1 ? 'Andamento baixado' : 'Publicação baixada'
-								} com sucesso!`,
-								false,
-							),
-						);
-					}
+				})
+					.fetch(
+						'GET',
+						`${BASE_URL}/core/v1/movimentos-download?ids=${item.idMovProcessoCliente}&tipoArquivo=pdf`,
+						{
+							Authorization: `Bearer ${token}`,
+						},
+					)
+					.then(res => {
+						if (!sharing) {
+							dispatch(
+								ToastNotifyActions.toastNotifyShow(
+									`${
+										item.idTipoMovProcesso === -1 ? 'Andamento baixado' : 'Publicação baixada'
+									} com sucesso!`,
+									false,
+								),
+							);
+						}
 
-					setCurrentMove(item);
+						setCurrentMove(item);
 
-					handleMarkAsRead(item);
+						handleMarkAsRead(item);
 
-					if ((Platform.OS === 'ios') & !sharing) {
-						RNFetchBlob.fs.writeFile(path, res.data, 'base64');
-						RNFetchBlob.ios.openDocument(path);
-					}
+						if ((Platform.OS === 'ios') & !sharing) {
+							RNFetchBlob.fs.writeFile(path, res.data, 'base64');
+							RNFetchBlob.ios.openDocument(path);
+						}
 
-					if (sharing) {
-						RNFetchBlob.fs.readFile(res.data, 'base64').then(file => {
-							resolve({
-								file,
-								fileName: filename,
+						if (sharing) {
+							RNFetchBlob.fs.readFile(res.data, 'base64').then(file => {
+								resolve({
+									file,
+									fileName: filename,
+								});
 							});
-						});
-					}
-				})
-				.catch(() => {
-					if (!sharing) {
-						dispatch(
-							ToastNotifyActions.toastNotifyShow(
-								`Erro ao baixar ${
-									item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'
-								}, tente novamente mais tarde.`,
-								true,
-							),
-						);
-					} else {
-						dispatch(
-							ToastNotifyActions.toastNotifyShow(
-								`Erro ao compartilhar ${
-									item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'
-								}, tente novamente mais tarde.`,
-								true,
-							),
-						);
-					}
+						}
+					})
+					.catch(() => {
+						if (!sharing) {
+							dispatch(
+								ToastNotifyActions.toastNotifyShow(
+									`Erro ao baixar ${
+										item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'
+									}, tente novamente mais tarde.`,
+									true,
+								),
+							);
+						} else {
+							dispatch(
+								ToastNotifyActions.toastNotifyShow(
+									`Erro ao compartilhar ${
+										item.idTipoMovProcesso === -1 ? 'o andamento' : 'a publicação'
+									}, tente novamente mais tarde.`,
+									true,
+								),
+							);
+						}
 
-					reject();
-				})
-				.finally(() => setDownloading(false));
+						reject();
+					})
+					.finally(() => setDownloading(false));
+			} catch (error) {
+				reject(error);
+			}
 		});
 
 		return downloadPromise;
