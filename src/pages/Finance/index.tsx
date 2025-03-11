@@ -15,7 +15,7 @@ import {Container, Warp} from 'assets/styles/global';
 const tabs = [
 	{
 		id: 'release',
-		name: 'Lançamento',
+		name: 'Lançamentos',
 		params: {},
 	},
 	{
