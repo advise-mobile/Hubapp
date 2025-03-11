@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import {Platform} from 'react-native';
 
 export const ContainerHeader = styled.View`
 	border: black;
@@ -10,75 +11,80 @@ export const ContainerHeader = styled.View`
 export const ContainerScreen = styled.View`
 	flex: 1;
 	border-top-width: 1px;
-  border-color: ${({ theme }) => theme.colors.grayLighter};
+	border-color: ${({theme}) => theme.colors.grayLighter};
 	margin-top: 10px;
 `;
 
 export const FirstContainer = styled.View`
+	width: 100%;
+	padding-horizontal: 20px;
 	height: 25px;
-	width: 366px;
-	margin-left: 25px;
 	margin-top: 20px;
 	flex-direction: row;
 	align-items: center;
+	justify-content: space-between;
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  margin-right: 16;
+	margin-right: 16;
 `;
 
 export const ContainerDate = styled.View`
 	height: 22px;
-	width: 326px;
 	flex-direction: row;
+	justify-content: center;
 	align-items: center;
-	margin-top: 10px;
 `;
 
 export const CircleIconContainer = styled.View`
 	height: 20px;
 	width: 15px;
 	align-items: center;
+	justify-content: center;
 `;
 
 export const ContainerIcon = styled.View`
-	height: 19px;
+	height: 20px;
+	justify-content: center;
 `;
 
 export const DataTextContainer = styled.View`
 	height: 25px;
-	width: 110px;
-	margin-left: 10px;
+	align-items: center;
+	justify-content: center;
+	margin-left: 5px;
 `;
 
 export const DateText = styled.Text`
 	font-weight: bold;
 	font-size: 16px;
-	color: ${({theme }) => theme.colors.BlackInactive};
+	color: ${({theme}) => theme.colors.BlackInactive};
+	text-align: center;
 `;
 
 export const ThumbsIconContainer = styled.View`
 	height: 24px;
-	align-items: center ;
-	margin-left: 15px;
+	align-items: center;
+	justify-content: center;
+	right: 3px;
 `;
 
 export const DescriptionContainer = styled.View`
-	height: 24px;
-	width: 310px;
+	width: 100%;
+	padding-horizontal: 40px;
+	height: 25px;
 	margin-top: 30px;
-	margin-left: 55px;
+	justify-content: center;
 `;
 
 export const DataText = styled.Text`
 	font-size: 14px;
-	color: ${({ theme }) => theme.colors.inactiveDetails};
+	color: ${({theme}) => theme.colors.inactiveDetails};
 `;
 
 export const InformationContainer = styled.View`
-	width: 297px;
-	height: 570px;
-	margin-left: 55px;
+	width: 100%;
+	padding-horizontal: 40px;
 	margin-top: 30px;
 `;
 
@@ -106,19 +112,17 @@ export const DescriptionOfObservationsContainer = styled.View`
 export const InformationTitleText = styled.Text`
 	font-weight: bold;
 	font-size: 16px;
-	color: ${({ theme }) => theme.colors.BlackInactive};
+	color: ${({theme}) => theme.colors.BlackInactive};
 `;
 
 export const InformationText = styled.Text`
 	font-size: 14px;
-	color: ${({ theme }) => theme.colors.BlackInactive};
+	color: ${({theme}) => theme.colors.BlackInactive};
 `;
 
 export const DescriptionOfObservationsText = styled.Text`
 	font-size: 14px;
 	height: 115px;
-	lineHeight: 20px;
-	color: ${({ theme }) => theme.colors.BlackInactive};
-
+	line-height: 20px;
+	color: ${({theme}) => theme.colors.BlackInactive};
 `;
-

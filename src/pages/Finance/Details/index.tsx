@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useRef,useState } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
 
 import {useTheme} from 'styled-components';
 
@@ -10,12 +9,9 @@ import {Container} from '../../../assets/styles/global';
 
 import LauchActionsMenu from '../Modal/LaunchActions';
 
-import {
-  useGetInstallmentsDetails,
-} from '@services/hooks/Finances/useReleases';
+import {useGetInstallmentsDetails} from '@services/hooks/Finances/useReleases';
 
-import { ItemsInstallmentsDetailsProps } from './types';
-
+import {ItemsInstallmentsDetailsProps} from './types';
 
 import {
 	ContainerDate,
@@ -38,8 +34,7 @@ import {
 } from './styles';
 
 export default function Details(props) {
-
-	const { isLoadingInstallmentsDetails, getInstallmentsDetails } = useGetInstallmentsDetails();
+	const {isLoadingInstallmentsDetails, getInstallmentsDetails} = useGetInstallmentsDetails();
 
 	const [dataDetails, setDataDetails] = useState<ItemsInstallmentsDetailsProps>();
 
@@ -47,38 +42,38 @@ export default function Details(props) {
 
 	const LauchActionsMenuRef = useRef(null);
 
-	const { item } = props.route.params;
+	const {item} = props.route.params;
 
 	//chama o hook
 	useEffect(() => {
-		LauchActionsMenuRef.current?.close()
+		LauchActionsMenuRef.current?.close();
 		fetchDataInstallmentsDetails();
 	}, [item]);
 
-
 	//busca a informação
 	const fetchDataInstallmentsDetails = async () => {
-    try {
+		try {
+			const installmentsDetails = await getInstallmentsDetails({
+				idFinanceiro: item.idLancamentoFinanceiro,
+			});
+			setDataDetails(installmentsDetails);
+			const itemComplete = {
+				...item,
+				dataEmissaofull: installmentsDetails?.dataEmissaofull,
+				idTipoParcelamentoFinanceiro: installmentsDetails?.idTipoParcelamentoFinanceiro,
+				observacao: installmentsDetails?.observacao,
+			};
+			setItemComplete(itemComplete);
+		} catch (error) {}
+	};
 
-		const installmentsDetails = await getInstallmentsDetails({
-			idFinanceiro: item.idLancamentoFinanceiro
-		});
-		setDataDetails(installmentsDetails);
-		const itemComplete = {...item,
-								dataEmissaofull:installmentsDetails?.dataEmissaofull,
-								idTipoParcelamentoFinanceiro:installmentsDetails?.idTipoParcelamentoFinanceiro,
-								observacao:installmentsDetails?.observacao};			
-		setItemComplete(itemComplete)
-    } catch (error) {
-
-    }
-  };
-
-  	const renderActionsOptions = useCallback(() => <LauchActionsMenu item={itemComplete}  ref={LauchActionsMenuRef} />, [itemComplete]);
+	const renderActionsOptions = useCallback(
+		() => <LauchActionsMenu item={itemComplete} ref={LauchActionsMenuRef} />,
+		[itemComplete],
+	);
 
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
-
 
 	const getTransactionTitle = () => {
 		return item.debitoCredito === 'C' ? 'Receita' : 'Despesa';
@@ -87,25 +82,24 @@ export default function Details(props) {
 	return (
 		<Container>
 			<HeaderGlobals
-					title={getTransactionTitle()}
-					back={() => props.navigation.goBack()}
-					lower={true}
-					more={() => LauchActionsMenuRef.current?.open()}
-
-				/>
-				{renderActionsOptions()}
+				title={getTransactionTitle()}
+				back={() => props.navigation.goBack()}
+				lower={true}
+				more={() => LauchActionsMenuRef.current?.open()}
+			/>
+			{renderActionsOptions()}
 
 			<ContainerScreen>
 				<FirstContainer>
 					<ContainerDate>
 						<CircleIconContainer>
-						<ContainerIcon>
-							{item.debitoCredito === 'C' ? (
-								<FontAwesome size={8} name="circle" si color={colors.green200} />
-							) : (
-								<FontAwesome size={8} name="circle" color={colors.red200} />
-							)}
-						</ContainerIcon>
+							<ContainerIcon>
+								{item.debitoCredito === 'C' ? (
+									<FontAwesome size={8} name="circle" si color={colors.green200} />
+								) : (
+									<FontAwesome size={8} name="circle" color={colors.red200} />
+								)}
+							</ContainerIcon>
 						</CircleIconContainer>
 
 						<DataTextContainer>
@@ -113,10 +107,15 @@ export default function Details(props) {
 						</DataTextContainer>
 					</ContainerDate>
 					<ThumbsIconContainer>
-					{item.debitoCredito === 'C' ? (
+						{item.debitoCredito === 'C' ? (
 							<FontAwesome name="thumbs-up" color={colors.blueIcon} size={20} />
 						) : (
-							<FontAwesome name="thumbs-down" flip="horizontal" color={colors.colorIconThumbdown} size={20} />
+							<FontAwesome
+								name="thumbs-down"
+								color={colors.colorIconThumbdown}
+								size={20}
+								style={{transform: [{scaleX: -1}]}}
+							/>
 						)}
 					</ThumbsIconContainer>
 				</FirstContainer>
@@ -170,7 +169,9 @@ export default function Details(props) {
 					</InformationTitleTextContainer>
 
 					<InformationTextContainer>
-						<InformationText>Durante {dataDetails?.quantidadeParcelas || 'N/I'} dia(s)</InformationText>
+						<InformationText>
+							Durante {dataDetails?.quantidadeParcelas || 'N/I'} dia(s)
+						</InformationText>
 					</InformationTextContainer>
 
 					<InformationTitleTextContainer>
@@ -179,7 +180,7 @@ export default function Details(props) {
 
 					<DescriptionOfObservationsContainer>
 						<DescriptionOfObservationsText>
-						{dataDetails?.observacao || 'N/I'}
+							{dataDetails?.observacao || 'N/I'}
 						</DescriptionOfObservationsText>
 					</DescriptionOfObservationsContainer>
 				</InformationContainer>
