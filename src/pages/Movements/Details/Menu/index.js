@@ -67,10 +67,12 @@ export default Menu = forwardRef((props, ref) => {
 	return (
 		<Modal ref={ref} title="O que deseja?" footer={footer()}>
 			<Content>
-				<Item onPress={() => openDeadline()}>
-					<MaterialIcons name={'event'} size={22} color={colors.fadedBlack} />
-					<ItemText>Cadastrar prazo</ItemText>
-				</Item>
+				{props.hasSchedulePermission && (
+					<Item onPress={() => openDeadline()}>
+						<MaterialIcons name={'event'} size={22} color={colors.fadedBlack} />
+						<ItemText>Cadastrar prazo</ItemText>
+					</Item>
+				)}
 				<Item onPress={() => openEmail()}>
 					<MaterialIcons name={'mail'} size={22} color={colors.fadedBlack} />
 					<ItemText>Enviar por email</ItemText>

@@ -48,6 +48,9 @@ import {useMovementsGetDeleteTrash} from '@services/hooks/Movements/useMovements
 
 import RNShareFile from 'react-native-share-pdf';
 
+// Adicione o import do checkPermission
+import {PermissionsGroups, checkPermission} from 'helpers/Permissions';
+
 export default MovementDetail = props => {
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
@@ -71,6 +74,9 @@ export default MovementDetail = props => {
 	const dispatch = useDispatch();
 
 	const dirs = RNFetchBlob.fs.dirs;
+
+	// Adicione o estado para controlar a permissão
+	const [hasSchedulePermission, setHasSchedulePermission] = useState(false);
 
 	useEffect(() => {
 		setMoveReference(movement);
@@ -144,6 +150,16 @@ export default MovementDetail = props => {
 	useEffect(() => {
 		setDaysDeleteMovTrash(currentDayDeleteMovTrash);
 	}, [currentDayDeleteMovTrash]);
+
+	// Adicione o useEffect para verificar a permissão
+	useEffect(() => {
+		const checkSchedulePermission = async () => {
+			const permission = await checkPermission(PermissionsGroups.SCHEDULE);
+
+			setHasSchedulePermission(permission);
+		};
+		checkSchedulePermission();
+	}, []);
 
 	const requestPermission = async () => {
 		try {
@@ -334,9 +350,10 @@ export default MovementDetail = props => {
 				download={(move, sharing) => downloadMovement(move, sharing)}
 				share={share}
 				isDownloading={downloading}
+				hasSchedulePermission={hasSchedulePermission}
 			/>
 		),
-		[movement, movementType, downloading, share],
+		[movement, movementType, downloading, share, hasSchedulePermission],
 	);
 
 	const renderEmail = useMemo(
@@ -361,9 +378,11 @@ export default MovementDetail = props => {
 		[moveReference, daysDeleteMovTrash],
 	);
 
+	// Modifique o renderAddDeadline para usar a permissão
 	const renderAddDeadline = useMemo(
-		() => <AddDeadline ref={deadlineRef} movement={moveReference} />,
-		[moveReference, colors],
+		() =>
+			hasSchedulePermission ? <AddDeadline ref={deadlineRef} movement={moveReference} /> : null,
+		[moveReference, hasSchedulePermission],
 	);
 
 	const removeFromList = useCallback(() => {
@@ -476,6 +495,54 @@ export default MovementDetail = props => {
 			<MovementDispatch>{movement.conteudo}</MovementDispatch>
 		</Movement>
 	));
+
+	const renderHiddenItem = useCallback(
+		data => (
+			<Actions
+				as={Animated.View}
+				style={{
+					overflow: 'hidden',
+					maxHeight: movementsRef[data.item.id].interpolate({
+						inputRange: [0, 1],
+						outputRange: [0, 500],
+					}),
+				}}>
+				<ActionButton onPress={() => toggleAsRead(data)}>
+					<MaterialIcons
+						name={data.item.lido ? 'visibility-off' : 'visibility'}
+						size={24}
+						color={colors.fadedBlack}
+					/>
+				</ActionButton>
+				{hasSchedulePermission && (
+					<ActionButton onPress={() => handleDeadline(data)}>
+						<MaterialIcons name="event" size={24} color={colors.fadedBlack} />
+					</ActionButton>
+				)}
+				<ActionButton onPress={() => handleEmail(data)}>
+					<MaterialIcons name="mail" size={24} color={colors.fadedBlack} />
+				</ActionButton>
+				<ActionButton onPress={() => !downloading && downloadMovement(data)}>
+					{downloading ? (
+						<Spinner height={24} />
+					) : (
+						<MaterialIcons name="file-download" size={24} color={colors.fadedBlack} />
+					)}
+				</ActionButton>
+				<ActionButton onPress={() => !sharing && share(data)}>
+					{sharing ? (
+						<Spinner height={24} />
+					) : (
+						<MaterialIcons name="share" size={24} color={colors.fadedBlack} />
+					)}
+				</ActionButton>
+				<ActionButton onPress={() => handleDelete(data)}>
+					<MaterialIcons name="delete" size={24} color={colors.fadedBlack} />
+				</ActionButton>
+			</Actions>
+		),
+		[hasSchedulePermission, downloading, sharing],
+	);
 
 	return (
 		<Container>

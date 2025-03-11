@@ -2,6 +2,8 @@ import React, {useState, useRef, useCallback, useEffect, createRef, useMemo} fro
 import {useSelector, useDispatch} from 'react-redux';
 import {Appearance, Animated, Platform, PermissionsAndroid, Alert} from 'react-native';
 
+import {PermissionsGroups, checkPermission, getLoggedUser} from 'helpers/Permissions';
+
 import RNShareFile from 'react-native-share-pdf';
 import RNFetchBlob from 'rn-fetch-blob';
 import Toast from 'react-native-simple-toast';
@@ -116,6 +118,8 @@ export default Movements = props => {
 
 	const [sharing, setSharing] = useState(false);
 
+	const [hasSchedulePermission, setHasSchedulePermission] = useState(false);
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -188,6 +192,14 @@ export default Movements = props => {
 	useEffect(() => {
 		setDaysDeleteMovTrash(currentDayDeleteMovTrash);
 	}, [currentDayDeleteMovTrash]);
+
+	useEffect(() => {
+		const checkSchedulePermission = async () => {
+			const permission = await checkPermission(PermissionsGroups.SCHEDULE);
+			setHasSchedulePermission(permission);
+		};
+		checkSchedulePermission();
+	}, []);
 
 	/** LIST */
 	const refresh = useCallback(() => {
@@ -507,8 +519,8 @@ export default Movements = props => {
 	);
 
 	const renderAddDeadline = useMemo(
-		() => <AddDeadline ref={deadlineRef} movement={currentMove} />,
-		[currentMove],
+		() => (hasSchedulePermission ? <AddDeadline ref={deadlineRef} movement={currentMove} /> : null),
+		[currentMove, hasSchedulePermission],
 	);
 
 	const renderMarkAsRead = useMemo(
@@ -534,9 +546,11 @@ export default Movements = props => {
 					color={colors.fadedBlack}
 				/>
 			</ActionButton>
-			<ActionButton onPress={() => handleDeadline(data)}>
-				<MaterialIcons name="event" size={24} color={colors.fadedBlack} />
-			</ActionButton>
+			{hasSchedulePermission && (
+				<ActionButton onPress={() => handleDeadline(data)}>
+					<MaterialIcons name="event" size={24} color={colors.fadedBlack} />
+				</ActionButton>
+			)}
 			<ActionButton onPress={() => handleEmail(data)}>
 				<MaterialIcons name="mail" size={24} color={colors.fadedBlack} />
 			</ActionButton>
@@ -724,6 +738,7 @@ export default Movements = props => {
 				{renderFilters}
 				{renderEmail}
 				{renderConfirmation}
+
 				{renderAddDeadline}
 				{renderMarkAsRead}
 			</Warp>
