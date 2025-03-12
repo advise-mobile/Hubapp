@@ -1,7 +1,8 @@
 import styled from 'styled-components/native';
+import {TouchableHighlight} from 'react-native';
 
 interface ContainerProps {
-	active:boolean
+	active: boolean;
 }
 
 export const ContainerIcon = styled.View`
@@ -13,33 +14,37 @@ export const ContainerIcon = styled.View`
 export const TextTitle = styled.Text`
 	font-size: 16px;
 	font-weight: bold;
-	color: ${({ theme }) => theme.colors.BlackInactive};
+	color: ${({theme}) => theme.colors.BlackInactive};
 `;
 
 export const SubTitle = styled.Text`
 	font-size: 16px;
-	color: ${({ theme }) => theme.colors.BlackInactive};
+	color: ${({theme}) => theme.colors.BlackInactive};
 `;
 
 export const ContainerSubtitle = styled.View`
-	width: 80px;
+	width: 100px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
 `;
 
 export const Container = styled.View<ContainerProps>`
-  background-color:  ${({ active,theme }) => active ? theme.colors.white :theme.colors.gray };
-  padding: 12px 17px;
-  border-bottom-width: 0.7px;
-  border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
+	background-color: ${({theme}) => theme.colors.white};
+
+	padding: 12px 17px;
+	border-bottom-width: 0.7px;
+	border-bottom-color: ${({theme}) => theme.colors.grayLighter};
 `;
 
 export const ContainerItems = styled.View`
-  flex-wrap: nowrap;
-  margin-top: 1px;
-  flex-direction: row;
-  align-items: center;
+	flex-wrap: nowrap;
+	margin-top: 1px;
+	flex-direction: row;
+	align-items: center;
 `;
 
-export const ContainerTitle = styled.Text`
+export const ContainerTitle = styled.View`
 	flex: 1;
 	max-width: 140px;
 	margin-right: 10px;
