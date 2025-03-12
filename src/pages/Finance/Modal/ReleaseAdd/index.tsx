@@ -1,7 +1,7 @@
 import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
 import Modal from '@components/Modal';
 import Datepicker from '@components/DatePicker';
-import {FormatFullDateEN,FormatDateBR} from '@helpers/DateFunctions';
+import {FormatFullDateEN, FormatDateBR} from '@helpers/DateFunctions';
 import {StyleSheet, Text} from 'react-native';
 import {MaskMoney, MaskMoneyForRegister} from 'helpers/Mask';
 
@@ -50,17 +50,16 @@ import {useGetFinanceID, useRelease} from '@services/hooks/Finances/useReleases'
 import RNPickerSelect from 'react-native-picker-select';
 import {Controller, useForm} from 'react-hook-form';
 
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 export default ReleaseAdd = forwardRef((props, ref) => {
-
 	const navigation = useNavigation();
 
-    const { type, onClose} = props;
+	const {type, onClose} = props;
 
-    	// // Variavel para usar o hook
-    const colorUseTheme = useTheme();
-    const {colors} = colorUseTheme;
+	// // Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const {colors} = colorUseTheme;
 
 	const valueInputRef = useRef(null);
 
@@ -186,7 +185,6 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 	const pickerSelectStyles = stylesPickerSelectStyles(colors);
 
 	useEffect(() => {
-		
 		fetchDataCategories();
 		fetchPeople();
 		fetchProcess();
@@ -217,8 +215,8 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 	const fetchInformationAcountUser = async () => {
 		try {
 			const responseFinanceData = await getFinanceDataID();
-			setValue('idContaFinanceiro',responseFinanceData[0].idContaFinanceiro);
-			setValue('idFinanceiro',responseFinanceData[0].idFinanceiro);
+			setValue('idContaFinanceiro', responseFinanceData[0].idContaFinanceiro);
+			setValue('idFinanceiro', responseFinanceData[0].idFinanceiro);
 		} catch (error) {}
 	};
 
@@ -275,13 +273,12 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 	const handleOnClose = useCallback(() => {
 		onClose();
 		navigation.reset({
-			index:0,
-			routes:[{name:'FinanceTab'}]
-		})
+			index: 0,
+			routes: [{name: 'FinanceTab'}],
+		});
 	}, props);
 
 	const onSubmit = data => {
-
 		if (data.valor === '0,00') {
 			setError('valor', {type: 'manual', message: 'Campo valor não pode ser 0,00'});
 			return;
@@ -289,33 +286,33 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 		data.DataVencimento = FormatFullDateEN(data.DataVencimento);
 		data.valor = MaskMoneyForRegister(data.valor);
-		
+
 		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
-		const quantidadeParcelas =  data.IdTipoParcelamentoFinanceiro === -1 ? 1 : data.quantidadeParcelas;
-		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');			
+		const quantidadeParcelas =
+			data.IdTipoParcelamentoFinanceiro === -1 ? 1 : data.quantidadeParcelas;
+		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
 		const register = {
 			itens: [
-					{
-						...data,
-						DebitoCredito: type,
-						repeticaoFixo,
-						dataEmissao,
-						quantidadeParcelas,
-					},
-				],
+				{
+					...data,
+					DebitoCredito: type,
+					repeticaoFixo,
+					dataEmissao,
+					quantidadeParcelas,
+				},
+			],
 		};
-		
+
 		addRelease(register, () => handleOnClose());
-	}
+	};
 
 	return (
 		<Modal
 			maxHeight={650}
 			onClose={onClose}
 			ref={ref}
-			title={type === 'D'? "Cadastrar despesa": "Cadastrar Receita"}
+			title={type === 'D' ? 'Cadastrar despesa' : 'Cadastrar Receita'}
 			footer={footer()}>
-				
 			<ContentDescription isError={errors.descricao}>
 				<Row>
 					<Label>Descrição</Label>
@@ -326,7 +323,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 						}}
 						control={control}
 						defaultValue={null}
-						render={({ onChange, value }) => (
+						render={({onChange, value}) => (
 							<Input
 								value={value}
 								autoCorrect={false}
@@ -347,32 +344,29 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 			<Content isError={errors.valor}>
 				<Row>
 					<Label>Valor</Label>
-					
-						<Controller
-							name="valor"
-							rules={{
-								required: true,
-							}}
-							control={control}
-							defaultValue={null}
-							render={({onChange, value}) => (
-								<Input
-									ref={valueInputRef}
-									placeholder="R$ -"
-									placeholderTextColor={errors.valor ? colors.red200 : colors.grayLight}
-									keyboardType="numeric"
-									onChangeText={text => {
-										onChange(text !== '0,0' ? MaskMoney(text) : '');
-									}}
-									value={value}
-								/>
-							)}
-						/>
-						
-					
+
+					<Controller
+						name="valor"
+						rules={{
+							required: true,
+						}}
+						control={control}
+						defaultValue={null}
+						render={({onChange, value}) => (
+							<Input
+								ref={valueInputRef}
+								placeholder="R$ -"
+								placeholderTextColor={errors.valor ? colors.red200 : colors.grayLight}
+								keyboardType="numeric"
+								onChangeText={text => {
+									onChange(text !== '0,0' ? MaskMoney(text) : '');
+								}}
+								value={value}
+							/>
+						)}
+					/>
 				</Row>
 			</Content>
-			
 
 			<Content isError={errors.DataVencimento}>
 				<Row>
@@ -408,11 +402,10 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 				</Row>
 			</Content>
 
-
 			<Category isError={errors.idCategoriaFinanceiro}>
 				<RowLabel>
 					<Label>Categoria</Label>
-					{errors.idCategoriaFinanceiro &&  <LabelError>Selecione uma categoria</LabelError>}
+					{errors.idCategoriaFinanceiro && <LabelError>Selecione uma categoria</LabelError>}
 				</RowLabel>
 
 				<ContainerItems>
@@ -422,33 +415,29 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 							required: true,
 						}}
 						control={control}
-						render={({onChange,value}) => (
+						render={({onChange, value}) => (
 							<>
-								{dataCategories.map((category) => (
+								{dataCategories.map(category => (
 									<>
-									<ItemsOptions
-										key={category.idCategoriaFinanceiro}
-										style={[
-											value === category.idCategoriaFinanceiro
-												? {
-														borderWidth: 2,
-														borderColor: colors.primary,
-														backgroundColor: category.corCategoria
-												  }
-												: {backgroundColor: category.corCategoria},
-										]}
-										onPress={() => {
-											onChange(category.idCategoriaFinanceiro);
-										}}>
-										<LabelItems>
-											{category.nomeCategoriaFinanceiro}											
-										</LabelItems>
-										{
-											value === category.idCategoriaFinanceiro && 
-											<MaterialIcons  name={"check"} size={15} color={colors.primary}  />
-										}
-									</ItemsOptions>
-									
+										<ItemsOptions
+											key={category.idCategoriaFinanceiro}
+											style={[
+												value === category.idCategoriaFinanceiro
+													? {
+															borderWidth: 2,
+															borderColor: colors.primary,
+															backgroundColor: category.corCategoria,
+													  }
+													: {backgroundColor: category.corCategoria},
+											]}
+											onPress={() => {
+												onChange(category.idCategoriaFinanceiro);
+											}}>
+											<LabelItems>{category.nomeCategoriaFinanceiro}</LabelItems>
+											{value === category.idCategoriaFinanceiro && (
+												<MaterialIcons name={'check'} size={15} color={colors.primary} />
+											)}
+										</ItemsOptions>
 									</>
 								))}
 							</>
@@ -467,12 +456,12 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 						name="idPessoaCliente"
 						control={control}
 						defaultValue={null}
-						render={({onChange,value}) => (
+						render={({onChange, value}) => (
 							<>
-								{dataPeople.map((person) => (
+								{dataPeople.map(person => (
 									<ItemsOptions
 										key={person.idPessoaCliente}
-										onPress={() => {	
+										onPress={() => {
 											onChange(person.idPessoaCliente);
 										}}
 										style={[
@@ -480,19 +469,15 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 												? {
 														borderWidth: 2,
 														borderColor: colors.primary,
-														backgroundColor: colors.gray
+														backgroundColor: colors.gray,
 												  }
 												: {backgroundColor: colors.gray},
-										]}
-										>
-										<LabelItems>
-											{person.nomePessoaCliente}
-										</LabelItems>
+										]}>
+										<LabelItems>{person.nomePessoaCliente}</LabelItems>
 
-										{
-											value === person.idPessoaCliente && 
-											<MaterialIcons  name={"check"} size={15} color={colors.primary}  />
-										}
+										{value === person.idPessoaCliente && (
+											<MaterialIcons name={'check'} size={15} color={colors.primary} />
+										)}
 									</ItemsOptions>
 								))}
 							</>
@@ -500,7 +485,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 					/>
 				</ContainerItemsOptions>
 			</People>
-		
+
 			<Process>
 				<RowLabel>
 					<Label>Processo</Label>
@@ -510,34 +495,28 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 					<Controller
 						name="idProcesso"
 						control={control}
-						render={({onChange,value}) => (
+						render={({onChange, value}) => (
 							<>
-								{dataProcess.map((process) => (
+								{dataProcess.map(process => (
 									<ItemsOptions
 										key={process.idProcesso}
 										onPress={() => {
 											onChange(process.idProcesso);
 										}}
-									
 										style={[
 											value === process.idProcesso
 												? {
 														borderWidth: 2,
 														borderColor: colors.primary,
-														backgroundColor: colors.gray
+														backgroundColor: colors.gray,
 												  }
 												: {backgroundColor: colors.gray},
-										]}
+										]}>
+										<LabelItemsProcess>{process.numeroProcesso}</LabelItemsProcess>
 
-										>
-										<LabelItemsProcess>
-											{process.numeroProcesso}
-										</LabelItemsProcess>
-
-										{
-											value === process.idProcesso && 
-											<MaterialIcons  name={"check"} size={15} color={colors.primary}  />
-										}
+										{value === process.idProcesso && (
+											<MaterialIcons name={'check'} size={15} color={colors.primary} />
+										)}
 									</ItemsOptions>
 								))}
 							</>
@@ -549,7 +528,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 			<ContentRepeat isError={errors.IdTipoParcelamentoFinanceiro}>
 				<RowLabel>
 					<Label>Repetir</Label>
-					{errors.IdTipoParcelamentoFinanceiro &&  <LabelError>Selecione um periodo</LabelError>}
+					{errors.IdTipoParcelamentoFinanceiro && <LabelError>Selecione um periodo</LabelError>}
 				</RowLabel>
 
 				<Controller
@@ -558,7 +537,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 						required: true,
 					}}
 					control={control}
-					render={({onChange,value}) => (
+					render={({onChange, value}) => (
 						<ContainerItemsOptions>
 							{dataOptionsRepeat.map(repeat => (
 								<ItemsOptions
@@ -567,29 +546,26 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 										onChange(repeat.value);
 										handleChangeTypeDuration(repeat.value);
 									}}
-
 									style={[
 										value === repeat.value
 											? {
 													borderWidth: 2,
 													borderColor: colors.primary,
-													backgroundColor: colors.gray
+													backgroundColor: colors.gray,
 											  }
 											: {backgroundColor: colors.gray},
 									]}>
-									<LabelItems>
-										{repeat.label}
-									</LabelItems>
+									<LabelItems>{repeat.label}</LabelItems>
 
-									{ value === repeat.value &&  <MaterialIcons  name={"check"} size={15} color={colors.primary}  />}
+									{value === repeat.value && (
+										<MaterialIcons name={'check'} size={15} color={colors.primary} />
+									)}
 								</ItemsOptions>
 							))}
 						</ContainerItemsOptions>
 					)}
 				/>
 			</ContentRepeat>
-
-			
 
 			<ContentDuring isError={errors.quantidadeParcelas}>
 				<Row>
@@ -598,23 +574,40 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 					<Controller
 						name="quantidadeParcelas"
 						rules={{
-							required: getValues("IdTipoParcelamentoFinanceiro") !== -1,
+							required: getValues('IdTipoParcelamentoFinanceiro') !== -1,
 						}}
 						control={control}
 						defaultValue={null}
-						render={({onChange,value}) => (
+						render={({onChange, value}) => (
 							<ContainerInfo>
 								<RNPickerSelect
 									placeholder={{
 										label: 'Selecione',
 										value: null,
+										disabled: getValues('IdTipoParcelamentoFinanceiro') === -1,
 									}}
-									disabled={getValues("IdTipoParcelamentoFinanceiro") === -1}
+									disabled={
+										getValues('IdTipoParcelamentoFinanceiro') === -1 || duration.length === 0
+									}
 									doneText="Selecionar"
 									style={{
 										...pickerSelectStyles,
 										placeholder: {
 											color: errors.quantidadeParcelas ? colors.red : colors.black,
+										},
+										inputAndroid: {
+											...pickerSelectStyles.inputAndroid,
+											color:
+												getValues('IdTipoParcelamentoFinanceiro') === -1
+													? colors.grayLight
+													: colors.fadedBlack,
+										},
+										inputIOS: {
+											...pickerSelectStyles.inputIOS,
+											color:
+												getValues('IdTipoParcelamentoFinanceiro') === -1
+													? colors.grayLight
+													: colors.fadedBlack,
 										},
 									}}
 									value={value}
@@ -630,8 +623,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 				</Row>
 			</ContentDuring>
 
-
-		<ContentComments isError={errors.observacao}>
+			<ContentComments isError={errors.observacao}>
 				<Row>
 					<LabelComments>Observações</LabelComments>
 				</Row>
