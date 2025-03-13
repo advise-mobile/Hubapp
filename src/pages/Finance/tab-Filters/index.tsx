@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, FlatList} from 'react-native';
-import {Container, ContainerItems, TextItems} from './styles';
+import {ContainerItems, TextItems} from './styles';
 import {useTheme} from 'styled-components';
 
 const filters = [
@@ -20,33 +20,31 @@ const FilterScreen = ({onFilterSelect}) => {
 			const isSelected = selectedFilter === item.id;
 
 			return (
-				<Container>
-					<ContainerItems
-						onPress={() => {
-							if (!isSelected) {
-								setSelectedFilter(item.id);
-								onFilterSelect(item.id);
-							}
-						}}
-						activeOpacity={0.7}
+				<ContainerItems
+					onPress={() => {
+						if (!isSelected) {
+							setSelectedFilter(item.id);
+							onFilterSelect(item.id);
+						}
+					}}
+					activeOpacity={0.7}
+					style={{
+						backgroundColor: isSelected ? colors.tabcolor : colors.realWhite,
+					}}>
+					<TextItems
 						style={{
-							backgroundColor: isSelected ? colors.tabcolor : colors.realWhite,
+							color: isSelected ? colors.textTab : colors.BlackInactive,
 						}}>
-						<TextItems
-							style={{
-								color: isSelected ? colors.textTab : colors.BlackInactive,
-							}}>
-							{item.name}
-						</TextItems>
-					</ContainerItems>
-				</Container>
+						{item.name}
+					</TextItems>
+				</ContainerItems>
 			);
 		},
 		[selectedFilter, colors, onFilterSelect],
 	);
 
 	return (
-		<View>
+		<View style={{paddingLeft: 18}}>
 			<FlatList
 				data={filters}
 				renderItem={renderFilter}
@@ -54,8 +52,6 @@ const FilterScreen = ({onFilterSelect}) => {
 				horizontal
 				showsHorizontalScrollIndicator={false}
 				style={{
-					overflow: 'hidden',
-
 					marginTop: 10,
 				}}
 				removeClippedSubviews={true}
