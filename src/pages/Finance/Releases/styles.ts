@@ -26,7 +26,6 @@ export const TextLabelSubtitle = styled.Text`
 
 export const ContainerFinance = styled.View`
 	flex: 1;
-	margin-horizontal: 12px;
 `;
 
 export const ContainerResume = styled.View`
@@ -35,6 +34,7 @@ export const ContainerResume = styled.View`
 	min-height: 80px;
 	justify-content: center;
 	padding: 15px;
+	margin-horizontal: 12px;
 `;
 
 export const ContainerItemResume = styled.View`
@@ -58,6 +58,7 @@ export const ContainerItensFinance = styled.View`
 	border-bottom-width: 0.3;
 	border-color: ${({theme}) => theme.colors.bordercolor};
 	padding: 15px;
+	margin-horizontal: 12px;
 `;
 
 export const ContainerIconDescription = styled.View`
