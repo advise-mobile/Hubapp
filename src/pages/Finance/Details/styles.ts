@@ -8,7 +8,7 @@ export const ContainerHeader = styled.View`
 	justify-content: space-between;
 `;
 
-export const ContainerScreen = styled.View`
+export const ContainerScreen = styled.ScrollView`
 	flex: 1;
 	border-top-width: 1px;
 	border-color: ${({theme}) => theme.colors.grayLighter};
@@ -104,7 +104,7 @@ export const InformationTextContainer = styled.View`
 
 export const DescriptionOfObservationsContainer = styled.View`
 	width: 290px;
-	height: 50px;
+	height: auto;
 	margin-top: 1px;
 	margin-left: 4px;
 `;
@@ -122,7 +122,7 @@ export const InformationText = styled.Text`
 
 export const DescriptionOfObservationsText = styled.Text`
 	font-size: 14px;
-	height: 115px;
+	height: auto;
 	line-height: 20px;
 	color: ${({theme}) => theme.colors.BlackInactive};
 `;
