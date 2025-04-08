@@ -19,11 +19,12 @@
 		"android:clean": "cd android && rm -rf ~/.gradle/caches/ .gradle build app/build && cd ../",
 		"android:build-install": "yarn android:clean && cd android && ./gradlew clean && ./gradlew assembleRelease --no-daemon --max-workers 2 && adb install -r -d app/build/outputs/apk/release/app-release.apk && cd ../",
 		"android:install-release": "cd android && ./gradlew assembleRelease && adb install -r app/build/outputs/apk/release/app-release.apk",
-		"initialize": "yarn install && cd ios && pod install && cd ../",
+		"initialize": "yarn install && cd ios && pod install && cd ../ && yarn onesignal",
 		"ios:clean": "cd ios && xcodebuild clean && cd ..",
 		"ios:clean-full": "cd ios && rm -rf build Pods Podfile.lock && pod deintegrate && pod cache clean --all && pod install && cd ..",
-		"ios:full-reset": "rm -rf ~/Library/Developer/Xcode/DerivedData && yarn ios:clean-full",
-		"onesignal": "yarn add react-native-onesignal@4.5.4 && yarn ios:full-reset"
+		"ios:full-reset": "rm -rf ~/Library/Developer/Xcode/DerivedData && yarn ios:clean-full && yarn ios:xcode",
+		"onesignal": "yarn add react-native-onesignal@4.5.4 && yarn ios:full-reset",
+		"ios:xcode": "open ios/HubApp.xcworkspace"
 	},
 	"dependencies": {
 		"@expo/match-media": "^0.4.0",
@@ -55,6 +56,7 @@
 		"react-native-modal": "^11.10.0",
 		"react-native-modal-datetime-picker": "^9.1.0",
 		"react-native-modalize": "^2.0.8",
+		"react-native-onesignal": "4.5.4",
 		"react-native-picker-select": "^8.0.4",
 		"react-native-popup-menu": "^0.16.1",
 		"react-native-reanimated": "^1.13.2",
