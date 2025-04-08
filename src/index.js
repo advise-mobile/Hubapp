@@ -17,8 +17,6 @@ import ToastNotify from './components/ToastNotify';
 
 import env from 'services/env';
 
-import Smartlook from 'smartlook-react-native-wrapper';
-
 // Para ativar menus pop-up da lixeira e demais que vierem
 import {MenuProvider} from 'react-native-popup-menu';
 
@@ -44,8 +42,6 @@ const App = () => {
 		OneSignal.setAppId(env.oneSignalId);
 
 		SplashScreen.hide();
-
-		Smartlook.setupAndStartRecording('446489ae4715d0f4b4a398f5abd7f2c2875723eb');
 	}, []);
 
 	return (
