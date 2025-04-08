@@ -10,7 +10,6 @@ import CashFlowDataItem from '@components/Finance/CashFlow';
 import CashFlowActions from '../Modal/CashFlowActions';
 import {useGetCashFlow} from '@services/hooks/Finances/useCashFlow';
 import {CashFlowProps, DataFiltersCashFlowProps, FiltersCashFlowDataProps} from './types';
-import {FormatReal} from '@helpers/MoneyFunctions';
 
 import {
 	ContainerIconMore,
@@ -53,6 +52,7 @@ export default function CashFlow({dataFiltersCashFlow}: DataFiltersCashFlowProps
 	const fetchCashFlow = async (dataFilters: FiltersCashFlowDataProps) => {
 		try {
 			const responseCashFlow = await getCashFlowData(dataFilters);
+			console.log('=== responseCashFlow', responseCashFlow[0].saldoAnterior);
 
 			if (responseCashFlow !== undefined) {
 				setCashFlowResume(responseCashFlow);
@@ -73,7 +73,7 @@ export default function CashFlow({dataFiltersCashFlow}: DataFiltersCashFlowProps
 					<TopContainer>
 						<ContainerMainInformation>
 							<TextLabel WeightTextProps>Saldo Anterior</TextLabel>
-							<TextValue>{FormatReal(saldoAnterior)}</TextValue>
+							<TextValue>{saldoAnterior}</TextValue>
 						</ContainerMainInformation>
 
 						<ContainerIconMore onPress={() => ModalActionsRef.current?.open()}>
