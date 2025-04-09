@@ -37,7 +37,7 @@ export const useGetCashFlow = () => {
 				return [
 					{
 						registroTotal: itens[0].registrosTotal,
-						saldoAnterior: 0,
+						saldoAnterior: FormatReal(0),
 					},
 				];
 			}

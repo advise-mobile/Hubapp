@@ -52,7 +52,6 @@ export default function CashFlow({dataFiltersCashFlow}: DataFiltersCashFlowProps
 	const fetchCashFlow = async (dataFilters: FiltersCashFlowDataProps) => {
 		try {
 			const responseCashFlow = await getCashFlowData(dataFilters);
-			console.log('=== responseCashFlow', responseCashFlow[0].saldoAnterior);
 
 			if (responseCashFlow !== undefined) {
 				setCashFlowResume(responseCashFlow);
