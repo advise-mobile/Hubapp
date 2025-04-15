@@ -1,172 +1,166 @@
-import { useCallback, useState } from "react";
-import { getLoggedUser } from '@helpers/Permissions';
-import { toCamelCase } from "@helpers/functions";
+import {useCallback, useState} from 'react';
+import {getLoggedUser} from '@helpers/Permissions';
+import {toCamelCase} from '@helpers/functions';
 
 import Api from '@services/Api';
 
-import { DataCategoryItemProps, DataCategoryProps, CategoryDataProps, CategoryProps } from "@pages/Finance/Category/types";
+import {
+	DataCategoryItemProps,
+	DataCategoryProps,
+	CategoryDataProps,
+	CategoryProps,
+} from '@pages/Finance/Category/types';
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
-import { useDispatch } from 'react-redux';
-
+import {useDispatch} from 'react-redux';
 
 export const useGetCategory = () => {
-
 	const [isLoadingCategory, setIsLoadingCategory] = useState(false);
 
 	const dispatch = useDispatch();
 
-	const getCategoryData = async (filtersData:CategoryDataProps | undefined ) => {
-
+	const getCategoryData = async (filtersData: CategoryDataProps | undefined) => {
 		try {
 			setIsLoadingCategory(true);
 
-			const { idUsuarioCliente } = await getLoggedUser();
+			const {idUsuarioCliente} = await getLoggedUser();
 
 			let filters;
-			if ((filtersData === undefined) || (filtersData.type === null && filtersData.situation == null) ){
-				filters = ""
-			}else{
+			if (
+				filtersData === undefined ||
+				(filtersData.type === null && filtersData.situation == null)
+			) {
+				filters = '';
+			} else {
 				filters = `IdsTipoCategoriaFinanceiro=${filtersData.type}&ativo=${filtersData.situation}`;
 			}
 
 			const params = `?campos=*&registrosPorPagina=300&idUsuarioCliente=${idUsuarioCliente}&ordenacao=+nomeCategoriaFinanceiro`;
-			const response: DataCategoryProps = await Api.get(`/core/v1/categorias-financeiro${params}&${filters}`);
+			const response: DataCategoryProps = await Api.get(
+				`/core/v1/categorias-financeiro${params}&${filters}`,
+			);
 
-			const { itens }: DataCategoryItemProps = response.data;
+			const {itens}: DataCategoryItemProps = response.data;
 
-			const itensOptimized = itens.map((item:ItemInstallmentsProps) => {
-
-                return {
-                            ...item,
-  							nomeCategoriaFinanceiroShow:item.nomeCategoriaFinanceiro.length > 13 ?
-							  toCamelCase(item.nomeCategoriaFinanceiro.substr(0,10)) + " ...":
-							  toCamelCase(item.nomeCategoriaFinanceiro)
-                        }
-            });
-            return itensOptimized;
-
+			const itensOptimized = itens.map((item: ItemInstallmentsProps) => {
+				return {
+					...item,
+					nomeCategoriaFinanceiroShow:
+						item.nomeCategoriaFinanceiro.length > 13
+							? toCamelCase(item.nomeCategoriaFinanceiro.substr(0, 10)) + ' ...'
+							: toCamelCase(item.nomeCategoriaFinanceiro),
+				};
+			});
+			return itensOptimized;
 		} catch (error) {
-			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estas categorias', true));
+			dispatch(
+				ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estas categorias', true),
+			);
 		} finally {
 			setTimeout(() => {
 				setIsLoadingCategory(false);
 			}, 200);
 		}
 	};
-	return { isLoadingCategory, getCategoryData };
-}
+	return {isLoadingCategory, getCategoryData};
+};
 
 export const useCategory = () => {
-
 	const [isSavingCategory, setIsSavingCategory] = useState(false);
 
 	const dispatch = useDispatch();
 
-	const saveCategory =  async (data:DataCategoryItemProps, handleCallback:() => void) => {
-
-			try {
-					setIsSavingCategory(true);
-
-					const response = await Api.post(`core/v1/categorias-financeiro`,data);
-
-					dispatch(ToastNotifyActions.toastNotifyShow('Categoria cadastrada com sucesso!',false));
-
-					return true;
-
-			} catch (error) {
-					dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria',true));
-			}finally {
-					setTimeout(() => {
-							setIsSavingCategory(false);
-							handleCallback();
-					}, 1000);
-
-
-			}
-	};
-
-	const updateCategory =  async (data:DataCategoryItemProps, handleCallback:() => void) => {
-
+	const saveCategory = async (data: DataCategoryItemProps, handleCallback: () => void) => {
 		try {
-				setIsSavingCategory(true);
+			setIsSavingCategory(true);
 
-				const response = await Api.put(`core/v1/categorias-financeiro`,data);
+			const response = await Api.post(`core/v1/categorias-financeiro`, data);
 
-				dispatch(ToastNotifyActions.toastNotifyShow('Categoria alterada com sucesso!',false));
+			dispatch(ToastNotifyActions.toastNotifyShow('Categoria cadastrada com sucesso!', false));
 
-				return true;
-
+			return true;
 		} catch (error) {
-				dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria',true));
-		}finally {
-				setTimeout(() => {
-						setIsSavingCategory(false);
-						handleCallback();
-				}, 1000);
-
-
+			dispatch(
+				ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria', true),
+			);
+		} finally {
+			setTimeout(() => {
+				setIsSavingCategory(false);
+				handleCallback();
+			}, 1000);
 		}
 	};
 
-	const inactivateCategory =  async (data:CategoryProps, handleCallback:() => void) => {
-
+	const updateCategory = async (data: DataCategoryItemProps, handleCallback: () => void) => {
 		try {
-				setIsSavingCategory(true);
+			setIsSavingCategory(true);
 
-				const categoryIds = {
-					"ids":[data.idCategoriaFinanceiro]
-				}
+			const response = await Api.put(`core/v1/categorias-financeiro`, data);
 
-				const response = await Api.put(`core/v1/categorias-financeiro/inativar`,categoryIds);
+			dispatch(ToastNotifyActions.toastNotifyShow('Categoria alterada com sucesso!', false));
 
-				dispatch(ToastNotifyActions.toastNotifyShow('Categoria inativada com sucesso!',false));
-
-				return true;
-
+			return true;
 		} catch (error) {
-				dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível inativar esta categoria',true));
-		}finally {
-				setTimeout(() => {
-						setIsSavingCategory(false);
-						handleCallback();
-				}, 1000);
-
-
+			dispatch(
+				ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria', true),
+			);
+		} finally {
+			setTimeout(() => {
+				setIsSavingCategory(false);
+				handleCallback();
+			}, 1000);
 		}
 	};
 
-	const activateCategory = async (data:CategoryProps, handleCallback:() => void) => {
-
+	const inactivateCategory = async (data: CategoryProps, handleCallback: () => void) => {
 		try {
-				setIsSavingCategory(true);
+			setIsSavingCategory(true);
 
-				const categoryIds = {
-					"ids":[data.idCategoriaFinanceiro]
-				}
+			const categoryIds = {
+				ids: [data.idCategoriaFinanceiro],
+			};
 
-				const response = await Api.put(`core/v1/categorias-financeiro/ativar`,categoryIds);
+			const response = await Api.put(`core/v1/categorias-financeiro/inativar`, categoryIds);
 
-				dispatch(ToastNotifyActions.toastNotifyShow('Categoria ativada com sucesso!',false));
+			dispatch(ToastNotifyActions.toastNotifyShow('Categoria inativada com sucesso!', false));
 
-				return true;
-
+			return true;
 		} catch (error) {
-				dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível ativar esta categoria',true));
-		}finally {
-				setTimeout(() => {
-						setIsSavingCategory(false);
-						handleCallback();
-				}, 1000);
+			const errorMessage =
+				error.response?.data?.status?.erros?.[0]?.mensagem ||
+				'Não foi possível inativar esta categoria';
 
-
+			dispatch(ToastNotifyActions.toastNotifyShow(errorMessage, true));
+		} finally {
+			setTimeout(() => {
+				setIsSavingCategory(false);
+				handleCallback();
+			}, 1000);
 		}
 	};
 
+	const activateCategory = async (data: CategoryProps, handleCallback: () => void) => {
+		try {
+			setIsSavingCategory(true);
 
+			const categoryIds = {
+				ids: [data.idCategoriaFinanceiro],
+			};
 
+			const response = await Api.put(`core/v1/categorias-financeiro/ativar`, categoryIds);
 
+			dispatch(ToastNotifyActions.toastNotifyShow('Categoria ativada com sucesso!', false));
 
-	return {isSavingCategory, saveCategory, updateCategory, inactivateCategory,activateCategory};
-}
+			return true;
+		} catch (error) {
+			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível ativar esta categoria', true));
+		} finally {
+			setTimeout(() => {
+				setIsSavingCategory(false);
+				handleCallback();
+			}, 1000);
+		}
+	};
 
+	return {isSavingCategory, saveCategory, updateCategory, inactivateCategory, activateCategory};
+};
