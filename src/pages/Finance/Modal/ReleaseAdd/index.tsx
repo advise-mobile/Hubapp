@@ -446,7 +446,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 				</ContainerItems>
 			</Category>
 
-			<People isError={errors.idPessoaCliente}>
+			<People>
 				<RowLabel>
 					<Label>Pessoa</Label>
 				</RowLabel>
@@ -525,17 +525,13 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 				</ContainerItemsOptions>
 			</Process>
 
-			<ContentRepeat isError={errors.IdTipoParcelamentoFinanceiro}>
+			<ContentRepeat>
 				<RowLabel>
 					<Label>Repetir</Label>
-					{errors.IdTipoParcelamentoFinanceiro && <LabelError>Selecione um periodo</LabelError>}
 				</RowLabel>
 
 				<Controller
 					name="IdTipoParcelamentoFinanceiro"
-					rules={{
-						required: true,
-					}}
 					control={control}
 					render={({onChange, value}) => (
 						<ContainerItemsOptions>
@@ -567,15 +563,12 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 				/>
 			</ContentRepeat>
 
-			<ContentDuring isError={errors.quantidadeParcelas}>
+			<ContentDuring>
 				<Row>
 					<LabelDuring>Durante</LabelDuring>
 
 					<Controller
 						name="quantidadeParcelas"
-						rules={{
-							required: getValues('IdTipoParcelamentoFinanceiro') !== -1,
-						}}
 						control={control}
 						defaultValue={null}
 						render={({onChange, value}) => (
@@ -593,7 +586,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 									style={{
 										...pickerSelectStyles,
 										placeholder: {
-											color: errors.quantidadeParcelas ? colors.red : colors.black,
+											color: colors.black,
 										},
 										inputAndroid: {
 											...pickerSelectStyles.inputAndroid,
@@ -623,15 +616,12 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 				</Row>
 			</ContentDuring>
 
-			<ContentComments isError={errors.observacao}>
+			<ContentComments>
 				<Row>
 					<LabelComments>Observações</LabelComments>
 				</Row>
 				<Controller
 					name="observacao"
-					// rules={{
-					// 	required: true,
-					// }}
 					control={control}
 					defaultValue={null}
 					render={({onChange}) => (
@@ -639,7 +629,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 							autoCorrect={false}
 							autoCapitalize="none"
 							placeholder="Digite uma observação"
-							placeholderTextColor={errors.descricao ? colors.red200 : colors.grayLight}
+							placeholderTextColor={colors.grayLight}
 							onChangeText={value => onChange(value)}
 							returnKeyType="next"
 							onSubmitEditing={handleSubmit(onSubmit)}
