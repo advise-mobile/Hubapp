@@ -97,8 +97,6 @@ export function* login(action) {
 
 		yield put(AuthActions.loginSuccess(response.data, isConvenio, active, acceptTerms));
 	} catch (err) {
-		console.log(err);
-
 		if (err.response) {
 			yield put(AuthActions.loginFailure());
 			yield put(

@@ -1,14 +1,14 @@
 import Api from 'services/Api';
-import { call, put, delay } from 'redux-saga/effects';
+import {call, put, delay} from 'redux-saga/effects';
 
 import AuthAction from 'store/ducks/Auth';
 import MovementsTypes from 'store/ducks/Movements';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
 import UserActions from 'store/ducks/User';
-import { FormatDateInFull, FormatDateBR } from 'helpers/DateFunctions';
-import { MaskCnj } from 'helpers/Mask';
+import {FormatDateInFull, FormatDateBR} from 'helpers/DateFunctions';
+import {MaskCnj} from 'helpers/Mask';
 
-import { getLoggedUser } from 'helpers/Permissions';
+import {getLoggedUser} from 'helpers/Permissions';
 
 // import moment from 'moment';
 
@@ -37,248 +37,202 @@ import { getLoggedUser } from 'helpers/Permissions';
 // }
 
 function getFilterString(filters) {
-  let result = '';
+	let result = '';
 
-  if (!filters) result;
+	if (!filters) result;
 
-  Object.keys(filters).map(key => result += (filters[key] != null) && `${key}=${filters[key]}&` || '');
+	Object.keys(filters).map(
+		key => (result += (filters[key] != null && `${key}=${filters[key]}&`) || ''),
+	);
 
-  return `&${result.slice(0, -1)}`;
+	return `&${result.slice(0, -1)}`;
 }
 
-export function* getDiaries({ params }) {
-  try {
-    const query = `IdsPalavraChave=${params.idPalavraChave}`;
+export function* getDiaries({params}) {
+	try {
+		const query = `IdsPalavraChave=${params.idPalavraChave}`;
 
-    const { data } = yield call(
-      Api.get,
-      `/core/v1/diarios/usuario-grupo?${query}`
-    );
+		const {data} = yield call(Api.get, `/core/v1/diarios/usuario-grupo?${query}`);
 
-    const diaries = data.itens.sort((a, b) => (a.nomeDiario > b.nomeDiario) ? 1 : ((b.nomeDiario > a.nomeDiario) ? -1 : 0));
+		const diaries = data.itens.sort((a, b) =>
+			a.nomeDiario > b.nomeDiario ? 1 : b.nomeDiario > a.nomeDiario ? -1 : 0,
+		);
 
-    yield put(MovementsTypes.diariesSuccess(diaries));
-    return;
-  } catch (err) {
-    yield put(
-      ToastNotifyActions.toastNotifyShow(
-        'Não foi possível carregar as Publicações',
-        true
-      )
-    );
-  }
+		yield put(MovementsTypes.diariesSuccess(diaries));
+		return;
+	} catch (err) {
+		yield put(ToastNotifyActions.toastNotifyShow('Não foi possível carregar as Publicações', true));
+	}
 }
 
-export function* getTribunals({ params }) {
-  try {
-    const query = `campos=idOrgaoJudiciario,nomeOrgaoJudiciario&numeroProcesso=${params.processNumber}`;
+export function* getTribunals({params}) {
+	try {
+		const query = `campos=idOrgaoJudiciario,nomeOrgaoJudiciario&numeroProcesso=${params.processNumber}`;
 
-    const { data } = yield call(
-      Api.get,
-      `/core/v1/processos-solicitados/orgaos-judiciarios?${query}`
-    );
+		const {data} = yield call(
+			Api.get,
+			`/core/v1/processos-solicitados/orgaos-judiciarios?${query}`,
+		);
 
-    yield put(MovementsTypes.tribunalsSuccess(data.itens));
-    return;
-  } catch (err) {
-    yield put(
-      ToastNotifyActions.toastNotifyShow(
-        'Não foi possível carregar as Publicações',
-        true
-      )
-    );
-  }
+		yield put(MovementsTypes.tribunalsSuccess(data.itens));
+		return;
+	} catch (err) {
+		yield put(ToastNotifyActions.toastNotifyShow('Não foi possível carregar as Publicações', true));
+	}
 }
 
-export function* getMovements({ params }) {
-  try {
-    const { filters, refreshing } = params;
+export function* getMovements({params}) {
+	try {
+		const {filters, refreshing} = params;
 
-    const queryFilters = getFilterString(filters);
+		const queryFilters = getFilterString(filters);
 
-    const query = `campos=*&ordenacao=-dataPublicacao&idPastaUsuarioCliente=${params.folderId}`;
-    
-    const paginator = `registrosPorPagina=${params.perPage}&paginaAtual=${params.page}`;
+		const query = `campos=*&ordenacao=-dataPublicacao&idPastaUsuarioCliente=${params.folderId}`;
 
-    yield put(AuthAction.contractsRequest());
+		const paginator = `registrosPorPagina=${params.perPage}&paginaAtual=${params.page}`;
 
-    yield put(UserActions.updatePicture());
+		yield put(AuthAction.contractsRequest());
 
-    let { data } = yield call(
-      Api.get,
-      `/core/v1/movimentos-pastas-usuarios-clientes?${query}&${paginator}${queryFilters}`
-    );
+		yield put(UserActions.updatePicture());
 
-    data.itens.map(movement => movement.checked = false);
+		let {data} = yield call(
+			Api.get,
+			`/core/v1/movimentos-pastas-usuarios-clientes?${query}&${paginator}${queryFilters}`,
+		);
 
-    const optmizedMovements = data.itens.map(movement => {
-      const {
-        id,
-        lido,
-        idMovProcessoCliente,
-        idPastaUsuarioCliente,
-        movimento: {
-          dataHoraMovimento,
-          idTipoMovProcesso,
-          andamentoProcesso,
-          publicacao,
-        }
-      } = movement;
+		data.itens.map(movement => (movement.checked = false));
 
-      const formatedDate = FormatDateBR(dataHoraMovimento);
+		const optmizedMovements = data.itens.map(movement => {
+			const {
+				id,
+				lido,
+				idMovProcessoCliente,
+				idPastaUsuarioCliente,
+				movimento: {dataHoraMovimento, idTipoMovProcesso, andamentoProcesso, publicacao},
+			} = movement;
 
-      let optmizedMovement = {
-        id,
-        lido,
-        idTipoMovProcesso,
-        idMovProcessoCliente,
-        idPastaUsuarioCliente
-      }
+			const formatedDate = FormatDateBR(dataHoraMovimento);
 
-      if (andamentoProcesso) {
+			let optmizedMovement = {
+				id,
+				lido,
+				idTipoMovProcesso,
+				idMovProcessoCliente,
+				idPastaUsuarioCliente,
+			};
 
-        const {
-          siglaOrgaoJudiriario,
-          nomeFontePesquisa,
-          resumo,
-          numeroProcesso,
-        } = andamentoProcesso;
+			if (andamentoProcesso) {
+				const {siglaOrgaoJudiriario, nomeFontePesquisa, resumo, numeroProcesso} = andamentoProcesso;
 
-        optmizedMovement = {
-          ...optmizedMovement,
-          resumo,
-          numeroProcesso: MaskCnj(numeroProcesso),
-          title: `${formatedDate} - ${siglaOrgaoJudiriario} - ${nomeFontePesquisa && nomeFontePesquisa}`,
-        };
+				optmizedMovement = {
+					...optmizedMovement,
+					resumo,
+					numeroProcesso: MaskCnj(numeroProcesso),
+					title: `${formatedDate} - ${siglaOrgaoJudiriario} - ${
+						nomeFontePesquisa && nomeFontePesquisa
+					}`,
+				};
+			}
 
-      }
+			if (publicacao) {
+				const {
+					resumo,
+					descricaoCadernoDiario,
+					dataPublicacaoDiarioEdicao,
+					palavrasChaves,
+					processosPublicacoes,
+				} = publicacao;
 
-      if (publicacao) { 
+				const dataPublicacao = FormatDateBR(dataPublicacaoDiarioEdicao);
 
-        const {
-          resumo,
-          descricaoCadernoDiario,
-          dataPublicacaoDiarioEdicao,
-          palavrasChaves,
-          processosPublicacoes,
-        } = publicacao;
+				optmizedMovement = {
+					...optmizedMovement,
+					resumo,
+					dataPublicacao,
+					palavrasChaves,
+					title: `${formatedDate} - ${descricaoCadernoDiario}`,
+				};
 
-        const dataPublicacao = FormatDateBR(dataPublicacaoDiarioEdicao);
+				if (processosPublicacoes?.length > 0) {
+					if (publicacao.numero) {
+						optmizedMovement.numeroProcesso = publicacao.numero;
+					} else {
+						optmizedMovement.numeroProcesso = MaskCnj(processosPublicacoes[0].numeroProcesso);
+					}
+				}
+			}
 
-        optmizedMovement = {
-          ...optmizedMovement,
-          resumo,
-          dataPublicacao,
-          palavrasChaves,
-          title: `${formatedDate} - ${descricaoCadernoDiario}`,
-        };
+			return optmizedMovement;
+		});
 
-        if (processosPublicacoes?.length > 0) {
-          if(publicacao.numero){
-            optmizedMovement.numeroProcesso = publicacao.numero;
-          }else{
-            optmizedMovement.numeroProcesso = MaskCnj(processosPublicacoes[0].numeroProcesso);
-          }
-          
-        }
+		const endReached = data.itens.length == 0;
 
-      }
+		if (refreshing)
+			yield put(MovementsTypes.movementsRefreshSuccess(optmizedMovements, params.page, endReached));
+		else yield put(MovementsTypes.movementsSuccess(optmizedMovements, params.page, endReached));
 
-      return optmizedMovement;
-    });
-
-    const endReached = data.itens.length == 0;
-
-    if (refreshing)
-      yield put(MovementsTypes.movementsRefreshSuccess(optmizedMovements, params.page, endReached));
-    else
-      yield put(MovementsTypes.movementsSuccess(optmizedMovements, params.page, endReached));
-
-    return;
-  } catch (err) {
-    console.error(err);
-    yield put(
-      ToastNotifyActions.toastNotifyShow(
-        'Não foi possível carregar as Publicações',
-        true
-      )
-    );
-  }
+		return;
+	} catch (err) {
+		yield put(ToastNotifyActions.toastNotifyShow('Não foi possível carregar as Publicações', true));
+	}
 }
 
-export function* sendMovementsEmail({ param }) {
-  try {
-    const data = {
-      'destinatarios': param.destinatarios || null,
-      'idsMovimentos': param.idsMovimentos || null,
-    };
+export function* sendMovementsEmail({param}) {
+	try {
+		const data = {
+			destinatarios: param.destinatarios || null,
+			idsMovimentos: param.idsMovimentos || null,
+		};
 
-    yield call(Api.post, `/core/v1/envio-email-movimentos`, data);
+		yield call(Api.post, `/core/v1/envio-email-movimentos`, data);
 
-    yield put(ToastNotifyActions.toastNotifyShow('Movimentação enviada por email!', false));
-    yield put(MovementsTypes.movementsEmailSuccess());
-  } catch (err) {
-    const { status } = err.response;
-    if (status !== 401) {
-      yield put(MovementsTypes.movementsEmailFailure());
-      yield put(
-        ToastNotifyActions.toastNotifyShow(
-          'Não foi possível enviar o movimento por email.',
-          true
-        )
-      );
-    }
-  }
+		yield put(ToastNotifyActions.toastNotifyShow('Movimentação enviada por email!', false));
+		yield put(MovementsTypes.movementsEmailSuccess());
+	} catch (err) {
+		const {status} = err.response;
+		if (status !== 401) {
+			yield put(MovementsTypes.movementsEmailFailure());
+			yield put(
+				ToastNotifyActions.toastNotifyShow('Não foi possível enviar o movimento por email.', true),
+			);
+		}
+	}
 }
 
-export function* deleteMovement({ params }) {
-  try {
-    const { idUsuarioCliente } = yield getLoggedUser();
+export function* deleteMovement({params}) {
+	try {
+		const {idUsuarioCliente} = yield getLoggedUser();
 
-    const data = [{ ...params, idUsuarioCliente }];
+		const data = [{...params, idUsuarioCliente}];
 
-    yield call(Api.put, `/core/v1/pastas-usuarios-clientes/desvincular-movimento`, data);
+		yield call(Api.put, `/core/v1/pastas-usuarios-clientes/desvincular-movimento`, data);
 
-    yield put(ToastNotifyActions.toastNotifyShow('Movimentação excluída com sucesso!', false));
-    yield put(MovementsTypes.deleteMovementProceeded());
-  } catch (err) {
-    console.error(err);
-
-    const { status } = err.response;
-    if (status !== 401) {
-      yield put(MovementsTypes.deleteMovementProceeded());
-      yield put(
-        ToastNotifyActions.toastNotifyShow(
-          'Não foi possível excluir o movimento.',
-          true
-        )
-      );
-    }
-  }
+		yield put(ToastNotifyActions.toastNotifyShow('Movimentação excluída com sucesso!', false));
+		yield put(MovementsTypes.deleteMovementProceeded());
+	} catch (err) {
+		const {status} = err.response;
+		if (status !== 401) {
+			yield put(MovementsTypes.deleteMovementProceeded());
+			yield put(ToastNotifyActions.toastNotifyShow('Não foi possível excluir o movimento.', true));
+		}
+	}
 }
 
-export function* deleteLogicalMovement({ params }) {
-  try {
-    const { idUsuarioCliente } = yield getLoggedUser();
-  
-    const data = [{ ...params, idUsuarioCliente }];
+export function* deleteLogicalMovement({params}) {
+	try {
+		const {idUsuarioCliente} = yield getLoggedUser();
 
-    yield call(Api.put, `/core/v1/movimentos-usuarios-clientes/enviar-lixeira`, data);
+		const data = [{...params, idUsuarioCliente}];
 
-    yield put(ToastNotifyActions.toastNotifyShow('Movimentação excluída com sucesso!', false));
-  } catch (err) {
-    console.error(err);
+		yield call(Api.put, `/core/v1/movimentos-usuarios-clientes/enviar-lixeira`, data);
 
-    const { status } = err.response;
-    if (status !== 401) {
-      yield put(
-        ToastNotifyActions.toastNotifyShow(
-          'Não foi possível excluir o movimento.',
-          true
-        )
-      );
-    }
-  }finally {
-    yield put(MovementsTypes.deleteMovementProceeded());
-  }
+		yield put(ToastNotifyActions.toastNotifyShow('Movimentação excluída com sucesso!', false));
+	} catch (err) {
+		const {status} = err.response;
+		if (status !== 401) {
+			yield put(ToastNotifyActions.toastNotifyShow('Não foi possível excluir o movimento.', true));
+		}
+	} finally {
+		yield put(MovementsTypes.deleteMovementProceeded());
+	}
 }

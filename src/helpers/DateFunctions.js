@@ -23,13 +23,23 @@ export const isSameDateTime = (date1, date2) =>
 	moment(date2, 'YYYY-MM-DD H:mm:ss').format('YYYY-MM-DD H:mm:ss');
 
 export const GetMonthPeriod = (onlyData = false) => {
+	const now = moment();
+	const startOfMonth = now.clone().startOf('month');
+	const endOfMonth = now.clone().endOf('month');
+
+	// Verifica se estamos no último dia do mês
+	if (now.date() === now.daysInMonth()) {
+		// Se for o último dia, usa o dia atual como referência
+		endOfMonth.set('date', now.date());
+	}
+
 	return {
 		startOfMonth: onlyData
-			? moment().startOf('month').format('YYYY-MM-DD')
-			: moment().startOf('month').format('YYYY-MM-DD') + 'T00:00:00',
+			? startOfMonth.format('YYYY-MM-DD')
+			: startOfMonth.format('YYYY-MM-DD') + 'T00:00:00',
 		endOfMonth: onlyData
-			? moment().endOf('month').format('YYYY-MM-DD')
-			: moment().endOf('month').format('YYYY-MM-DD') + 'T23:59:59',
+			? endOfMonth.format('YYYY-MM-DD')
+			: endOfMonth.format('YYYY-MM-DD') + 'T23:59:59',
 	};
 };
 

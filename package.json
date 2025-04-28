@@ -19,7 +19,7 @@
 		"android:clean": "cd android && rm -rf ~/.gradle/caches/ .gradle build app/build && cd ../",
 		"android:build-install": "yarn android:clean && cd android && ./gradlew clean && ./gradlew assembleRelease --no-daemon --max-workers 2 && adb install -r -d app/build/outputs/apk/release/app-release.apk && cd ../",
 		"android:install-release": "cd android && ./gradlew assembleRelease && adb install -r app/build/outputs/apk/release/app-release.apk",
-		"initialize": "yarn install && cd ios && pod install && cd ../ && yarn onesignal",
+		"ios:initialize": "yarn install && cd ios && pod install && cd ../ && yarn onesignal",
 		"ios:clean": "cd ios && xcodebuild clean && cd ..",
 		"ios:clean-full": "cd ios && rm -rf build Pods Podfile.lock && pod deintegrate && pod cache clean --all && pod install && cd ..",
 		"ios:full-reset": "rm -rf ~/Library/Developer/Xcode/DerivedData && yarn ios:clean-full && yarn ios:xcode",

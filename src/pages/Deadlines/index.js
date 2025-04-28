@@ -285,8 +285,6 @@ export default function Deadlines(props) {
 	useEffect(() => {
 		const {params} = filters.find(item => item.id == currentFilter);
 
-		console.log('=== permission', havePermission);
-
 		if (havePermission) {
 			dispatch(
 				DeadlinesActions.deadlinesRequest({
@@ -309,10 +307,6 @@ export default function Deadlines(props) {
 	);
 
 	const closeOpenedRow = useCallback(key => listRef.current?._rows[key].closeRow());
-
-	// const onDateChanged = (date, updateSource) => console.warn('ExpandableCalendarScreen onDateChanged: ', date, updateSource);
-
-	// const onMonthChange = (month, updateSource) => console.warn('ExpandableCalendarScreen onMonthChange: ', month, updateSource);
 
 	const callbackAdd = useCallback(() => setPage(1), []);
 

@@ -27,8 +27,6 @@ export default CashFlowSendEmail = forwardRef((props, ref) => {
 
 	const {filters, onClose} = props;
 
-	// console.log("===",filters);
-
 	// // Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
@@ -59,7 +57,6 @@ export default CashFlowSendEmail = forwardRef((props, ref) => {
 			destinatarios: emails.split(';'),
 		};
 
-		//console.log("===",register);
 		sendCashFlowEmail(register, () => handleOnClose());
 	};
 

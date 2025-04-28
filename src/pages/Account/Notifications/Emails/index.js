@@ -1,9 +1,21 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {RefreshControl, Animated, Switch, Platform, StyleSheet, TouchableOpacity, Text, Image, View, Pressable, Appearance} from 'react-native';
+import {
+	RefreshControl,
+	Animated,
+	Switch,
+	Platform,
+	StyleSheet,
+	TouchableOpacity,
+	Text,
+	Image,
+	View,
+	Pressable,
+	Appearance,
+} from 'react-native';
 
 import HeaderGlobals from 'components/HeaderGlobals';
 import Spinner from 'components/Spinner';
-import { Container, Warp } from '../../../../assets/styles/global';
+import {Container, Warp} from '../../../../assets/styles/global';
 
 import Api from 'services/Api';
 import {getLoggedUser, PermissionsGroups, checkPermission} from 'helpers/Permissions';
@@ -35,19 +47,18 @@ import {
 
 import Add from './Modals/Add';
 import Confirmation from './Modals/Confirmation';
-import { useResponsiveQuery } from 'react-native-responsive-query';
+import {useResponsiveQuery} from 'react-native-responsive-query';
 
 // Add Hook UseTheme para pegar o tema global addicionado
-import { useTheme } from 'styled-components';
+import {useTheme} from 'styled-components';
 
 export default Emails = props => {
-	  
 	const addRef = useRef(null);
 	const confirmationRef = useRef(null);
 
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
-	const { colors } = colorUseTheme;
+	const {colors} = colorUseTheme;
 
 	const [userData, setUserData] = useState({});
 
@@ -67,8 +78,8 @@ export default Emails = props => {
 	const activeOptionsMovements = useRef(new Animated.Value(1)).current;
 	const activeOptionsNoNewMovements = useRef(new Animated.Value(1)).current;
 	const activeOptionsProcesses = useRef(new Animated.Value(1)).current;
-	const [showTooltip, setShowTooltip] = useState(false)
-	
+	const [showTooltip, setShowTooltip] = useState(false);
+
 	useEffect(() => {
 		getLoggedUser().then(user => setUserData(user));
 		setLoading(true);
@@ -86,8 +97,8 @@ export default Emails = props => {
 	}, []);
 
 	const onPressShowTooltip = () => {
-		setShowTooltip(!showTooltip)
-	}
+		setShowTooltip(!showTooltip);
+	};
 
 	useDebouncedEffect(
 		() => {
@@ -385,35 +396,40 @@ export default Emails = props => {
 				<View style={styles.viewOverlayElement}>
 					<View style={styles.viewInfo}>
 						<View>
-								<Text style={{
+							<Text
+								style={{
 									textAlign: 'center',
 									fontWeight: 'bold',
 									fontSize: 20,
 									marginTop: 12,
 									marginBottom: 12,
-									color: "#000",
-									fontFamily: 'Circular Std'
-								}}>Período de envio 4x ao dia</Text>
-								<Text style={styles.infoText}>1º - 07:00hs às 08:00hs</Text>
-								<Text style={styles.infoText}>2º - 10:00hs às 11:00hs</Text>
-								<Text style={styles.infoText}>3º - 13:00hs às 14:00hs</Text>
-								<Text style={styles.infoText}>4º - 16:00hs às 17:00hs</Text>
+									color: '#000',
+									fontFamily: 'Circular Std',
+								}}>
+								Período de envio 4x ao dia
+							</Text>
+							<Text style={styles.infoText}>1º - 07:00hs às 08:00hs</Text>
+							<Text style={styles.infoText}>2º - 10:00hs às 11:00hs</Text>
+							<Text style={styles.infoText}>3º - 13:00hs às 14:00hs</Text>
+							<Text style={styles.infoText}>4º - 16:00hs às 17:00hs</Text>
 						</View>
 						<View
 							style={{
-								borderBottom: '1px solid '
-							}}
-						>
-								<Text style={{
+								borderBottom: '1px solid ',
+							}}>
+							<Text
+								style={{
 									textAlign: 'center',
 									fontWeight: 'bold',
 									fontSize: 20,
 									marginTop: 12,
 									marginBottom: 12,
-									color: "#000",
-									fontFamily: 'Circular Std'
-								}}>Período de envio 1x ao dia</Text>
-								<Text style={styles.infoText}>1º - 16:00hs às 17:00hs</Text>
+									color: '#000',
+									fontFamily: 'Circular Std',
+								}}>
+								Período de envio 1x ao dia
+							</Text>
+							<Text style={styles.infoText}>1º - 16:00hs às 17:00hs</Text>
 						</View>
 
 						<Pressable style={styles.buttonInfo} onPress={() => onPressShowTooltip()}>
@@ -442,12 +458,12 @@ export default Emails = props => {
 								}}
 							/>
 						}>
-            <TitleContainer>
-              <Title>{userData.nome || ''}</Title>
-            </TitleContainer>
-            <TitleContainer>
-              <Title>Movimentações</Title>
-            </TitleContainer>
+						<TitleContainer>
+							<Title>{userData.nome || ''}</Title>
+						</TitleContainer>
+						<TitleContainer>
+							<Title>Movimentações</Title>
+						</TitleContainer>
 						{permissionPublications && (
 							<>
 								<ListItem>
@@ -471,7 +487,7 @@ export default Emails = props => {
 											}),
 										}}>
 										<Options style={{height: 90}}>
-											<RadioForm animation={true} style={{flex: 1}} >
+											<RadioForm animation={true} style={{flex: 1}}>
 												<Option as={RadioButton}>
 													<RadioButtonInput
 														obj={{
@@ -487,9 +503,13 @@ export default Emails = props => {
 														buttonOuterSize={18}
 													/>
 													<View>
-														<TouchableOpacity onPress={()=> onPressShowTooltip()} style={styles.touchElement}>
+														<TouchableOpacity
+															onPress={() => onPressShowTooltip()}
+															style={styles.touchElement}>
 															{colorUseTheme.name === 'dark' ? (
-																<Image source={require('assets/images/icons/info_icon_white.png')} />
+																<Image
+																	source={require('assets/images/icons/info_icon_white.png')}
+																/>
 															) : (
 																<Image source={require('assets/images/icons/info_icon.png')} />
 															)}
@@ -527,32 +547,36 @@ export default Emails = props => {
 														buttonOuterSize={18}
 													/>
 													<View>
-													<TouchableOpacity onPress={()=> onPressShowTooltip()} style={styles.touchElement2}>
-														{colorUseTheme.name === 'dark' ? (
-															<Image source={require('assets/images/icons/info_icon_white.png')} />
-														) : (
-															<Image source={require('assets/images/icons/info_icon.png')} />
-														)}
-													</TouchableOpacity>
+														<TouchableOpacity
+															onPress={() => onPressShowTooltip()}
+															style={styles.touchElement2}>
+															{colorUseTheme.name === 'dark' ? (
+																<Image
+																	source={require('assets/images/icons/info_icon_white.png')}
+																/>
+															) : (
+																<Image source={require('assets/images/icons/info_icon.png')} />
+															)}
+														</TouchableOpacity>
 
-													<RadioButtonLabel
-														numberOfLines={1}
-														obj={{
-															label: 'Receber apenas uma vez ao final do dia',
-															value: getActionValue(-25),
-														}}
-														labelWrapStyle={{
-															flex: 2,
-														}}
-														labelStyle={{
-															color: colors.grayDarker,
-															fontFamily: fonts.circularStdBook,
-															fontSize: fonts.small,
-															paddingLeft: 0,
-															paddingRight: 22
-														}}
-														onPress={value => handleNotificationMovements(-25, value)}
-													/>
+														<RadioButtonLabel
+															numberOfLines={1}
+															obj={{
+																label: 'Receber apenas uma vez ao final do dia',
+																value: getActionValue(-25),
+															}}
+															labelWrapStyle={{
+																flex: 2,
+															}}
+															labelStyle={{
+																color: colors.grayDarker,
+																fontFamily: fonts.circularStdBook,
+																fontSize: fonts.small,
+																paddingLeft: 0,
+																paddingRight: 22,
+															}}
+															onPress={value => handleNotificationMovements(-25, value)}
+														/>
 													</View>
 												</Option>
 											</RadioForm>
@@ -645,37 +669,6 @@ export default Emails = props => {
 														onPress={value => handleNotificationMovements(-1, value)}
 													/>
 												</Option>
-												{/* {radioProps.map(obj => {
-                          console.log(obj);
-                          return (
-                            <Option as={RadioButton}>
-                              <RadioButtonInput
-                                obj={obj}
-                                isSelected={obj.value}
-                                onPress={() => {
-                                  toggleCheck(-23)
-                                }}
-                                borderWidth={1}
-                                buttonInnerColor={colors.primary}
-                                buttonOuterColor={colors.primary}
-                                buttonSize={12}
-                                buttonOuterSize={18}
-                              />
-                              <RadioButtonLabel
-                                obj={obj}
-                                labelStyle={{
-                                  'color': colors.grayDarker,
-                                  'fontFamily': fonts.circularStdBook,
-                                  'fontSize': fonts.small,
-                                  'paddingRight': 22,
-                                }}
-                                onPress={() => {
-                                  toggleCheck(-1)
-                                }}
-                              />
-                            </Option>
-                          );
-                        })} */}
 											</RadioForm>
 										</Options>
 									</ListContent>
@@ -804,21 +797,21 @@ export default Emails = props => {
 const styles = StyleSheet.create({
 	toolTipStyle: {
 		shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 2,
-    elevation: 6,
+		shadowOffset: {width: 0, height: 4},
+		shadowOpacity: 1,
+		shadowRadius: 2,
+		elevation: 6,
 		bottom: 35,
-		right: 10
+		right: 10,
 	},
 	toolTipStyle2: {
 		shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 2,
-    elevation: 6,
+		shadowOffset: {width: 0, height: 4},
+		shadowOpacity: 1,
+		shadowRadius: 2,
+		elevation: 6,
 		bottom: 10,
-		right: 10
+		right: 10,
 	},
 	touchElement: {
 		zIndex: 10,
@@ -840,7 +833,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'rgba(0, 0, 0, .7)',
 		display: 'flex',
 		justifyContent: 'flex-end',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	viewInfo: {
 		backgroundColor: '#fff',
@@ -848,17 +841,17 @@ const styles = StyleSheet.create({
 		height: 'auto',
 		display: 'flex',
 		alignItems: 'center',
-		borderRadius: 4
+		borderRadius: 4,
 	},
 	infoText: {
 		fontFamily: 'Circular Std',
 		fontStyle: 'normal',
-		fontWeight: "400",
+		fontWeight: '400',
 		fontSize: 16,
 		lineHeight: 24,
 		color: 'rgba(0, 0, 0, 0.87)',
-    opacity: 0.6,
-		marginRight: 170
+		opacity: 0.6,
+		marginRight: 170,
 	},
 	buttonInfo: {
 		display: 'flex',
@@ -881,6 +874,6 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		lineHeight: 24,
 		textAlign: 'center',
-		color: '#FFFFFF'
-	}
+		color: '#FFFFFF',
+	},
 });

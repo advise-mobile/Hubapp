@@ -45,8 +45,6 @@ export function* getJurisprudences({param}) {
 
 		const filtered = checkFiltered(param.filters);
 
-		console.log({filters: param.filters, filtered});
-
 		const {data} = yield call(
 			Api.get,
 			`/jurisprudencia/v1/jurisprudencia?${query}&${paginator}&${queryFilters}`,

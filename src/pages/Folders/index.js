@@ -52,9 +52,6 @@ import {
 import moment from 'moment';
 
 export default function Folders(props) {
-	// const add = () => { console.log("add") };
-	// const edit = () => { console.log("edit") };
-
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;

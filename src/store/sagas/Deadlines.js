@@ -98,7 +98,6 @@ export function* markAsImportant({param}) {
 			),
 		);
 	} catch (error) {
-		console.error(error);
 		yield put(ToastNotifyActions.toastNotifyShow('Falha ao marcar prazo!', true));
 	}
 }
@@ -167,7 +166,6 @@ export function* getTypes() {
 
 		yield put(DeadlineActions.deadlinesTypesSuccess(data));
 	} catch (error) {
-		console.log(error);
 		yield put(
 			ToastNotifyActions.toastNotifyShow('Não foi possível buscar os tipos de prazos.', true),
 		);
@@ -183,7 +181,6 @@ export function* addDeadline({itens}) {
 		yield put(DeadlineActions.deadlinesProcessSuccess(reponse.data.itens));
 		yield put(ToastNotifyActions.toastNotifyShow('Prazo adicionado com sucesso!', false));
 	} catch (error) {
-		console.log(error);
 		yield put(ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar o prazo', true));
 		yield put(DeadlineActions.deadlinesProcessFailure());
 	}
@@ -198,7 +195,6 @@ export function* editDeadline({itens}) {
 		yield put(DeadlineActions.deadlinesProcessSuccess(reponse.data.itens));
 		yield put(ToastNotifyActions.toastNotifyShow('Prazo atualizado com sucesso!', false));
 	} catch (error) {
-		console.log(error);
 		yield put(ToastNotifyActions.toastNotifyShow('Não foi possível atualizar o prazo', true));
 		yield put(DeadlineActions.deadlinesProcessFailure());
 	}

@@ -129,7 +129,6 @@ export default MovementDetail = props => {
 
 				setMovement({...move, idMovProcessoCliente});
 			} catch (erro) {
-				console.error('Erro ao buscar detalhes do movimento:', erro);
 			} finally {
 				setLoading(false);
 			}
@@ -182,7 +181,6 @@ export default MovementDetail = props => {
 			}
 			return true;
 		} catch (err) {
-			console.error('=== PERMISSIONS DEBUG: Error:', err);
 			return false;
 		}
 	};
@@ -324,7 +322,6 @@ export default MovementDetail = props => {
 				}
 			}
 		} catch (error) {
-			console.error('Erro detalhado:', error);
 			dispatch(
 				ToastNotifyActions.toastNotifyShow(
 					`Erro ao compartilhar ${

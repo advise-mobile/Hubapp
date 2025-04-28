@@ -70,13 +70,6 @@ export default Filters = forwardRef((props, ref) => {
 	const onSubmit = data => {
 		ref.current?.close();
 
-		// console.log({
-		// 	DataMovimentoFim: data.DataMovimentoFim || maxDate ? FormatFullDateEN(maxDate) : null,
-		// 	DataMovimentoInicio: data.DataMovimentoInicio || minDate ? FormatFullDateEN(minDate) : null,
-		// 	Lido: situation,
-		// 	diario: data[props.filters[customField?.name]] || selectedCustom,
-		// });
-
 		if (customField) {
 			const submit = {
 				DataMovimentoFim: data.DataMovimentoFim || maxDate ? FormatFullDateEN(maxDate) : null,
