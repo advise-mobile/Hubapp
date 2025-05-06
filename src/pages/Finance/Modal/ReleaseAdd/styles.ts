@@ -186,8 +186,8 @@ export const ContainerItemsOptions = styled.View`
 export const ItemsOptions = styled.TouchableOpacity`
 	border-radius: 10px;
 	max-width: 310px;
-	padding: 6px;
-	height: 30px;
+	padding: 3px 6px;
+	height: 20px;
 	margin-right: 10px;
 	margin-bottom: 10px;
 	align-items: center;
@@ -212,7 +212,9 @@ export const LabelItemsProcess = styled.Text`
 	margin-right: 4px;
 `;
 
-export const LabelItems = styled.Text`
+export const LabelItems = styled.Text.attrs({
+	numberOfLines: 1,
+})`
 	font-size: ${fonts.smaller};
 	font-family: ${fonts.circularStdBold};
 	margin-right: 2px;

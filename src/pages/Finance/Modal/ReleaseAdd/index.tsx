@@ -59,7 +59,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 	// // Variavel para usar o hook
 	const colorUseTheme = useTheme();
-	const {colors} = colorUseTheme;
+	const {colors, fonts} = colorUseTheme;
 
 	const valueInputRef = useRef(null);
 
@@ -419,7 +419,8 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 							<>
 								{dataCategories.map(category => (
 									<>
-										<ItemsOptions
+										{/* 
+<ItemsOptions
 											key={category.idCategoriaFinanceiro}
 											style={[
 												value === category.idCategoriaFinanceiro
@@ -436,6 +437,34 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 											<LabelItems>{category.nomeCategoriaFinanceiro}</LabelItems>
 											{value === category.idCategoriaFinanceiro && (
 												<MaterialIcons name={'check'} size={15} color={colors.primary} />
+											)}
+										</ItemsOptions> */}
+
+										<ItemsOptions
+											key={category.idCategoriaFinanceiro}
+											style={[
+												value === category.idCategoriaFinanceiro
+													? {
+															borderColor: colors.primary,
+															backgroundColor: colors.primary,
+													  }
+													: {backgroundColor: category.corCategoria},
+											]}
+											onPress={() => {
+												onChange(category.idCategoriaFinanceiro);
+											}}>
+											<LabelItems
+												style={[
+													value === category.idCategoriaFinanceiro
+														? {
+																color: colors.white,
+														  }
+														: {color: colors.primary},
+												]}>
+												{category.nomeCategoriaFinanceiro}
+											</LabelItems>
+											{value === category.idCategoriaFinanceiro && (
+												<MaterialIcons name={'close'} size={15} color={colors.white} />
 											)}
 										</ItemsOptions>
 									</>
@@ -467,16 +496,24 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 										style={[
 											value === person.idPessoaCliente
 												? {
-														borderWidth: 2,
 														borderColor: colors.primary,
-														backgroundColor: colors.gray,
+														backgroundColor: colors.primary,
 												  }
 												: {backgroundColor: colors.gray},
 										]}>
-										<LabelItems>{person.nomePessoaCliente}</LabelItems>
+										<LabelItems
+											style={[
+												value === person.idPessoaCliente
+													? {
+															color: colors.white,
+													  }
+													: {color: colors.primary},
+											]}>
+											{person.nomePessoaCliente}
+										</LabelItems>
 
 										{value === person.idPessoaCliente && (
-											<MaterialIcons name={'check'} size={15} color={colors.primary} />
+											<MaterialIcons name={'close'} size={15} color={colors.white} />
 										)}
 									</ItemsOptions>
 								))}
@@ -488,7 +525,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 			<Process>
 				<RowLabel>
-					<Label>Processo</Label>
+					<Label>Processos</Label>
 				</RowLabel>
 
 				<ContainerItemsOptions>
@@ -506,16 +543,23 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 										style={[
 											value === process.idProcesso
 												? {
-														borderWidth: 2,
-														borderColor: colors.primary,
-														backgroundColor: colors.gray,
+														backgroundColor: colors.primary,
 												  }
 												: {backgroundColor: colors.gray},
 										]}>
-										<LabelItemsProcess>{process.numeroProcesso}</LabelItemsProcess>
+										<LabelItemsProcess
+											style={[
+												value === process.idProcesso
+													? {
+															color: colors.white,
+													  }
+													: {colors: colors.primary},
+											]}>
+											{process.numeroProcesso}
+										</LabelItemsProcess>
 
 										{value === process.idProcesso && (
-											<MaterialIcons name={'check'} size={15} color={colors.primary} />
+											<MaterialIcons name={'close'} size={15} color={colors.white} />
 										)}
 									</ItemsOptions>
 								))}
@@ -545,16 +589,24 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 									style={[
 										value === repeat.value
 											? {
-													borderWidth: 2,
 													borderColor: colors.primary,
-													backgroundColor: colors.gray,
+													backgroundColor: colors.primary,
 											  }
 											: {backgroundColor: colors.gray},
 									]}>
-									<LabelItems>{repeat.label}</LabelItems>
+									<LabelItems
+										style={[
+											value === repeat.value
+												? {
+														color: colors.white,
+												  }
+												: {color: colors.primary},
+										]}>
+										{repeat.label}
+									</LabelItems>
 
 									{value === repeat.value && (
-										<MaterialIcons name={'check'} size={15} color={colors.primary} />
+										<MaterialIcons name={'close'} size={15} color={colors.white} />
 									)}
 								</ItemsOptions>
 							))}
@@ -594,6 +646,8 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 												getValues('IdTipoParcelamentoFinanceiro') === -1
 													? colors.grayLight
 													: colors.fadedBlack,
+											borderBottomWidth: 1,
+											borderBottomColor: colors.grayLighter,
 										},
 										inputIOS: {
 											...pickerSelectStyles.inputIOS,
@@ -609,6 +663,9 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 									}}
 									useNativeAndroidPickerStyle={false}
 									items={duration}
+									Icon={() => (
+										<MaterialIcons name="arrow-drop-down" size={18} color={colors.gray} />
+									)}
 								/>
 							</ContainerInfo>
 						)}
@@ -651,12 +708,14 @@ const stylesPickerSelectStyles = colors =>
 		inputAndroid: {
 			flex: 1,
 			height: 22,
-			marginTop: 5,
+			marginTop: 15,
 			lineHeight: 1,
 			padding: 0,
 			fontSize: 14,
 			color: colors.fadedBlack,
-
+			fontFamily: fonts.circularStdBook,
+			borderBottomWidth: 1,
+			borderBottomColor: colors.grayLighter,
 			minWidth: 400,
 		},
 	});
