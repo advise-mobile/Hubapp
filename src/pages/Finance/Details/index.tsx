@@ -7,9 +7,11 @@ import HeaderGlobals from '../../../components/HeaderGlobals';
 
 import {Container} from '../../../assets/styles/global';
 
+import {ActivityIndicator} from 'react-native';
+
 import LauchActionsMenu from '../Modal/LaunchActions';
 
-import {useGetInstallmentsDetails} from '@services/hooks/Finances/useReleases';
+import {useGetInstallmentsDetails, useFinancialLoss} from '@services/hooks/Finances/useReleases';
 
 import {ItemsInstallmentsDetailsProps} from './types';
 
@@ -42,7 +44,32 @@ export default function Details(props) {
 
 	const LauchActionsMenuRef = useRef(null);
 
+	const {addFinancialLoss, removeFinancialLoss, isLoadingFinancialLoss} = useFinancialLoss();
+
 	const {item} = props.route.params;
+
+	const handleFinancialLoss = () => {
+		if (dataDetails?.baixado) {
+			removeFinancialLoss(
+				{
+					idParcelaFinanceiro: item.idParcelaFinanceiro,
+				},
+				() => {
+					fetchDataInstallmentsDetails();
+				},
+			);
+		} else {
+			addFinancialLoss(
+				{
+					idParcelaFinanceiro: item.idParcelaFinanceiro,
+					valorBaixa: item.valorAberto || '0',
+				},
+				() => {
+					fetchDataInstallmentsDetails();
+				},
+			);
+		}
+	};
 
 	//chama o hook
 	useEffect(() => {
@@ -56,6 +83,7 @@ export default function Details(props) {
 			const installmentsDetails = await getInstallmentsDetails({
 				idFinanceiro: item.idLancamentoFinanceiro,
 			});
+
 			setDataDetails(installmentsDetails);
 			const itemComplete = {
 				...item,
@@ -106,12 +134,30 @@ export default function Details(props) {
 							<DateText>{item.dataVencimentoFormatada}</DateText>
 						</DataTextContainer>
 					</ContainerDate>
-					<ThumbsIconContainer>
+					{/* <ThumbsIconContainer>
 						{item.debitoCredito === 'C' ? (
 							<FontAwesome name="thumbs-up" color={colors.blueIcon} size={20} />
 						) : (
 							<FontAwesome
 								name="thumbs-down"
+								color={colors.colorIconThumbdown}
+								size={20}
+								style={{transform: [{scaleX: -1}]}}
+							/>
+						)}
+					</ThumbsIconContainer> */}
+
+					<ThumbsIconContainer
+						onPress={() => handleFinancialLoss()}
+						disabled={isLoadingFinancialLoss}>
+						{isLoadingFinancialLoss ? (
+							<ActivityIndicator size="small" color={colors.blueIcon} />
+						) : dataDetails?.baixado === true ? (
+							<FontAwesome name="thumbs-up" color={colors.blueIcon} size={20} />
+						) : (
+							<FontAwesome
+								name="thumbs-down"
+								flip="horizontal"
 								color={colors.colorIconThumbdown}
 								size={20}
 								style={{transform: [{scaleX: -1}]}}

@@ -35,7 +35,7 @@ export const ContainerIcon = styled.View`
 	justify-content: center;
 `;
 
-export const ContainerIconThumbs = styled.View`
+export const ContainerIconThumbs = styled.TouchableOpacity`
 	margin-right: 7px;
 	align-items: center;
 	justify-content: center;

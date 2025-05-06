@@ -62,7 +62,7 @@ export const DateText = styled.Text`
 	text-align: center;
 `;
 
-export const ThumbsIconContainer = styled.View`
+export const ThumbsIconContainer = styled.TouchableOpacity`
 	height: 24px;
 	align-items: center;
 	justify-content: center;

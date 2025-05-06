@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-import { ItemInstallmentsProps } from '@pages/Finance/Releases/types';
+import {ItemInstallmentsProps} from '@pages/Finance/Releases/types';
 
 import {
 	ContainerReleases,
@@ -23,79 +23,120 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useTheme} from 'styled-components';
 import {useNavigation} from '@react-navigation/native';
+import {ActivityIndicator} from 'react-native';
 
-const FinanceDataItem =  (  { item } : { item: ItemInstallmentsProps }) => {
+import {useFinancialLoss, useGetFinanceID} from '@services/hooks/Finances/useReleases';
 
+const FinanceDataItem = ({item}: {item: ItemInstallmentsProps}) => {
+	const [localItem, setLocalItem] = useState(item);
 	const navigation = useNavigation();
+	const {addFinancialLoss, removeFinancialLoss, isLoadingFinancialLoss} = useFinancialLoss();
+	const {getFinanceDataID} = useGetFinanceID();
 
 	function Details() {
 		navigation.navigate('Details', {
-			item: item,
+			item: localItem,
 		});
 	}
+
+	const handleFinancialLoss = () => {
+		if (localItem.baixado) {
+			removeFinancialLoss(
+				{
+					idParcelaFinanceiro: localItem.idParcelaFinanceiro,
+				},
+				() => {
+					setLocalItem(prev => ({...prev, baixado: false}));
+				},
+			);
+		} else {
+			addFinancialLoss(
+				{
+					idParcelaFinanceiro: localItem.idParcelaFinanceiro,
+					valorBaixa: localItem.valorAberto || '0',
+				},
+				() => {
+					setLocalItem(prev => ({...prev, baixado: true}));
+				},
+			);
+		}
+	};
 
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
 	return (
-
-			<ContainerReleases onPress={Details}>
-				<ContainerItemReleases>
-					<ContainerIconDescriptionReleases>
-						<ContainerIcon>
-							{item.debitoCredito === 'C' ? (
-								<FontAwesome size={8} name="circle" si color={colors.green200} />
-							) : (
-								<FontAwesome size={8} name="circle" color={colors.red200} />
-							)}
-						</ContainerIcon>
-
-						<ContainerLabel>
-							<TextLabel fontWeight>{item.dataVencimentoFormatada}</TextLabel>
-							<TextLabel fontWeight> ({item.numeroParcela}/{item.quantidadeParcelas})</TextLabel>
-						</ContainerLabel>
-					</ContainerIconDescriptionReleases>
-
-					<ContainerIconThumbs>
-						{item.debitoCredito === 'C' ? (
-							<FontAwesome name="thumbs-up" color={colors.blueIcon} size={20} />
+		<ContainerReleases onPress={Details}>
+			<ContainerItemReleases>
+				<ContainerIconDescriptionReleases>
+					<ContainerIcon>
+						{localItem.debitoCredito === 'C' ? (
+							<FontAwesome size={8} name="circle" si color={colors.green200} />
 						) : (
-							<FontAwesome name="thumbs-down" flip="horizontal" color={colors.colorIconThumbdown} size={20} />
+							<FontAwesome size={8} name="circle" color={colors.red200} />
 						)}
-					</ContainerIconThumbs>
-				</ContainerItemReleases>
+					</ContainerIcon>
 
-				<Content>
-					<ContainerDescriptionReleases>
+					<ContainerLabel>
+						<TextLabel fontWeight>{localItem.dataVencimentoFormatada}</TextLabel>
+						<TextLabel fontWeight>
+							({localItem.numeroParcela}/{localItem.quantidadeParcelas})
+						</TextLabel>
+					</ContainerLabel>
+				</ContainerIconDescriptionReleases>
 
-						<TextLabelDescriptionReleases>
-							{item.descricaoLancamento}
-						</TextLabelDescriptionReleases>
-					</ContainerDescriptionReleases>
+				<ContainerIconThumbs
+					onPress={() => handleFinancialLoss()}
+					disabled={isLoadingFinancialLoss}>
+					{isLoadingFinancialLoss ? (
+						<ActivityIndicator size="small" color={colors.blueIcon} />
+					) : localItem.baixado === true ? (
+						<FontAwesome name="thumbs-up" color={colors.blueIcon} size={20} />
+					) : (
+						<FontAwesome
+							name="thumbs-down"
+							flip="horizontal"
+							color={colors.colorIconThumbdown}
+							size={20}
+							style={{transform: [{scaleX: -1}]}}
+						/>
+					)}
+				</ContainerIconThumbs>
+			</ContainerItemReleases>
 
-					<ContainerValueReleases>
-						<TextValueReleases fontWeight> {item.value}</TextValueReleases>
+			<Content>
+				<ContainerDescriptionReleases>
+					<TextLabelDescriptionReleases>
+						{localItem.descricaoLancamento}
+					</TextLabelDescriptionReleases>
+				</ContainerDescriptionReleases>
 
+				<ContainerValueReleases>
+					<TextValueReleases fontWeight> {localItem.value}</TextValueReleases>
 
+					<ContainerCategoryReleases
+						backgroundContainerColor={
+							localItem.categoriaFinanceiro.corCategoria === undefined
+								? colors.purple
+								: localItem.categoriaFinanceiro.corCategoria
+						}
+						baixado={localItem.baixado}>
+						<TextLabelCategory numberOfLines={1} fontWeight>
+							{localItem.categoriaFinanceiro.nomeCategoriaFinanceiro}
+						</TextLabelCategory>
+					</ContainerCategoryReleases>
 
-						<ContainerCategoryReleases backgroundContainerColor={
-													item.categoriaFinanceiro.corCategoria === undefined
-													? colors.purple
-													: item.categoriaFinanceiro.corCategoria }
-													baixado={item.baixado} >
-							<TextLabelCategory numberOfLines={1} fontWeight>{item.categoriaFinanceiro.nomeCategoriaFinanceiro}</TextLabelCategory>
-						</ContainerCategoryReleases>
-
-						{
-							item.baixado &&
-								<ContainerDownloadedReleases>
-									<TextLabelCategory fontWeight>Baixado em {item.dataBaixaFormatada}</TextLabelCategory>
-								</ContainerDownloadedReleases>
-						 }
-					</ContainerValueReleases>
-				</Content>
-			</ContainerReleases>
+					{localItem.baixado && (
+						<ContainerDownloadedReleases>
+							<TextLabelCategory fontWeight>
+								Baixado em {localItem.dataBaixaFormatada}
+							</TextLabelCategory>
+						</ContainerDownloadedReleases>
+					)}
+				</ContainerValueReleases>
+			</Content>
+		</ContainerReleases>
 	);
 };
 

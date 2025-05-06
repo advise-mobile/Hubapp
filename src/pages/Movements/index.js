@@ -284,7 +284,9 @@ export default Movements = props => {
 				throw error;
 			}
 
-			handleMarkAsRead(data.item);
+			setTimeout(() => {
+				handleMarkAsRead(data.item);
+			}, 1000);
 		} catch (error) {
 			dispatch(
 				ToastNotifyActions.toastNotifyShow(
@@ -382,7 +384,9 @@ export default Movements = props => {
 
 						setCurrentMove(item);
 
-						handleMarkAsRead(item);
+						if (!sharing) {
+							handleMarkAsRead(item);
+						}
 
 						if ((Platform.OS === 'ios') & !sharing) {
 							RNFetchBlob.fs.writeFile(path, res.data, 'base64');

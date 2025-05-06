@@ -8,6 +8,7 @@ export interface ItemsInstallmentsDetailsProps {
 	quantidadeParcelas: string;
 	observacao: string;
 	categoria: string;
+	baixado: boolean;
 }
 
 export interface ItemsDetailsProps {
@@ -21,5 +22,3 @@ export interface DataItemsDetailsProps {
 export interface CategoryFinanceProps {
 	nomeCategoriaFinanceiro?: string;
 }
-
-

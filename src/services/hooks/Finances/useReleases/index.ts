@@ -2,7 +2,7 @@ import {useState, useCallback} from 'react';
 
 import Api from '@services/Api';
 
-import {FormatDateBR} from '@helpers/DateFunctions.js';
+import {FormatDateBR, FormatDateEN} from '@helpers/DateFunctions.js';
 import {FormatReal} from '@helpers/MoneyFunctions.ts';
 
 import {
@@ -15,6 +15,7 @@ import {
 	ItemsInstallmentsProps,
 	ItemInstallmentsProps,
 	FiltersReleaseDataProps,
+	FinancialLossProps,
 } from '@pages/Finance/Releases/types';
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
@@ -172,6 +173,7 @@ export const useGetInstallmentsDetails = () => {
 					idTipoParcelamentoFinanceiro:
 						item.tipoParcelamentoFinanceiro.idTipoParcelamentoFinanceiro,
 					dataEmissaofull: item.dataEmissao,
+					baixado: item.baixado,
 				};
 			} else {
 				dispatch(ToastNotifyActions.toastNotifyShow('Lançamento não encontrado', true));
@@ -296,4 +298,85 @@ export const useRelease = () => {
 	);
 
 	return {isLoadingRelease, addRelease, updateRelease, deleteRelease, sendReleaseEmail};
+};
+
+export const useFinancialLoss = () => {
+	const [isLoadingFinancialLoss, setIsLoadingFinancialLoss] = useState(false);
+	const dispatch = useDispatch();
+
+	const addFinancialLoss = useCallback(
+		async (data: FinancialLossProps, handleCallback: () => void) => {
+			try {
+				setIsLoadingFinancialLoss(true);
+				const date = new Date();
+
+				const dataBaixa = FormatDateEN(date);
+
+				const dataFinancialLoss = {
+					itens: [
+						{
+							idParcelaFinanceiro: data.idParcelaFinanceiro,
+							dataBaixa,
+							valorBaixa: data.valorBaixa,
+						},
+					],
+				};
+
+				const response = await Api.post(`/core/v1/baixas-financeiro`, dataFinancialLoss);
+
+				dispatch(
+					ToastNotifyActions.toastNotifyShow(
+						'Baixa parcela financeira realizada com sucesso!',
+						false,
+					),
+				);
+
+				return true;
+			} catch (error) {
+				dispatch(
+					ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar a baixa financeira', true),
+				);
+			} finally {
+				setTimeout(() => {
+					setIsLoadingFinancialLoss(false);
+					handleCallback();
+				}, 1000);
+			}
+		},
+		[],
+	);
+
+	const removeFinancialLoss = useCallback(
+		async (data: {idParcelaFinanceiro: number}, handleCallback: () => void) => {
+			try {
+				setIsLoadingFinancialLoss(true);
+
+				const dataFinancialLoss = {
+					Ids: [data.idParcelaFinanceiro],
+				};
+
+				const response = await Api.put(`/core/v1/baixas-financeiro/inativar`, dataFinancialLoss);
+
+				dispatch(
+					ToastNotifyActions.toastNotifyShow(
+						'Baixa parcela financeira removida com sucesso!',
+						false,
+					),
+				);
+
+				return true;
+			} catch (error) {
+				dispatch(
+					ToastNotifyActions.toastNotifyShow('Não foi possível remover a baixa financeira', true),
+				);
+			} finally {
+				setTimeout(() => {
+					setIsLoadingFinancialLoss(false);
+					handleCallback();
+				}, 1000);
+			}
+		},
+		[],
+	);
+	return {isLoadingFinancialLoss, addFinancialLoss, removeFinancialLoss};
 };

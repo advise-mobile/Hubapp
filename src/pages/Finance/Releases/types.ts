@@ -1,7 +1,7 @@
 export interface ItemProps {
-	idContaFinanceiro: number,
-	idFinanceiro: number,
-	idParcelaFinanceiro?:number
+	idContaFinanceiro: number;
+	idFinanceiro: number;
+	idParcelaFinanceiro?: number;
 }
 
 export interface ItemsProps {
@@ -9,7 +9,7 @@ export interface ItemsProps {
 }
 
 export interface DataItemsProps {
-	data: ItemsProps
+	data: ItemsProps;
 }
 
 export interface ItemResumeProps {
@@ -18,7 +18,6 @@ export interface ItemResumeProps {
 	totalEntradas: string;
 	totalSaidas: string;
 }
-
 
 export interface ItemsResumeProps {
 	itens: ItemResumeProps[];
@@ -35,10 +34,10 @@ export interface ItemInstallmentsProps {
 	descricaoLancamento: string;
 	value: string;
 	category: string;
-	baixado: boolean
+	baixado: boolean;
 	dataBaixa: string;
-	quantidadeParcelas: number,
-	numeroParcela: number,
+	quantidadeParcelas: number;
+	numeroParcela: number;
 	dataVencimentoFormatada?: string;
 	dataBaixaFormatada?: string;
 	valorAberto?: string;
@@ -46,7 +45,7 @@ export interface ItemInstallmentsProps {
 	numeroProcesso: string;
 	categoriaFinanceiro: CategoryFinanceProps;
 	nomeTipoCategoriaFinanceiro: TypeCategoryProps;
-	totalRegistros:number;
+	totalRegistros: number;
 }
 
 export interface CategoryFinanceProps {
@@ -54,7 +53,7 @@ export interface CategoryFinanceProps {
 	corCategoria: string;
 }
 
-export interface TypeCategoryProps{
+export interface TypeCategoryProps {
 	tipoCategoriaFinanceiro: string;
 }
 
@@ -67,17 +66,22 @@ export interface DataItemsInstallmentsProps {
 }
 
 export interface FiltersReleaseDataProps {
-	dataVencimento: string | null,
-	dataVencimentoFim: string | null,
-	currentPage: number | null
-	repeticaoFixa?: boolean,
-	parcelado?: boolean,
-	DebitoCredito?: string,
-	idCategoria?: number,
-	idProcesso?: number,
-	idPessoaCliente?: number,
+	dataVencimento: string | null;
+	dataVencimentoFim: string | null;
+	currentPage: number | null;
+	repeticaoFixa?: boolean;
+	parcelado?: boolean;
+	DebitoCredito?: string;
+	idCategoria?: number;
+	idProcesso?: number;
+	idPessoaCliente?: number;
 }
 
 export interface DataFiltersRelease {
-	dataFiltersRelease:FiltersReleaseDataProps | undefined
+	dataFiltersRelease: FiltersReleaseDataProps | undefined;
+}
+
+export interface FinancialLossProps {
+	idParcelaFinanceiro: number;
+	valorBaixa: string;
 }
