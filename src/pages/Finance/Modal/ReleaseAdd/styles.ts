@@ -236,12 +236,6 @@ export const LabelDuring = styled.Text`
 	font-family: ${fonts.circularStdBold};
 `;
 
-export const ContainerInfo = styled.View`
-	width: 237px;
-	height: 24px;
-	margin-left: 10px;
-`;
-
 export const LabelDuringInfo = styled.Text`
 	margin-right: 12;
 	color: ${({theme}) => theme.colors.darkGray};
@@ -271,4 +265,14 @@ export const InputDescription = styled.TextInput`
 	margin-left: 25px;
 	width: 350px;
 	height: 50px;
+`;
+
+export const PickerContainer = styled.View`
+	padding: 12px 24px;
+`;
+
+export const ContainerInfo = styled.View`
+	width: 237px;
+	height: 24px;
+	margin-left: 10px;
 `;

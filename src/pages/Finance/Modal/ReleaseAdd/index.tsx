@@ -9,6 +9,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import moment from 'moment';
 
+import {fonts} from 'assets/styles';
+
 import {
 	Footer,
 	Cancel,
@@ -37,6 +39,7 @@ import {
 	Category,
 	Process,
 	ItemsOptions,
+	PickerContainer,
 } from './styles';
 
 // Add UseTheme para pegar o tema global adicionado
@@ -59,7 +62,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 	// // Variavel para usar o hook
 	const colorUseTheme = useTheme();
-	const {colors, fonts} = colorUseTheme;
+	const {colors} = colorUseTheme;
 
 	const valueInputRef = useRef(null);
 
@@ -305,6 +308,8 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 		addRelease(register, () => handleOnClose());
 	};
+
+	const scenePickerSelectStyles = stylesScenePickerSelectStyles(colors);
 
 	return (
 		<Modal
@@ -614,7 +619,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 					)}
 				/>
 			</ContentRepeat>
-
+			{/* 
 			<ContentDuring>
 				<Row>
 					<LabelDuring>Durante</LabelDuring>
@@ -631,31 +636,29 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 										value: null,
 										disabled: getValues('IdTipoParcelamentoFinanceiro') === -1,
 									}}
-									disabled={
-										getValues('IdTipoParcelamentoFinanceiro') === -1 || duration.length === 0
-									}
+									// disabled={
+									// 	getValues('IdTipoParcelamentoFinanceiro') === -1 || duration.length === 0
+									// }
 									doneText="Selecionar"
 									style={{
 										...pickerSelectStyles,
 										placeholder: {
 											color: colors.black,
 										},
-										inputAndroid: {
-											...pickerSelectStyles.inputAndroid,
-											color:
-												getValues('IdTipoParcelamentoFinanceiro') === -1
-													? colors.grayLight
-													: colors.fadedBlack,
-											borderBottomWidth: 1,
-											borderBottomColor: colors.grayLighter,
-										},
-										inputIOS: {
-											...pickerSelectStyles.inputIOS,
-											color:
-												getValues('IdTipoParcelamentoFinanceiro') === -1
-													? colors.grayLight
-													: colors.fadedBlack,
-										},
+										// inputAndroid: {
+										// 	...pickerSelectStyles.inputAndroid,
+										// 	color:
+										// 		getValues('IdTipoParcelamentoFinanceiro') === -1
+										// 			? colors.grayLight
+										// 			: colors.fadedBlack,
+										// },
+										// inputIOS: {
+										// 	...pickerSelectStyles.inputIOS,
+										// 	color:
+										// 		getValues('IdTipoParcelamentoFinanceiro') === -1
+										// 			? colors.grayLight
+										// 			: colors.fadedBlack,
+										// },
 									}}
 									value={value}
 									onValueChange={value => {
@@ -663,11 +666,40 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 									}}
 									useNativeAndroidPickerStyle={false}
 									items={duration}
-									Icon={() => (
-										<MaterialIcons name="arrow-drop-down" size={18} color={colors.gray} />
-									)}
 								/>
 							</ContainerInfo>
+						)}
+					/>
+				</Row>
+			</ContentDuring> */}
+
+			<ContentDuring>
+				<Row>
+					<LabelDuring>Durante</LabelDuring>
+
+					<Controller
+						name="quantidadeParcelas"
+						control={control}
+						defaultValue={null}
+						render={({onChange, value}) => (
+							<PickerContainer>
+								{/* {console.log('Picker value:', value, 'duration:', duration)} */}
+								<RNPickerSelect
+									style={scenePickerSelectStyles}
+									onValueChange={value => {
+										onChange(value);
+									}}
+									disabled={
+										getValues('IdTipoParcelamentoFinanceiro') === -1 || duration.length === 0
+									}
+									placeholder={{}}
+									useNativeAndroidPickerStyle={false}
+									doneText="Selecionar"
+									value={value}
+									items={duration}
+									Icon={() => <MaterialIcons name="arrow-drop-down" size={18} color="gray" />}
+								/>
+							</PickerContainer>
 						)}
 					/>
 				</Row>
@@ -675,7 +707,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 			<ContentComments>
 				<Row>
-					<LabelComments>Observações</LabelComments>
+					<LabelComments>Observações </LabelComments>
 				</Row>
 				<Controller
 					name="observacao"
@@ -706,16 +738,46 @@ const stylesPickerSelectStyles = colors =>
 			marginTop: 2,
 		},
 		inputAndroid: {
-			flex: 1,
-			height: 22,
-			marginTop: 15,
-			lineHeight: 1,
+			height: 20,
 			padding: 0,
-			fontSize: 14,
+			fontSize: 16,
 			color: colors.fadedBlack,
-			fontFamily: fonts.circularStdBook,
-			borderBottomWidth: 1,
-			borderBottomColor: colors.grayLighter,
+
 			minWidth: 400,
 		},
 	});
+
+const stylesScenePickerSelectStyles = colors =>
+	StyleSheet.create({
+		inputIOS: {
+			fontSize: 16,
+			color: colors.fadedBlack,
+			fontFamily: fonts.circularStdBook,
+			minWidth: 220,
+		},
+		inputAndroid: {
+			height: 20,
+			padding: 0,
+			fontSize: 16,
+			color: colors.fadedBlack,
+			fontFamily: fonts.circularStdBook,
+			minWidth: 220,
+		},
+	});
+
+// const stylesScenePickerSelectStyles = colors =>
+// 	StyleSheet.create({
+// 		inputIOS: {
+// 			fontSize: 16,
+// 			color: colors.fadedBlack,
+// 			fontFamily: fonts.circularStdBook,
+// 		},
+// 		inputAndroid: {
+// 			height: 20,
+// 			padding: 0,
+// 			fontSize: 16,
+// 			color: colors.fadedBlack,
+// 			fontFamily: fonts.circularStdBook,
+// 			minWidth: 400,
+// 		},
+// 	});
