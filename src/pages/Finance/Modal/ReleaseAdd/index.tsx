@@ -683,7 +683,6 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 						defaultValue={null}
 						render={({onChange, value}) => (
 							<PickerContainer>
-								{/* {console.log('Picker value:', value, 'duration:', duration)} */}
 								<RNPickerSelect
 									style={scenePickerSelectStyles}
 									onValueChange={value => {

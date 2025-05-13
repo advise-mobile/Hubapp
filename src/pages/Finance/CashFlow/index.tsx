@@ -67,37 +67,35 @@ export default function CashFlow({dataFiltersCashFlow}: DataFiltersCashFlowProps
 
 	return (
 		<Container>
-			<Warp>
-				<ContainerScreen style={{flex: 1, paddingLeft: 12}}>
-					<TopContainer>
-						<ContainerMainInformation>
-							<TextLabel WeightTextProps>Saldo Anterior</TextLabel>
-							<TextValue>{saldoAnterior}</TextValue>
-						</ContainerMainInformation>
+			<ContainerScreen>
+				<TopContainer>
+					<ContainerMainInformation>
+						<TextLabel WeightTextProps>Saldo Anterior</TextLabel>
+						<TextValue>{saldoAnterior}</TextValue>
+					</ContainerMainInformation>
 
-						<ContainerIconMore onPress={() => ModalActionsRef.current?.open()}>
-							<MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
-						</ContainerIconMore>
-					</TopContainer>
-					{isLoadingCashFlow ? (
-						<Spinner />
-					) : registroTotal > 0 ? (
-						<FlatList
-							data={CashFlowResume}
-							renderItem={renderItem}
-							showsVerticalScrollIndicator={false}
-						/>
-					) : (
-						<NotFound>
-							<ImageNotFound source={notFound} width={120} height={120} />
-							<NotFoundText>Não há resultados</NotFoundText>
-							<NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
-						</NotFound>
-					)}
-				</ContainerScreen>
+					<ContainerIconMore onPress={() => ModalActionsRef.current?.open()}>
+						<MaterialIcons name="more-horiz" size={25} color={colors.fadedBlack} />
+					</ContainerIconMore>
+				</TopContainer>
+				{isLoadingCashFlow ? (
+					<Spinner />
+				) : registroTotal > 0 ? (
+					<FlatList
+						data={CashFlowResume}
+						renderItem={renderItem}
+						showsVerticalScrollIndicator={false}
+					/>
+				) : (
+					<NotFound>
+						<ImageNotFound source={notFound} width={120} height={120} />
+						<NotFoundText>Não há resultados</NotFoundText>
+						<NotFoundDescription>Tente uma busca diferente!</NotFoundDescription>
+					</NotFound>
+				)}
+			</ContainerScreen>
 
-				{actionsMenu()}
-			</Warp>
+			{actionsMenu()}
 		</Container>
 	);
 }
