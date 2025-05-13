@@ -85,8 +85,8 @@ export const NotFound = styled.View`
 `;
 
 export const Image = styled.Image`
-	width: 170px;
-	height: 170px;
+	width: 130px;
+	height: 130px;
 	resize-mode: contain;
 	margin-bottom: 12px;
 `;

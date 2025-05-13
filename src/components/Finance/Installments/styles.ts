@@ -98,8 +98,9 @@ export const ContainerDownloadedReleases = styled.View`
 	margin-left: 5px;
 	align-items: center;
 	justify-content: center;
-	padding: 4px;
+	padding: 6px;
 	background-color: ${({theme}) => theme.colors.colorBackGround};
+	margin-top: 10px;
 `;
 
 export const TextLabel = styled.Text<WeightTextProps>`
