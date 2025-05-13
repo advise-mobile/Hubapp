@@ -98,7 +98,7 @@ export const ContainerDownloadedReleases = styled.View`
 	margin-left: 5px;
 	align-items: center;
 	justify-content: center;
-	padding: 6px;
+	padding: 4px;
 	background-color: ${({theme}) => theme.colors.colorBackGround};
 	margin-top: 10px;
 `;

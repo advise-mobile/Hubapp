@@ -122,14 +122,13 @@ export const ContainerColor = styled.View`
 
 export const ColorsItem = styled.TouchableOpacity<ValidationProps>`
 	width: 51px;
-	height: 20px;
+	height: ${({isSelected}) => (isSelected ? 25 : 20)}px;
 	border-radius: 17px;
 	background-color: ${({backgroundColor, isError, theme}) =>
 		isError ? theme.colors.red200 : backgroundColor};
 	margin-right: 7px;
 	border-width: 5px;
-	border-color: ${({isError, isSelected, theme}) =>
-		isSelected ? 'transparent' : isError ? theme.colors.red200 : theme.colors.colorSelect};
+	border-color: ${({isError, theme}) => (isError ? theme.colors.red200 : theme.colors.colorSelect)};
 `;
 
 export const ToSave = styled.TouchableOpacity`
