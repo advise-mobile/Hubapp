@@ -3,7 +3,7 @@ import {KeyboardAvoidingView, Appearance, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import FolderKeywordsActions from 'store/ducks/FolderKeywords';
 import FolderProcessesActions from 'store/ducks/FolderProcesses';
-import ScrollableTabView from 'react-native-scrollable-tab-view';
+import ScrollableTabView from 'components/ScrollableTabView';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {PermissionsGroups, checkPermission} from 'helpers/Permissions';
@@ -367,8 +367,6 @@ export default function Folders(props) {
 		</>
 	);
 
-	const renderTabBar = () => <CustomTabs />;
-
 	const navigateToTrash = () => {
 		props.navigation.push('MovementsTrash');
 	};
@@ -380,9 +378,14 @@ export default function Folders(props) {
 					{seenPromotion && keepShowLimit && <Promotion />}
 					<Header title="Movimentações" menu={() => navigateToTrash()} />
 
-					<ScrollableTabView renderTabBar={renderTabBar}>
-						{Publicacoes()}
-						{Processos()}
+					<ScrollableTabView
+						renderTabBar={props => <CustomTabs {...props} tabs={['Publicações', 'Processos']} />}
+						initialPage={0}
+						onChangeTab={({i}) => {
+							// Aqui você pode adicionar lógica adicional quando a tab mudar
+						}}>
+						<Publicacoes />
+						<Processos />
 					</ScrollableTabView>
 				</Warp>
 			) : (

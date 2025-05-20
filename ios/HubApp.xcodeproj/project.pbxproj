@@ -19,8 +19,8 @@
 		17962E13256D400900928E90 /* CircularStd-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 17A16946256839DD001096EC /* CircularStd-Medium.otf */; };
 		17962E14256D400900928E90 /* CircularStd-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 17A16943256839DD001096EC /* CircularStd-MediumItalic.otf */; };
 		17F87FEB25CB2BF8000F6AC5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17F87FEA25CB2BF8000F6AC5 /* Launch Screen.storyboard */; };
+		9A23C9F4E6BFAF13AEF2B229 /* libPods-Advise Hub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE57DE49641649805F6EEA48 /* libPods-Advise Hub.a */; };
 		CED635302D5B73AA003B3CE1 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = CED6352F2D5B73AA003B3CE1 /* assets */; };
-		DBD50DD3DD35F7B26AC3BE2B /* libPods-Advise Hub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CB1FB11B56466F5E0D8FB9B /* libPods-Advise Hub.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,19 +45,19 @@
 		17F87FEA25CB2BF8000F6AC5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		2869AFFE63E04014850D68C1 /* CircularStd-BoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CircularStd-BoldItalic.otf"; path = "../src/assets/fonts/CircularStd-BoldItalic.otf"; sourceTree = "<group>"; };
 		2958B42D41E74343A0BB6A7D /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
+		2A81AC404DC8158F420AF705 /* Pods-Advise Hub.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Advise Hub.release.xcconfig"; path = "Target Support Files/Pods-Advise Hub/Pods-Advise Hub.release.xcconfig"; sourceTree = "<group>"; };
 		2DA9581FE8B040AEA0567FD9 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		388A7B3A77A34DC5BC48F3DA /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		4594AAFD705D4C56836EC7EA /* CircularStd-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CircularStd-Bold.otf"; path = "../src/assets/fonts/CircularStd-Bold.otf"; sourceTree = "<group>"; };
 		58FE8F1C0939415E926ECEAE /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
-		5CB1FB11B56466F5E0D8FB9B /* libPods-Advise Hub.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Advise Hub.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		712E16D01673F6BBD58734E8 /* Pods-Advise Hub.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Advise Hub.debug.xcconfig"; path = "Target Support Files/Pods-Advise Hub/Pods-Advise Hub.debug.xcconfig"; sourceTree = "<group>"; };
 		75A9D883FD954FA585F5D42B /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		7CB1FD82BF904F8DA15744E0 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		8583EC1F12384D85AEFFB08B /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		9CF5482034A84A248E5BF2DE /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
-		A1855285D0E50F6516A0555E /* Pods-Advise Hub.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Advise Hub.release.xcconfig"; path = "Target Support Files/Pods-Advise Hub/Pods-Advise Hub.release.xcconfig"; sourceTree = "<group>"; };
+		AE57DE49641649805F6EEA48 /* libPods-Advise Hub.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Advise Hub.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD5AAE8EB13244598CCCBCC7 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		C25624281DAC4DE99AD2CC58 /* CircularStd-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CircularStd-Black.otf"; path = "../src/assets/fonts/CircularStd-Black.otf"; sourceTree = "<group>"; };
-		C3E638C5008982284C80801A /* Pods-Advise Hub.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Advise Hub.debug.xcconfig"; path = "Target Support Files/Pods-Advise Hub/Pods-Advise Hub.debug.xcconfig"; sourceTree = "<group>"; };
 		CEC851C62D52CDF500DAE921 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CED6352D2D5B739A003B3CE1 /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		CED6352F2D5B73AA003B3CE1 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = src/assets; sourceTree = "<group>"; };
@@ -81,7 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBD50DD3DD35F7B26AC3BE2B /* libPods-Advise Hub.a in Frameworks */,
+				9A23C9F4E6BFAF13AEF2B229 /* libPods-Advise Hub.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,8 +98,8 @@
 		0137BE711F272215A76A979E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				C3E638C5008982284C80801A /* Pods-Advise Hub.debug.xcconfig */,
-				A1855285D0E50F6516A0555E /* Pods-Advise Hub.release.xcconfig */,
+				712E16D01673F6BBD58734E8 /* Pods-Advise Hub.debug.xcconfig */,
+				2A81AC404DC8158F420AF705 /* Pods-Advise Hub.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -164,7 +164,7 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				5CB1FB11B56466F5E0D8FB9B /* libPods-Advise Hub.a */,
+				AE57DE49641649805F6EEA48 /* libPods-Advise Hub.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -217,14 +217,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Advise Hub" */;
 			buildPhases = (
-				9AF0723DA9A8A28F480BA693 /* [CP] Check Pods Manifest.lock */,
+				2480F70A6C4A62974E90E0F0 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				80DDCCB3EA76D4A6798D1F3F /* [CP] Embed Pods Frameworks */,
-				E8C49173F04DCFA68A21A2AD /* [CP] Copy Pods Resources */,
+				C1FFA9C38416A185091448A9 /* [CP] Embed Pods Frameworks */,
+				4059150606C8753180610A8B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -335,31 +335,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		80DDCCB3EA76D4A6798D1F3F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Advise Hub/Pods-Advise Hub-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignal.framework/OneSignal",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignalCore/OneSignalCore.framework/OneSignalCore",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignalExtension/OneSignalExtension.framework/OneSignalExtension",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignalOutcomes/OneSignalOutcomes.framework/OneSignalOutcomes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignal.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignalCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignalExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignalOutcomes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Advise Hub/Pods-Advise Hub-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9AF0723DA9A8A28F480BA693 /* [CP] Check Pods Manifest.lock */ = {
+		2480F70A6C4A62974E90E0F0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -381,7 +357,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E8C49173F04DCFA68A21A2AD /* [CP] Copy Pods Resources */ = {
+		4059150606C8753180610A8B /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -431,6 +407,30 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Advise Hub/Pods-Advise Hub-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		C1FFA9C38416A185091448A9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Advise Hub/Pods-Advise Hub-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignal.framework/OneSignal",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignalCore/OneSignalCore.framework/OneSignalCore",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignalExtension/OneSignalExtension.framework/OneSignalExtension",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignalOutcomes/OneSignalOutcomes.framework/OneSignalOutcomes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignal.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignalCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignalExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OneSignalOutcomes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Advise Hub/Pods-Advise Hub-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -474,7 +474,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C3E638C5008982284C80801A /* Pods-Advise Hub.debug.xcconfig */;
+			baseConfigurationReference = 712E16D01673F6BBD58734E8 /* Pods-Advise Hub.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -509,7 +509,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A1855285D0E50F6516A0555E /* Pods-Advise Hub.release.xcconfig */;
+			baseConfigurationReference = 2A81AC404DC8158F420AF705 /* Pods-Advise Hub.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
