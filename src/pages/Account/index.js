@@ -1,4 +1,5 @@
 import React, {useState, useRef, useEffect, useCallback} from 'react';
+import {Animated} from 'react-native';
 
 import Header from 'components/Header';
 import CustomScrollableTabBar from 'components/CustomScrollableTabBar';
@@ -17,6 +18,7 @@ import {useTheme} from 'styled-components';
 
 export default Account = props => {
 	const scrollRef = useRef();
+	const scrollValue = useRef(new Animated.Value(0)).current;
 
 	const [selectedTab, setSelectedTab] = useState(0);
 
@@ -38,7 +40,15 @@ export default Account = props => {
 			<ScrollableTabView
 				ref={scrollRef}
 				initialPage={0}
-				renderTabBar={() => <CustomScrollableTabBar theme={colorUseTheme} />}
+				scrollValue={scrollValue}
+				renderTabBar={props => (
+					<CustomScrollableTabBar
+						{...props}
+						theme={colorUseTheme}
+						tabs={['Informações', 'Notificações', 'Central de Pagamentos', 'Ajuda']}
+						scrollValue={scrollValue}
+					/>
+				)}
 				onChangeTab={tab => setSelectedTab(tab.i)}>
 				<Infos
 					tabLabel="Informações"

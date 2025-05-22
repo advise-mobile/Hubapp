@@ -62,10 +62,20 @@ const CustomScrollableTabBar = createReactClass({
 	},
 
 	componentDidMount() {
-		this.props.scrollValue.addListener(this.updateView);
+		if (this.props.scrollValue) {
+			this.props.scrollValue.addListener(this.updateView);
+		}
+	},
+
+	componentWillUnmount() {
+		if (this.props.scrollValue) {
+			this.props.scrollValue.removeListener(this.updateView);
+		}
 	},
 
 	updateView(offset) {
+		if (!offset || !offset.value) return;
+
 		const position = Math.floor(offset.value);
 		const pageOffset = offset.value % 1;
 		const tabCount = this.props.tabs.length;
@@ -191,15 +201,16 @@ const CustomScrollableTabBar = createReactClass({
 						style={{width: this.state._containerWidth}}
 						ref={'tabContainer'}
 						onLayout={this.onTabContainerLayout}>
-						{this.props.tabs.map((name, page) =>
-							this.renderTab(
-								name,
-								page,
-								this.props.activeTab === page,
-								this.props.goToPage,
-								this.measureTab.bind(this, page),
-							),
-						)}
+						{this.props.tabs &&
+							this.props.tabs.map((name, page) =>
+								this.renderTab(
+									name,
+									page,
+									this.props.activeTab === page,
+									this.props.goToPage,
+									this.measureTab.bind(this, page),
+								),
+							)}
 						<UndelineTab as={Animated.View} style={[dynamicTabUnderline]} />
 					</Tabs>
 				</ScrollView>
