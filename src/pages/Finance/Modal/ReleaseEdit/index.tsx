@@ -605,7 +605,7 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 							required: getValues('IdTipoParcelamentoFinanceiro') !== -1,
 						}}
 						control={control}
-						defaultValue={null}
+						defaultValue={1}
 						render={({onChange, value}) => (
 							<ContainerInfo>
 								<RNPickerSelect

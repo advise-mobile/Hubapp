@@ -619,59 +619,6 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 					)}
 				/>
 			</ContentRepeat>
-			{/* 
-			<ContentDuring>
-				<Row>
-					<LabelDuring>Durante</LabelDuring>
-
-					<Controller
-						name="quantidadeParcelas"
-						control={control}
-						defaultValue={null}
-						render={({onChange, value}) => (
-							<ContainerInfo>
-								<RNPickerSelect
-									placeholder={{
-										label: 'Selecione',
-										value: null,
-										disabled: getValues('IdTipoParcelamentoFinanceiro') === -1,
-									}}
-									// disabled={
-									// 	getValues('IdTipoParcelamentoFinanceiro') === -1 || duration.length === 0
-									// }
-									doneText="Selecionar"
-									style={{
-										...pickerSelectStyles,
-										placeholder: {
-											color: colors.black,
-										},
-										// inputAndroid: {
-										// 	...pickerSelectStyles.inputAndroid,
-										// 	color:
-										// 		getValues('IdTipoParcelamentoFinanceiro') === -1
-										// 			? colors.grayLight
-										// 			: colors.fadedBlack,
-										// },
-										// inputIOS: {
-										// 	...pickerSelectStyles.inputIOS,
-										// 	color:
-										// 		getValues('IdTipoParcelamentoFinanceiro') === -1
-										// 			? colors.grayLight
-										// 			: colors.fadedBlack,
-										// },
-									}}
-									value={value}
-									onValueChange={value => {
-										onChange(value);
-									}}
-									useNativeAndroidPickerStyle={false}
-									items={duration}
-								/>
-							</ContainerInfo>
-						)}
-					/>
-				</Row>
-			</ContentDuring> */}
 
 			<ContentDuring>
 				<Row>
@@ -680,7 +627,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 					<Controller
 						name="quantidadeParcelas"
 						control={control}
-						defaultValue={null}
+						defaultValue={1}
 						render={({onChange, value}) => (
 							<PickerContainer>
 								<RNPickerSelect
