@@ -331,12 +331,7 @@ export default ReleaseDuplicate = forwardRef((props, ref) => {
 	};
 
 	return (
-		<Modal
-			maxHeight={650}
-			// onClose={onClose}
-			ref={ref}
-			title={type === 'D' ? 'Editar despesa' : 'Editar Receita'}
-			footer={footer()}>
+		<Modal maxHeight={650} onClose={onClose} ref={ref} title={'Duplicar Despesa'} footer={footer()}>
 			<ContentDescription isError={errors.descricao}>
 				<Row>
 					<Label>Descrição</Label>

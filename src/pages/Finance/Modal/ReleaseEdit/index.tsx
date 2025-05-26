@@ -341,7 +341,7 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 	return (
 		<Modal
 			maxHeight={650}
-			// onClose={onClose}
+			onClose={onClose}
 			ref={ref}
 			title={type === 'D' ? 'Editar despesa' : 'Editar Receita'}
 			footer={footer()}>
