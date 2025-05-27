@@ -53,14 +53,25 @@ const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 	}, [props]);
 
 	useImperativeHandle(ref, () => ({
-		refresh: fetchData,
+		refresh: () => {
+			return new Promise(resolve => {
+				setDataResume([]); // Limpa os dados primeiro
+				fetchData().then(() => {
+					resolve();
+				});
+			});
+		},
 	}));
 
 	const fetchData = async () => {
 		try {
 			const responseCategories = await getCategoryData(props.dataFiltersCategory);
-			setDataResume(responseCategories);
-		} catch (error) {}
+			if (responseCategories) {
+				setDataResume(responseCategories);
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
 	};
 
 	const handleEditCategory = (item: CategoryProps) => {

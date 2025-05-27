@@ -186,6 +186,13 @@ android {
         }
     }
 
+    // Adiciona task para gerar o bundle antes do build
+    tasks.whenTaskAdded { task ->
+        if (task.name == 'assembleRelease') {
+            task.dependsOn 'bundleReleaseJsAndAssets'
+        }
+    }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->

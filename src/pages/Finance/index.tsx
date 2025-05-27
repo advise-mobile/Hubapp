@@ -12,6 +12,8 @@ import {Filters, FiltersButton, FiltersText, FiltersActive, Content} from './sty
 
 import {Container, Warp} from 'assets/styles/global';
 
+import {InteractionManager} from 'react-native';
+
 const tabs = [
 	{
 		id: 'release',
@@ -168,15 +170,18 @@ export default function Finance(props) {
 		filterCash.current?.close();
 	}, []);
 
-	const handleRefresh = () => {
-		if (currentTab === 'category') {
-			categoryRef.current?.refresh();
+	// No handleRefresh
+	const handleRefresh = useCallback(() => {
+		if (currentTab === 'category' && categoryRef.current) {
+			InteractionManager.runAfterInteractions(() => {
+				categoryRef.current?.refresh();
+			});
 		}
-	};
+	}, [currentTab]);
 
 	const renderAddOptions = useCallback(
-		() => <Add ref={addRef} onClose={() => handleRefresh()} onAdd={() => {}} />,
-		[],
+		() => <Add ref={addRef} onClose={handleRefresh} onAdd={() => {}} />,
+		[handleRefresh],
 	);
 
 	/** RENDER FILTERS */
