@@ -1,5 +1,13 @@
 import {SwipeListView} from 'react-native-swipe-list-view';
-import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
+import React, {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+	useMemo,
+	forwardRef,
+	useImperativeHandle,
+} from 'react';
 import {Actions, ActionButton} from 'assets/styles/global';
 import {useTheme} from 'styled-components';
 import {Animated, TouchableHighlight} from 'react-native';
@@ -23,7 +31,7 @@ import {
 } from './styles';
 import EditCategory from '../Modal/EditCategory';
 
-export default function Category(props: DataFiltersCategory) {
+const Category = forwardRef((props: DataFiltersCategory, ref) => {
 	const {isLoadingCategory, getCategoryData} = useGetCategory();
 	const {isSavingCategory, inactivateCategory, activateCategory} = useCategory();
 
@@ -43,6 +51,10 @@ export default function Category(props: DataFiltersCategory) {
 	useEffect(() => {
 		fetchData();
 	}, [props]);
+
+	useImperativeHandle(ref, () => ({
+		refresh: fetchData,
+	}));
 
 	const fetchData = async () => {
 		try {
@@ -220,4 +232,6 @@ export default function Category(props: DataFiltersCategory) {
 			{renderConfirmationInativation}
 		</>
 	);
-}
+});
+
+export default Category;

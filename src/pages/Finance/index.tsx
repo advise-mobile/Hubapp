@@ -62,6 +62,7 @@ export default function Finance(props) {
 			: require('assets/images/permissions/deadlines.png');
 
 	const addRef = useRef(null);
+	const categoryRef = useRef(null);
 
 	const headerFiltersRef = useRef(null);
 
@@ -167,7 +168,16 @@ export default function Finance(props) {
 		filterCash.current?.close();
 	}, []);
 
-	const renderAddOptions = useCallback(() => <Add ref={addRef} onAdd={() => {}} />, []);
+	const handleRefresh = () => {
+		if (currentTab === 'category') {
+			categoryRef.current?.refresh();
+		}
+	};
+
+	const renderAddOptions = useCallback(
+		() => <Add ref={addRef} onClose={() => handleRefresh()} onAdd={() => {}} />,
+		[],
+	);
 
 	/** RENDER FILTERS */
 	const renderReleaseFilters = useMemo(
@@ -233,7 +243,7 @@ export default function Finance(props) {
 									<CashFlow dataFiltersCashFlow={dataFiltersCashFlow} />
 								)}
 								{currentTab === 'category' && (
-									<Category dataFiltersCategory={dataFiltersCategory} />
+									<Category ref={categoryRef} dataFiltersCategory={dataFiltersCategory} />
 								)}
 							</>
 						)}
