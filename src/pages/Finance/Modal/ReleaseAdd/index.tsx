@@ -197,6 +197,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 	const fetchDataCategories = async () => {
 		try {
 			const responseCategories = await getCategoriesData();
+			console.log('=== responseCategories', responseCategories);
 			setDataCategoriesResume(responseCategories);
 		} catch (error) {}
 	};
@@ -424,27 +425,6 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 							<>
 								{dataCategories.map(category => (
 									<>
-										{/* 
-<ItemsOptions
-											key={category.idCategoriaFinanceiro}
-											style={[
-												value === category.idCategoriaFinanceiro
-													? {
-															borderWidth: 2,
-															borderColor: colors.primary,
-															backgroundColor: category.corCategoria,
-													  }
-													: {backgroundColor: category.corCategoria},
-											]}
-											onPress={() => {
-												onChange(category.idCategoriaFinanceiro);
-											}}>
-											<LabelItems>{category.nomeCategoriaFinanceiro}</LabelItems>
-											{value === category.idCategoriaFinanceiro && (
-												<MaterialIcons name={'check'} size={15} color={colors.primary} />
-											)}
-										</ItemsOptions> */}
-
 										<ItemsOptions
 											key={category.idCategoriaFinanceiro}
 											style={[
@@ -460,7 +440,8 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 											}}>
 											<LabelItems
 												style={[
-													value === category.idCategoriaFinanceiro
+													value === category.idCategoriaFinanceiro ||
+													category.corCategoria === colors.colorlessBadge
 														? {
 																color: colors.white,
 														  }

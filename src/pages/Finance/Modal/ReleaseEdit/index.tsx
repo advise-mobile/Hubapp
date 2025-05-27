@@ -456,18 +456,27 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 											style={[
 												value === category.idCategoriaFinanceiro
 													? {
-															borderWidth: 2,
 															borderColor: colors.primary,
-															backgroundColor: category.corCategoria,
+															backgroundColor: colors.primary,
 													  }
 													: {backgroundColor: category.corCategoria},
 											]}
 											onPress={() => {
 												onChange(category.idCategoriaFinanceiro);
 											}}>
-											<LabelItems>{category.nomeCategoriaFinanceiro}</LabelItems>
+											<LabelItems
+												style={[
+													value === category.idCategoriaFinanceiro ||
+													category.corCategoria === colors.colorlessBadge
+														? {
+																color: colors.white,
+														  }
+														: {color: colors.primary},
+												]}>
+												{category.nomeCategoriaFinanceiro}
+											</LabelItems>
 											{value === category.idCategoriaFinanceiro && (
-												<MaterialIcons name={'check'} size={15} color={colors.primary} />
+												<MaterialIcons name={'close'} size={15} color={colors.white} />
 											)}
 										</ItemsOptions>
 									</>
@@ -499,16 +508,24 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 										style={[
 											value === person.idPessoaCliente
 												? {
-														borderWidth: 2,
 														borderColor: colors.primary,
-														backgroundColor: colors.gray,
+														backgroundColor: colors.primary,
 												  }
 												: {backgroundColor: colors.gray},
 										]}>
-										<LabelItems>{person.nomePessoaCliente}</LabelItems>
+										<LabelItems
+											style={[
+												value === person.idPessoaCliente
+													? {
+															color: colors.white,
+													  }
+													: {color: colors.primary},
+											]}>
+											{person.nomePessoaCliente}
+										</LabelItems>
 
 										{value === person.idPessoaCliente && (
-											<MaterialIcons name={'check'} size={15} color={colors.primary} />
+											<MaterialIcons name={'close'} size={15} color={colors.white} />
 										)}
 									</ItemsOptions>
 								))}

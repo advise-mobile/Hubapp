@@ -1,12 +1,12 @@
 import {Appearance} from 'react-native';
-import { color } from 'react-native-reanimated';
+import {color} from 'react-native-reanimated';
 
 function colors() {
 	const colorScheme = Appearance.getColorScheme();
 
 	if (colorScheme === 'dark') {
 		return {
-		  mainWhite: "#ffffff",
+			mainWhite: '#ffffff',
 			white: '#111111',
 			realWhite: '#000',
 			darkGray: '#666666',
@@ -45,47 +45,46 @@ function colors() {
 			orange200: '#FFAB91',
 			toastError: '#FFCDD2',
 		};
-	} else if(colorScheme === 'light')
-
-	return {
-		white: '#fefefe',
-		realWhite: '#FFFFFF',
-		darkGray: '#666666',
-		fadedWhite: 'rgba(255,255,255,0.69)',
-		fadedBlack: 'rgba(0,0,0,0.6)',
-		gray: '#EEEEEE',
-		trueGray: '#EEE',
-		grayLighter: 'rgba(0, 0, 0, .12)',
-		grayLight: 'rgba(0, 0, 0, .5)',
-		grayDarker: 'rgba(0, 0, 0, .8)',
-		disabled: 'rgba(0, 0, 0, 0.38)',
-		disabledText: 'rgba(255, 255, 255, 0.5)',
-		textInactive: '#BBBBBB',
-		red: '#D32F2F',
-		advise: '#ff5800',
-		adviseDarker: '#E64C00',
-		hub: '#3f51e7',
-		redLight: '#f6AB92',
-		yellowLight: '#FFF9C4',
-		yellow: '#FFF59D',
-		amber: '#FFE082',
-		green: '#C5E1A5',
-		success: '#00a300',
-		greenLight: '#DCEDC8',
-		blueDark: '#1097B3',
-		blueLighter: '#B7E0F1',
-		blueImportant: '#22bae2',
-		iconGray: '#ababab',
-		backgroundButton: '#2D2D2D',
-		niceBackground: '#FFF',
-		primary: '#2D2D2D',
-		secondary: '#2D2D2D',
-		forgetLink: '#1976D2',
-		inactive: '#565656',
-		blue200: '#81D4FA',
-		orange200: '#FFAB91',
-		toastError: '#FFCDD2',
-	};
+	} else if (colorScheme === 'light')
+		return {
+			white: '#fefefe',
+			realWhite: '#FFFFFF',
+			darkGray: '#666666',
+			fadedWhite: 'rgba(255,255,255,0.69)',
+			fadedBlack: 'rgba(0,0,0,0.6)',
+			gray: '#EEEEEE',
+			trueGray: '#EEE',
+			grayLighter: 'rgba(0, 0, 0, .12)',
+			grayLight: 'rgba(0, 0, 0, .5)',
+			grayDarker: 'rgba(0, 0, 0, .8)',
+			disabled: 'rgba(0, 0, 0, 0.38)',
+			disabledText: 'rgba(255, 255, 255, 0.5)',
+			textInactive: '#BBBBBB',
+			red: '#D32F2F',
+			advise: '#ff5800',
+			adviseDarker: '#E64C00',
+			hub: '#3f51e7',
+			redLight: '#f6AB92',
+			yellowLight: '#FFF9C4',
+			yellow: '#FFF59D',
+			amber: '#FFE082',
+			green: '#C5E1A5',
+			success: '#00a300',
+			greenLight: '#DCEDC8',
+			blueDark: '#1097B3',
+			blueLighter: '#B7E0F1',
+			blueImportant: '#22bae2',
+			iconGray: '#ababab',
+			backgroundButton: '#2D2D2D',
+			niceBackground: '#FFF',
+			primary: '#2D2D2D',
+			secondary: '#2D2D2D',
+			forgetLink: '#1976D2',
+			inactive: '#565656',
+			blue200: '#81D4FA',
+			orange200: '#FFAB91',
+			toastError: '#FFCDD2',
+		};
 }
 
 export default colors();
