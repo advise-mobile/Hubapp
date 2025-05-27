@@ -14,7 +14,7 @@ import {Animated, TouchableHighlight} from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useGetCategory, useCategory} from '@services/hooks/Finances/useCategory';
-import {CategoryProps, DataFiltersCategory} from './types';
+import {CategoryProps, DataFiltersCategory, CategoryRef} from './types';
 
 import ConfirmModal from '@components/ConfirmModal';
 
@@ -31,7 +31,7 @@ import {
 } from './styles';
 import EditCategory from '../Modal/EditCategory';
 
-const Category = forwardRef((props: DataFiltersCategory, ref) => {
+const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 	const {isLoadingCategory, getCategoryData} = useGetCategory();
 	const {isSavingCategory, inactivateCategory, activateCategory} = useCategory();
 
