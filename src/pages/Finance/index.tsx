@@ -173,9 +173,14 @@ export default function Finance(props) {
 	// No handleRefresh
 	const handleRefresh = useCallback(() => {
 		if (currentTab === 'category' && categoryRef.current) {
-			InteractionManager.runAfterInteractions(() => {
-				categoryRef.current?.refresh();
-			});
+			// Força um pequeno delay para garantir que o Android processe a chamada
+			setTimeout(() => {
+				try {
+					categoryRef.current?.refresh();
+				} catch (error) {
+					console.error('Error refreshing:', error);
+				}
+			}, 100);
 		}
 	}, [currentTab]);
 

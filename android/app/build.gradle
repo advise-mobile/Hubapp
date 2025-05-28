@@ -92,6 +92,12 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
+    bundleInRelease: true,
+    bundleCommand: "ram-bundle",
+    entryFile: "index.js",
+    bundleAssetName: "index.android.bundle",
+    jsBundleDirRelease: "$buildDir/intermediates/assets/release",
+    resourcesDirRelease: "$buildDir/intermediates/res/merged/release"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -190,6 +196,20 @@ android {
     tasks.whenTaskAdded { task ->
         if (task.name == 'assembleRelease') {
             task.dependsOn 'bundleReleaseJsAndAssets'
+        }
+    }
+
+    // Garante que o diretório de assets existe
+    task createAssetsDir {
+        doLast {
+            new File("$projectDir/src/main/assets").mkdirs()
+        }
+    }
+
+    // Adiciona a task de criar diretório antes do bundle
+    tasks.whenTaskAdded { task ->
+        if (task.name == 'bundleReleaseJsAndAssets') {
+            task.dependsOn 'createAssetsDir'
         }
     }
 

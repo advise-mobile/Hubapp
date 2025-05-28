@@ -54,12 +54,7 @@ const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 
 	useImperativeHandle(ref, () => ({
 		refresh: () => {
-			return new Promise(resolve => {
-				setDataResume([]); // Limpa os dados primeiro
-				fetchData().then(() => {
-					resolve();
-				});
-			});
+			return fetchData();
 		},
 	}));
 
