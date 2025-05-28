@@ -17,7 +17,7 @@
 		"device-list": "adb devices",
 		"test-device": "adb devices | grep -w 'device' | awk '{print $1}' | xargs -I {} adb -s {} shell getprop ro.product.model && yarn android:test",
 		"android:install": "adb install android/app/build/outputs/apk/release/app-release.apk",
-		"android:clean": "cd android && rm -rf ~/.gradle/caches/ .gradle build app/build app/src/main/res/raw app/src/main/res/drawable-* && cd ../",
+		"android:clean": "cd android && rm -rf ~/.gradle/caches/ .gradle build && cd ../",
 		"android:build-install": "yarn android:clean && cd android && ./gradlew clean && ./gradlew assembleRelease --no-daemon --max-workers 2 && adb install -r -d app/build/outputs/apk/release/app-release.apk && cd ../",
 		"android:install-release": "cd android && ./gradlew assembleRelease && adb install -r app/build/outputs/apk/release/app-release.apk",
 		"android:release": "cd android && ./gradlew clean && cd .. && npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew assembleRelease && cd ..",
