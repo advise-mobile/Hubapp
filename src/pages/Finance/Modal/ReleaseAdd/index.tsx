@@ -196,7 +196,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 	const fetchDataCategories = async () => {
 		try {
-			const responseCategories = await getCategoriesData();
+			const responseCategories = await getCategoriesData(type.toUpperCase());
 
 			setDataCategoriesResume(responseCategories);
 		} catch (error) {}

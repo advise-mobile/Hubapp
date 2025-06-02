@@ -50,13 +50,14 @@ export const useGetPopulateCategories = () => {
 
 	const dispatch = useDispatch();
 
-	const getCategoriesData = async () => {
+	const getCategoriesData = async (type: 'D' | 'R') => {
 		try {
 			setIsLoading(true);
 
 			const {idUsuarioCliente} = await getLoggedUser();
+			const idsTipoCategoriaFinanceiro = type === 'D' ? '-2' : '-1';
 
-			const params = `ativo=true&campos=nomeCategoriaFinanceiro,corCategoria,+idCategoriaFinanceiro&idUsuarioCliente=${idUsuarioCliente}&idsTipoCategoriaFinanceiro=-2&ordenacao=+nomeCategoriaFinanceiro`;
+			const params = `ativo=true&campos=nomeCategoriaFinanceiro,corCategoria,+idCategoriaFinanceiro&idUsuarioCliente=${idUsuarioCliente}&idsTipoCategoriaFinanceiro=${idsTipoCategoriaFinanceiro}&ordenacao=+nomeCategoriaFinanceiro`;
 
 			const response: DataItemsResumeProps = await Api.get(
 				`/core/v1/categorias-financeiro?${params}`,
