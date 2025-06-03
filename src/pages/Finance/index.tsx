@@ -107,7 +107,7 @@ export default function Finance(props) {
 		let mounted = true;
 
 		const verificarPermissao = async () => {
-			const permission = await checkPermission(PermissionsGroups.SCHEDULE);
+			const permission = await checkPermission(PermissionsGroups.FINANCES);
 			if (mounted) {
 				setPermission(permission);
 			}
