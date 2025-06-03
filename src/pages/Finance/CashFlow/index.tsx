@@ -70,7 +70,7 @@ export default function CashFlow({dataFiltersCashFlow}: DataFiltersCashFlowProps
 			<ContainerScreen>
 				<TopContainer>
 					<ContainerMainInformation>
-						<TextLabel WeightTextProps>Saldo Anterior</TextLabel>
+						<TextLabel WeightTextProps>Saldo anterior</TextLabel>
 						<TextValue>{saldoAnterior}</TextValue>
 					</ContainerMainInformation>
 

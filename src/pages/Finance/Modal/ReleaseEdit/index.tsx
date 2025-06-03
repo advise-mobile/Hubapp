@@ -217,7 +217,7 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 
 	const fetchDataCategories = async () => {
 		try {
-			const responseCategories = await getCategoriesData();
+			const responseCategories = await getCategoriesData(type);
 			setDataCategoriesResume(responseCategories);
 		} catch (error) {}
 	};
@@ -343,7 +343,7 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 			maxHeight={650}
 			onClose={onClose}
 			ref={ref}
-			title={type === 'D' ? 'Editar despesa' : 'Editar Receita'}
+			title={type === 'D' ? 'Editar despesa' : 'Editar receita'}
 			footer={footer()}>
 			<ContentDescription isError={errors.descricao}>
 				<Row>

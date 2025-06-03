@@ -131,7 +131,7 @@ export default AddCategory = forwardRef((props, ref) => {
 			</ContentName>
 
 			<ContentType>
-				<Label>Tipo da Categoria</Label>
+				<Label>Tipo da categoria</Label>
 
 				<Controller
 					name="idTipoCategoriaFinanceiro"
