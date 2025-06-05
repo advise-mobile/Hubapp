@@ -60,8 +60,8 @@ export default function Finance(props) {
 
 	const image =
 		colorUseTheme.name == 'dark'
-			? require('assets/images/permissions/deadlines_white.png')
-			: require('assets/images/permissions/deadlines.png');
+			? require('assets/images/not_found_white.png')
+			: require('assets/images/not_found.png');
 
 	const addRef = useRef(null);
 	const categoryRef = useRef(null);
@@ -267,8 +267,8 @@ export default function Finance(props) {
 			) : (
 				<HasNotPermission
 					image={image}
-					title="A sua rotina totalmente organizada!"
-					body="Tenha a facilidade de cadastrar um prazo judicial, uma audiência ou uma reunião diretamente na sua ferramenta de monitoramento de informações jurídicas"
+					title="O jeito mais fácil de manter suas contas em dia !"
+					body="Utilize a facilidade do módulo Financeiro para cadastrar e centralizar as informações importantes para a saúde financeira do seu escritório ou departamento jurídico"
 				/>
 			)}
 		</Container>
