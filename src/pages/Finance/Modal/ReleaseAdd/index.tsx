@@ -317,7 +317,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 			maxHeight={650}
 			onClose={onClose}
 			ref={ref}
-			title={type === 'D' ? 'Cadastrar despesa' : 'Cadastrar Receita'}
+			title={type === 'D' ? 'Cadastrar despesa' : 'Cadastrar receita'}
 			footer={footer()}>
 			<ContentDescription isError={errors.descricao}>
 				<Row>
