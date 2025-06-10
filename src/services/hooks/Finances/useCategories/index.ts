@@ -55,7 +55,7 @@ export const useGetPopulateCategories = () => {
 			setIsLoading(true);
 
 			const {idUsuarioCliente} = await getLoggedUser();
-			const idsTipoCategoriaFinanceiro = type === 'D' ? '-2' : type === 'R' ? '-1' : '';
+			const idsTipoCategoriaFinanceiro = type === 'D' ? '-2' : type === 'C' ? '-1' : '';
 
 			const params = `ativo=true&campos=nomeCategoriaFinanceiro,corCategoria,+idCategoriaFinanceiro&idUsuarioCliente=${idUsuarioCliente}&idsTipoCategoriaFinanceiro=${idsTipoCategoriaFinanceiro}&registrosPorPagina=100&ordenacao=+nomeCategoriaFinanceiro`;
 

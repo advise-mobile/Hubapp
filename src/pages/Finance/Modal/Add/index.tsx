@@ -99,7 +99,7 @@ export default Add = forwardRef((props, ref) => {
 			</Modal>
 
 			{modalExpenseOpen && <ReleaseAdd ref={expenseRef} onClose={closeExpense} type={'D'} />}
-			{modalRevenueOpen && <ReleaseAdd ref={revenueRef} onClose={closeRevenue} type={'R'} />}
+			{modalRevenueOpen && <ReleaseAdd ref={revenueRef} onClose={closeRevenue} type={'C'} />}
 			{modalCategoriesOpen && <AddCategory ref={categoryRef} onClose={closeCategory} />}
 		</>
 	);

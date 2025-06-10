@@ -209,7 +209,7 @@ export default ReleaseDuplicate = forwardRef((props, ref) => {
 
 	const fetchDataCategories = async () => {
 		try {
-			const responseCategories = await getCategoriesData();
+			const responseCategories = await getCategoriesData(type);
 			setDataCategoriesResume(responseCategories);
 		} catch (error) {}
 	};
