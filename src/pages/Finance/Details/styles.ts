@@ -89,15 +89,15 @@ export const InformationContainer = styled.View`
 `;
 
 export const InformationTitleTextContainer = styled.View`
+	flex: 1;
 	width: 200px;
-	height: 24px;
+	height: auto;
 	margin-top: 1px;
 	margin-bottom: 10px;
 `;
 
 export const InformationTextContainer = styled.View`
 	width: 290px;
-	height: 24px;
 	margin-top: 1px;
 	margin-bottom: 10px;
 `;
