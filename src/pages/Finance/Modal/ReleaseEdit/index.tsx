@@ -312,7 +312,9 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 
 		data.valor = MaskMoneyForRegister(data.valor);
 
-		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
+		const repeticaoFixo =
+			data.IdTipoParcelamentoFinanceiro === -1 ? false : data.quantidadeParcelas > 1 ? false : true;
+
 		const quantidadeParcelas =
 			data.IdTipoParcelamentoFinanceiro === -1 ? 1 : data.quantidadeParcelas;
 		const observacao = data.observacao === null ? '' : data.observacao;

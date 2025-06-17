@@ -291,7 +291,9 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 		data.DataVencimento = FormatFullDateEN(data.DataVencimento);
 		data.valor = MaskMoneyForRegister(data.valor);
 
-		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
+		const repeticaoFixo =
+			data.IdTipoParcelamentoFinanceiro === -1 ? false : data.quantidadeParcelas > 1 ? false : true;
+
 		const quantidadeParcelas =
 			data.IdTipoParcelamentoFinanceiro === -1 ? 1 : data.quantidadeParcelas;
 		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
