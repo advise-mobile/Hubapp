@@ -1,8 +1,7 @@
 export default darkTheme = {
-	name: "dark",
+	name: 'dark',
 	colors: {
-
-		mainWhite: "#FFFFFF",
+		mainWhite: '#FFFFFF',
 		white: '#111111',
 		realWhite: '#000000',
 		realWhites: '#000000',
@@ -57,7 +56,6 @@ export default darkTheme = {
 		textvalue: '#ffffff',
 		colorSelect: '#111111',
 
-
 		grayLighter: 'rgba(255, 255, 255, .12)',
 		grayLight: 'rgba(255, 255, 255, .5)',
 		grayDarker: 'rgba(255, 255, 255, .8)',
@@ -67,9 +65,9 @@ export default darkTheme = {
 		fadedWhite: 'rgba(0,0,0,0.69)',
 		fadedBlack: 'rgba(255,255,255,0.69)',
 
-		backgroundDefault : "#FFFFFF",
+		backgroundDefault: '#FFFFFF',
 
-		textPrimary:'#FFFFFF'
-
-	}
-}
+		textPrimary: '#FFFFFF',
+		colorlessBadge: '#2d2d2d',
+	},
+};

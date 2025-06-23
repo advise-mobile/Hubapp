@@ -4,14 +4,12 @@ import {Modalize} from 'react-native-modalize';
 import {Container, Title, Header, Footer, ClearFilters, ClearText} from './styles';
 
 // Add Hook UseTheme para pegar o tema global addicionado
-import { useTheme } from 'styled-components';
-
+import {useTheme} from 'styled-components';
 
 export default Modal = forwardRef((props, ref) => {
-
 	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
-	const { colors } = colorUseTheme;
+	const {colors} = colorUseTheme;
 
 	const renderHeader = useCallback(
 		() => (
@@ -45,6 +43,10 @@ export default Modal = forwardRef((props, ref) => {
 			avoidKeyboard={true}
 			onClose={props.onClose}
 			onOpen={props.onOpen}
+			closeOnOverlayTap={true}
+			useNativeDriver={true}
+			alwaysOpen={0}
+			threshold={300}
 			// FooterComponent={renderFooter}
 			// keyboardAvoidingBehavior='height'
 			// avoidKeyboardLikeIOS

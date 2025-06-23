@@ -209,7 +209,7 @@ export default ReleaseDuplicate = forwardRef((props, ref) => {
 
 	const fetchDataCategories = async () => {
 		try {
-			const responseCategories = await getCategoriesData();
+			const responseCategories = await getCategoriesData(type);
 			setDataCategoriesResume(responseCategories);
 		} catch (error) {}
 	};
@@ -304,7 +304,12 @@ export default ReleaseDuplicate = forwardRef((props, ref) => {
 
 		data.valor = MaskMoneyForRegister(data.valor);
 
-		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
+		const repeticaoFixo =
+			data.IdTipoParcelamentoFinanceiro === -1 || data.IdTipoParcelamentoFinanceiro === undefined
+				? false
+				: data.quantidadeParcelas > 1
+				? false
+				: true;
 		const quantidadeParcelas =
 			data.IdTipoParcelamentoFinanceiro === -1 ? 1 : data.quantidadeParcelas;
 		const observacao = data.observacao === null ? '' : data.observacao;
@@ -333,9 +338,9 @@ export default ReleaseDuplicate = forwardRef((props, ref) => {
 	return (
 		<Modal
 			maxHeight={650}
-			// onClose={onClose}
+			onClose={onClose}
 			ref={ref}
-			title={type === 'D' ? 'Editar despesa' : 'Editar Receita'}
+			title={type === 'D' ? 'Duplicar despesa' : 'Duplicar receita'}
 			footer={footer()}>
 			<ContentDescription isError={errors.descricao}>
 				<Row>

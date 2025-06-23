@@ -12,6 +12,8 @@ import {Filters, FiltersButton, FiltersText, FiltersActive, Content} from './sty
 
 import {Container, Warp} from 'assets/styles/global';
 
+import {InteractionManager} from 'react-native';
+
 const tabs = [
 	{
 		id: 'release',
@@ -58,10 +60,11 @@ export default function Finance(props) {
 
 	const image =
 		colorUseTheme.name == 'dark'
-			? require('assets/images/permissions/deadlines_white.png')
-			: require('assets/images/permissions/deadlines.png');
+			? require('assets/images/not_found_white.png')
+			: require('assets/images/not_found.png');
 
 	const addRef = useRef(null);
+	const categoryRef = useRef(null);
 
 	const headerFiltersRef = useRef(null);
 
@@ -104,7 +107,7 @@ export default function Finance(props) {
 		let mounted = true;
 
 		const verificarPermissao = async () => {
-			const permission = await checkPermission(PermissionsGroups.SCHEDULE);
+			const permission = await checkPermission(PermissionsGroups.FINANCES);
 			if (mounted) {
 				setPermission(permission);
 			}
@@ -167,7 +170,24 @@ export default function Finance(props) {
 		filterCash.current?.close();
 	}, []);
 
-	const renderAddOptions = useCallback(() => <Add ref={addRef} onAdd={() => {}} />, []);
+	// No handleRefresh
+	const handleRefresh = useCallback(() => {
+		if (currentTab === 'category' && categoryRef.current) {
+			// Força um pequeno delay para garantir que o Android processe a chamada
+			setTimeout(() => {
+				try {
+					categoryRef.current?.refresh();
+				} catch (error) {
+					console.error('Error refreshing:', error);
+				}
+			}, 100);
+		}
+	}, [currentTab]);
+
+	const renderAddOptions = useCallback(
+		() => <Add ref={addRef} onClose={handleRefresh} onAdd={() => {}} />,
+		[handleRefresh],
+	);
 
 	/** RENDER FILTERS */
 	const renderReleaseFilters = useMemo(
@@ -233,7 +253,7 @@ export default function Finance(props) {
 									<CashFlow dataFiltersCashFlow={dataFiltersCashFlow} />
 								)}
 								{currentTab === 'category' && (
-									<Category dataFiltersCategory={dataFiltersCategory} />
+									<Category ref={categoryRef} dataFiltersCategory={dataFiltersCategory} />
 								)}
 							</>
 						)}
@@ -247,8 +267,8 @@ export default function Finance(props) {
 			) : (
 				<HasNotPermission
 					image={image}
-					title="A sua rotina totalmente organizada!"
-					body="Tenha a facilidade de cadastrar um prazo judicial, uma audiência ou uma reunião diretamente na sua ferramenta de monitoramento de informações jurídicas"
+					title="O jeito mais fácil de manter suas contas em dia !"
+					body="Utilize a facilidade do módulo Financeiro para cadastrar e centralizar as informações importantes para a saúde financeira do seu escritório ou departamento jurídico"
 				/>
 			)}
 		</Container>

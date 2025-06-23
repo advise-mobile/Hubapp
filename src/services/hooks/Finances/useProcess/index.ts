@@ -1,12 +1,11 @@
-import { useState } from "react";
+import {useState} from 'react';
 
 import Api from '@services/Api';
 import ToastNotifyActions from 'store/ducks/ToastNotify';
-import { useDispatch } from 'react-redux';
-import { DataProcessProps,ItemProcessProps } from "./types";
+import {useDispatch} from 'react-redux';
+import {DataProcessProps, ItemProcessProps} from './types';
 
-import { getLoggedUser } from '@helpers/Permissions';
-
+import {getLoggedUser} from '@helpers/Permissions';
 
 export const useGetProcess = () => {
 	const [isLoadingProcess, setIsLoadingProcess] = useState(false);
@@ -19,14 +18,13 @@ export const useGetProcess = () => {
 			const params = `?ativo=true&campos=*&idTipoPasta=-3`;
 			const response: DataProcessProps = await Api.get(`core/v1/pastas-usuarios-clientes${params}`);
 
-			const { itens }: ItemProcessProps = response.data;
+			const {itens}: ItemProcessProps = response.data;
 
 			return itens;
-
-
-
 		} catch (error) {
-			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estes processos', true));
+			dispatch(
+				ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estes processos', true),
+			);
 		} finally {
 			setTimeout(() => {
 				setIsLoadingProcess(false);
@@ -34,8 +32,8 @@ export const useGetProcess = () => {
 		}
 	};
 
-	return { isLoadingProcess, getProcessData };
-}
+	return {isLoadingProcess, getProcessData};
+};
 
 export const useGetPopulateProcess = () => {
 	const [isLoadingProcess, setIsLoadingProcess] = useState(false);
@@ -45,29 +43,27 @@ export const useGetPopulateProcess = () => {
 		try {
 			setIsLoadingProcess(true);
 
-			const { idUsuarioCliente } = await getLoggedUser();
+			const {idUsuarioCliente} = await getLoggedUser();
 
-
-
-			const params = `?campos=*&idUsuarioCliente=${idUsuarioCliente}&ativo=true&idTipoPasta=-3`;
+			const params = `?campos=*&idUsuarioCliente=${idUsuarioCliente}&ativo=true&idTipoPasta=-3&registrosPorPagina=100`;
 			const response: DataProcessProps = await Api.get(`core/v1/pastas-usuarios-clientes${params}`);
 
-			const { itens }: ItemProcessProps = response.data;
-			
-			const formatedItens = itens.map((item) => {
+			const {itens}: ItemProcessProps = response.data;
 
+			const formatedItens = itens.map(item => {
 				return {
 					id: item.id,
-					nome:item.nome,
-					idProcesso : item.idProcesso != undefined ? item.idProcesso : null ,
+					nome: item.nome,
+					idProcesso: item.idProcesso != undefined ? item.idProcesso : null,
 					numeroProcesso: item.numeroProcesso != undefined ? item.numeroProcesso : item.nome,
-				}
+				};
 			});
 
 			return formatedItens;
-
 		} catch (error) {
-			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estes processos', true));
+			dispatch(
+				ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estes processos', true),
+			);
 		} finally {
 			setTimeout(() => {
 				setIsLoadingProcess(false);
@@ -75,7 +71,5 @@ export const useGetPopulateProcess = () => {
 		}
 	};
 
-	return { isLoadingProcess, getProcessData };
-}
-
-
+	return {isLoadingProcess, getProcessData};
+};

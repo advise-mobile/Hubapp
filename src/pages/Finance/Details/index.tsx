@@ -134,18 +134,6 @@ export default function Details(props) {
 							<DateText>{item.dataVencimentoFormatada}</DateText>
 						</DataTextContainer>
 					</ContainerDate>
-					{/* <ThumbsIconContainer>
-						{item.debitoCredito === 'C' ? (
-							<FontAwesome name="thumbs-up" color={colors.blueIcon} size={20} />
-						) : (
-							<FontAwesome
-								name="thumbs-down"
-								color={colors.colorIconThumbdown}
-								size={20}
-								style={{transform: [{scaleX: -1}]}}
-							/>
-						)}
-					</ThumbsIconContainer> */}
 
 					<ThumbsIconContainer
 						onPress={() => handleFinancialLoss()}

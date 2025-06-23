@@ -1,12 +1,20 @@
 import {SwipeListView} from 'react-native-swipe-list-view';
-import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
+import React, {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+	useMemo,
+	forwardRef,
+	useImperativeHandle,
+} from 'react';
 import {Actions, ActionButton} from 'assets/styles/global';
 import {useTheme} from 'styled-components';
 import {Animated, TouchableHighlight} from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useGetCategory, useCategory} from '@services/hooks/Finances/useCategory';
-import {CategoryProps, DataFiltersCategory} from './types';
+import {CategoryProps, DataFiltersCategory, CategoryRef} from './types';
 
 import ConfirmModal from '@components/ConfirmModal';
 
@@ -23,7 +31,7 @@ import {
 } from './styles';
 import EditCategory from '../Modal/EditCategory';
 
-export default function Category(props: DataFiltersCategory) {
+const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 	const {isLoadingCategory, getCategoryData} = useGetCategory();
 	const {isSavingCategory, inactivateCategory, activateCategory} = useCategory();
 
@@ -44,11 +52,21 @@ export default function Category(props: DataFiltersCategory) {
 		fetchData();
 	}, [props]);
 
+	useImperativeHandle(ref, () => ({
+		refresh: () => {
+			return fetchData();
+		},
+	}));
+
 	const fetchData = async () => {
 		try {
 			const responseCategories = await getCategoryData(props.dataFiltersCategory);
-			setDataResume(responseCategories);
-		} catch (error) {}
+			if (responseCategories) {
+				setDataResume(responseCategories);
+			}
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
 	};
 
 	const handleEditCategory = (item: CategoryProps) => {
@@ -220,4 +238,6 @@ export default function Category(props: DataFiltersCategory) {
 			{renderConfirmationInativation}
 		</>
 	);
-}
+});
+
+export default Category;

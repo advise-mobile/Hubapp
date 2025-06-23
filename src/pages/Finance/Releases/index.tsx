@@ -227,7 +227,7 @@ export default function Release(dataFilters: DataFiltersRelease) {
 
 						<ContainerItensFinance>
 							<ContainerLabel>
-								<TextLabelSubtitle>Saldo Atual</TextLabelSubtitle>
+								<TextLabelSubtitle>Saldo atual</TextLabelSubtitle>
 							</ContainerLabel>
 							<ContainerValues>
 								<TextValue fontWeight colorText={colors.forgetLink}>

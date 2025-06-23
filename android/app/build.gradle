@@ -92,6 +92,12 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
+    bundleInRelease: true,
+    bundleCommand: "ram-bundle",
+    entryFile: "index.js",
+    bundleAssetName: "index.android.bundle",
+    jsBundleDirRelease: "$buildDir/intermediates/assets/release",
+    resourcesDirRelease: "$buildDir/intermediates/res/merged/release"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -149,8 +155,8 @@ android {
         applicationId "com.hubapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 32
+        versionName "2.0.0"
         multiDexEnabled true
     }
     splits {
@@ -183,6 +189,27 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+
+    // Adiciona task para gerar o bundle antes do build
+    tasks.whenTaskAdded { task ->
+        if (task.name == 'assembleRelease') {
+            task.dependsOn 'bundleReleaseJsAndAssets'
+        }
+    }
+
+    // Garante que o diretório de assets existe
+    task createAssetsDir {
+        doLast {
+            new File("$projectDir/src/main/assets").mkdirs()
+        }
+    }
+
+    // Adiciona a task de criar diretório antes do bundle
+    tasks.whenTaskAdded { task ->
+        if (task.name == 'bundleReleaseJsAndAssets') {
+            task.dependsOn 'createAssetsDir'
         }
     }
 

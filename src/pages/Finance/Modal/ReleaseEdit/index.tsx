@@ -217,7 +217,7 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 
 	const fetchDataCategories = async () => {
 		try {
-			const responseCategories = await getCategoriesData();
+			const responseCategories = await getCategoriesData(type);
 			setDataCategoriesResume(responseCategories);
 		} catch (error) {}
 	};
@@ -312,7 +312,13 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 
 		data.valor = MaskMoneyForRegister(data.valor);
 
-		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
+		const repeticaoFixo =
+			data.IdTipoParcelamentoFinanceiro === -1 || data.IdTipoParcelamentoFinanceiro === undefined
+				? false
+				: data.quantidadeParcelas > 1
+				? false
+				: true;
+
 		const quantidadeParcelas =
 			data.IdTipoParcelamentoFinanceiro === -1 ? 1 : data.quantidadeParcelas;
 		const observacao = data.observacao === null ? '' : data.observacao;
@@ -341,9 +347,9 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 	return (
 		<Modal
 			maxHeight={650}
-			// onClose={onClose}
+			onClose={onClose}
 			ref={ref}
-			title={type === 'D' ? 'Editar despesa' : 'Editar Receita'}
+			title={type === 'D' ? 'Editar despesa' : 'Editar receita'}
 			footer={footer()}>
 			<ContentDescription isError={errors.descricao}>
 				<Row>
@@ -456,18 +462,27 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 											style={[
 												value === category.idCategoriaFinanceiro
 													? {
-															borderWidth: 2,
 															borderColor: colors.primary,
-															backgroundColor: category.corCategoria,
+															backgroundColor: colors.primary,
 													  }
 													: {backgroundColor: category.corCategoria},
 											]}
 											onPress={() => {
 												onChange(category.idCategoriaFinanceiro);
 											}}>
-											<LabelItems>{category.nomeCategoriaFinanceiro}</LabelItems>
+											<LabelItems
+												style={[
+													value === category.idCategoriaFinanceiro ||
+													category.corCategoria === colors.colorlessBadge
+														? {
+																color: colors.white,
+														  }
+														: {color: colors.primary},
+												]}>
+												{category.nomeCategoriaFinanceiro}
+											</LabelItems>
 											{value === category.idCategoriaFinanceiro && (
-												<MaterialIcons name={'check'} size={15} color={colors.primary} />
+												<MaterialIcons name={'close'} size={15} color={colors.white} />
 											)}
 										</ItemsOptions>
 									</>
@@ -499,16 +514,24 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 										style={[
 											value === person.idPessoaCliente
 												? {
-														borderWidth: 2,
 														borderColor: colors.primary,
-														backgroundColor: colors.gray,
+														backgroundColor: colors.primary,
 												  }
 												: {backgroundColor: colors.gray},
 										]}>
-										<LabelItems>{person.nomePessoaCliente}</LabelItems>
+										<LabelItems
+											style={[
+												value === person.idPessoaCliente
+													? {
+															color: colors.white,
+													  }
+													: {color: colors.primary},
+											]}>
+											{person.nomePessoaCliente}
+										</LabelItems>
 
 										{value === person.idPessoaCliente && (
-											<MaterialIcons name={'check'} size={15} color={colors.primary} />
+											<MaterialIcons name={'close'} size={15} color={colors.white} />
 										)}
 									</ItemsOptions>
 								))}
@@ -605,7 +628,7 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 							required: getValues('IdTipoParcelamentoFinanceiro') !== -1,
 						}}
 						control={control}
-						defaultValue={null}
+						defaultValue={1}
 						render={({onChange, value}) => (
 							<ContainerInfo>
 								<RNPickerSelect

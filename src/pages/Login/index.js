@@ -78,11 +78,11 @@ export default function Login(props) {
 	// const [email, setEmail] = useState('valid.ti@mailna.co');
 	// const [password, setPassword] = useState('Teste@1234');
 
-	const [email, setEmail] = useState('qatestprod@mailna.co');
-	const [password, setPassword] = useState('Senha123');
+	// const [email, setEmail] = useState('qatestprod@mailna.co');
+	// const [password, setPassword] = useState('Senha123');
 
-	// const [email, setEmail] = useState('');
-	// const [password, setPassword] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 
 	const [disabled, setDisabled] = useState(false);
 	const [emptyEmail, setEmptyEmail] = useState(false);

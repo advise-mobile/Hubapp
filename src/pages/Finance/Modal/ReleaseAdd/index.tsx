@@ -196,7 +196,8 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 	const fetchDataCategories = async () => {
 		try {
-			const responseCategories = await getCategoriesData();
+			const responseCategories = await getCategoriesData(type.toUpperCase());
+
 			setDataCategoriesResume(responseCategories);
 		} catch (error) {}
 	};
@@ -290,7 +291,13 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 		data.DataVencimento = FormatFullDateEN(data.DataVencimento);
 		data.valor = MaskMoneyForRegister(data.valor);
 
-		const repeticaoFixo = data.IdTipoParcelamentoFinanceiro === -1 ? false : true;
+		const repeticaoFixo =
+			data.IdTipoParcelamentoFinanceiro === -1 || data.IdTipoParcelamentoFinanceiro === undefined
+				? false
+				: data.quantidadeParcelas > 1
+				? false
+				: true;
+
 		const quantidadeParcelas =
 			data.IdTipoParcelamentoFinanceiro === -1 ? 1 : data.quantidadeParcelas;
 		const dataEmissao = moment().format('YYYY-MM-DD H:mm:ss');
@@ -316,7 +323,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 			maxHeight={650}
 			onClose={onClose}
 			ref={ref}
-			title={type === 'D' ? 'Cadastrar despesa' : 'Cadastrar Receita'}
+			title={type === 'D' ? 'Cadastrar despesa' : 'Cadastrar receita'}
 			footer={footer()}>
 			<ContentDescription isError={errors.descricao}>
 				<Row>
@@ -424,27 +431,6 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 							<>
 								{dataCategories.map(category => (
 									<>
-										{/* 
-<ItemsOptions
-											key={category.idCategoriaFinanceiro}
-											style={[
-												value === category.idCategoriaFinanceiro
-													? {
-															borderWidth: 2,
-															borderColor: colors.primary,
-															backgroundColor: category.corCategoria,
-													  }
-													: {backgroundColor: category.corCategoria},
-											]}
-											onPress={() => {
-												onChange(category.idCategoriaFinanceiro);
-											}}>
-											<LabelItems>{category.nomeCategoriaFinanceiro}</LabelItems>
-											{value === category.idCategoriaFinanceiro && (
-												<MaterialIcons name={'check'} size={15} color={colors.primary} />
-											)}
-										</ItemsOptions> */}
-
 										<ItemsOptions
 											key={category.idCategoriaFinanceiro}
 											style={[
@@ -460,7 +446,8 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 											}}>
 											<LabelItems
 												style={[
-													value === category.idCategoriaFinanceiro
+													value === category.idCategoriaFinanceiro ||
+													category.corCategoria === colors.colorlessBadge
 														? {
 																color: colors.white,
 														  }
@@ -619,59 +606,6 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 					)}
 				/>
 			</ContentRepeat>
-			{/* 
-			<ContentDuring>
-				<Row>
-					<LabelDuring>Durante</LabelDuring>
-
-					<Controller
-						name="quantidadeParcelas"
-						control={control}
-						defaultValue={null}
-						render={({onChange, value}) => (
-							<ContainerInfo>
-								<RNPickerSelect
-									placeholder={{
-										label: 'Selecione',
-										value: null,
-										disabled: getValues('IdTipoParcelamentoFinanceiro') === -1,
-									}}
-									// disabled={
-									// 	getValues('IdTipoParcelamentoFinanceiro') === -1 || duration.length === 0
-									// }
-									doneText="Selecionar"
-									style={{
-										...pickerSelectStyles,
-										placeholder: {
-											color: colors.black,
-										},
-										// inputAndroid: {
-										// 	...pickerSelectStyles.inputAndroid,
-										// 	color:
-										// 		getValues('IdTipoParcelamentoFinanceiro') === -1
-										// 			? colors.grayLight
-										// 			: colors.fadedBlack,
-										// },
-										// inputIOS: {
-										// 	...pickerSelectStyles.inputIOS,
-										// 	color:
-										// 		getValues('IdTipoParcelamentoFinanceiro') === -1
-										// 			? colors.grayLight
-										// 			: colors.fadedBlack,
-										// },
-									}}
-									value={value}
-									onValueChange={value => {
-										onChange(value);
-									}}
-									useNativeAndroidPickerStyle={false}
-									items={duration}
-								/>
-							</ContainerInfo>
-						)}
-					/>
-				</Row>
-			</ContentDuring> */}
 
 			<ContentDuring>
 				<Row>
@@ -680,7 +614,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 					<Controller
 						name="quantidadeParcelas"
 						control={control}
-						defaultValue={null}
+						defaultValue={1}
 						render={({onChange, value}) => (
 							<PickerContainer>
 								<RNPickerSelect

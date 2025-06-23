@@ -1,49 +1,47 @@
-import { useState } from "react";
-import { getLoggedUser } from '@helpers/Permissions';
+import {useState} from 'react';
+import {getLoggedUser} from '@helpers/Permissions';
 
 import Api from '@services/Api';
 
-import { DataCategoryItemProps, DataItemsResumeProps } from "@pages/Finance/Category/types";
+import {DataCategoryItemProps, DataItemsResumeProps} from '@pages/Finance/Category/types';
 
 import ToastNotifyActions from 'store/ducks/ToastNotify';
-import { useDispatch } from 'react-redux';
-import { useTheme } from "styled-components";
-
+import {useDispatch} from 'react-redux';
+import {useTheme} from 'styled-components';
 
 export const useGetCategories = () => {
-
 	const [isLoadingCategories, setIsLoadingCategories] = useState(false);
 
 	const dispatch = useDispatch();
 
 	const getCategoriesData = async () => {
-
 		try {
 			setIsLoadingCategories(true);
 
-			const { idUsuarioCliente } = await getLoggedUser();
-
+			const {idUsuarioCliente} = await getLoggedUser();
 
 			const params = `ativo=true&campos=*&idUsuarioCliente=${idUsuarioCliente}&idsTipoCategoriaFinanceiro=-2&ordenacao=+nomeCategoriaFinanceiro`;
-			const response: DataItemsResumeProps = await Api.get(`/core/v1/categorias-financeiro?${params}`);
+			const response: DataItemsResumeProps = await Api.get(
+				`/core/v1/categorias-financeiro?${params}`,
+			);
 
-			const { itens }: DataCategoryItemProps = response.data;
-			return itens
-
+			const {itens}: DataCategoryItemProps = response.data;
+			return itens;
 		} catch (error) {
-			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estas categorias', true));
+			dispatch(
+				ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estas categorias', true),
+			);
 		} finally {
 			setTimeout(() => {
 				setIsLoadingCategories(false);
 			}, 2000);
 		}
 	};
-	return { isLoadingCategories, getCategoriesData };
-}
+	return {isLoadingCategories, getCategoriesData};
+};
 
 export const useGetPopulateCategories = () => {
-
-		// Variavel para usar o hook
+	// Variavel para usar o hook
 	const colorUseTheme = useTheme();
 
 	const {colors} = colorUseTheme;
@@ -52,36 +50,39 @@ export const useGetPopulateCategories = () => {
 
 	const dispatch = useDispatch();
 
-	const getCategoriesData = async () => {
-
+	const getCategoriesData = async (type: 'D' | 'R') => {
 		try {
 			setIsLoading(true);
 
-			const params = `campos=nomeCategoriaFinanceiro,corCategoria,+idCategoriaFinanceiro&registrosPorPagina=9999`;
-			const response: DataItemsResumeProps = await Api.get(`/core/v1/categorias-financeiro?${params}`);
+			const {idUsuarioCliente} = await getLoggedUser();
+			const idsTipoCategoriaFinanceiro = type === 'D' ? '-2' : type === 'C' ? '-1' : '';
 
-			const { itens }: DataCategoryItemProps = response.data;
+			const params = `ativo=true&campos=nomeCategoriaFinanceiro,corCategoria,+idCategoriaFinanceiro&idUsuarioCliente=${idUsuarioCliente}&idsTipoCategoriaFinanceiro=${idsTipoCategoriaFinanceiro}&registrosPorPagina=100&ordenacao=+nomeCategoriaFinanceiro`;
 
-			const formatedItens = itens.map((item) => {
+			const response: DataItemsResumeProps = await Api.get(
+				`/core/v1/categorias-financeiro?${params}`,
+			);
 
+			const {itens}: DataCategoryItemProps = response.data;
+
+			const formatedItens = itens.map(item => {
 				return {
-						idCategoriaFinanceiro: item.idCategoriaFinanceiro,
-						nomeCategoriaFinanceiro: item.nomeCategoriaFinanceiro,
-						corCategoria: item.corCategoria !== undefined ? item.corCategoria : colors.gray
-					}
+					idCategoriaFinanceiro: item.idCategoriaFinanceiro,
+					nomeCategoriaFinanceiro: item.nomeCategoriaFinanceiro,
+					corCategoria: item.corCategoria === undefined ? colors.colorlessBadge : item.corCategoria,
+				};
 			});
 
-
 			return formatedItens;
-
 		} catch (error) {
-			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível popular estas categorias', true));
+			dispatch(
+				ToastNotifyActions.toastNotifyShow('Não foi possível popular estas categorias', true),
+			);
 		} finally {
 			setTimeout(() => {
 				setIsLoading(false);
 			}, 2000);
 		}
 	};
-	return { isLoading, getCategoriesData };
-}
-
+	return {isLoading, getCategoriesData};
+};
