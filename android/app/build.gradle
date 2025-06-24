@@ -92,12 +92,17 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
-    bundleInRelease: true,
+    bundleInRelease: false,  // Desabilitado para usar o bundle existente
     bundleCommand: "ram-bundle",
     entryFile: "index.js",
     bundleAssetName: "index.android.bundle",
     jsBundleDirRelease: "$buildDir/intermediates/assets/release",
-    resourcesDirRelease: "$buildDir/intermediates/res/merged/release"
+    resourcesDirRelease: "$buildDir/intermediates/res/merged/release",
+    // Força a cópia de assets mesmo sem bundle
+    bundleInDebug: false,
+    bundleInRelease: false,
+    // Garante que os assets sejam processados
+    enableSeparateBuildPerCPUArchitecture: false
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -192,13 +197,6 @@ android {
         }
     }
 
-    // Adiciona task para gerar o bundle antes do build
-    tasks.whenTaskAdded { task ->
-        if (task.name == 'assembleRelease') {
-            task.dependsOn 'bundleReleaseJsAndAssets'
-        }
-    }
-
     // Garante que o diretório de assets existe
     task createAssetsDir {
         doLast {
@@ -206,10 +204,36 @@ android {
         }
     }
 
+    // Task para copiar assets do React Native
+    task copyReactNativeAssets(type: Copy) {
+        from '../../node_modules/react-native-vector-icons/Fonts'
+        into "$buildDir/intermediates/assets/release/fonts"
+        include '**/*.ttf'
+    }
+
+    // Task para copiar assets do projeto
+    task copyProjectAssets(type: Copy) {
+        from '../../src/assets/images'
+        into "$buildDir/intermediates/assets/release/images"
+        include '**/*'
+    }
+
+    // Task para copiar fontes do projeto
+    task copyProjectFonts(type: Copy) {
+        from '../../src/assets/fonts'
+        into "$buildDir/intermediates/assets/release/fonts"
+        include '**/*'
+    }
+
     // Adiciona a task de criar diretório antes do bundle
     tasks.whenTaskAdded { task ->
         if (task.name == 'bundleReleaseJsAndAssets') {
             task.dependsOn 'createAssetsDir'
+        }
+        if (task.name == 'assembleRelease') {
+            task.dependsOn 'copyReactNativeAssets'
+            task.dependsOn 'copyProjectAssets'
+            task.dependsOn 'copyProjectFonts'
         }
     }
 

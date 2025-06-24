@@ -29,7 +29,11 @@
 		"ios:full-reset": "rm -rf ~/Library/Developer/Xcode/DerivedData && yarn ios:clean-full && yarn ios:xcode",
 		"onesignal": "yarn add react-native-onesignal@4.5.4 && yarn ios:full-reset",
 		"ios:xcode": "open ios/HubApp.xcworkspace",
-		"reset": "rm -rf node_modules && rm -rf package-lock.json && yarn install"
+		"reset": "rm -rf node_modules && rm -rf package-lock.json && yarn install",
+		"metro:clean": "npx react-native start --reset-cache",
+		"watchman:fix": "watchman watch-del . && watchman watch-project .",
+		"android:build-only": "cd android && ./gradlew assembleRelease && cd ..",
+		"android:release-separate": "yarn android:clean && npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && yarn android:build-only && yarn android:install"
 	},
 	"dependencies": {
 		"@expo/match-media": "^0.4.0",
