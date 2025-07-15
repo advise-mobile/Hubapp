@@ -8,14 +8,17 @@ import Modal from '@components/Modal';
 
 import Datepicker from '@components/DatePicker';
 
-import {FormatFullDateEN,FormatFinalDateEN} from '@helpers/DateFunctions';
+import {FormatFullDateEN, FormatFinalDateEN} from '@helpers/DateFunctions';
 
-import { removeNull } from '@helpers/functions';
-
+import {removeNull} from '@helpers/functions';
 
 import Spinner from '@components/Spinner';
 
-import { DataPopulateCategoriesProps, DataPopulateProcessProps, DataPopulatePeopleProps } from './types';
+import {
+	DataPopulateCategoriesProps,
+	DataPopulateProcessProps,
+	DataPopulatePeopleProps,
+} from './types';
 
 import {
 	Title,
@@ -39,74 +42,70 @@ import {FilterProps, DataFilterProps} from './types';
 
 // Add Hook UseTheme para pegar o tema global addicionado
 import {useTheme} from 'styled-components';
-import { useGetPopulateCategories } from '@services/hooks/Finances/useCategories';
-import { useGetPopulateProcess } from '@services/hooks/Finances/useProcess';
-import { useGetPopulatePeople } from '@services/hooks/Finances/usePeople';
-
+import {useGetPopulateCategories} from '@services/hooks/Finances/useCategories';
+import {useGetPopulateProcess} from '@services/hooks/Finances/useProcess';
+import {useGetPopulatePeople} from '@services/hooks/Finances/usePeople';
 
 const launch = [
 	{
-		id:0,
-		label:'Todos os lançamentos',
-		debitoCredito:"null"
+		id: 10, // - Recebe ID apenas para aparecer na contagem dos filtros/limpar do lado direto da tela
+		label: 'Todos os lançamentos',
+		debitoCredito: null,
 	},
 	{
-		id:1,
-		label:"Despesas",
-		debitoCredito:"D"
+		id: 1,
+		label: 'Despesas',
+		debitoCredito: 'D',
 	},
 	{
-		id:2,
-		label:'Despesas pagas',
-		debitoCredito:"D"
+		id: 2,
+		label: 'Despesas pagas',
+		debitoCredito: 'D',
 	},
 	{
-		id:3,
-		label:'Despesas não pagas',
-		debitoCredito:"D"
+		id: 3,
+		label: 'Despesas não pagas',
+		debitoCredito: 'D',
 	},
 	{
-		id:8,
-		label:'Receitas ',
-		debitoCredito:"C"
+		id: 8,
+		label: 'Receitas ',
+		debitoCredito: 'C',
 	},
 	{
-		id:4,
-		label:'Receitas recebidas',
-		debitoCredito:"C"
+		id: 4,
+		label: 'Receitas recebidas',
+		debitoCredito: 'C',
 	},
 	{
-		id:5,
-		label:'Receitas não recebidas',
-		debitoCredito:"C"
+		id: 5,
+		label: 'Receitas não recebidas',
+		debitoCredito: 'C',
 	},
 	{
-		id:6,
-		label:'Lançamentos Fixos',
-		debitoCredito:"D"
+		id: 6,
+		label: 'Lançamentos Fixos',
+		debitoCredito: 'D',
 	},
 	{
-		id:7,
-		label:'Lançamentos Parcelados',
-		debitoCredito:"D"
-	}
+		id: 7,
+		label: 'Lançamentos Parcelados',
+		debitoCredito: 'D',
+	},
 ];
 
 export default Filters = forwardRef(
 	({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
-
 		const {isLoading, getCategoriesData} = useGetPopulateCategories();
 		const {isLoadingProcess, getProcessData} = useGetPopulateProcess();
 		const {isLoadingPeople, getPeopleData} = useGetPopulatePeople();
-		
+
 		const [idDebitCredit, setIdDebitCredit] = useState<number | null>(null);
-		const [idCategory, setIdCategory] = useState<number | null >(null);
+		const [idCategory, setIdCategory] = useState<number | null>(null);
 		const [idProcess, setIdProcess] = useState<number | null>(null);
-		const [idPeople, setIdPeople] = useState<number | null >(null);
+		const [idPeople, setIdPeople] = useState<number | null>(null);
 		const [minDate, setMinDate] = useState<string | null>(null);
 		const [maxDate, setMaxDate] = useState<string | null>(null);
-
-		
 
 		const [categories, setCategories] = useState<DataPopulateCategoriesProps[]>([]);
 		const [process, setProcess] = useState<DataPopulateProcessProps[]>([]);
@@ -122,7 +121,7 @@ export default Filters = forwardRef(
 			fetchDataProcess();
 			fetchDataPeople();
 		}, []);
-	
+
 		const fetchDataCategories = async () => {
 			try {
 				const responseCategories = await getCategoriesData();
@@ -144,33 +143,31 @@ export default Filters = forwardRef(
 			} catch (error) {}
 		};
 
-		const handleLaunchClick = (idLaunch:number) => {
-		
+		const handleLaunchClick = (idLaunch: number) => {
 			// busca o debitCredit pelo id
 			const currentDebitCredit = launch.find(item => item.id === idLaunch);
 			setIdDebitCredit(idLaunch);
 
-			setValue('repeticaoFixa', false);	
+			setValue('repeticaoFixa', false);
 			setValue('parcelado', false);
 
-			if(idLaunch === 6){
-				setValue('repeticaoFixa', true);	
-				return
+			if (idLaunch === 6) {
+				setValue('repeticaoFixa', true);
+				return;
 			}
-			if(idLaunch === 7){
-				setValue('parcelado', true);	
-				return
+			if (idLaunch === 7) {
+				setValue('parcelado', true);
+				return;
 			}
 
-		
 			setValue('DebitoCredito', currentDebitCredit?.debitoCredito);
 		};
 
-		const handleCategoryClick = (idCategory:number) => {
+		const handleCategoryClick = (idCategory: number) => {
 			setIdCategory(idCategory);
 		};
 
-		const handleProcessClick = (idProcess:number | null) => {	
+		const handleProcessClick = (idProcess: number | null) => {
 			setIdProcess(idProcess);
 		};
 
@@ -183,27 +180,13 @@ export default Filters = forwardRef(
 		});
 
 		const onSubmit = (data: DataFilterProps) => {
-			handleSubmitFilters(removeNull(data));
+			const dataFiltered = removeNull(data);
+			handleSubmitFilters(removeNull(dataFiltered));
 		};
 
 		const countFilters = useCallback(
-			() =>
-				checkNull([
-					minDate,
-					maxDate,
-					idDebitCredit,
-					idCategory,
-					idProcess,
-					idPeople,
-				]),
-			[
-				minDate,
-				maxDate,
-				idDebitCredit,
-				idCategory,
-				idProcess,
-				idPeople,
-			],
+			() => checkNull([minDate, maxDate, idDebitCredit, idCategory, idProcess, idPeople]),
+			[minDate, maxDate, idDebitCredit, idCategory, idProcess, idPeople],
 		);
 
 		const checkNull = useCallback(
@@ -231,16 +214,13 @@ export default Filters = forwardRef(
 			setIdPeople(null);
 			setValue('idPessoaCliente', null);
 
-			setValue('parcelado', null);	
-			setValue('repeticaoFixa', null);	
-
+			setValue('parcelado', null);
+			setValue('repeticaoFixa', null);
 		}, []);
 
 		const closeModal = useCallback(() => ref.current?.close(), []);
 
-		const footer = () => 
-			
-				
+		const footer = () => (
 			<Footer>
 				<Cancel onPress={() => closeModal()}>
 					<CancelText>Cancelar</CancelText>
@@ -249,11 +229,8 @@ export default Filters = forwardRef(
 				<ToSave onPress={handleSubmit(onSubmit)}>
 					<ToSaveText>Ver resultados</ToSaveText>
 				</ToSave>
-				
-				
 			</Footer>
-		;
-
+		);
 		const heightScreen = Dimensions.get('window').height;
 
 		const modalHeight = (heightScreen * 70) / 100;
@@ -266,7 +243,6 @@ export default Filters = forwardRef(
 				title="Filtros"
 				filters={countFilters()}
 				clear={clearFilters}>
-
 				<Row>
 					<Title>Período</Title>
 				</Row>
@@ -318,40 +294,40 @@ export default Filters = forwardRef(
 
 				<Releases>
 					<Controller
-							name="DebitoCredito"
-							control={control}
-							defaultValue={null}
-							render={({onChange}) => (
+						name="DebitoCredito"
+						control={control}
+						defaultValue={null}
+						render={({onChange}) => (
 							<>
-								{launch.map((item) => (
+								{launch.map(item => (
 									<ReleaseType
 										key={item.id}
 										onPress={() => handleLaunchClick(item.id)}
 										style={{
 											backgroundColor: colors.gray,
 										}}>
-										<LabelItems style={{color: idDebitCredit === item.id ? colors.backgroundButton : colors.iconGray}}>
+										<LabelItems
+											style={{
+												color:
+													idDebitCredit === item.id ? colors.backgroundButton : colors.iconGray,
+											}}>
 											{item.label}
 										</LabelItems>
 									</ReleaseType>
 								))}
 							</>
-
-							)}>
-					</Controller>
+						)}></Controller>
 				</Releases>
 
 				<Row>
 					<Title>Categorias</Title>
 				</Row>
 
-				{ isLoading ? (
+				{isLoading ? (
 					<Spinner height={50} color={colors.primary} transparent={true} />
-
-				) : 
-				(
-				<ContainerCategories>
-				<Controller
+				) : (
+					<ContainerCategories>
+						<Controller
 							name="idCategoria"
 							control={control}
 							defaultValue={null}
@@ -361,100 +337,104 @@ export default Filters = forwardRef(
 										<ReleaseType
 											key={index}
 											onPress={() => {
-												handleCategoryClick(category.idCategoriaFinanceiro)
+												handleCategoryClick(category.idCategoriaFinanceiro);
 												onChange(category.idCategoriaFinanceiro);
 											}}
 											style={{
 												backgroundColor: colors.gray,
 											}}>
-											<LabelItems style={{color: idCategory === category.idCategoriaFinanceiro ? colors.backgroundButton : colors.iconGray}}>
+											<LabelItems
+												style={{
+													color:
+														idCategory === category.idCategoriaFinanceiro
+															? colors.backgroundButton
+															: colors.iconGray,
+												}}>
 												{category.nomeCategoriaFinanceiro}
 											</LabelItems>
 										</ReleaseType>
 									))}
 								</>
-
-						)}>
-								</Controller>
-
-					
-				</ContainerCategories>
+							)}></Controller>
+					</ContainerCategories>
 				)}
-
 
 				<Row>
 					<Title>Processos</Title>
 				</Row>
 
-				{ isLoadingProcess ? (
+				{isLoadingProcess ? (
 					<Spinner height={50} color={colors.primary} transparent={true} />
-					
 				) : (
-				<Process>
-				<Controller
+					<Process>
+						<Controller
 							name="idProcesso"
 							control={control}
 							defaultValue={null}
 							render={({onChange}) => (
 								<>
-								{process.map((process, index) => (
-									<ReleaseType
-										key={index}
-										onPress={() => {
-											handleProcessClick(process.idProcesso),
-											onChange(process.idProcesso)
-										}}
-										style={{
-											backgroundColor: colors.gray,
-										}}>
-										<LabelItems style={{color: idProcess === process.idProcesso ? colors.backgroundButton : colors.iconGray}}>
-											{process.numeroProcesso}
-										</LabelItems>
-									</ReleaseType>
-								))}
-					</>
-
-					)}>
-							</Controller>
-				</Process>
+									{process.map((process, index) => (
+										<ReleaseType
+											key={index}
+											onPress={() => {
+												handleProcessClick(process.idProcesso), onChange(process.idProcesso);
+											}}
+											style={{
+												backgroundColor: colors.gray,
+											}}>
+											<LabelItems
+												style={{
+													color:
+														idProcess === process.idProcesso
+															? colors.backgroundButton
+															: colors.iconGray,
+												}}>
+												{process.numeroProcesso}
+											</LabelItems>
+										</ReleaseType>
+									))}
+								</>
+							)}></Controller>
+					</Process>
 				)}
 
 				<Row>
 					<Title>Pessoas</Title>
 				</Row>
 
-				{ isLoadingPeople ? (
+				{isLoadingPeople ? (
 					<Spinner height={50} color={colors.primary} transparent={true} />
-					
 				) : (
-				<Person>
-				<Controller
+					<Person>
+						<Controller
 							name="idPessoaCliente"
 							control={control}
 							defaultValue={null}
 							render={({onChange}) => (
 								<>
-							{people.map((person) => (
-								<ReleaseType
-									key={person.idPessoaCliente}
-									onPress={() => {
-										handlePeopleClick(person.idPessoaCliente),
-										onChange(person.idPessoaCliente)
-									}}
-									style={{
-										backgroundColor: colors.gray,
-									}}>
-									<LabelItems style={{color: idPeople === person.idPessoaCliente ? colors.backgroundButton : colors.iconGray}}>
-										{person.nomePessoaCliente}
-									</LabelItems>
-								</ReleaseType>
-							))}
-					</>
-
-				)}>
-				</Controller>
-
-				</Person>
+									{people.map(person => (
+										<ReleaseType
+											key={person.idPessoaCliente}
+											onPress={() => {
+												handlePeopleClick(person.idPessoaCliente), onChange(person.idPessoaCliente);
+											}}
+											style={{
+												backgroundColor: colors.gray,
+											}}>
+											<LabelItems
+												style={{
+													color:
+														idPeople === person.idPessoaCliente
+															? colors.backgroundButton
+															: colors.iconGray,
+												}}>
+												{person.nomePessoaCliente}
+											</LabelItems>
+										</ReleaseType>
+									))}
+								</>
+							)}></Controller>
+					</Person>
 				)}
 			</Modal>
 		);
