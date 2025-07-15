@@ -106,6 +106,7 @@ export default Filters = forwardRef(
 		const [idPeople, setIdPeople] = useState<number | null>(null);
 		const [minDate, setMinDate] = useState<string | null>(null);
 		const [maxDate, setMaxDate] = useState<string | null>(null);
+		const [clearKey, setClearKey] = useState(0); // Adicionado para forçar re-render
 
 		const [categories, setCategories] = useState<DataPopulateCategoriesProps[]>([]);
 		const [process, setProcess] = useState<DataPopulateProcessProps[]>([]);
@@ -216,6 +217,9 @@ export default Filters = forwardRef(
 
 			setValue('parcelado', null);
 			setValue('repeticaoFixa', null);
+
+			// Força re-renderização dos Datepickers
+			setClearKey(prev => prev + 1);
 		}, []);
 
 		const closeModal = useCallback(() => ref.current?.close(), []);
@@ -256,6 +260,7 @@ export default Filters = forwardRef(
 							defaultValue={null}
 							render={({onChange}) => (
 								<Datepicker
+									key={`start-date-${clearKey}`}
 									date={minDate}
 									enabled={true}
 									title="dd/mm/aaaa"
@@ -275,6 +280,7 @@ export default Filters = forwardRef(
 							defaultValue={null}
 							render={({onChange}) => (
 								<Datepicker
+									key={`end-date-${clearKey}`}
 									date={maxDate}
 									enabled={true}
 									title="dd/mm/aaaa"

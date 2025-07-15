@@ -14,7 +14,7 @@ import {Animated, TouchableHighlight} from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useGetCategory, useCategory} from '@services/hooks/Finances/useCategory';
-import {CategoryProps, DataFiltersCategory, CategoryRef} from './types';
+import {CategoryProps, DataFiltersCategory, CategoryRef, PaginatedCategoryResult} from './types';
 
 import ConfirmModal from '@components/ConfirmModal';
 
@@ -35,7 +35,10 @@ const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 	const {isLoadingCategory, getCategoryData} = useGetCategory();
 	const {isSavingCategory, inactivateCategory, activateCategory} = useCategory();
 
-	const [dataResume, setDataResume] = useState<CategoryProps[] | undefined>([]);
+	const [dataResume, setDataResume] = useState<CategoryProps[]>([]);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [hasMore, setHasMore] = useState(true);
+	const [isLoadingMore, setIsLoadingMore] = useState(false);
 
 	const [categoryEdit, setCategoryEdit] = useState<CategoryProps | null>(null);
 
@@ -44,28 +47,52 @@ const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
-	const confirmationInativationModalRef = useRef();
-	const editCategoryRef = useRef();
-	const listRef = useRef(null);
+	const confirmationInativationModalRef = useRef<any>();
+	const editCategoryRef = useRef<any>();
+	const listRef = useRef<any>(null);
 
 	useEffect(() => {
-		fetchData();
+		fetchData(true);
 	}, [props]);
 
 	useImperativeHandle(ref, () => ({
 		refresh: () => {
-			return fetchData();
+			return fetchData(true);
 		},
 	}));
 
-	const fetchData = async () => {
+	const fetchData = async (resetData = false) => {
 		try {
-			const responseCategories = await getCategoryData(props.dataFiltersCategory);
+			const pageToLoad = resetData ? 1 : currentPage;
+			const responseCategories: PaginatedCategoryResult = await getCategoryData(
+				props.dataFiltersCategory,
+				pageToLoad,
+				100,
+			);
+
 			if (responseCategories) {
-				setDataResume(responseCategories);
+				if (resetData) {
+					setDataResume(responseCategories.items);
+					setCurrentPage(2);
+				} else {
+					setDataResume(prev => [...prev, ...responseCategories.items]);
+					setCurrentPage(prev => prev + 1);
+				}
+				setHasMore(responseCategories.hasMore);
 			}
 		} catch (error) {
 			console.error('Error fetching data:', error);
+		}
+	};
+
+	const loadMore = async () => {
+		if (isLoadingMore || !hasMore || isLoadingCategory) return;
+
+		setIsLoadingMore(true);
+		try {
+			await fetchData(false);
+		} finally {
+			setIsLoadingMore(false);
 		}
 	};
 
@@ -77,16 +104,16 @@ const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 	};
 
 	const handleModalEditCategory = useCallback(() => {
-		fetchData();
+		fetchData(true);
 		editCategoryRef.current?.close();
 	}, []);
 
-	const handleInativation = useCallback((item: ItemProps) => {
+	const handleInativation = useCallback((item: CategoryProps) => {
 		setCurrentItem(item);
 		confirmationInativationModalRef.current?.open();
 	}, []);
 
-	const handleReactivate = useCallback((item: ItemProps) => {
+	const handleReactivate = useCallback((item: CategoryProps) => {
 		setCurrentItem(item);
 		confirmationInativationModalRef.current?.open();
 	}, []);
@@ -118,17 +145,22 @@ const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 
 	const openRow = useCallback(
 		(item: CategoryProps) => {
-			!listRef.current?._rows[item.idCategoriaFinanceiro].isOpen
-				? listRef.current?._rows[item.idCategoriaFinanceiro].manuallySwipeRow(-150)
-				: closeOpenedRow(item);
+			const itemId = item.idCategoriaFinanceiro;
+			if (listRef.current && itemId) {
+				!listRef.current._rows[itemId]?.isOpen
+					? listRef.current._rows[itemId]?.manuallySwipeRow(-150)
+					: closeOpenedRow(item);
+			}
 		},
 		[listRef],
 	);
 
-	const closeOpenedRow = useCallback(
-		(item: CategoryProps) => listRef.current?._rows[item.idCategoriaFinanceiro].closeRow(),
-		[],
-	);
+	const closeOpenedRow = useCallback((item: CategoryProps) => {
+		const itemId = item.idCategoriaFinanceiro;
+		if (listRef.current && itemId) {
+			listRef.current._rows[itemId]?.closeRow();
+		}
+	}, []);
 
 	const renderItem = useCallback(
 		({item}: {item: CategoryProps}) => (
@@ -164,13 +196,22 @@ const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 		[dataResume, colors],
 	);
 
+	const renderFooter = useCallback(() => {
+		if (!isLoadingMore) return null;
+		return (
+			<ContainerSpinner>
+				<Spinner height={30} color={colors.primary} transparent={true} />
+			</ContainerSpinner>
+		);
+	}, [isLoadingMore, colors]);
+
 	const handleModalCancel = useCallback(() => confirmationInativationModalRef.current?.close(), []);
 
 	const handleModalInativationSubmit = useCallback(async () => {
 		if (currentItem) {
 			const inativation = await inactivateCategory(currentItem, handleModalCancel);
 			if (inativation) {
-				await fetchData();
+				await fetchData(true);
 			}
 		}
 	}, [currentItem]);
@@ -179,7 +220,7 @@ const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 		if (currentItem) {
 			const trash = await activateCategory(currentItem, handleModalCancel);
 			if (trash) {
-				await fetchData();
+				await fetchData(true);
 			}
 		}
 	}, [currentItem]);
@@ -206,7 +247,7 @@ const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 
 	return (
 		<>
-			{isLoadingCategory ? (
+			{isLoadingCategory && dataResume.length === 0 ? (
 				<ContainerSpinner>
 					<Spinner height={50} color={colors.primary} transparent={true} />
 				</ContainerSpinner>
@@ -223,11 +264,14 @@ const Category = forwardRef<CategoryRef, DataFiltersCategory>((props, ref) => {
 					previewOpenDelay={2000}
 					useNativeDriver={false}
 					renderHiddenItem={renderHiddenItem}
-					keyExtractor={(item: CategoryProps) => item.idCategoriaFinanceiro.toString()}
+					keyExtractor={(item: CategoryProps) => item.idCategoriaFinanceiro?.toString() || ''}
 					removeClippedSubviews={true}
-					maxToRenderPerBatch={5}
+					maxToRenderPerBatch={10}
 					updateCellsBatchingPeriod={100}
 					initialNumToRender={20}
+					onEndReached={loadMore}
+					onEndReachedThreshold={0.1}
+					ListFooterComponent={renderFooter}
 				/>
 			)}
 
