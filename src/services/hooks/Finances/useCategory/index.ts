@@ -56,7 +56,6 @@ export const useGetCategory = () => {
 				};
 			});
 
-			console.log('=== itensOptimized', itensOptimized.length);
 			return {
 				items: itensOptimized,
 				hasMore: itensOptimized.length === pageSize,
@@ -96,10 +95,13 @@ export const useCategory = () => {
 			dispatch(ToastNotifyActions.toastNotifyShow('Categoria cadastrada com sucesso!', false));
 
 			return true;
-		} catch (error) {
-			dispatch(
-				ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria', true),
-			);
+		} catch (error: any) {
+			const responseMessage = error.response?.data.status.erros[0].mensagem;
+
+			// Usar a mensagem da API ou uma mensagem padrão
+			const errorMessage = responseMessage || 'Não foi possível cadastrar esta categoria';
+
+			dispatch(ToastNotifyActions.toastNotifyShow(errorMessage, true));
 		} finally {
 			setTimeout(() => {
 				setIsSavingCategory(false);
@@ -117,10 +119,13 @@ export const useCategory = () => {
 			dispatch(ToastNotifyActions.toastNotifyShow('Categoria alterada com sucesso!', false));
 
 			return true;
-		} catch (error) {
-			dispatch(
-				ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria', true),
-			);
+		} catch (error: any) {
+			const responseMessage = error.response?.data.status.erros[0].mensagem;
+
+			// Usar a mensagem da API ou uma mensagem padrão
+			const errorMessage = responseMessage || 'Não foi possível alterar esta categoria';
+
+			dispatch(ToastNotifyActions.toastNotifyShow(errorMessage, true));
 		} finally {
 			setTimeout(() => {
 				setIsSavingCategory(false);
@@ -142,10 +147,10 @@ export const useCategory = () => {
 			dispatch(ToastNotifyActions.toastNotifyShow('Categoria inativada com sucesso!', false));
 
 			return true;
-		} catch (error) {
-			const errorMessage =
-				error.response?.data?.status?.erros?.[0]?.mensagem ||
-				'Não foi possível inativar esta categoria';
+		} catch (error: any) {
+			const responseMessage = error.response?.data.status.erros[0].mensagem;
+
+			const errorMessage = responseMessage || 'Não foi possível inativar esta categoria';
 
 			dispatch(ToastNotifyActions.toastNotifyShow(errorMessage, true));
 		} finally {
@@ -169,8 +174,12 @@ export const useCategory = () => {
 			dispatch(ToastNotifyActions.toastNotifyShow('Categoria ativada com sucesso!', false));
 
 			return true;
-		} catch (error) {
-			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível ativar esta categoria', true));
+		} catch (error: any) {
+			const responseMessage = error.response?.data.status.erros[0].mensagem;
+
+			const errorMessage = responseMessage || 'Não foi possível ativar esta categoria';
+
+			dispatch(ToastNotifyActions.toastNotifyShow(errorMessage, true));
 		} finally {
 			setTimeout(() => {
 				setIsSavingCategory(false);
