@@ -100,6 +100,37 @@ export default function Details(props) {
 		[itemComplete],
 	);
 
+	const dataOptionsRepeat = [
+		{
+			label: 'Não se repete',
+			value: -1,
+		},
+		{
+			label: 'dias',
+			value: -9,
+		},
+		{
+			label: 'semanas',
+			value: -8,
+		},
+		{
+			label: 'quinzenas',
+			value: -7,
+		},
+		{
+			label: 'meses',
+			value: -6,
+		},
+		{
+			label: 'anos',
+			value: -2,
+		},
+	];
+
+	const dataOptionRepeatFindLabel = dataOptionsRepeat.find(
+		item => item.value === dataDetails?.idTipoParcelamentoFinanceiro,
+	);
+
 	const colorUseTheme = useTheme();
 	const {colors} = colorUseTheme;
 
@@ -204,7 +235,11 @@ export default function Details(props) {
 
 					<InformationTextContainer>
 						<InformationText>
-							Durante {dataDetails?.quantidadeParcelas || 'N/I'} dia(s)
+							{dataDetails?.idTipoParcelamentoFinanceiro !== -1
+								? `Durante ${dataDetails?.quantidadeParcelas || 'N/I'} ${
+										dataOptionRepeatFindLabel?.label || 'N/I'
+								  }`
+								: dataOptionRepeatFindLabel?.label || 'N/I'}
 						</InformationText>
 					</InformationTextContainer>
 
