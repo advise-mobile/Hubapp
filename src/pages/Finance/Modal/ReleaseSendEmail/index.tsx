@@ -1,6 +1,7 @@
 import React, {forwardRef, useCallback, useState} from 'react';
 
 import {useNavigation} from '@react-navigation/native';
+import {ActivityIndicator} from 'react-native';
 
 import Modal from '@components/Modal';
 
@@ -39,12 +40,21 @@ export default ReleaseSendEmail = forwardRef((props, ref) => {
 
 	const footer = () => (
 		<Footer>
-			<Cancel onPress={() => handleOnClose()}>
+			<Cancel onPress={() => handleOnClose()} disabled={isLoadingRelease}>
 				<CancelText>Cancelar</CancelText>
 			</Cancel>
 
-			<Register onPress={() => handleSubmit()}>
-				<RegisterText>Enviar</RegisterText>
+			<Register
+				onPress={() => handleSubmit()}
+				disabled={isLoadingRelease}
+				style={{
+					opacity: isLoadingRelease ? 0.6 : 1,
+				}}>
+				{isLoadingRelease ? (
+					<ActivityIndicator size="small" color={colors.white} />
+				) : (
+					<RegisterText>Enviar</RegisterText>
+				)}
 			</Register>
 		</Footer>
 	);
