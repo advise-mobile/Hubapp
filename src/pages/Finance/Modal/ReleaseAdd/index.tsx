@@ -276,11 +276,7 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 	const handleOnClose = useCallback(() => {
 		onClose();
-		navigation.reset({
-			index: 0,
-			routes: [{name: 'FinanceTab'}],
-		});
-	}, props);
+	}, [onClose]);
 
 	const onSubmit = data => {
 		if (data.valor === '0,00') {

@@ -231,9 +231,11 @@ export const useRelease = () => {
 
 				return true;
 			} catch (error) {
-				dispatch(
-					ToastNotifyActions.toastNotifyShow('Não foi possível alterar este lançamento', true),
-				);
+				const responseMessage = error.response?.data.status.erros[0].mensagem;
+
+				const errorMessage = responseMessage || 'Não foi possível ativar esta categoria';
+
+				dispatch(ToastNotifyActions.toastNotifyShow(errorMessage, true));
 			} finally {
 				setTimeout(() => {
 					setIsLoadingRelease(false);

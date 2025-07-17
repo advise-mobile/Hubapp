@@ -79,6 +79,7 @@ export interface FiltersReleaseDataProps {
 
 export interface DataFiltersRelease {
 	dataFiltersRelease: FiltersReleaseDataProps | undefined;
+	refreshTrigger?: boolean;
 }
 
 export interface FinancialLossProps {

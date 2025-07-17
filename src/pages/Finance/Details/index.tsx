@@ -96,8 +96,17 @@ export default function Details(props) {
 	};
 
 	const renderActionsOptions = useCallback(
-		() => <LauchActionsMenu item={itemComplete} ref={LauchActionsMenuRef} />,
-		[itemComplete],
+		() => (
+			<LauchActionsMenu
+				item={itemComplete}
+				ref={LauchActionsMenuRef}
+				onRefresh={() => {
+					// Navega de volta para forçar atualização da lista
+					props.navigation.goBack();
+				}}
+			/>
+		),
+		[itemComplete, props.navigation],
 	);
 
 	const dataOptionsRepeat = [

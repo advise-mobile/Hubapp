@@ -80,6 +80,9 @@ export default function Finance(props) {
 
 	const [dataFiltersRelease, setDataFiltersRelease] = useState();
 
+	// Adiciona trigger para forçar refresh do Release
+	const [refreshRelease, setRefreshRelease] = useState(false);
+
 	// period = 3 = mensal filtro inicial conforme doc solicitada
 	const [dataFiltersCashFlow, setDataFiltersCashFlow] = useState({
 		dataSaldo: startOfMonth,
@@ -182,6 +185,11 @@ export default function Finance(props) {
 				}
 			}, 100);
 		}
+
+		// Adiciona refresh para Release
+		if (currentTab === 'release') {
+			setRefreshRelease(prev => !prev);
+		}
 	}, [currentTab]);
 
 	const renderAddOptions = useCallback(
@@ -248,7 +256,12 @@ export default function Finance(props) {
 							<Spinner height={'auto'} />
 						) : (
 							<>
-								{currentTab === 'release' && <Release dataFiltersRelease={dataFiltersRelease} />}
+								{currentTab === 'release' && (
+									<Release
+										dataFiltersRelease={dataFiltersRelease}
+										refreshTrigger={refreshRelease}
+									/>
+								)}
 								{currentTab === 'cash-flow' && (
 									<CashFlow dataFiltersCashFlow={dataFiltersCashFlow} />
 								)}
