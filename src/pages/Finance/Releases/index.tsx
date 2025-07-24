@@ -175,7 +175,7 @@ export default function Release(dataFilters: DataFiltersRelease) {
 	};
 
 	const renderItem = ({item}: {item: ItemInstallmentsProps}) => {
-		return <FinanceDataItem item={item} />;
+		return <FinanceDataItem item={item} onDataChange={fetchDataInstallments} />;
 	};
 
 	const renderFooter = () => {

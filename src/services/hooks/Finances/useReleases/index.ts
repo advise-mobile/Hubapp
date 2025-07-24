@@ -2,7 +2,7 @@ import {useState, useCallback} from 'react';
 
 import Api from '@services/Api';
 
-import {FormatDateBR, FormatDateEN} from '@helpers/DateFunctions.js';
+import {FormatDateBR, FormatDateEN, FormatDateHourBR} from '@helpers/DateFunctions.js';
 import {FormatReal} from '@helpers/MoneyFunctions.ts';
 
 import {
@@ -110,7 +110,7 @@ export const useGetInstallments = () => {
 
 			let currentPage = filters.currentPage ? filters.currentPage : 1;
 
-			const params = `${filtersParams}campos=*&ativo=true&ordenacao=+dataVencimento&registrosPorPagina=20&paginaAtual=${currentPage}`;
+			const params = `${filtersParams}campos=*&ativo=true&ordenacao=+dataVencimento&registrosPorPagina=50&paginaAtual=${currentPage}`;
 
 			const response: DataItemsInstallmentsProps = await Api.get(
 				`/core/v1/parcelas-financeiro?${params}`,
@@ -120,7 +120,7 @@ export const useGetInstallments = () => {
 
 			const itensOptimized = itens.map((item: ItemInstallmentsProps) => {
 				const dataVencimentoFormatada = FormatDateBR(item.dataVencimento);
-				const dataBaixaFormatada = FormatDateBR(item.dataBaixa);
+				const dataBaixaFormatada = item.dataBaixa ? FormatDateBR(item.dataBaixa) : null;
 
 				return {
 					...item,

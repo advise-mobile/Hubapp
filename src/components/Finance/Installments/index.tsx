@@ -27,7 +27,13 @@ import {ActivityIndicator} from 'react-native';
 
 import {useFinancialLoss, useGetFinanceID} from '@services/hooks/Finances/useReleases';
 
-const FinanceDataItem = ({item}: {item: ItemInstallmentsProps}) => {
+const FinanceDataItem = ({
+	item,
+	onDataChange,
+}: {
+	item: ItemInstallmentsProps;
+	onDataChange: () => void;
+}) => {
 	const [localItem, setLocalItem] = useState(item);
 	const navigation = useNavigation();
 	const {addFinancialLoss, removeFinancialLoss, isLoadingFinancialLoss} = useFinancialLoss();
@@ -46,7 +52,7 @@ const FinanceDataItem = ({item}: {item: ItemInstallmentsProps}) => {
 					idParcelaFinanceiro: localItem.idParcelaFinanceiro,
 				},
 				() => {
-					setLocalItem(prev => ({...prev, baixado: false}));
+					onDataChange();
 				},
 			);
 		} else {
@@ -56,7 +62,7 @@ const FinanceDataItem = ({item}: {item: ItemInstallmentsProps}) => {
 					valorBaixa: localItem.valorAberto || '0',
 				},
 				() => {
-					setLocalItem(prev => ({...prev, baixado: true}));
+					onDataChange();
 				},
 			);
 		}
