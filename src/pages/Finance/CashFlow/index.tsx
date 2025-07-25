@@ -40,10 +40,9 @@ export default function CashFlow({dataFiltersCashFlow}: DataFiltersCashFlowProps
 
 	const ModalActionsRef = useRef(null);
 
-	const actionsMenu = useCallback(
-		() => <CashFlowActions ref={ModalActionsRef} filters={dataFiltersCashFlow} />,
-		[dataFiltersCashFlow],
-	);
+	const actionsMenu = useCallback(() => {
+		return <CashFlowActions ref={ModalActionsRef} filters={dataFiltersCashFlow} />;
+	}, [dataFiltersCashFlow]);
 
 	useEffect(() => {
 		fetchCashFlow(dataFiltersCashFlow!);
