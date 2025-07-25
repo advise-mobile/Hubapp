@@ -3,6 +3,7 @@ import 'moment/locale/pt-br';
 
 export const DateCurrent = moment();
 export const CurrentTimeEN = moment().format('YYYY-MM-DD H:mm:ss');
+export const FormatYearMonthEN = date => moment(date).format('YYYY-MM');
 export const FormatDateEN = date => moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD');
 export const FormatFullDateEN = date =>
 	moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') + 'T00:00:00';

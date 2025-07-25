@@ -9,6 +9,7 @@ import {
 } from '@pages/Finance/CashFlow/types';
 
 import {FormatReal} from '@helpers/MoneyFunctions';
+import {FormatYearMonthEN} from '@helpers/DateFunctions';
 
 interface DataEmailProps {
 	destinatarios: string[];
@@ -74,11 +75,18 @@ export const useGetCashFlow = () => {
 			try {
 				setIsLoadingCashFlow(true);
 
-				const params = {
-					dataInicio: data.dataSaldo,
-					dataFim: data.dataFim,
-					destinatarios: data.destinatarios,
-				};
+				const params =
+					data.period === 4
+						? {
+								dataInicio: FormatYearMonthEN(data.dataSaldo),
+								dataFim: FormatYearMonthEN(data.dataFim),
+								destinatarios: data.destinatarios,
+						  }
+						: {
+								dataSaldo: data.dataSaldo,
+								dataFim: data.dataFim,
+								destinatarios: data.destinatarios,
+						  };
 
 				// - quando for anual muda o endpoint segundo documentacao
 				const endpoint =
