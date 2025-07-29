@@ -57,10 +57,16 @@ export default Add = forwardRef((props, ref) => {
 
 	const closeExpense = () => {
 		setModalExpenseOpen(false);
+		if (props.onClose) {
+			props.onClose();
+		}
 	};
 
 	const closeRevenue = () => {
 		setModalRevenueOpen(false);
+		if (props.onClose) {
+			props.onClose();
+		}
 	};
 
 	const closeCategory = async () => {

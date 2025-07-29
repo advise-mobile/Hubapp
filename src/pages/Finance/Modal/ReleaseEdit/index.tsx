@@ -1,5 +1,5 @@
 import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, ActivityIndicator} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 
@@ -54,16 +54,8 @@ import {useGetFinanceID, useRelease} from '@services/hooks/Finances/useReleases'
 import RNPickerSelect from 'react-native-picker-select';
 import {Controller, useForm} from 'react-hook-form';
 
-export default ReleaseEdit = forwardRef((props, ref) => {
+const ReleaseEdit = forwardRef((props, ref) => {
 	const navigation = useNavigation();
-
-	const closeModal = useCallback(() => {
-		ref.current?.close();
-		navigation.reset({
-			index: 0,
-			routes: [{name: 'FinanceTab'}],
-		});
-	}, props);
 
 	const {item, onClose} = props;
 
@@ -284,23 +276,28 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 
 	const footer = () => (
 		<Footer>
-			<Cancel onPress={() => onClose()}>
+			<Cancel onPress={() => onClose()} disabled={isLoadingRelease}>
 				<CancelText>Cancelar</CancelText>
 			</Cancel>
 
-			<Register onPress={handleSubmit(onSubmit)}>
-				<RegisterText>Alterar</RegisterText>
+			<Register
+				onPress={handleSubmit(onSubmit)}
+				disabled={isLoadingRelease}
+				style={{
+					opacity: isLoadingRelease ? 0.6 : 1,
+				}}>
+				{isLoadingRelease ? (
+					<ActivityIndicator size="small" color={colors.white} />
+				) : (
+					<RegisterText>Alterar</RegisterText>
+				)}
 			</Register>
 		</Footer>
 	);
 
 	const handleOnClose = useCallback(() => {
 		onClose();
-		navigation.reset({
-			index: 0,
-			routes: [{name: 'FinanceTab'}],
-		});
-	}, props);
+	}, [onClose]);
 
 	const onSubmit = data => {
 		if (data.valor === '0,00') {
@@ -682,6 +679,8 @@ export default ReleaseEdit = forwardRef((props, ref) => {
 		</Modal>
 	);
 });
+
+export default ReleaseEdit;
 
 const stylesPickerSelectStyles = colors =>
 	StyleSheet.create({

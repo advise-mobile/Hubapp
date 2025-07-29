@@ -35,7 +35,7 @@ import ReleaseSendEmail from '../ReleaseSendEmail';
 
 import {BASE_URL} from '@services/Api';
 
-export default LauchActionsMenu = forwardRef(({item}, ref) => {
+export default LauchActionsMenu = forwardRef(({item, onRefresh}, ref) => {
 	const navigation = useNavigation();
 
 	const dispatch = useDispatch();
@@ -62,15 +62,24 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
 
 	const closeReleaseEditModal = useCallback(() => {
 		setModalReleaseEditOpen(false);
-	}, []);
+		if (onRefresh) {
+			onRefresh();
+		}
+	}, [onRefresh]);
 
 	const closeReleaseDuplicateModal = useCallback(() => {
 		setModalReleaseDuplicateOpen(false);
-	}, []);
+		if (onRefresh) {
+			onRefresh();
+		}
+	}, [onRefresh]);
 
 	const closeReleaseSendEmailModal = useCallback(() => {
 		setModalReleaseSendEmailOpen(false);
-	}, []);
+		if (onRefresh) {
+			onRefresh();
+		}
+	}, [onRefresh]);
 
 	useEffect(() => {
 		if (modalReleaseEditOpen) {
@@ -107,13 +116,14 @@ export default LauchActionsMenu = forwardRef(({item}, ref) => {
 		if (item) {
 			const trash = await deleteRelease(item, handleDeleteModalCancel);
 			if (trash) {
-				navigation.reset({
-					index: 0,
-					routes: [{name: 'FinanceTab'}],
-				});
+				// Apenas fecha o modal sem resetar navegação
+				handleDeleteModalCancel();
+				if (onRefresh) {
+					onRefresh();
+				}
 			}
 		}
-	}, [item]);
+	}, [item, onRefresh]);
 
 	const renderDeleteConfirmation = useMemo(
 		() => (

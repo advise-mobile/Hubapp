@@ -19,7 +19,11 @@ export const useGetCategory = () => {
 
 	const dispatch = useDispatch();
 
-	const getCategoryData = async (filtersData: CategoryDataProps | undefined) => {
+	const getCategoryData = async (
+		filtersData: CategoryDataProps | undefined,
+		page: number = 1,
+		pageSize: number = 50,
+	) => {
 		try {
 			setIsLoadingCategory(true);
 
@@ -35,7 +39,7 @@ export const useGetCategory = () => {
 				filters = `IdsTipoCategoriaFinanceiro=${filtersData.type}&ativo=${filtersData.situation}`;
 			}
 
-			const params = `?campos=*&registrosPorPagina=300&idUsuarioCliente=${idUsuarioCliente}&ordenacao=+nomeCategoriaFinanceiro`;
+			const params = `?campos=*&registrosPorPagina=${pageSize}&paginaAtual=${page}&idUsuarioCliente=${idUsuarioCliente}&ordenacao=+nomeCategoriaFinanceiro`;
 			const response: DataCategoryProps = await Api.get(
 				`/core/v1/categorias-financeiro${params}&${filters}`,
 			);
@@ -51,11 +55,23 @@ export const useGetCategory = () => {
 							: toCamelCase(item.nomeCategoriaFinanceiro),
 				};
 			});
-			return itensOptimized;
+
+			return {
+				items: itensOptimized,
+				hasMore: itensOptimized.length === pageSize,
+				currentPage: page,
+				pageSize,
+			};
 		} catch (error) {
 			dispatch(
 				ToastNotifyActions.toastNotifyShow('Não foi possível recuperar estas categorias', true),
 			);
+			return {
+				items: [],
+				hasMore: false,
+				currentPage: page,
+				pageSize,
+			};
 		} finally {
 			setTimeout(() => {
 				setIsLoadingCategory(false);
@@ -79,10 +95,13 @@ export const useCategory = () => {
 			dispatch(ToastNotifyActions.toastNotifyShow('Categoria cadastrada com sucesso!', false));
 
 			return true;
-		} catch (error) {
-			dispatch(
-				ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria', true),
-			);
+		} catch (error: any) {
+			const responseMessage = error.response?.data.status.erros[0].mensagem;
+
+			// Usar a mensagem da API ou uma mensagem padrão
+			const errorMessage = responseMessage || 'Não foi possível cadastrar esta categoria';
+
+			dispatch(ToastNotifyActions.toastNotifyShow(errorMessage, true));
 		} finally {
 			setTimeout(() => {
 				setIsSavingCategory(false);
@@ -100,10 +119,13 @@ export const useCategory = () => {
 			dispatch(ToastNotifyActions.toastNotifyShow('Categoria alterada com sucesso!', false));
 
 			return true;
-		} catch (error) {
-			dispatch(
-				ToastNotifyActions.toastNotifyShow('Não foi possível cadastrar esta categoria', true),
-			);
+		} catch (error: any) {
+			const responseMessage = error.response?.data.status.erros[0].mensagem;
+
+			// Usar a mensagem da API ou uma mensagem padrão
+			const errorMessage = responseMessage || 'Não foi possível alterar esta categoria';
+
+			dispatch(ToastNotifyActions.toastNotifyShow(errorMessage, true));
 		} finally {
 			setTimeout(() => {
 				setIsSavingCategory(false);
@@ -125,10 +147,10 @@ export const useCategory = () => {
 			dispatch(ToastNotifyActions.toastNotifyShow('Categoria inativada com sucesso!', false));
 
 			return true;
-		} catch (error) {
-			const errorMessage =
-				error.response?.data?.status?.erros?.[0]?.mensagem ||
-				'Não foi possível inativar esta categoria';
+		} catch (error: any) {
+			const responseMessage = error.response?.data.status.erros[0].mensagem;
+
+			const errorMessage = responseMessage || 'Não foi possível inativar esta categoria';
 
 			dispatch(ToastNotifyActions.toastNotifyShow(errorMessage, true));
 		} finally {
@@ -152,8 +174,12 @@ export const useCategory = () => {
 			dispatch(ToastNotifyActions.toastNotifyShow('Categoria ativada com sucesso!', false));
 
 			return true;
-		} catch (error) {
-			dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível ativar esta categoria', true));
+		} catch (error: any) {
+			const responseMessage = error.response?.data.status.erros[0].mensagem;
+
+			const errorMessage = responseMessage || 'Não foi possível ativar esta categoria';
+
+			dispatch(ToastNotifyActions.toastNotifyShow(errorMessage, true));
 		} finally {
 			setTimeout(() => {
 				setIsSavingCategory(false);

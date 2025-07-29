@@ -3,6 +3,7 @@ import 'moment/locale/pt-br';
 
 export const DateCurrent = moment();
 export const CurrentTimeEN = moment().format('YYYY-MM-DD H:mm:ss');
+export const FormatYearMonthEN = date => moment(date).format('YYYY-MM');
 export const FormatDateEN = date => moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD');
 export const FormatFullDateEN = date =>
 	moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') + 'T00:00:00';
@@ -11,6 +12,7 @@ export const FormatFinalDateEN = date =>
 export const FormatInitialDateEN = date =>
 	moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') + ' 00:00:00';
 export const FormatDateBR = date => moment(date).format('DD/MM/YYYY');
+export const FormatDateHourBR = date => moment(date).format('DD/MM/YYYY H:mm:ss');
 export const FormatDateInFull = date => moment(date).format('LL');
 export const isBefore = date => moment().isBefore(date);
 

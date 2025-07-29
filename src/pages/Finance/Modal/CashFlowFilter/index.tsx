@@ -72,7 +72,7 @@ export default CashFlowFilter = forwardRef(
 		const {colors} = colorUseTheme;
 
 		const onSubmit = (data: DataFilterProps) => {
-			let filterPeriod: DataFilterProps = [];
+			let filterPeriod: DataFilterProps = {};
 
 			filterPeriod.dataSaldo = FormatDateEN(data.dataSaldo);
 			filterPeriod.dataFim = FormatDateEN(data.dataFim);

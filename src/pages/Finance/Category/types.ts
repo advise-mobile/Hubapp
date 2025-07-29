@@ -58,3 +58,10 @@ export interface DataFiltersCategory {
 export interface CategoryRef {
 	refresh: () => Promise<void>;
 }
+
+export interface PaginatedCategoryResult {
+	items: CategoryProps[];
+	hasMore: boolean;
+	currentPage: number;
+	pageSize: number;
+}

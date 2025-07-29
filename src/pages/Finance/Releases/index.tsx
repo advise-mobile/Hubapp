@@ -46,6 +46,8 @@ export default function Release(dataFilters: DataFiltersRelease) {
 	const {isLoadingResumeRelease, getReleaseResume} = useGetResume();
 	const {isLoadingInstallments, getInstallments} = useGetInstallments();
 
+	const {dataFiltersRelease, refreshTrigger} = dataFilters;
+
 	const [dataFinanceID, setDataFinanceID] = useState<ItemProps>();
 	const [dataResume, setDataResume] = useState<ItemResumeProps>();
 	const [allInstallments, setAllInstallments] = useState<ItemInstallmentsProps[]>([]);
@@ -66,8 +68,20 @@ export default function Release(dataFilters: DataFiltersRelease) {
 			setTimeout(() => {
 				fetchDataInstallments();
 			}, 1000);
-		}, [selectedFilterPeriod, dataFilters]),
+		}, [selectedFilterPeriod, dataFiltersRelease]),
 	);
+
+	// Adiciona useEffect para escutar mudanças no refreshTrigger
+	useEffect(() => {
+		if (refreshTrigger !== undefined) {
+			setCurrentPage(1);
+			setLoading(true);
+			setTimeout(() => {
+				fetchDataInstallments();
+				fetchDataResume();
+			}, 300);
+		}
+	}, [refreshTrigger]);
 	const fetchDataResume = async () => {
 		try {
 			const responseFinanceID = await getFinanceDataID();
@@ -161,7 +175,7 @@ export default function Release(dataFilters: DataFiltersRelease) {
 	};
 
 	const renderItem = ({item}: {item: ItemInstallmentsProps}) => {
-		return <FinanceDataItem item={item} />;
+		return <FinanceDataItem item={item} onDataChange={fetchDataInstallments} />;
 	};
 
 	const renderFooter = () => {

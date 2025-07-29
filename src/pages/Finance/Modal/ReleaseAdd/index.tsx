@@ -2,7 +2,7 @@ import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react
 import Modal from '@components/Modal';
 import Datepicker from '@components/DatePicker';
 import {FormatFullDateEN, FormatDateBR} from '@helpers/DateFunctions';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, ActivityIndicator} from 'react-native';
 import {MaskMoney, MaskMoneyForRegister} from 'helpers/Mask';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -264,23 +264,28 @@ export default ReleaseAdd = forwardRef((props, ref) => {
 
 	const footer = () => (
 		<Footer>
-			<Cancel onPress={() => onClose()}>
+			<Cancel onPress={() => onClose()} disabled={isLoadingRelease}>
 				<CancelText>Cancelar</CancelText>
 			</Cancel>
 
-			<Register onPress={handleSubmit(onSubmit)}>
-				<RegisterText>Cadastrar</RegisterText>
+			<Register
+				onPress={handleSubmit(onSubmit)}
+				disabled={isLoadingRelease}
+				style={{
+					opacity: isLoadingRelease ? 0.6 : 1,
+				}}>
+				{isLoadingRelease ? (
+					<ActivityIndicator size="small" color={colors.white} />
+				) : (
+					<RegisterText>Cadastrar</RegisterText>
+				)}
 			</Register>
 		</Footer>
 	);
 
 	const handleOnClose = useCallback(() => {
 		onClose();
-		navigation.reset({
-			index: 0,
-			routes: [{name: 'FinanceTab'}],
-		});
-	}, props);
+	}, [onClose]);
 
 	const onSubmit = data => {
 		if (data.valor === '0,00') {
