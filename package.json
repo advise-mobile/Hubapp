@@ -8,11 +8,13 @@
 		"start": "react-native start --reset-cache",
 		"test": "jest",
 		"lint": "eslint .",
+		"postinstall": "yarn fix-boost && yarn fix-yoga",
 		"logcat": "adb logcat *:E",
 		"logcat-full": "adb logcat",
 		"device-list": "adb devices",
 		"test-device": "adb devices | grep -w 'device' | awk '{print $1}' | xargs -I {} adb -s {} shell getprop ro.product.model && yarn android:test",
 		"fix-boost": "sed -i '' 's|spec\\.source = { :http => '\\''https://boostorg\\.jfrog\\.io/artifactory/main/release/1\\.76\\.0/source/boost_1_76_0\\.tar\\.bz2'\\''|spec.source = { :http => '\\''https://downloads.sourceforge.net/project/boost/boost/1.76.0/boost_1_76_0.tar.bz2'\\''|g' node_modules/react-native/third-party-podspecs/boost.podspec && echo '🔧 Boost URL fixed!'",
+		"fix-yoga": "find node_modules/react-native/ReactCommon/yoga -name 'Yoga.cpp' -exec sed -i '' 's/hadOverflow() |/hadOverflow() ||/g' {} \\; && echo '🧘 Yoga bitwise operator fixed!'",
 		"android:gradlew-clean": "cd android && ./gradlew clean && cd ..",
 		"android:clean-cache": "cd android && rm -rf ~/.gradle/caches/ .gradle build && cd ..",
 		"android:copy-keystore": "cp ../Android/hubapp-key.keystore android/app/",
@@ -45,7 +47,7 @@
 		"ios:clean-full": "yarn ios:clean-build && yarn ios:pods-clean",
 		"ios:full-reset": "yarn ios:clean-derived && yarn ios:clean-full && yarn ios:xcode",
 		"ios:prepare-archive": "yarn ios:clean-build && yarn ios:bundle-release",
-		"ios:initialize": "yarn install && yarn ios:pods-install && yarn ios:onesignal-setup && yarn ios:full-reset",
+		"ios:initialize": "yarn install && yarn fix-boost && yarn fix-yoga && yarn ios:pods-install && yarn ios:onesignal-setup && yarn ios:full-reset",
 		"reset": "rm -rf node_modules && rm -rf package-lock.json && yarn install",
 		"metro:clean": "npx react-native start --reset-cache",
 		"watchman:fix": "watchman watch-del . && watchman watch-project ."
@@ -124,6 +126,7 @@
 		"preset": "react-native"
 	},
 	"resolutions": {
-		"microdiff": "1.1.0"
+		"microdiff": "1.1.0",
+		"react-native-safe-area-context": "4.14.1"
 	}
 }
