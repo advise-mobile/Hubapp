@@ -4,7 +4,7 @@ module.exports = {
 			platforms: {
 				android: {
 					sourceDir: '../node_modules/react-native-safe-area-context/android',
-					packageImportPath: 'import io.th0th.reactnativesafeareacontext.SafeAreaContextPackage;',
+					packageImportPath: 'import com.th3rdwave.safeareacontext.SafeAreaContextPackage;',
 				},
 				ios: {},
 			},
