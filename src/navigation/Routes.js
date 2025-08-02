@@ -1,6 +1,4 @@
-// import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-
-// import { createStackNavigator } from 'react-navigation-stack';
+// Imports antigos removidos - React Navigation v6
 import React from 'react';
 
 import {Platform} from 'react-native';
@@ -111,13 +109,15 @@ const AccountScreens = () => (
 	</AccountStack.Navigator>
 );
 
-const AppScreens = () => (
+const AppScreens = () => {
 	// Variavel para usar o hook
-	(colorUseTheme = useTheme()),
-	(
+	const colorUseTheme = useTheme();
+
+	return (
 		<TabsStack.Navigator
 			initialRouteName="Folders"
 			screenOptions={{
+				headerShown: false,
 				tabBarShowLabel: false,
 				tabBarScrollEnabled: true,
 				tabBarActiveTintColor: colorUseTheme.colors.advise,
@@ -134,13 +134,6 @@ const AppScreens = () => (
 					marginBottom: -2,
 				},
 			}}>
-			{/* <TabsStack.Screen component={Blank} name="Blank" options={{
-      tabBarIcon: ({ color }) => (
-        <CustomIcon group={PermissionsGroups.MOVEMENTS}>
-          <FontAwesome name="bolt" size={23} color={color} />
-        </CustomIcon>
-      ),
-    }} /> */}
 			<TabsStack.Screen
 				component={FoldersScreens}
 				name="Folders"
@@ -195,8 +188,8 @@ const AppScreens = () => (
 				}}
 			/>
 		</TabsStack.Navigator>
-	)
-);
+	);
+};
 
 const MainScreens = () => (
 	<MainStack.Navigator screenOptions={{headerShown: false, gestureEnabled: false}}>
