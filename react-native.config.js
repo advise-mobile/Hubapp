@@ -6,7 +6,6 @@ module.exports = {
 					sourceDir: '../node_modules/react-native-safe-area-context/android',
 					packageImportPath: 'import com.th3rdwave.safeareacontext.SafeAreaContextPackage;',
 				},
-				ios: {},
 			},
 		},
 		microdiff: {

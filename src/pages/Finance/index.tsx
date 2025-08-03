@@ -264,7 +264,6 @@ export default function Finance(props) {
 								)}
 								{currentTab === 'cash-flow' && (
 									<>
-										{console.log('FILTROS na linha 266:', dataFiltersCashFlow)}
 										<CashFlow dataFiltersCashFlow={dataFiltersCashFlow} />
 									</>
 								)}
