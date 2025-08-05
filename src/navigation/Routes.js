@@ -1,6 +1,4 @@
-// import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-
-// import { createStackNavigator } from 'react-navigation-stack';
+// Imports antigos removidos - React Navigation v6
 import React from 'react';
 
 import {Platform} from 'react-native';
@@ -64,7 +62,7 @@ const FoldersStack = createStackNavigator();
 const FinanceStack = createStackNavigator();
 
 const FoldersScreens = () => (
-	<FoldersStack.Navigator headerMode="none">
+	<FoldersStack.Navigator screenOptions={{headerShown: false}}>
 		<FoldersStack.Screen name="Folders" component={Folders} />
 		<FoldersStack.Screen name="Movements" component={Movements} />
 		<FoldersStack.Screen name="MovementsTrash" component={MovementsTrash} />
@@ -73,7 +71,7 @@ const FoldersScreens = () => (
 );
 
 const FinanceScreens = () => (
-	<FinanceStack.Navigator headerMode="none">
+	<FinanceStack.Navigator screenOptions={{headerShown: false}}>
 		<FinanceStack.Screen name="FinanceTab" component={FinanceTab} />
 		<FinanceStack.Screen name="Finance" component={Finance} />
 		<FinanceStack.Screen name="Details" component={Details} />
@@ -84,7 +82,7 @@ const FinanceScreens = () => (
 
 const DeadlinesStack = createStackNavigator();
 const DeadlinesScreens = () => (
-	<DeadlinesStack.Navigator headerMode="none">
+	<DeadlinesStack.Navigator screenOptions={{headerShown: false}}>
 		<DeadlinesStack.Screen name="Deadlines" component={Deadlines} />
 		<DeadlinesStack.Screen name="DeadlinesDetails" component={DeadlinesDetails} />
 	</DeadlinesStack.Navigator>
@@ -92,7 +90,7 @@ const DeadlinesScreens = () => (
 
 /*const JurisprudenceStack = createStackNavigator();
 const JurisprudenceScreens = () => (
-	<JurisprudenceStack.Navigator headerMode="none">
+	<JurisprudenceStack.Navigator screenOptions={{headerShown: false}}>
 		<JurisprudenceStack.Screen name="Jurisprudence" component={Jurisprudence} />
 		<JurisprudenceStack.Screen name="JurisprudenceList" component={JurisprudenceList} />
 		<JurisprudenceStack.Screen name="JurisprudenceDetail" component={JurisprudenceDetail} />
@@ -101,7 +99,7 @@ const JurisprudenceScreens = () => (
 
 const AccountStack = createStackNavigator();
 const AccountScreens = () => (
-	<AccountStack.Navigator headerMode="none">
+	<AccountStack.Navigator screenOptions={{headerShown: false}}>
 		<AccountStack.Screen name="Account" component={Account} />
 		<AccountStack.Screen name="Notifications" component={Notifications} />
 		<AccountStack.Screen name="Pushs" component={Pushs} />
@@ -111,36 +109,31 @@ const AccountScreens = () => (
 	</AccountStack.Navigator>
 );
 
-const AppScreens = () => (
+const AppScreens = () => {
 	// Variavel para usar o hook
-	(colorUseTheme = useTheme()),
-	(
+	const colorUseTheme = useTheme();
+
+	return (
 		<TabsStack.Navigator
 			initialRouteName="Folders"
-			tabBarOptions={{
-				showLabel: false,
-				scrollEnabled: true,
-				activeTintColor: colorUseTheme.colors.advise,
-				inactiveTintColor: colorUseTheme.colors.grayLight,
-				inactiveBackgroundColor: colorUseTheme.colors.white,
-				activeBackgroundColor: colorUseTheme.colors.white,
-				tabStyle: {
+			screenOptions={{
+				headerShown: false,
+				tabBarShowLabel: false,
+				tabBarScrollEnabled: true,
+				tabBarActiveTintColor: colorUseTheme.colors.advise,
+				tabBarInactiveTintColor: colorUseTheme.colors.grayLight,
+				tabBarInactiveBackgroundColor: colorUseTheme.colors.white,
+				tabBarActiveBackgroundColor: colorUseTheme.colors.white,
+				tabBarItemStyle: {
 					width: 60,
 				},
-				style: {
+				tabBarStyle: {
 					backgroundColor: colorUseTheme.colors.white,
 					height: Platform.OS == 'android' ? 64 : 80,
 					paddingTop: Platform.OS == 'android' ? 0 : 8,
 					marginBottom: -2,
 				},
 			}}>
-			{/* <TabsStack.Screen component={Blank} name="Blank" options={{
-      tabBarIcon: ({ color }) => (
-        <CustomIcon group={PermissionsGroups.MOVEMENTS}>
-          <FontAwesome name="bolt" size={23} color={color} />
-        </CustomIcon>
-      ),
-    }} /> */}
 			<TabsStack.Screen
 				component={FoldersScreens}
 				name="Folders"
@@ -195,11 +188,11 @@ const AppScreens = () => (
 				}}
 			/>
 		</TabsStack.Navigator>
-	)
-);
+	);
+};
 
 const MainScreens = () => (
-	<MainStack.Navigator headerMode="none" screenOptions={{gestureEnabled: false}}>
+	<MainStack.Navigator screenOptions={{headerShown: false, gestureEnabled: false}}>
 		<MainStack.Screen name="Initial" component={Initial} />
 		<MainStack.Screen name="TermsUse" component={TermsUse} />
 		<MainStack.Screen name="Intro" component={Intro} />

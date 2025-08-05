@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {LogBox, Appearance} from 'react-native';
 import OneSignal from 'react-native-onesignal';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import SplashScreen from 'react-native-splash-screen';
 
@@ -45,15 +46,20 @@ const App = () => {
 	}, []);
 
 	return (
-		<Provider store={store}>
-			<MenuProvider>
-				<ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
-					<StatusBar backgroundColor={theme === 'dark' ? '#111111' : '#fff'} barStyle={barStyle} />
-					<Routes />
-					<ToastNotify theme={theme === 'dark' ? darkTheme : lightTheme} />
-				</ThemeProvider>
-			</MenuProvider>
-		</Provider>
+		<SafeAreaProvider>
+			<Provider store={store}>
+				<MenuProvider>
+					<ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
+						<StatusBar
+							backgroundColor={theme === 'dark' ? '#111111' : '#fff'}
+							barStyle={barStyle}
+						/>
+						<Routes />
+						<ToastNotify theme={theme === 'dark' ? darkTheme : lightTheme} />
+					</ThemeProvider>
+				</MenuProvider>
+			</Provider>
+		</SafeAreaProvider>
 	);
 };
 
