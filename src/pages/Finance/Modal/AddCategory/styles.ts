@@ -124,10 +124,10 @@ export const ColorsItem = styled.TouchableOpacity<ValidationProps>`
 	width: 51px;
 	height: ${({isSelected}) => (isSelected ? 25 : 20)}px;
 	border-radius: 17px;
-	background-color: ${({backgroundColor, isError, theme}) =>
-		isError ? theme.colors.red200 : backgroundColor};
+
+	background-color: ${({backgroundColor}) => backgroundColor};
 	margin-right: 7px;
-	border-width: 5px;
+	border-width: ${({isError, theme}) => (isError ? 1 : 5)}px;
 	border-color: ${({isError, theme}) => (isError ? theme.colors.red200 : theme.colors.colorSelect)};
 `;
 
