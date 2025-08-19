@@ -125,7 +125,7 @@ export const useGetInstallments = () => {
 				return {
 					...item,
 					dataVencimentoFormatada,
-					value: FormatReal(item.valorAberto),
+					value: FormatReal(item?.valorOriginal),
 					dataBaixaFormatada,
 				};
 			});
