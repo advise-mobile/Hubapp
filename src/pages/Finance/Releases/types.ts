@@ -41,11 +41,13 @@ export interface ItemInstallmentsProps {
 	dataVencimentoFormatada?: string;
 	dataBaixaFormatada?: string;
 	valorAberto?: string;
+	valorOriginal?: string;
 	nomePessoaCliente: string;
 	numeroProcesso: string;
 	categoriaFinanceiro: CategoryFinanceProps;
 	nomeTipoCategoriaFinanceiro: TypeCategoryProps;
 	totalRegistros: number;
+	idParcelaFinanceiro: number;
 }
 
 export interface CategoryFinanceProps {

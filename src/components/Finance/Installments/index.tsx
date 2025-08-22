@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {ItemInstallmentsProps} from '@pages/Finance/Releases/types';
 
@@ -35,6 +35,11 @@ const FinanceDataItem = ({
 	onDataChange: () => void;
 }) => {
 	const [localItem, setLocalItem] = useState(item);
+
+	// Atualiza o localItem sempre que o item prop mudar
+	useEffect(() => {
+		setLocalItem(item);
+	}, [item]);
 	const navigation = useNavigation();
 	const {addFinancialLoss, removeFinancialLoss, isLoadingFinancialLoss} = useFinancialLoss();
 	const {getFinanceDataID} = useGetFinanceID();
@@ -56,10 +61,13 @@ const FinanceDataItem = ({
 				},
 			);
 		} else {
+			// Usa o valor original do item para garantir que não seja zerado
+			const valorBaixa = item.valorAberto || localItem.valorAberto;
+
 			addFinancialLoss(
 				{
 					idParcelaFinanceiro: localItem.idParcelaFinanceiro,
-					valorBaixa: localItem.valorAberto || '0',
+					valorBaixa: valorBaixa,
 				},
 				() => {
 					onDataChange();
