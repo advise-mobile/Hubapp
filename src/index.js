@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {LogBox, Appearance} from 'react-native';
-import OneSignal from 'react-native-onesignal';
+import * as OneSignalModule from 'react-native-onesignal';
+const OneSignal = OneSignalModule.OneSignal;
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import SplashScreen from 'react-native-splash-screen';
@@ -40,7 +41,7 @@ const App = () => {
 	});
 
 	useEffect(() => {
-		OneSignal.setAppId(env.oneSignalId);
+		OneSignal.initialize(env.oneSignalId);
 
 		SplashScreen.hide();
 	}, []);

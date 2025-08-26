@@ -1,18 +1,19 @@
 import {Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from 'services/Api';
-import OneSignal from 'react-native-onesignal';
+import * as OneSignalModule from 'react-native-onesignal';
+const OneSignal = OneSignalModule.OneSignal;
 
 import {getLoggedUser} from 'helpers/Permissions';
 
 import {PUSH} from 'helpers/StorageKeys';
 
 const registerNotification = async () => {
-	OneSignal.promptForPushNotificationsWithUserResponse(response => {});
+	// Solicita permissão para notificações push
+	await OneSignal.Notifications.requestPermission(true);
 
-	const deviceState = await OneSignal.getDeviceState();
-
-	const hash = deviceState.userId;
+	// Obtém o ID da subscription do usuário atual
+	const hash = await OneSignal.User.pushSubscription.getIdAsync();
 
 	if (!hash) return;
 
@@ -33,7 +34,8 @@ const registerNotification = async () => {
 			await AsyncStorage.setItem(PUSH, hash);
 		})
 		.finally(() => {
-			OneSignal.sendTags(push);
+			// Adiciona tags do usuário
+			OneSignal.User.addTags(push);
 		});
 };
 
