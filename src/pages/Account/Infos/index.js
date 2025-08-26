@@ -163,14 +163,15 @@ export default Infos = props => {
         includeBase64: true,
       },
       (response) => {
-        if (!response.didCancel) {
-          let extension = response.type.replace('image/', '');
+        if (!response.didCancel && response.assets && response.assets.length > 0) {
+          const asset = response.assets[0];
+          let extension = asset.type ? asset.type.replace('image/', '') : 'jpg';
 
           if (extension === 'jpeg') extension = 'jpg';
 
           const data = {
             extensao: '.' + extension,
-            foto: response.base64,
+            foto: asset.base64,
           };
 
           dispatch(UserActions.updateProfile({ ...data }));
