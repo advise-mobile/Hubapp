@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {LogBox, Appearance} from 'react-native';
-import * as OneSignalModule from 'react-native-onesignal';
-const OneSignal = OneSignalModule.OneSignal;
+import {OneSignal} from 'react-native-onesignal';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import SplashScreen from 'react-native-splash-screen';

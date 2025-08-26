@@ -1,8 +1,7 @@
 import {Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from 'services/Api';
-import * as OneSignalModule from 'react-native-onesignal';
-const OneSignal = OneSignalModule.OneSignal;
+import {OneSignal} from 'react-native-onesignal';
 
 import {getLoggedUser} from 'helpers/Permissions';
 

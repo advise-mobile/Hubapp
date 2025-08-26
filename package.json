@@ -5,8 +5,8 @@
 	"scripts": {
 		"android": "npx react-native run-android",
 		"android:node20": "node --openssl-legacy-provider ./node_modules/.bin/react-native run-android",
-		"ios": "react-native run-ios",
-		"start": "react-native start --reset-cache",
+		"ios": "npx react-native run-ios",
+		"start": "npx react-native start --reset-cache",
 		"start:node20": "node --openssl-legacy-provider ./node_modules/.bin/react-native start --reset-cache",
 		"test": "jest",
 		"lint": "eslint .",
