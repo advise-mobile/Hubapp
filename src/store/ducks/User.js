@@ -38,14 +38,19 @@ export const updatePictureSuccess = (state, {picture}) =>
 		},
 	});
 
-export const updateProfile = (state, action) =>
-	state.merge({
+export const updateProfile = (state, action) => {
+	console.log(
+		'Reducer updateProfile executado com foto:',
+		action.param.foto ? 'Foto recebida' : 'Sem foto',
+	);
+	return state.merge({
 		picture: action.param.foto,
 		data: {
 			...state.data,
 			foto: action.param.foto,
 		},
 	});
+};
 
 export const PersonRequest = state => state.merge({loading: true});
 
