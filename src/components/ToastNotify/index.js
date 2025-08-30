@@ -9,13 +9,12 @@ import ToastNotifyActions from 'store/ducks/ToastNotify';
 
 import {Container, Notify, NotifyMessage} from './styles';
 
-const stylesToastNotify  =  (colors) => StyleSheet.create({
+const stylesToastNotify = (colors) => StyleSheet.create({
 	hasError: {
-		backgroundColor: colors.toastError,
+		backgroundColor: colors.toastError || '#ff4757',
 	},
-
 	hasSuccess: {
-		backgroundColor: colors.success,
+		backgroundColor: colors.success || '#2ed573',
 	},
 });
 
@@ -38,9 +37,8 @@ class ToastNotify extends Component {
     
 
 	render() {
-
 		const { theme } = this.props;
-		const styles = stylesToastNotify(theme.colors);
+		const styles = stylesToastNotify(theme?.colors || {});
 		const {show, message, error} = this.props.toastNotify;
 
 		return (

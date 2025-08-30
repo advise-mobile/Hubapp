@@ -6,7 +6,7 @@ import FolderProcessesActions from 'store/ducks/FolderProcesses';
 import ScrollableTabView from 'components/ScrollableTabView';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import {PermissionsGroups, checkPermission} from 'helpers/Permissions';
+import {PermissionsGroups, checkPermission, getLoggedUser} from 'helpers/Permissions';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SHOW_PROMOTION} from 'helpers/StorageKeys';
@@ -100,6 +100,13 @@ export default function Folders(props) {
 	const dispatch = useDispatch();
 	const threshold = 0.5;
 
+	// 👤 Dados do usuário para debug OneSignal
+	const userData = useSelector(state => state.user);
+	const authData = useSelector(state => state.auth);
+
+	console.log('👤 DADOS DO USUÁRIO (Redux):', userData);
+	console.log('🔐 DADOS DE AUTH:', authData);
+
 	useEffect(() => {
 		props.navigation.addListener('beforeRemove', e => {
 			e.preventDefault();
@@ -115,6 +122,11 @@ export default function Folders(props) {
 		checkPermission(PermissionsGroups.PROCESSES).then(permission =>
 			setProcessesPermission(permission),
 		);
+
+		// 👤 Debug dados do usuário do Token JWT
+		getLoggedUser().then(user => {
+			console.log('👤 DADOS DO USUÁRIO (Token JWT):', user);
+		});
 	}, [props]);
 
 	useEffect(() => {
@@ -140,6 +152,13 @@ export default function Folders(props) {
 	useEffect(async () => {
 		const promotion = await AsyncStorage.getItem(SHOW_PROMOTION);
 		setSeenPromotion(JSON.parse(promotion) === null ? true : JSON.parse(promotion));
+	}, []);
+
+	// Dentro do useEffect existente ou criar um novo:
+	useEffect(() => {
+		getLoggedUser().then(user => {
+			console.log('👤 DADOS DO USUÁRIO (Token JWT):', user);
+		});
 	}, []);
 
 	const onKeywordsEndReached = useCallback(() => {

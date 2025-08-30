@@ -62,7 +62,10 @@ export function* updateProfile({param}) {
 
 		yield put(ToastNotifyActions.toastNotifyShow('Sucesso ao atualizar sua foto', false));
 	} catch (err) {
-		yield put(ToastNotifyActions.toastNotifyShow(err.response.data.status.erros[0].mensagem, true));
+		// console.log('Erro ao atualizar foto:', err);
+		const errorMessage =
+			err?.response?.data?.status?.erros?.[0]?.mensagem || 'Erro ao atualizar foto';
+		yield put(ToastNotifyActions.toastNotifyShow(errorMessage, true));
 	}
 }
 

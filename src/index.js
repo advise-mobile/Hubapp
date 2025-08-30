@@ -40,7 +40,9 @@ const App = () => {
 	});
 
 	useEffect(() => {
+		//// console.log('🚀 Inicializando OneSignal com ID:', env.oneSignalId);
 		OneSignal.initialize(env.oneSignalId);
+		//// console.log('✅ OneSignal inicializado');
 
 		SplashScreen.hide();
 	}, []);

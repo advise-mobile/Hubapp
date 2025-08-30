@@ -8,13 +8,39 @@ import {getLoggedUser} from 'helpers/Permissions';
 import {PUSH} from 'helpers/StorageKeys';
 
 const registerNotification = async () => {
-	// Solicita permissão para notificações push
-	await OneSignal.Notifications.requestPermission(true);
+	console.log('🔔 Iniciando registro de notificações OneSignal...');
 
-	// Obtém o ID da subscription do usuário atual
-	const hash = await OneSignal.User.pushSubscription.getIdAsync();
+	let hash = null;
+	let token = null;
 
-	if (!hash) return;
+	try {
+		// Solicita permissão para notificações push
+		const permission = await OneSignal.Notifications.requestPermission(true);
+		console.log('🔔 Permissão OneSignal:', permission);
+
+		// Aguarda um pouco para garantir que o OneSignal foi inicializado
+		await new Promise(resolve => setTimeout(resolve, 2000));
+
+		// Obtém o ID da subscription do usuário atual
+		hash = await OneSignal.User.pushSubscription.getIdAsync();
+		console.log('🔔 Hash OneSignal (Player ID):', hash);
+
+		// Também vamos tentar obter o Push Subscription Token
+		token = await OneSignal.User.pushSubscription.getTokenAsync();
+		console.log('🔔 OneSignal Push Token:', token);
+
+		// Verificar o estado da subscription
+		const optedIn = OneSignal.User.pushSubscription.getOptedIn();
+		console.log('🔔 OneSignal OptedIn:', optedIn);
+
+		if (!hash) {
+			console.log('❌ Nenhum hash OneSignal encontrado');
+			return;
+		}
+	} catch (error) {
+		console.log('❌ Erro ao configurar OneSignal:', error);
+		return;
+	}
 
 	const {idUsuarioCliente} = await getLoggedUser();
 
@@ -24,16 +50,23 @@ const registerNotification = async () => {
 		dispositivo: Platform.OS.toUpperCase(),
 	};
 
+	console.log('🔔 Dados do push:', push);
+
 	// if (register === hash) return push;
 
 	await Api.post(`/core/v1/push-notificacao`, {
 		itens: [push],
 	})
 		.then(async () => {
+			console.log('✅ Push registrado com sucesso no servidor');
 			await AsyncStorage.setItem(PUSH, hash);
+		})
+		.catch(error => {
+			console.log('❌ Erro ao registrar push no servidor:', error);
 		})
 		.finally(() => {
 			// Adiciona tags do usuário
+			console.log('🔔 Adicionando tags do usuário:', push);
 			OneSignal.User.addTags(push);
 		});
 };

@@ -14,20 +14,16 @@ const UserIcon = props => {
 	const picture = useSelector(state => state.user.picture);
 
 	useEffect(() => {
-		console.log('UserIcon - picture do Redux:', picture ? 'Existe' : 'Não existe');
+		//// console.log('UserIcon - picture do Redux:', picture ? 'Existe' : 'Não existe');
 
 		// Prioriza o picture do Redux se existir
 		if (picture) {
-			console.log('UserIcon - Usando picture do Redux');
+			//// console.log('UserIcon - Usando picture do Redux');
 			setAvatar(picture);
 		} else {
 			// Fallback para AsyncStorage
-			console.log('UserIcon - Buscando no AsyncStorage');
+
 			AsyncStorage.getItem(AVATAR).then(image => {
-				console.log(
-					'UserIcon - AsyncStorage retornou:',
-					image ? 'Imagem encontrada' : 'Sem imagem',
-				);
 				setAvatar(image);
 			});
 		}
