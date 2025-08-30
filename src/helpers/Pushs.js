@@ -7,38 +7,96 @@ import {getLoggedUser} from 'helpers/Permissions';
 
 import {PUSH} from 'helpers/StorageKeys';
 
-const registerNotification = async () => {
-	console.log('🔔 Iniciando registro de notificações OneSignal...');
+// Função para verificar e corrigir Player ID inconsistente
+const checkAndFixPlayerId = async () => {
+	try {
+		const storedPlayerId = await AsyncStorage.getItem('@onesignal_player_id');
+		const currentPlayerId = await OneSignal.User.pushSubscription.getIdAsync();
 
+		if (storedPlayerId && currentPlayerId && storedPlayerId !== currentPlayerId) {
+			// Na v5.x não há um método direto para setar o Player ID
+			// Mas podemos fazer logout/login para forçar uma nova sincronização
+			OneSignal.logout();
+
+			// Aguardar um pouco
+			await new Promise(resolve => setTimeout(resolve, 1000));
+
+			// Fazer login novamente
+			OneSignal.login(storedPlayerId);
+		}
+
+		return {storedPlayerId, currentPlayerId};
+	} catch (error) {
+		console.log('❌ Erro ao verificar Player ID:', error);
+		return null;
+	}
+};
+
+const registerNotification = async () => {
 	let hash = null;
 	let token = null;
 
 	try {
-		// Solicita permissão para notificações push
+		// Verificar e corrigir Player ID inconsistente
+		await checkAndFixPlayerId();
+
+		// Verificar Player ID armazenado localmente
+		const storedPlayerId = await AsyncStorage.getItem('@onesignal_player_id');
+
+		// Primeiro verificar permissões atuais
+		try {
+			const currentPermission = await OneSignal.Notifications.getPermissionAsync();
+		} catch (permError) {
+			// Handle permission error silently
+		}
+
+		// Solicitar permissão
 		const permission = await OneSignal.Notifications.requestPermission(true);
-		console.log('🔔 Permissão OneSignal:', permission);
 
-		// Aguarda um pouco para garantir que o OneSignal foi inicializado
-		await new Promise(resolve => setTimeout(resolve, 2000));
+		// Aguardar inicialização completa
+		await new Promise(resolve => setTimeout(resolve, 3000));
 
-		// Obtém o ID da subscription do usuário atual
-		hash = await OneSignal.User.pushSubscription.getIdAsync();
-		console.log('🔔 Hash OneSignal (Player ID):', hash);
+		// Verificar permissões novamente após solicitação
+		const permissionStatus = await OneSignal.Notifications.getPermissionAsync();
 
-		// Também vamos tentar obter o Push Subscription Token
-		token = await OneSignal.User.pushSubscription.getTokenAsync();
-		console.log('🔔 OneSignal Push Token:', token);
+		// Verificar se as permissões estão corretas
+		if (!permission || !permissionStatus) {
+			return;
+		}
 
-		// Verificar o estado da subscription
-		const optedIn = OneSignal.User.pushSubscription.getOptedIn();
-		console.log('🔔 OneSignal OptedIn:', optedIn);
+		try {
+			hash = await OneSignal.User.pushSubscription.getIdAsync();
+
+			// Armazenar o Player ID atual
+			if (hash) {
+				await AsyncStorage.setItem('@onesignal_player_id', hash);
+			}
+		} catch (hashError) {
+			console.log('❌ Erro ao obter Player ID:', hashError);
+		}
+
+		try {
+			token = await OneSignal.User.pushSubscription.getTokenAsync();
+		} catch (tokenError) {
+			console.log('❌ Erro ao obter Push Token:', tokenError);
+		}
+
+		// Verificar estado da subscription
+		try {
+			const optedIn = OneSignal.User.pushSubscription.getOptedIn();
+		} catch (optedError) {
+			// Handle error silently
+		}
+
+		if (!hash && !token) {
+			return;
+		}
 
 		if (!hash) {
-			console.log('❌ Nenhum hash OneSignal encontrado');
 			return;
 		}
 	} catch (error) {
-		console.log('❌ Erro ao configurar OneSignal:', error);
+		console.log('❌ Erro no OneSignal:', error.message);
 		return;
 	}
 
@@ -50,15 +108,10 @@ const registerNotification = async () => {
 		dispositivo: Platform.OS.toUpperCase(),
 	};
 
-	console.log('🔔 Dados do push:', push);
-
-	// if (register === hash) return push;
-
 	await Api.post(`/core/v1/push-notificacao`, {
 		itens: [push],
 	})
 		.then(async () => {
-			console.log('✅ Push registrado com sucesso no servidor');
 			await AsyncStorage.setItem(PUSH, hash);
 		})
 		.catch(error => {
@@ -66,7 +119,6 @@ const registerNotification = async () => {
 		})
 		.finally(() => {
 			// Adiciona tags do usuário
-			console.log('🔔 Adicionando tags do usuário:', push);
 			OneSignal.User.addTags(push);
 		});
 };
@@ -106,4 +158,5 @@ export {
 	getNotificationSettings,
 	changeNotificationSettings,
 	disableNotificationDevice,
+	checkAndFixPlayerId,
 };
