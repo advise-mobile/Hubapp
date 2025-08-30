@@ -67,3 +67,7 @@ buck-out/
 # Android
 android/
 *.hprof
+
+# Firebase Configuration Files (SENSITIVE - DO NOT COMMIT)
+android/app/google-services.json
+ios/GoogleService-Info.plist
