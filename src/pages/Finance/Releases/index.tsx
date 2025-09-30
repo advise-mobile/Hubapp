@@ -67,7 +67,8 @@ export default function Release(dataFilters: DataFiltersRelease) {
 			setLoading(true);
 			setTimeout(() => {
 				fetchDataInstallments();
-			}, 1000);
+				fetchDataResume();
+			}, 300);
 		}, [selectedFilterPeriod, dataFiltersRelease]),
 	);
 
@@ -175,7 +176,15 @@ export default function Release(dataFilters: DataFiltersRelease) {
 	};
 
 	const renderItem = ({item}: {item: ItemInstallmentsProps}) => {
-		return <FinanceDataItem item={item} onDataChange={fetchDataInstallments} />;
+		return (
+			<FinanceDataItem
+				item={item}
+				onDataChange={() => {
+					fetchDataInstallments();
+					fetchDataResume();
+				}}
+			/>
+		);
 	};
 
 	const renderFooter = () => {
