@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('🔧 Applying patches...');
+// console.log('🔧 Applying patches...');
 
 // Patch 1: Fix native_modules.gradle null pointer issue
 const nativeModulesPath = path.join(
@@ -31,7 +31,7 @@ if (fs.existsSync(nativeModulesPath)) {
       }.findAll { it != null }.join(",\\n      ")`;
 
 	if (content.includes('def importPath = it.packageImportPath')) {
-		console.log('✅ native_modules.gradle patch already applied');
+		// console.log('✅ native_modules.gradle patch already applied');
 	} else if (content.includes('interpolateDynamicValues(it.packageImportPath)')) {
 		content = content.replace(
 			/packageImports = packages\.collect \{\s*"\/\/ \$\{it\.name\}\\n\$\{interpolateDynamicValues\(it\.packageImportPath\)\}"\s*\}\.join\('\\n'\)\s*packageClassInstances = ",\\n      " \+ packages\.collect \{\s*interpolateDynamicValues\(it\.packageInstance\)\s*\}\.join\(",\\n      "\)/s,
@@ -45,12 +45,12 @@ if (fs.existsSync(nativeModulesPath)) {
       }.findAll { it != null }.join(",\\n      ")`,
 		);
 		fs.writeFileSync(nativeModulesPath, content);
-		console.log('✅ Applied native_modules.gradle null safety patch');
+		// console.log('✅ Applied native_modules.gradle null safety patch');
 	} else {
-		console.log('⚠️  native_modules.gradle pattern not found - may need manual update');
+		// console.log('⚠️  native_modules.gradle pattern not found - may need manual update');
 	}
 } else {
-	console.log('❌ native_modules.gradle not found');
+	// console.log('❌ native_modules.gradle not found');
 }
 
-console.log('🎉 Patches applied successfully!');
+// console.log('🎉 Patches applied successfully!');

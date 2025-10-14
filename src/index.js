@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {LogBox, Appearance} from 'react-native';
-import OneSignal from 'react-native-onesignal';
+import {LogBox, Appearance, Platform} from 'react-native';
+import {OneSignal} from 'react-native-onesignal';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import SplashScreen from 'react-native-splash-screen';
@@ -40,7 +40,22 @@ const App = () => {
 	});
 
 	useEffect(() => {
-		OneSignal.setAppId(env.oneSignalId);
+		OneSignal.initialize(env.oneSignalId);
+
+		// Configurar listeners básicos
+		OneSignal.Notifications.addEventListener('click', event => {
+			// Handle notification click
+		});
+
+		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
+			// Exibir a notificação mesmo em foreground
+			event.getNotification().display();
+		});
+
+		// Listener para quando o push subscription muda
+		OneSignal.User.pushSubscription.addEventListener('change', event => {
+			// Handle subscription changes
+		});
 
 		SplashScreen.hide();
 	}, []);
