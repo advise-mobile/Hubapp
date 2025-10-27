@@ -151,6 +151,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    
+    // Fix AAPT2 issue
+    aaptOptions {
+        noCompress 'tflite'
+        ignoreAssetsPattern "!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
+    }
 
     kotlinOptions {
         jvmTarget = "1.8"
@@ -160,7 +166,7 @@ android {
         applicationId "com.hubapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 32
+        versionCode 35
         versionName "2.0.0"
         multiDexEnabled true
     }
@@ -172,6 +178,7 @@ android {
         resolutionStrategy {
             force 'androidx.webkit:webkit:1.8.0'
             force 'com.android.tools.build:aapt2:4.2.2-7147631'
+            force 'com.android.tools.build:gradle:7.4.2'
         }
     }
     splits {
