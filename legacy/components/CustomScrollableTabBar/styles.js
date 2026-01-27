@@ -1,0 +1,45 @@
+import styled from 'styled-components';
+import { colors, fonts } from '@lassets/styles';
+
+const TabsContainer = styled.View`
+  height: 50;
+  border-bottom-width: 1;
+  border-bottom-color: ${({ theme }) => theme.colors.grayLighter};
+`;
+
+const Tabs = styled.View`
+  height: 49;
+  padding-bottom: 12px;
+  background: ${({ theme }) => theme.colors.white};
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+`;
+
+const Tab = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 10px;
+`;
+
+const TabButton = styled.TouchableOpacity``;
+
+const TabText = styled.Text`
+  font-family: ${fonts.circularStdMedium};
+  font-size: ${props => (props.active ? fonts.big + 2 : fonts.regular)};
+  color: ${props =>
+    props.active ? props.theme.colors.primary : props.theme.colors.inactive};
+`;
+
+const UndelineTab = styled.View`
+  position: absolute;
+  max-width: 40;
+  height: 2;
+  left: 0;
+  right: 0;
+  background-color: ${({ theme }) => theme.colors.primary};
+  bottom: 15;
+`;
+
+export { TabsContainer, Tabs, Tab, TabButton, TabText, UndelineTab };
