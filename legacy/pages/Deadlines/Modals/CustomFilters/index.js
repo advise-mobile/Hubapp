@@ -1,0 +1,206 @@
+import React, { forwardRef, useState, useCallback } from 'react';
+import moment from 'moment';
+
+import { FormatDateBR, FormatFullDateEN } from '@lhelpers/DateFunctions';
+
+import Modal from '@lcomponents/Modal';
+import Spinner from '@lcomponents/Spinner';
+import Datepicker from '@lcomponents/DatePicker';
+
+import { useForm, Controller } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+
+import {
+  Footer,
+  Cancel,
+  CancelText,
+  Submit,
+  SubmitText,
+  Content,
+  Row,
+  Label,
+  Badges,
+  Badge,
+  BadgeText,
+  Column,
+  Title,
+  FormControl,
+} from './styles';
+
+// Add Hook UseTheme para pegar o tema global addicionado
+import { useTheme } from 'styled-components';
+
+export default CustomFilters = forwardRef((props, ref) => {
+  // Variavel para usar o hook
+  const colorUseTheme = useTheme();
+  const { colors } = colorUseTheme;
+
+  const { control, handleSubmit, setValue } = useForm();
+
+  const types = useSelector(state => state.deadlines.types);
+  const loadingTypes = useSelector(state => state.deadlines.loadingTypes);
+  const processing = useSelector(state => state.deadlines.processing);
+
+  const [minDate, setMinDate] = useState(
+    props.filters?.dataInicial ? new Date(props.filters.dataInicial) : null,
+  );
+  const [maxDate, setMaxDate] = useState(
+    props.filters?.dataFinal ? new Date(props.filters.dataFinal) : null,
+  );
+
+  const [currentType, setCurrentType] = useState(
+    props.filters?.idTipoEventoAgenda || null,
+  );
+
+  const removeNull = useCallback(object => {
+    let removed = {};
+
+    Object.keys(object).map(key => {
+      if (object[key] != null && object[key] !== '') {
+        removed[key] = object[key];
+      }
+    });
+
+    return removed;
+  }, []);
+
+  const countFilters = useCallback(
+    () => [minDate, maxDate, currentType].filter(state => state != null).length,
+    [minDate, maxDate, currentType],
+  );
+
+  const clearFilters = useCallback(() => {
+    setMinDate(null);
+    setMaxDate(null);
+    setCurrentType(null);
+    props.clear();
+  }, []);
+
+  const closeModal = useCallback(() => ref.current?.close(), []);
+
+  const onSubmit = data => {
+    // Formata as datas corretamente para o formato ISO esperado pela API
+    // dataInicial: início do dia (00:00:00) no formato ISO
+    // dataFinal: final do dia (23:59:59) no formato ISO
+    const formatDateInicial = date => {
+      if (!date) return null;
+      const dateObj = date instanceof Date ? date : new Date(date);
+      return moment(dateObj).startOf('day').toISOString();
+    };
+
+    const formatDateFinal = date => {
+      if (!date) return null;
+      const dateObj = date instanceof Date ? date : new Date(date);
+      return moment(dateObj).endOf('day').toISOString();
+    };
+
+    const filters = removeNull({
+      dataInicial: minDate ? formatDateInicial(minDate) : null,
+      dataFinal: maxDate ? formatDateFinal(maxDate) : null,
+      idTipoEventoAgenda: currentType,
+    });
+
+    props.setFilters(filters);
+
+    setTimeout(() => closeModal(), 300);
+  };
+
+  const renderTypes = useCallback(
+    () =>
+      types.map((type, index) => (
+        <Badge
+          key={index}
+          active={type.id == currentType}
+          onPress={() =>
+            type.id == currentType
+              ? setCurrentType(null)
+              : setCurrentType(type.id)
+          }
+        >
+          <BadgeText active={type.id == currentType}>{type.nome}</BadgeText>
+        </Badge>
+      )),
+    [types, currentType],
+  );
+
+  const footer = () => (
+    <Footer>
+      <Cancel onPress={() => closeModal()}>
+        <CancelText>Cancelar</CancelText>
+      </Cancel>
+      <Submit onPress={handleSubmit(onSubmit)} disabled={processing}>
+        {processing ? (
+          <Spinner transparent={true} color={colors.white} height="auto" />
+        ) : (
+          <SubmitText>Ver resultados</SubmitText>
+        )}
+      </Submit>
+    </Footer>
+  );
+
+  return (
+    <Modal
+      ref={ref}
+      title="Filtros"
+      footer={footer()}
+      filters={countFilters()}
+      clear={clearFilters}
+    >
+      <Content>
+        <Row>
+          <Title>Período</Title>
+          <FormControl>
+            <Column>
+              <Label>De</Label>
+              <Controller
+                name="dataInicial"
+                control={control}
+                defaultValue={null}
+                render={() => (
+                  <Datepicker
+                    date={minDate}
+                    enabled={true}
+                    title="dd/mm/aaaa"
+                    style={{ maxWidth: 100 }}
+                    maxDate={maxDate || undefined}
+                    onDateChange={date => {
+                      setMinDate(date);
+                      setValue('dataInicial', date);
+                    }}
+                  />
+                )}
+              />
+            </Column>
+            <Column>
+              <Label>Até</Label>
+              <Controller
+                name="dataFinal"
+                control={control}
+                defaultValue={null}
+                render={() => (
+                  <Datepicker
+                    date={maxDate}
+                    enabled={true}
+                    title="dd/mm/aaaa"
+                    style={{ maxWidth: 100 }}
+                    minDate={minDate || undefined}
+                    onDateChange={date => {
+                      setMaxDate(date);
+                      setValue('dataFinal', date);
+                    }}
+                  />
+                )}
+              />
+            </Column>
+          </FormControl>
+        </Row>
+        <Row>
+          <Column>
+            <Title>Tipo de Prazo</Title>
+            <Badges>{loadingTypes ? <Spinner /> : renderTypes()}</Badges>
+          </Column>
+        </Row>
+      </Content>
+    </Modal>
+  );
+});
