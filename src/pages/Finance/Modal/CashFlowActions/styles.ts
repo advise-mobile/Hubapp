@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { fonts } from 'assets/styles';
+import { fonts } from '@lassets/styles';
 
 export const Footer = styled.View`
   flex-direction: row;
@@ -27,17 +27,17 @@ export const CancelText = styled.Text`
 
 export const Content = styled.TouchableOpacity`
   margin: 0 -27px;
-	flex-direction: row;
-	align-items: center;
-	border: ${({ theme }) => theme.colors.grayLighter};
-	height: 48px;
+  flex-direction: row;
+  align-items: center;
+  border: ${({ theme }) => theme.colors.grayLighter};
+  height: 48px;
 `;
 
 export const Row = styled.View`
-	margin-left: 10px;
+  margin-left: 10px;
   flex-wrap: wrap;
   flex-direction: row;
-	width: 300px;
+  width: 300px;
 `;
 
 export const Label = styled.Text`
@@ -47,8 +47,8 @@ export const Label = styled.Text`
 `;
 
 export const Icon = styled.View`
-	width: 24px;
-	height: 24px;
+  width: 24px;
+  height: 24px;
   align-items: center;
-	margin-left: 20px;
+  margin-left: 20px;
 `;

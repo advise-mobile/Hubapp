@@ -1,24 +1,27 @@
 export interface ItemsInstallmentsDetailsProps {
-	idLancamentoFinanceiro: string;
-	idCliente: string;
-	idFinanceiro: string;
-	valor: string;
-	dataEmissao: string;
-	idProcesso: string;
-	quantidadeParcelas: string;
-	observacao: string;
-	categoria: string;
-	baixado: boolean;
+  idLancamentoFinanceiro: string;
+  idCliente: string;
+  idFinanceiro: string;
+  valor: string;
+  dataEmissao: string;
+  idProcesso: string | null;
+  quantidadeParcelas: string;
+  observacao: string | null;
+  categoria: string | null;
+  idCategoriaFinanceiro: number | null;
+  idPessoaCliente: number | null;
+  categoriaFinanceiro: any | null;
+  baixado: boolean;
 }
 
 export interface ItemsDetailsProps {
-	itens: ItemsInstallmentsDetailsProps[];
+  itens: ItemsInstallmentsDetailsProps[];
 }
 
 export interface DataItemsDetailsProps {
-	data: ItemsDetailsProps;
+  data: ItemsDetailsProps;
 }
 
 export interface CategoryFinanceProps {
-	nomeCategoriaFinanceiro?: string;
+  nomeCategoriaFinanceiro?: string;
 }

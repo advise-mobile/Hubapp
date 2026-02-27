@@ -16,7 +16,7 @@ import Modal from '@lcomponents/Modal';
 import Spinner from '@lcomponents/Spinner';
 import Datepicker from '@lcomponents/DatePicker';
 
-import { useForm, Controller, reset } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 
 import DeadlinesActions from '@lstore/ducks/Deadlines';
@@ -52,7 +52,7 @@ export default Add = forwardRef((props, ref) => {
   const { colors } = colorUseTheme;
 
   const dispatch = useDispatch();
-  const { control, handleSubmit, setValue } = useForm();
+  const { control, handleSubmit, setValue, reset } = useForm();
 
   const types = useSelector(state => state.deadlines.types);
   const loadingTypes = useSelector(state => state.deadlines.loadingTypes);
@@ -125,8 +125,18 @@ export default Add = forwardRef((props, ref) => {
     setTitleError(false);
     setDateError(false);
     setHourError(false);
-    // reset(defaultValues);
-  }, []);
+
+    // Reseta o estado interno do react-hook-form para evitar que diaInteiro (e outros campos)
+    // permaneçam com valores do cadastro anterior quando o modal for reaberto
+    reset({
+      titulo: '',
+      diaInteiro: false,
+      data: null,
+      hora: null,
+      localizacao: '',
+      observacao: '',
+    });
+  }, [reset]);
 
   const closeModal = useCallback(() => ref.current?.close(), []);
 
