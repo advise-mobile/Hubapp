@@ -33,5 +33,30 @@ target 'HubApp' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Garantir NODE_BINARY para o Xcode (script phases não herdam PATH do terminal)
+    ios_dir = File.dirname(installer.sandbox.root)
+    xcode_env_local = File.join(ios_dir, '.xcode.env.local')
+    node_path = Pod::Executable.execute_command('node', ['-e', 'console.log(process.execPath)']).strip
+    if node_path && File.exist?(node_path)
+      File.write(xcode_env_local, "export NODE_BINARY=#{node_path}\n")
+      Pod::UI.puts "Wrote NODE_BINARY=#{node_path} to #{xcode_env_local}".green
+    else
+      Pod::UI.warn "Could not detect node path. Create ios/.xcode.env.local with: export NODE_BINARY=$(which node)"
+    end
+
+    # Deployment target mínimo (evita erro "9.0 not in range 12.0 to 26.2")
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+      end
+    end
+
+    # Hermes script phase: REACT_NATIVE_PATH (Pods fica em ios/Pods, node_modules na raiz do projeto)
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['REACT_NATIVE_PATH'] = '${PODS_ROOT}/../../node_modules/react-native'
+      end
+    end
   end
 end
