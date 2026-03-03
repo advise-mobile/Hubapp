@@ -55,6 +55,16 @@ yarn-error.log
 
 # Bundle artifact
 *.jsbundle
+**/index.android.bundle
+
+# Android drawables copied from node_modules (libs load assets via Metro)
+android/app/src/main/res/drawable-*/node_modules_*
+
+# Firebase / Google Services (usar google-services.json.example como modelo)
+android/app/google-services.json
+
+# iOS: cópia duplicada do src/ da raiz (Metro usa o src da raiz do projeto)
+ios/src/
 
 # Ruby / CocoaPods
 **/Pods/
@@ -73,3 +83,8 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Docs internos / planejamento (não enviar ao repositório remoto)
+CODIGO_MORTO.md
+LEGACY_MIGRATION_PLAN.md
+README.md
