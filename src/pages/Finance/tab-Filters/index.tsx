@@ -44,17 +44,15 @@ const FilterScreen = ({onFilterSelect}) => {
 	);
 
 	return (
-		<View style={{paddingLeft: 18}}>
+		<View style={{paddingHorizontal: 18, marginTop: 10}}>
 			<FlatList
 				data={filters}
 				renderItem={renderFilter}
 				keyExtractor={item => item.id.toString()}
 				horizontal
 				showsHorizontalScrollIndicator={false}
-				style={{
-					marginTop: 10,
-				}}
-				removeClippedSubviews={true}
+				contentContainerStyle={{paddingRight: 18}}
+				removeClippedSubviews={false}
 				initialNumToRender={4}
 			/>
 		</View>

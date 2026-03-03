@@ -1,81 +1,68 @@
-import React, {useState, useEffect} from 'react';
-import {LogBox, Appearance, Platform} from 'react-native';
-import {OneSignal} from 'react-native-onesignal';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-
+import React, { useState, useEffect } from 'react';
+import { Appearance, LogBox } from 'react-native';
+import { OneSignal } from 'react-native-onesignal';
+import { Provider } from 'react-redux';
+import { ThemeProvider } from 'styled-components';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { MenuProvider } from 'react-native-popup-menu';
 import SplashScreen from 'react-native-splash-screen';
+import store from '@lstore';
+import { lightTheme, darkTheme } from '@theme';
+import Routes from '@lnavigation/Routes';
+import ToastNotify from '@lcomponents/ToastNotify';
+import StatusBar from '@lcomponents/StatusBar';
+import env from '@lservices/env';
 
-import {lightTheme, darkTheme} from './theme';
-import {ThemeProvider} from 'styled-components';
-
-import store from './store';
-import {Provider} from 'react-redux';
-
-import Routes from './navigation/Routes';
-
-import StatusBar from './components/StatusBar';
-import ToastNotify from './components/ToastNotify';
-
-import env from 'services/env';
-
-// Para ativar menus pop-up da lixeira e demais que vierem
-import {MenuProvider} from 'react-native-popup-menu';
-
-LogBox.ignoreAllLogs(); //Ignore all log notifications
+LogBox.ignoreAllLogs(); // Ignore all log notifications
 
 const App = () => {
-	let colorScheme = Appearance.getColorScheme();
+  const [theme, setTheme] = useState(Appearance.getColorScheme());
+  const currentTheme = theme === 'dark' ? darkTheme : lightTheme;
 
-	const [theme, setTheme] = useState(colorScheme);
+  const barStyle = theme === 'dark' ? 'light-content' : 'dark-content';
 
-	function updateTheme() {
-		colorScheme = Appearance.getColorScheme();
-		setTheme(colorScheme);
-	}
+  useEffect(() => {
+    // Inicializar OneSignal
+    OneSignal.initialize(env.oneSignalId);
 
-	let barStyle = theme === 'dark' ? 'light-content' : 'dark-content';
+    // Configurar listeners básicos
+    OneSignal.Notifications.addEventListener('click', event => {
+      // Notificação clicada
+    });
 
-	Appearance.addChangeListener(({colorScheme}) => {
-		updateTheme();
-	});
+    OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
+      // Exibir a notificação mesmo em foreground
+      event.getNotification().display();
+    });
 
-	useEffect(() => {
-		OneSignal.initialize(env.oneSignalId);
+    // Listener para quando o push subscription muda
+    OneSignal.User.pushSubscription.addEventListener('change', event => {
+      // Push subscription mudou
+    });
 
-		// Configurar listeners básicos
-		OneSignal.Notifications.addEventListener('click', event => {
-			// Handle notification click
-		});
+    SplashScreen.hide();
+  }, []);
 
-		OneSignal.Notifications.addEventListener('foregroundWillDisplay', event => {
-			// Exibir a notificação mesmo em foreground
-			event.getNotification().display();
-		});
+  Appearance.addChangeListener(({ colorScheme }) => {
+    setTheme(colorScheme);
+  });
 
-		// Listener para quando o push subscription muda
-		OneSignal.User.pushSubscription.addEventListener('change', event => {
-			// Handle subscription changes
-		});
-
-		SplashScreen.hide();
-	}, []);
-
-	return (
-		<SafeAreaProvider>
-			<Provider store={store}>
-				<MenuProvider>
-					<ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
-						<StatusBar
-							backgroundColor={theme === 'dark' ? '#111111' : '#fff'}
-							barStyle={barStyle}
-						/>
-						<Routes />
-						<ToastNotify theme={theme === 'dark' ? darkTheme : lightTheme} />
-					</ThemeProvider>
-				</MenuProvider>
-			</Provider>
-		</SafeAreaProvider>
-	);
+  return (
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <MenuProvider>
+          <ThemeProvider theme={currentTheme}>
+            <StatusBar
+              backgroundColor={theme === 'dark' ? '#111111' : '#fff'}
+              barStyle={barStyle}
+            />
+            <Routes />
+            <ToastNotify />
+          </ThemeProvider>
+        </MenuProvider>
+      </Provider>
+    </SafeAreaProvider>
+  );
 };
 
 export default App;

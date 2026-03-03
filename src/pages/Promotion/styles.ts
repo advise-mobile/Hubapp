@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 import { Dimensions } from 'react-native';
-import { fonts } from 'assets/styles';
+import { fonts } from '@lassets/styles';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width * 90 /100;

@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import Spinner from '@components/Spinner';
-import {Container, Warp} from 'assets/styles/global';
+import Spinner from '@lcomponents/Spinner';
 
 import {useTheme} from 'styled-components';
 import {FlatList} from 'react-native';
@@ -12,6 +11,7 @@ import {useGetCashFlow} from '@services/hooks/Finances/useCashFlow';
 import {CashFlowProps, DataFiltersCashFlowProps, FiltersCashFlowDataProps} from './types';
 
 import {
+	CashFlowScreenWrapper,
 	ContainerIconMore,
 	ContainerMainInformation,
 	ContainerScreen,
@@ -65,7 +65,7 @@ export default function CashFlow({dataFiltersCashFlow}: DataFiltersCashFlowProps
 	};
 
 	return (
-		<Container>
+		<CashFlowScreenWrapper>
 			<ContainerScreen>
 				<TopContainer>
 					<ContainerMainInformation>
@@ -95,6 +95,6 @@ export default function CashFlow({dataFiltersCashFlow}: DataFiltersCashFlowProps
 			</ContainerScreen>
 
 			{actionsMenu()}
-		</Container>
+		</CashFlowScreenWrapper>
 	);
 }

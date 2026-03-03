@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import Api from '@services/Api';
-import ToastNotifyActions from 'store/ducks/ToastNotify';
+import Api from '@lservices/Api';
+import ToastNotifyActions from '@lstore/ducks/ToastNotify';
 import { useDispatch } from 'react-redux';
 import { DataFilterCategoryProps, ItemFilterCategoryProps } from "@pages/Finance/Modal/CategoryFilter/types";
 

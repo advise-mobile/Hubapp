@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import {fonts} from 'assets/styles';
+import {fonts} from '@lassets/styles';
 
 interface ColorTextProps {
 	colorText: string;
@@ -77,6 +77,10 @@ export const ContainerLabel = styled.View`
 `;
 
 export const FinanceList = styled.FlatList``;
+
+export const ReleaseScreenWrapper = styled.View`
+  flex: 1;
+`;
 
 export const NotFound = styled.View`
 	flex: 1;

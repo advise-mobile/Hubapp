@@ -1,9 +1,11 @@
 import { Platform } from 'react-native';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components';
 import { metrics, fonts } from './index';
 
-const Container = styled.SafeAreaView`
+const Container = styled(SafeAreaView).attrs({
+  edges: ['top', 'left', 'right'],
+})`
   background-color: ${({ theme }) => theme.colors.white};
   flex: 1;
 `;

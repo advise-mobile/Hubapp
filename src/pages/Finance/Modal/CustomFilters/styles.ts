@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { fonts } from 'assets/styles';
+import { fonts } from '@lassets/styles';
 
 const Footer = styled.View`
   flex-direction: row;
@@ -78,7 +78,7 @@ const Badges = styled.View`
 
 const Badge = styled.TouchableOpacity`
   background: ${props => props.error ? props.theme.colors.redLight : props.active ? props.theme.colors.grayDarker : props.theme.colors.gray};
-  border-radius: 16;
+  border-radius: 16px;
   padding: 4px 8px;
   margin-right: 8px;
   margin-top: 16px;

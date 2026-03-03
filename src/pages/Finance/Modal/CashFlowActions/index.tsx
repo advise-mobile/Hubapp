@@ -1,175 +1,230 @@
-import React, {forwardRef, useCallback, useState, useRef, useEffect} from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 
-import {Platform, PermissionsAndroid} from 'react-native';
+import { Platform, PermissionsAndroid } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import ToastNotifyActions from 'store/ducks/ToastNotify';
+import ToastNotifyActions from '@lstore/ducks/ToastNotify';
 
 import RNFetchBlob from 'rn-fetch-blob';
 
-import {TOKEN} from '@helpers/StorageKeys';
+import { TOKEN } from '@lhelpers/StorageKeys';
 
 import Toast from 'react-native-simple-toast';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import Modal from 'components/Modal';
+import Modal from '@lcomponents/Modal';
 
 import CashFlowSendEmail from '../CashFlowSendEmail';
 
-import {Footer, Cancel, CancelText, Content, Row, Label, Icon} from './styles';
+import {
+  Footer,
+  Cancel,
+  CancelText,
+  Content,
+  Row,
+  Label,
+  Icon,
+} from './styles';
 
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import {BASE_URL} from '@services/Api';
+import { BASE_URL } from '@lservices/Api';
 
 // Add UseTheme para pegar o tema global adicionado
-import {useTheme} from 'styled-components';
+import { useTheme } from 'styled-components';
 
 export default CashFlowActions = forwardRef((props, ref) => {
-	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-	const {filters} = props;
+  const { filters } = props;
 
-	// Variavel para usar o hook
-	const colorUseTheme = useTheme();
-	const {colors} = colorUseTheme;
+  // Variavel para usar o hook
+  const colorUseTheme = useTheme();
+  const { colors } = colorUseTheme;
 
-	const dirs = RNFetchBlob.fs.dirs;
+  const dirs = RNFetchBlob.fs.dirs;
 
-	const modalCashFlowSendEmailRef = useRef(null);
+  const modalCashFlowSendEmailRef = useRef(null);
 
-	const [modalCashFlowSendEmailOpen, setModalCashFlowSendEmailOpen] = useState(false);
+  const [modalCashFlowSendEmailOpen, setModalCashFlowSendEmailOpen] =
+    useState(false);
 
-	const closeCashFlowSendEmailModal = () => {
-		setModalCashFlowSendEmailOpen(false);
-	};
+  const closeCashFlowSendEmailModal = () => {
+    setModalCashFlowSendEmailOpen(false);
+  };
 
-	useEffect(() => {
-		if (modalCashFlowSendEmailOpen) {
-			modalCashFlowSendEmailRef.current?.open();
-		}
-	}, [modalCashFlowSendEmailOpen]);
+  useEffect(() => {
+    if (modalCashFlowSendEmailOpen) {
+      modalCashFlowSendEmailRef.current?.open();
+    }
+  }, [modalCashFlowSendEmailOpen]);
 
-	const requestPermission = useCallback(async () => {
-		try {
-			const granted = await PermissionsAndroid.request(
-				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-			);
+  const closeModal = useCallback(() => ref.current?.close(), []);
 
-			return granted === PermissionsAndroid.RESULTS.GRANTED;
-		} catch (err) {
-			alert('Erro ao solicitar permissão de download!');
-		}
+  const requestPermission = useCallback(async () => {
+    try {
+      if (Platform.OS === 'android') {
+        // Para Android 13 (API 33) e superior, não precisamos de permissão para downloads
+        if (Platform.Version >= 33) {
+          return true;
+        }
 
-		return false;
-	});
+        // Para Android 12 e inferior, precisamos da permissão de armazenamento
+        const permission =
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
 
-	const handleDownloadCashFlow = useCallback(async () => {
-		const downloadPromise = new Promise(async (resolve, reject) => {
-			const havePermission = Platform.OS == 'ios' || (await requestPermission());
+        const status = await PermissionsAndroid.request(permission, {
+          title: 'Permissão necessária',
+          message:
+            'O app precisa de acesso ao armazenamento para baixar arquivos.',
+          buttonPositive: 'OK',
+        });
 
-			if (!havePermission) return;
+        return status === PermissionsAndroid.RESULTS.GRANTED;
+      }
+      return true;
+    } catch (err) {
+      dispatch(
+        ToastNotifyActions.toastNotifyShow(
+          'Erro ao solicitar permissão de download!',
+          true,
+        ),
+      );
+      return false;
+    }
+  }, [dispatch]);
 
-			const token = await AsyncStorage.getItem(TOKEN);
+  const handleDownloadCashFlow = useCallback(async () => {
+    closeModal();
 
-			Toast.show('Download do fluxo de caixa iniciado, por favor, aguarde.');
+    try {
+      const havePermission =
+        Platform.OS === 'ios' || (await requestPermission());
 
-			if (filters.period === 4) {
-				const endpoint = `${BASE_URL}/core/v1/saldos-contas-financeiro/download/mensal?dataInicio=${filters.dataSaldo}&dataFim=${filters.dataFim}&tipoArquivo=pdf`;
-			} else {
-				const endpoint = `${BASE_URL}/core/v1/saldos-contas-financeiro/download?dataSaldo=${filters.dataSaldo}&dataFim=${filters.dataFim}&tipoArquivo=pdf`;
-			}
+      if (!havePermission) {
+        return;
+      }
 
-			// - quando for anual muda o endpoint segundo documentacao
-			const endpoint = `${BASE_URL}/core/v1/saldos-contas-financeiro/download?dataSaldo=${filters.dataSaldo}&dataFim=${filters.dataFim}&tipoArquivo=pdf`;
+      const token = await AsyncStorage.getItem(TOKEN);
 
-			const filename = `${Date.now()}.pdf`;
+      if (!token) {
+        dispatch(
+          ToastNotifyActions.toastNotifyShow(
+            'Erro de autenticação. Faça login novamente.',
+            true,
+          ),
+        );
+        return;
+      }
 
-			const path =
-				Platform.OS == 'ios' ? dirs.DocumentDir + `/${filename}` : dirs.DCIMDir + `/${filename}`;
+      Toast.show('Download do fluxo de caixa iniciado, por favor, aguarde.');
 
-			RNFetchBlob.config({
-				fileCache: true,
-				path: path,
-				addAndroidDownloads: {
-					useDownloadManager: true,
-					notification: true,
-					mediaScannable: true,
-					description: 'Fluxo de caixa disponibilizado via Advise Hub App',
-					path: dirs.DCIMDir + `/${filename}`,
-				},
-			})
-				.fetch('GET', `${endpoint}`, {
-					Authorization: `Bearer ${token}`,
-				})
-				.then(res => {
-					dispatch(
-						ToastNotifyActions.toastNotifyShow('Fluxo de caixa baixado com sucesso!', false),
-					);
+      // - quando for mensal (period === 4) muda o endpoint segundo documentacao
+      const endpoint =
+        filters.period === 4
+          ? `${BASE_URL}/core/v1/saldos-contas-financeiro/download/mensal?dataInicio=${filters.dataSaldo}&dataFim=${filters.dataFim}&tipoArquivo=pdf`
+          : `${BASE_URL}/core/v1/saldos-contas-financeiro/download?dataSaldo=${filters.dataSaldo}&dataFim=${filters.dataFim}&tipoArquivo=pdf`;
 
-					if (Platform.OS === 'ios') {
-						RNFetchBlob.fs.writeFile(path, res.data, 'base64');
-						RNFetchBlob.ios.openDocument(path);
-					}
+      const filename = `${Date.now()}.pdf`;
 
-					RNFetchBlob.fs.readFile(res.data, 'base64').then(file => {
-						resolve({
-							file,
-							fileName: filename,
-						});
-					});
-				})
-				.catch(err => {
-					dispatch(
-						ToastNotifyActions.toastNotifyShow('Não foi possível baixar este fluxo de caixa', true),
-					);
-					reject();
-				});
-		});
+      const path =
+        Platform.OS === 'ios'
+          ? dirs.DocumentDir + `/${filename}`
+          : dirs.DCIMDir + `/${filename}`;
 
-		return downloadPromise;
-	}, [filters]);
+      RNFetchBlob.config({
+        fileCache: true,
+        path: path,
+        addAndroidDownloads: {
+          useDownloadManager: true,
+          notification: true,
+          mediaScannable: true,
+          description: 'Fluxo de caixa disponibilizado via Advise Hub App',
+          path: dirs.DCIMDir + `/${filename}`,
+        },
+      })
+        .fetch('GET', `${endpoint}`, {
+          Authorization: `Bearer ${token}`,
+        })
+        .then(res => {
+          dispatch(
+            ToastNotifyActions.toastNotifyShow(
+              'Fluxo de caixa baixado com sucesso!',
+              false,
+            ),
+          );
 
-	const closeModal = useCallback(() => ref.current?.close(), []);
+          if (Platform.OS === 'ios') {
+            RNFetchBlob.fs.writeFile(path, res.data, 'base64');
+            RNFetchBlob.ios.openDocument(path);
+          }
+        })
+        .catch(err => {
+          dispatch(
+            ToastNotifyActions.toastNotifyShow(
+              'Não foi possível baixar este fluxo de caixa',
+              true,
+            ),
+          );
+        });
+    } catch (err) {
+      dispatch(
+        ToastNotifyActions.toastNotifyShow(
+          'Não foi possível baixar este fluxo de caixa',
+          true,
+        ),
+      );
+    }
+  }, [filters, dispatch, closeModal, requestPermission]);
 
-	const footer = () => (
-		<Footer>
-			<Cancel onPress={() => closeModal()}>
-				<CancelText>Cancelar</CancelText>
-			</Cancel>
-		</Footer>
-	);
+  const footer = () => (
+    <Footer>
+      <Cancel onPress={() => closeModal()}>
+        <CancelText>Cancelar</CancelText>
+      </Cancel>
+    </Footer>
+  );
 
-	return (
-		<>
-			<Modal maxHeight={500} ref={ref} footer={footer()}>
-				<Content onPress={() => setModalCashFlowSendEmailOpen(true)}>
-					<Icon>
-						<MaterialIcons name={'mail'} size={24} color={colors.fadedBlack} />
-					</Icon>
-					<Row>
-						<Label>Enviar por email</Label>
-					</Row>
-				</Content>
+  return (
+    <>
+      <Modal maxHeight={500} ref={ref} footer={footer()}>
+        <Content onPress={() => setModalCashFlowSendEmailOpen(true)}>
+          <Icon>
+            <MaterialIcons name={'mail'} size={24} color={colors.fadedBlack} />
+          </Icon>
+          <Row>
+            <Label>Enviar por email</Label>
+          </Row>
+        </Content>
 
-				<Content onPress={() => handleDownloadCashFlow()}>
-					<Icon>
-						<MaterialIcons name={'file-download'} size={24} color={colors.fadedBlack} />
-					</Icon>
-					<Row>
-						<Label>Download </Label>
-					</Row>
-				</Content>
-			</Modal>
-			{modalCashFlowSendEmailOpen && (
-				<CashFlowSendEmail
-					filters={filters}
-					ref={modalCashFlowSendEmailRef}
-					onClose={closeCashFlowSendEmailModal}
-				/>
-			)}
-		</>
-	);
+        <Content onPress={() => handleDownloadCashFlow()}>
+          <Icon>
+            <MaterialIcons
+              name={'file-download'}
+              size={24}
+              color={colors.fadedBlack}
+            />
+          </Icon>
+          <Row>
+            <Label>Download </Label>
+          </Row>
+        </Content>
+      </Modal>
+      {modalCashFlowSendEmailOpen && (
+        <CashFlowSendEmail
+          filters={filters}
+          ref={modalCashFlowSendEmailRef}
+          onClose={closeCashFlowSendEmailModal}
+        />
+      )}
+    </>
+  );
 });

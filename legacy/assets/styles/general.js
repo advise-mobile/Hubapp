@@ -1,9 +1,11 @@
 import { Platform } from 'react-native';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components';
 import { metrics, fonts, colors } from './index';
 
-const Container = styled.SafeAreaView`
+const Container = styled(SafeAreaView).attrs({
+  edges: ['top', 'left', 'right'],
+})`
   background-color: ${colors.white};
   flex: 1;
 `;
@@ -48,9 +50,9 @@ const HeaderActionsRight = styled.View`
 `;
 
 const HeaderActionsLink = styled.TouchableOpacity`
-  padding-bottom: ${Platform.OS === 'ios' ? 28 : 37};
+  padding-bottom: 0;
   padding-left: 20;
-  padding-top: ${Platform.OS === 'ios' ? 28 : 37};
+  padding-top: 0;
   position: relative;
 `;
 
@@ -85,9 +87,9 @@ const HeaderButtonText = styled.Text`
 `;
 
 const Blank = styled.View`
-  padding-bottom: ${Platform.OS === 'ios' ? 28 : 37};
+  padding-bottom: 0;
   padding-left: 20;
-  padding-top: ${Platform.OS === 'ios' ? 28 : 37};
+  padding-top: 0;
   position: relative;
   margin: 0 8px;
 `;

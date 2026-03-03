@@ -4,10 +4,6 @@
 
 # Xcode
 #
-\.vscode
-
-# Xcode
-#
 build/
 *.pbxuser
 !default.pbxuser
@@ -24,7 +20,7 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-*.project.xcworkspace
+**/.xcode.env.local
 
 # Android/IntelliJ
 #
@@ -34,18 +30,16 @@ build/
 local.properties
 *.iml
 *.hprof
+.cxx/
+*.keystore
+!debug.keystore
+.kotlin/
 
 # node.js
 #
 node_modules/
 npm-debug.log
 yarn-error.log
-
-# BUCK
-buck-out/
-\.buckd/
-*.keystore
-!debug.keystore
 
 # fastlane
 #
@@ -54,20 +48,44 @@ buck-out/
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/
 
-*/fastlane/report.xml
-*/fastlane/Preview.html
-*/fastlane/screenshots
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
 
 # Bundle artifact
 *.jsbundle
+**/index.android.bundle
 
-# CocoaPods
-/ios/Pods/
+# Android drawables copied from node_modules (libs load assets via Metro)
+android/app/src/main/res/drawable-*/node_modules_*
 
-# Android
-android/
-*.hprof
-
-# Firebase Configuration Files (SENSITIVE - DO NOT COMMIT)
+# Firebase / Google Services (usar google-services.json.example como modelo)
 android/app/google-services.json
-ios/GoogleService-Info.plist
+
+# iOS: cópia duplicada do src/ da raiz (Metro usa o src da raiz do projeto)
+ios/src/
+
+# Ruby / CocoaPods
+**/Pods/
+vendor/
+/vendor/bundle/
+
+# Temporary files created by Metro to check the health of the file watcher
+.metro-health-check*
+
+# testing
+/coverage
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Docs internos / planejamento (não enviar ao repositório remoto)
+CODIGO_MORTO.md
+LEGACY_MIGRATION_PLAN.md
+README.md

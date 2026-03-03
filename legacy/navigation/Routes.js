@@ -23,7 +23,7 @@ import Client from '@lpages/Client';
 
 import Account from '@lpages/Account';
 import Chat from '@lpages/Account/Chat';
-// import Notifications from '@lpages/Account/Notifications';
+
 import Pushs from '@lpages/Account/Notifications/Pushs';
 import Emails from '@lpages/Account/Notifications/Emails';
 import PrivacyPolicy from '@lpages/PrivacyPolicy';
@@ -43,7 +43,6 @@ import Deadlines from '@lpages/Deadlines';
 import DeadlinesDetails from '@lpages/Deadlines/Details';
 
 import TermsUse from '@lpages/TermsUse';
-// import { colors } from '@lassets/styles';
 
 import { PermissionsGroups } from '@lhelpers/Permissions';
 

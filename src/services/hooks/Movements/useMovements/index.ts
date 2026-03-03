@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-import  Api  from '@services/Api';
+import  Api  from '@lservices/Api';
 
 import { useDispatch } from 'react-redux';
 
-import ToastNotifyActions from 'store/ducks/ToastNotify';
+import ToastNotifyActions from '@lstore/ducks/ToastNotify';
 
 export const useMovementsGetDeleteTrash = () => {
 

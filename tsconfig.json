@@ -1,23 +1,5 @@
 {
-    "compilerOptions": {
-      "lib": [ "es2015" ],
-      "target": "es5",
-      "module": "commonjs",
-      "jsx": "react",
-      "outDir": "./dist",
-      "strict": true,
-      "esModuleInterop": true,
-      "baseUrl": ".",
-      "paths": {
-        "@services/*": ["src/services/*"],
-        "@pages/*": ["src/pages/*"],
-        "@helpers/*": ["src/helpers/*"],
-        "@components/*": ["src/components/*"],
-        "@assets/*": ["src/assets/*"],
-      },
-      "types": ["@types/styled-components-react-native"]
-    },
-    "include": [
-      "./src/**/*"
-    ]
-  }
+  "extends": "@react-native/typescript-config",
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/node_modules", "**/Pods"]
+}

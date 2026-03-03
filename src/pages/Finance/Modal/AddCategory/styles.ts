@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import {fonts} from 'assets/styles';
+import {fonts} from '@lassets/styles';
 
 interface ValidationProps {
 	backgroundColor?: string;

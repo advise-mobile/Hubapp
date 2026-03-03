@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { fonts, metrics } from 'assets/styles';
+import { fonts, metrics } from '@lassets/styles';
 
 const Heading = styled.View`
   align-items: center;
@@ -94,7 +94,7 @@ const MovementTags = styled.TouchableOpacity`
 
 const Tag = styled.View`
   background-color: ${(props) => props.background};
-  border-radius: 22;
+  border-radius: 22px;
   padding: 2px 8px;
   margin-right: 10;
   margin-bottom: 10;

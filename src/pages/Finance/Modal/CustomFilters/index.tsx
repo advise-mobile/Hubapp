@@ -1,12 +1,16 @@
 import React, { forwardRef, useState, useCallback } from 'react';
 
-import { FormatDateBR, FormatFinalDateEN, FormatInitialDateEN } from 'helpers/DateFunctions';
+import {
+  FormatDateBR,
+  FormatFinalDateEN,
+  FormatInitialDateEN,
+} from '@lhelpers/DateFunctions';
 
-import Modal from 'components/Modal';
-import Spinner from 'components/Spinner';
-import Datepicker from 'components/DatePicker';
+import Modal from '@lcomponents/Modal';
+import Spinner from '@lcomponents/Spinner';
+import Datepicker from '@lcomponents/DatePicker';
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import {
@@ -30,19 +34,22 @@ import {
 import { useTheme } from 'styled-components';
 
 export default Filters = forwardRef((props, ref) => {
+  // Variavel para usar o hook
+  const colorUseTheme = useTheme();
+  const { colors } = colorUseTheme;
 
-      // Variavel para usar o hook
-	const colorUseTheme = useTheme();
-	const { colors } = colorUseTheme;
-
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, setValue } = useForm();
 
   const types = useSelector(state => state.deadlines.types);
   const loadingTypes = useSelector(state => state.deadlines.loadingTypes);
   const processing = useSelector(state => state.deadlines.processing);
 
-  const [minDate, setMinDate] = useState(props.filters.dataInicial ? FormatDateBR(props.filters.dataInicial) : null);
-  const [maxDate, setMaxDate] = useState(props.filters.dataFinal ? FormatDateBR(props.filters.dataFinal) : null);
+  const [minDate, setMinDate] = useState(
+    props.filters.dataInicial ? FormatDateBR(props.filters.dataInicial) : null,
+  );
+  const [maxDate, setMaxDate] = useState(
+    props.filters.dataFinal ? FormatDateBR(props.filters.dataFinal) : null,
+  );
 
   const [currentType, setCurrentType] = useState(props.filters.tipo || null);
 
@@ -50,14 +57,16 @@ export default Filters = forwardRef((props, ref) => {
     let removed = {};
 
     Object.keys(object).map(key => {
-      if (object[key])
-        removed[key] = object[key];
+      if (object[key]) removed[key] = object[key];
     });
 
     return removed;
   }, []);
 
-  const countFilters = useCallback(() => [minDate, maxDate, currentType].filter(state => state != null).length, [minDate, maxDate, currentType]);
+  const countFilters = useCallback(
+    () => [minDate, maxDate, currentType].filter(state => state != null).length,
+    [minDate, maxDate, currentType],
+  );
 
   // const checkNull = useCallback(states => states.filter(state => state != null).length);
 
@@ -77,25 +86,47 @@ export default Filters = forwardRef((props, ref) => {
     setTimeout(() => closeModal(), 300);
   };
 
-  const renderTypes = useCallback(() => types.map((type, index) =>
-    <Badge key={index} active={type.id == currentType} onPress={() => (type.id == currentType) ? setCurrentType(null) : setCurrentType(type.id)}>
-      <BadgeText active={type.id == currentType}>{type.nome}</BadgeText>
-    </Badge>
-  ), [types, currentType]);
+  const renderTypes = useCallback(
+    () =>
+      types.map((type, index) => (
+        <Badge
+          key={index}
+          active={type.id == currentType}
+          onPress={() =>
+            type.id == currentType
+              ? setCurrentType(null)
+              : setCurrentType(type.id)
+          }
+        >
+          <BadgeText active={type.id == currentType}>{type.nome}</BadgeText>
+        </Badge>
+      )),
+    [types, currentType],
+  );
 
   const footer = () => (
     <Footer>
       <Cancel onPress={() => closeModal()}>
         <CancelText>Cancelar</CancelText>
       </Cancel>
-      <Submit onPress={handleSubmit(onSubmit)} disabled={processing} >
-        {processing ? <Spinner transparent={true} color={colors.white} height='auto' /> : <SubmitText>Salvar</SubmitText>}
+      <Submit onPress={handleSubmit(onSubmit)} disabled={processing}>
+        {processing ? (
+          <Spinner transparent={true} color={colors.white} height="auto" />
+        ) : (
+          <SubmitText>Salvar</SubmitText>
+        )}
       </Submit>
     </Footer>
   );
 
   return (
-    <Modal ref={ref} title="Filtros" footer={footer()} filters={countFilters()} clear={clearFilters}>
+    <Modal
+      ref={ref}
+      title="Filtros"
+      footer={footer()}
+      filters={countFilters()}
+      clear={clearFilters}
+    >
       <Content>
         <Row>
           <Title>Período</Title>
@@ -106,17 +137,20 @@ export default Filters = forwardRef((props, ref) => {
                 name="dataInicial"
                 control={control}
                 defaultValue={null}
-                render={({ onChange }) => (
+                render={() => (
                   <Datepicker
                     date={minDate}
                     enabled={true}
                     title="dd/mm/aaaa"
                     style={{ maxWidth: 100 }}
                     maxDate={maxDate || undefined}
-                    onDateChange={date => { setMinDate(date), onChange(FormatInitialDateEN(date)) }}
+                    onDateChange={date => {
+                      setMinDate(date);
+                      setValue('dataInicial', FormatInitialDateEN(date));
+                    }}
                   />
-                )}>
-              </Controller>
+                )}
+              ></Controller>
             </Column>
             <Column>
               <Label>Até</Label>
@@ -124,31 +158,30 @@ export default Filters = forwardRef((props, ref) => {
                 name="dataFinal"
                 control={control}
                 defaultValue={null}
-                render={({ onChange }) => (
+                render={() => (
                   <Datepicker
                     date={maxDate}
                     enabled={true}
                     title="dd/mm/aaaa"
                     style={{ maxWidth: 100 }}
                     minDate={minDate || undefined}
-                    onDateChange={date => { setMaxDate(date), onChange(FormatFinalDateEN(date)) }}
+                    onDateChange={date => {
+                      setMaxDate(date);
+                      setValue('dataFinal', FormatFinalDateEN(date));
+                    }}
                   />
-                )}>
-              </Controller>
+                )}
+              ></Controller>
             </Column>
           </FormControl>
         </Row>
         <Row>
           <Column>
             <Title>Tipo de Prazo</Title>
-            <Badges>
-              {loadingTypes ? <Spinner /> : renderTypes()}
-            </Badges>
+            <Badges>{loadingTypes ? <Spinner /> : renderTypes()}</Badges>
           </Column>
         </Row>
       </Content>
-    </Modal >
+    </Modal>
   );
 });
-
-
