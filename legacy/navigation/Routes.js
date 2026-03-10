@@ -15,7 +15,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import UserIcon from '@lcomponents/UserIcon';
 import CustomIcon from '@lcomponents/CustomIcon';
 
-import Intro from '@lpages/Intro';
+// Intro importada do código principal (src/pages), não do legado
+import Intro from '@pages/Intro';
 import Login from '@lpages/Login';
 import Initial from '@lpages/Initial';
 import Forgot from '@lpages/Forgot';
