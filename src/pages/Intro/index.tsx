@@ -12,7 +12,7 @@ import icon from 'assets/images/icon.png';
 import unificationImage from 'assets/images/intro/1.jpg';
 import deadLineModuleImage from 'assets/images/intro/2.jpg';
 import financeModuleImage from 'assets/images/intro/4.jpg';
-import intimateModuleImage from 'assets/images/intro/5.jpg';
+import summonsModuleImage from 'assets/images/intro/5.jpg';
 
 const SLIDES_DATA: Omit<IntroSlideItem, 'image'>[] = [
 	{
@@ -41,7 +41,7 @@ const introImages = [
 	unificationImage,
 	deadLineModuleImage,
 	financeModuleImage,
-	intimateModuleImage,
+	summonsModuleImage,
 ];
 
 const slides: IntroSlideItem[] = SLIDES_DATA.map((item, index) => ({
