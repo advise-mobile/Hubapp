@@ -86,6 +86,7 @@ vendor/
 !.yarn/versions
 
 # Docs internos / planejamento (não enviar ao repositório remoto)
+docs/
 CODIGO_MORTO.md
 LEGACY_MIGRATION_PLAN.md
 README.md
