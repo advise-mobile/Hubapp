@@ -10,3 +10,19 @@ declare module '@lhelpers/StorageKeys' {
   export const ACCEPT_TERMS: string;
   export const SHOW_PROMOTION: string;
 }
+
+declare module '@lcomponents/DatePicker' {
+  import type { ComponentType } from 'react';
+  import type { StyleProp, ViewStyle } from 'react-native';
+  export interface DatePickerProps {
+    date: string | Date | null;
+    onDateChange: (date: Date) => void;
+    title?: string;
+    enabled?: boolean;
+    minDate?: Date;
+    maxDate?: Date;
+    style?: StyleProp<ViewStyle>;
+  }
+  const Datepicker: ComponentType<DatePickerProps>;
+  export default Datepicker;
+}
