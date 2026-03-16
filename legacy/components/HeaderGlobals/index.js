@@ -20,9 +20,7 @@ const HeaderGlobals = props => {
   const colorUseTheme = useTheme();
   const { colors } = colorUseTheme;
   return (
-    <HeaderContainer
-      style={{ minHeight: 0, paddingTop: Platform.OS == 'ios' ? 0 : 8 }}
-    >
+    <HeaderContainer style={{ minHeight: 0, paddingTop: 0 }}>
       <HeaderActionsLeft>
         {props.filter && (
           <HeaderAction>

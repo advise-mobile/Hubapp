@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import {fonts} from 'assets/styles';
+import {fonts} from '@lassets/styles';
 
 interface ColorTextProps {
 	colorText: string;
@@ -10,6 +10,10 @@ interface WeightTextProps {
 }
 
 export const ContainerScreen = styled.View`
+	flex: 1;
+`;
+
+export const CashFlowScreenWrapper = styled.View`
 	flex: 1;
 `;
 

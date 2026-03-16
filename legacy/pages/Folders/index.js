@@ -581,7 +581,11 @@ export default function Folders(props) {
   );
 
   const Processos = () => (
-    <Container tabLabel="Processos">
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      style={{ flex: 1 }}
+      tabLabel="Processos"
+    >
       {processesPermission ? (
         <>
           {renderProcessesHeader}
@@ -620,7 +624,7 @@ export default function Folders(props) {
           body="Monitore e receba de forma unificada as informações referentes às suas publicações e processos. Escolha o tribunal, órgão oficial ou diários de forma simples e segura."
         />
       )}
-    </Container>
+    </KeyboardAvoidingView>
   );
 
   const renderList = folder => (

@@ -1,343 +1,456 @@
-import { useEffect, useState ,useCallback } from "react";
+import { useEffect, useState, useCallback } from 'react';
 
-import  Api  from '@services/Api';
+import Api from '@lservices/Api';
 
-import { MovementsProps, ItemProps } from '@pages/MovementsTrash/types'
+import { MovementsProps, ItemProps } from '@pages/MovementsTrash/types';
 
-import { MovementsTrashProps } from "./types";
+import { MovementsTrashProps } from './types';
 
-import ToastNotifyActions from 'store/ducks/ToastNotify';
+import ToastNotifyActions from '@lstore/ducks/ToastNotify';
 
 import { useDispatch } from 'react-redux';
 
-import  { FormatDateBR }  from '@helpers/DateFunctions.js';
+import { FormatDateBR } from '@lhelpers/DateFunctions.js';
 
-import { MaskCnj } from '@helpers/Mask';
+import { MaskCnj } from '@lhelpers/Mask';
 
-import { getLoggedUser } from '@helpers/Permissions';
+import { getLoggedUser } from '@lhelpers/Permissions';
 
-import { KeyWordsProps, ItemKeyWordsProps, DiariesParamsProps, DiariesDataProps, ItemDiarieProps, JournalsParamsProps, ItemJournalProps, JournalsDataProps } from "../types";
+import {
+  KeyWordsProps,
+  ItemKeyWordsProps,
+  DiariesParamsProps,
+  DiariesDataProps,
+  ItemDiarieProps,
+  JournalsParamsProps,
+  ItemJournalProps,
+  JournalsDataProps,
+} from '../types';
 
-import { ItemProps as MultiSelectCheckBoxProps } from "@components/MultiSelectCheckBox/types";
+import { ItemProps as MultiSelectCheckBoxProps } from '@components/MultiSelectCheckBox/types';
 
-export const useGetMovementsTrash = (dataFilters:MovementsTrashProps) => {
+export const useGetMovementsTrash = (dataFilters: MovementsTrashProps) => {
+  const [loading, setLoading] = useState(true);
+  const [movementsTrash, setMovementsTrash] = useState<ItemProps[]>([]);
 
-    const [loading, setLoading] = useState(true);    
-    const [movementsTrash, setMovementsTrash] = useState<ItemProps[]>([]);
-    
-    const getData = async (filters:MovementsTrashProps) => {
-        
-        try {
-
-            let addFilters = `&paginaAtual=${filters.page}`;
-            if(filters.itens){
-                                
-                
-                addFilters+=`&lido=${filters.itens.Lido}`;
-                
-                if(filters.itens.idPalavraChave){
-                    addFilters+=`&idsPalavraChave=${filters.itens.idPalavraChave.toString()}`;
-                }
-                
-                if(filters.itens.idDiario){
-                    addFilters+=`&idsDiarios=${filters.itens.idDiario.toString()}`;
-                }
-
-                if(filters.itens.idJournals){
-                    addFilters+=`&idsCadernos=${filters.itens.idJournals.toString()}`;
-                }
-                
-                if(filters.itens.idTipoMovProcesso){
-                    addFilters+=`&idTipoMovProcesso=${filters.itens.idTipoMovProcesso}`;
-                }
-
-                if(filters.itens.DataMovimentoInicio){
-                    addFilters+=`&DataMovimentoInicio=${filters.itens.DataMovimentoInicio}`;
-                }
-                
-                if(filters.itens.DataMovimentoFim){
-                    addFilters+=`&DataMovimentoFim=${filters.itens.DataMovimentoFim}`;
-                }
-                
-            }
-            
-            
-          
-            const params = `campos=*&ordenacao=-dataHoraInclusao&registrosPorPagina=300&possuiDataLixeira=true${addFilters}`;
-
-            const response:MovementsProps = await Api.get(`/core/v1/movimentos-usuarios-clientes?${params}`);
-            
-            const { itens } = response.data;
-
-            const itensOptimized = itens.map((item:ItemProps) => {
-                                
-                const dataPublicacao =  item.movimento.idTipoMovProcesso === -1 ?  
-                                        FormatDateBR(item.movimento.dataHoraMovimento) :
-                                        FormatDateBR(item.movimento.publicacao?.dataPublicacaoDiarioEdicao);
-
-                                        
-
-                const dataDivulgacao =  item.movimento.idTipoMovProcesso === -1 ?  
-                FormatDateBR(item.movimento.dataHoraMovimento) :
-                FormatDateBR(item.movimento.publicacao?.dataDivulgacao);
-
-                const title = item.movimento.idTipoMovProcesso === -1 ? 
-                            `${ dataPublicacao } - ${item.movimento.andamentoProcesso?.siglaOrgaoJudiriario} - ${item.movimento.andamentoProcesso?.nomeFontePesquisa}`:
-                            `${ dataDivulgacao } - ${item.movimento.publicacao?.descricaoCadernoDiario}`
-
-                const resumo = item.movimento.idTipoMovProcesso === -1 ? 
-                                    item.movimento.andamentoProcesso?.resumo:
-                                    item.movimento.publicacao?.resumo;
-
-                const idTipoMovProcesso = item.movimento.idTipoMovProcesso;
-
-                const numeroProcesso = item.movimento.idTipoMovProcesso === -1 ? 
-                                        MaskCnj(item.movimento.andamentoProcesso?.numeroProcesso):
-                                        item.movimento.publicacao?.processosPublicacoes && item.movimento.publicacao?.processosPublicacoes?.length > 0 ?
-                                        MaskCnj(item.movimento.publicacao?.processosPublicacoes[0].numeroProcesso) : null;
-
-                const palavrasChaves = item.movimento.idTipoMovProcesso === -1 ? 
-                                        null:
-                                        item.movimento.publicacao?.palavrasChaves && item.movimento.publicacao?.palavrasChaves?.length > 0 ?
-                                        item.movimento.publicacao?.palavrasChaves : null;
-
-
-
-                return { 
-                            ...item,
-                            title,
-                            idTipoMovProcesso,
-                            numeroProcesso,
-                            resumo,
-                            dataPublicacao,
-                            dataDivulgacao,
-                            palavrasChaves
-                        }
-            });
-
-            setMovementsTrash(itensOptimized);
-            
-        } catch (error) {
-            const dispatch = useDispatch();
-            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível carregar os movimentos. Tente mais tarde',true));
-        }finally {
-            setLoading(false);        
+  const getData = async (filters: MovementsTrashProps) => {
+    try {
+      setLoading(true);
+      let addFilters = `&paginaAtual=${filters.page}`;
+      if (filters.itens) {
+        // Adiciona lido apenas se não for null ou undefined
+        if (filters.itens.Lido !== null && filters.itens.Lido !== undefined) {
+          addFilters += `&lido=${filters.itens.Lido}`;
         }
+
+        if (
+          filters.itens.idPalavraChave &&
+          filters.itens.idPalavraChave.length > 0
+        ) {
+          addFilters += `&idsPalavraChave=${filters.itens.idPalavraChave.toString()}`;
+        }
+
+        if (filters.itens.idDiario && filters.itens.idDiario.length > 0) {
+          addFilters += `&idsDiarios=${filters.itens.idDiario.toString()}`;
+        }
+
+        if (filters.itens.idJournals && filters.itens.idJournals.length > 0) {
+          addFilters += `&idsCadernos=${filters.itens.idJournals.toString()}`;
+        }
+
+        if (filters.itens.idTipoMovProcesso) {
+          addFilters += `&idTipoMovProcesso=${filters.itens.idTipoMovProcesso}`;
+        }
+
+        // Verifica se DataMovimentoInicio existe e não é string vazia
+        if (
+          filters.itens.DataMovimentoInicio &&
+          filters.itens.DataMovimentoInicio.trim() !== ''
+        ) {
+          addFilters += `&DataMovimentoInicio=${filters.itens.DataMovimentoInicio}`;
+        }
+
+        // Verifica se DataMovimentoFim existe e não é string vazia
+        if (
+          filters.itens.DataMovimentoFim &&
+          filters.itens.DataMovimentoFim.trim() !== ''
+        ) {
+          addFilters += `&DataMovimentoFim=${filters.itens.DataMovimentoFim}`;
+        }
+      }
+
+      const params = `campos=*&ordenacao=-dataHoraInclusao&registrosPorPagina=300&possuiDataLixeira=true${addFilters}`;
+
+      const response: MovementsProps = await Api.get(
+        `/core/v1/movimentos-usuarios-clientes?${params}`,
+      );
+
+      const { itens } = response.data;
+
+      const itensOptimized = itens.map((item: ItemProps) => {
+        const idTipoMovProcesso = item.movimento.idTipoMovProcesso;
+
+        // Para INSS (-4), usar dataHoraMovimento diretamente
+        const dataPublicacao =
+          idTipoMovProcesso === -1 || idTipoMovProcesso === -4
+            ? FormatDateBR(item.movimento.dataHoraMovimento)
+            : FormatDateBR(
+                item.movimento.publicacao?.dataPublicacaoDiarioEdicao,
+              );
+
+        const dataDivulgacao =
+          idTipoMovProcesso === -1 || idTipoMovProcesso === -4
+            ? FormatDateBR(item.movimento.dataHoraMovimento)
+            : FormatDateBR(item.movimento.publicacao?.dataDivulgacao);
+
+        // Para INSS (-4), título é nomeFontePesquisa (assumindo que está em andamentoProcesso ou similar)
+        const title =
+          idTipoMovProcesso === -1
+            ? `${dataPublicacao} - ${item.movimento.andamentoProcesso?.siglaOrgaoJudiciario} - ${item.movimento.andamentoProcesso?.nomeFontePesquisa}`
+            : idTipoMovProcesso === -4
+            ? item.movimento.andamentoProcesso?.nomeFontePesquisa ||
+              item.movimento.nomeTipoMovProcesso
+            : `${dataDivulgacao} - ${item.movimento.publicacao?.descricaoCadernoDiario}`;
+
+        // Para INSS (-4), resumo vem de andamentoProcesso ou similar
+        const resumo =
+          idTipoMovProcesso === -1
+            ? item.movimento.andamentoProcesso?.resumo
+            : idTipoMovProcesso === -4
+            ? item.movimento.andamentoProcesso?.resumo
+            : item.movimento.publicacao?.resumo;
+
+        // Para INSS, calcular numeroProcesso primeiro para usar na comparação
+        const numeroProcessoINSS =
+          idTipoMovProcesso === -4 &&
+          item.movimento.andamentoProcesso?.numeroProcesso
+            ? MaskCnj(item.movimento.andamentoProcesso.numeroProcesso)
+            : null;
+
+        const numeroProcesso =
+          idTipoMovProcesso === -1
+            ? MaskCnj(item.movimento.andamentoProcesso?.numeroProcesso)
+            : idTipoMovProcesso === -4
+            ? numeroProcessoINSS
+            : item.movimento.publicacao?.processosPublicacoes &&
+              item.movimento.publicacao?.processosPublicacoes?.length > 0
+            ? MaskCnj(
+                item.movimento.publicacao?.processosPublicacoes[0]
+                  .numeroProcesso,
+              )
+            : null;
+
+        const palavrasChaves =
+          idTipoMovProcesso === -1 || idTipoMovProcesso === -4
+            ? null
+            : item.movimento.publicacao?.palavrasChaves &&
+              item.movimento.publicacao?.palavrasChaves?.length > 0
+            ? item.movimento.publicacao?.palavrasChaves
+            : null;
+
+        // Para INSS, obter nome do processo das pastas se diferente do número
+        const nomeProcesso =
+          idTipoMovProcesso === -4 &&
+          item.movimento.pastas &&
+          item.movimento.pastas.length > 0 &&
+          item.movimento.pastas[0].nome &&
+          numeroProcessoINSS &&
+          item.movimento.pastas[0].nome !== numeroProcessoINSS
+            ? item.movimento.pastas[0].nome
+            : null;
+
+        return {
+          ...item,
+          title,
+          idTipoMovProcesso,
+          numeroProcesso,
+          resumo,
+          dataPublicacao,
+          dataDivulgacao,
+          palavrasChaves,
+          nomeProcesso,
+          nomeTipoMovProcesso: item.movimento.nomeTipoMovProcesso,
+        };
+      });
+
+      setMovementsTrash(itensOptimized);
+    } catch (error) {
+      const dispatch = useDispatch();
+      dispatch(
+        ToastNotifyActions.toastNotifyShow(
+          'Não foi possível carregar os movimentos. Tente mais tarde',
+          true,
+        ),
+      );
+    } finally {
+      setLoading(false);
     }
+  };
 
-    useEffect(() => {
-        getData(dataFilters);
-    }, []);
+  useEffect(() => {
+    getData(dataFilters);
+  }, []);
 
-  return { loading, movementsTrash ,getData };
+  return { loading, movementsTrash, getData };
 };
 
 export const useMovementRecover = () => {
-    
-    const [isLoadingRecover, setIsloadngRecover] = useState(false);
-    
-    const dispatch = useDispatch();
+  const [isLoadingRecover, setIsloadngRecover] = useState(false);
 
-    const recoverMoviment = useCallback( async (item:ItemProps, handleCallback:() => void) => {
-        
-        try {
-            setIsloadngRecover(true);
+  const dispatch = useDispatch();
 
-            const { idUsuarioCliente } =  await getLoggedUser();
-    
-            const data = [{
-                idMovimentoProcessoCliente:item.idMovProcessoCliente,
-                idUsuarioCliente
-            }]
-            
-            const response = await Api.put(`/core/v1/movimentos-usuarios-clientes/restaurar-lixeira`,data);
+  const recoverMoviment = useCallback(
+    async (item: ItemProps, handleCallback: () => void) => {
+      try {
+        setIsloadngRecover(true);
 
-            dispatch(ToastNotifyActions.toastNotifyShow('Movimentação restaurada com sucesso!',false));
+        const { idUsuarioCliente } = await getLoggedUser();
 
-            return true;
+        const data = [
+          {
+            idMovimentoProcessoCliente: item.idMovProcessoCliente,
+            idUsuarioCliente,
+          },
+        ];
 
-        } catch (error) {
-            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível recuperar esta Movimentação',true));
-        }finally {
-            setTimeout(() => {
-                setIsloadngRecover(false);
-                handleCallback(); 
-            }, 2000); 
+        const response = await Api.put(
+          `/core/v1/movimentos-usuarios-clientes/restaurar-lixeira`,
+          data,
+        );
 
-            
-        }
-    }, [isLoadingRecover])
-    
-    return {isLoadingRecover, recoverMoviment};
-}
+        dispatch(
+          ToastNotifyActions.toastNotifyShow(
+            'Movimentação restaurada com sucesso!',
+            false,
+          ),
+        );
+
+        return true;
+      } catch (error) {
+        dispatch(
+          ToastNotifyActions.toastNotifyShow(
+            'Não foi possível recuperar esta Movimentação',
+            true,
+          ),
+        );
+      } finally {
+        setTimeout(() => {
+          setIsloadngRecover(false);
+          handleCallback();
+        }, 2000);
+      }
+    },
+    [isLoadingRecover],
+  );
+
+  return { isLoadingRecover, recoverMoviment };
+};
 
 export const useMovementDelete = () => {
-    
-    const [isLoadingDelete, setIsloadngDelete] = useState(false);
-    
-    const dispatch = useDispatch();
+  const [isLoadingDelete, setIsloadngDelete] = useState(false);
 
-    const deleteMovement = useCallback( async (item:ItemProps, handleCallback:() => void) => {
-        
-        try {
-            setIsloadngDelete(true);
+  const dispatch = useDispatch();
 
-            const { idUsuarioCliente } =  await getLoggedUser();
-            
-            const data = [{
-                idMovimentoProcessoCliente:item.idMovProcessoCliente,
-                idUsuarioCliente
-            }]
-            
-            const response = await Api.put(`core/v1/pastas-usuarios-clientes/desvincular-movimento`,data);
+  const deleteMovement = useCallback(
+    async (item: ItemProps, handleCallback: () => void) => {
+      try {
+        setIsloadngDelete(true);
 
-            dispatch(ToastNotifyActions.toastNotifyShow('Movimentação excluída com sucesso!',false));
+        const { idUsuarioCliente } = await getLoggedUser();
 
-            return true;
-        } catch (error) {
-            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível excluir esta movimentação',true));
-        }finally {
-            setTimeout(() => {
-                setIsloadngDelete(false);
-                handleCallback(); 
-            }, 2000);  
-        }
-    }, [isLoadingDelete])
-    
-    return {isLoadingDelete, deleteMovement};
-}
+        const data = [
+          {
+            idMovimentoProcessoCliente: item.idMovProcessoCliente,
+            idUsuarioCliente,
+          },
+        ];
 
-export const  useKeyWordsGet =  () => {
-    const [loadingKeyWords, setLoadingKeyWords] = useState(true);    
-    const [dataKeyWords, setDataKeyWords] = useState<MultiSelectCheckBoxProps[]>([]);
+        const response = await Api.put(
+          `core/v1/pastas-usuarios-clientes/desvincular-movimento`,
+          data,
+        );
 
-    const getData = async () => {
-        
-            try  {
+        dispatch(
+          ToastNotifyActions.toastNotifyShow(
+            'Movimentação excluída com sucesso!',
+            false,
+          ),
+        );
 
-                setLoadingKeyWords(true);  
+        return true;
+      } catch (error) {
+        dispatch(
+          ToastNotifyActions.toastNotifyShow(
+            'Não foi possível excluir esta movimentação',
+            true,
+          ),
+        );
+      } finally {
+        setTimeout(() => {
+          setIsloadngDelete(false);
+          handleCallback();
+        }, 2000);
+      }
+    },
+    [isLoadingDelete],
+  );
 
-                const params = `ativo=true&campos=idPalavra,palavraChave&idTipoPasta=-2`;
-                
-                const response: KeyWordsProps = await Api.get(`core/v1/pastas-usuarios-clientes`);
-                
-                const { itens } = response.data;
+  return { isLoadingDelete, deleteMovement };
+};
 
-                
+export const useKeyWordsGet = () => {
+  const [loadingKeyWords, setLoadingKeyWords] = useState(false);
+  const [dataKeyWords, setDataKeyWords] = useState<MultiSelectCheckBoxProps[]>(
+    [],
+  );
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-                const itensPasta = itens.filter((item:ItemKeyWordsProps) => {
-                    if(item.idTipoPasta === -2 && item.ativo === true) return item;
-                    
-                });
+  const getData = async () => {
+    // Se já carregou uma vez, não precisa carregar novamente
+    if (hasLoaded) return;
 
-                const keyWords = itensPasta.map((item:ItemKeyWordsProps) => {
-                    const {idPalavraChave, palavraChave} = item;
-                    return {
-                                id:idPalavraChave,
-                                description:palavraChave,
-                                isChecked:true
-                            }
-                });
+    try {
+      setLoadingKeyWords(true);
 
-                setDataKeyWords(keyWords);
-            } catch (error) {
-                const dispatch = useDispatch();
-                dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível carregar os movimentos. Tente mais tarde',true));
-            }finally {
-                setLoadingKeyWords(false);        
-            }
+      const params = `ativo=true&campos=idPalavra,palavraChave&idTipoPasta=-2`;
+
+      const response: KeyWordsProps = await Api.get(
+        `core/v1/pastas-usuarios-clientes`,
+      );
+
+      const { itens } = response.data;
+
+      const itensPasta = itens.filter((item: ItemKeyWordsProps) => {
+        if (item.idTipoPasta === -2 && item.ativo === true) return item;
+      });
+
+      const keyWords = itensPasta.map((item: ItemKeyWordsProps) => {
+        const { idPalavraChave, palavraChave } = item;
+        return {
+          id: idPalavraChave,
+          description: palavraChave,
+          isChecked: true,
+        };
+      });
+
+      setDataKeyWords(keyWords);
+      setHasLoaded(true);
+    } catch (error) {
+      const dispatch = useDispatch();
+      dispatch(
+        ToastNotifyActions.toastNotifyShow(
+          'Não foi possível carregar os movimentos. Tente mais tarde',
+          true,
+        ),
+      );
+    } finally {
+      setLoadingKeyWords(false);
     }
+  };
 
-    useEffect(() => {
-        getData();
-    }, []);
+  // Remove o useEffect automático - a requisição será feita apenas quando getData for chamado explicitamente
 
-    return { loadingKeyWords, dataKeyWords };
-}
+  return { loadingKeyWords, dataKeyWords, getData };
+};
 
-export const  useDiariesGet =  () => {
-    const [isLoadingDiaries, setIsLoadingDiaries] = useState(false);    
-    const [dataDiaries, setDataDiaries] = useState<ItemDiarieProps[]>([]);
+export const useDiariesGet = () => {
+  const [isLoadingDiaries, setIsLoadingDiaries] = useState(false);
+  const [dataDiaries, setDataDiaries] = useState<ItemDiarieProps[]>([]);
 
-    const diariesGet = useCallback( async ( keyWords : DiariesParamsProps) => {
-        
-        try {
-            setIsLoadingDiaries(true);  
+  const diariesGet = useCallback(
+    async (keyWords: DiariesParamsProps) => {
+      try {
+        setIsLoadingDiaries(true);
 
-            const params = `IdsPalavraChave=${keyWords.idPalavraChave.toString()}`;
-            
-            const response: DiariesDataProps = await Api.get(`/core/v1/diarios/usuario-grupo?${params}`);
+        const params = `IdsPalavraChave=${keyWords.idPalavraChave.toString()}`;
 
-            const { data } = response;
-            
-            const diaries = data.itens.sort((a, b) => (a.nomeDiario > b.nomeDiario) ? 1 : ((b.nomeDiario > a.nomeDiario) ? -1 : 0));
+        const response: DiariesDataProps = await Api.get(
+          `/core/v1/diarios/usuario-grupo?${params}`,
+        );
 
-            const diariesOptimized = diaries.map((item:ItemDiarieProps) => {
-                return { 
-                        id:item.idDiario,
-                        description:item.nomeDiario,
-                        isChecked:true
-                    }
-            });
-                     
-            setIsLoadingDiaries(false);  
-            return diariesOptimized;
+        const { data } = response;
 
-        } catch (error) {
-            const dispatch = useDispatch();
-            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível carregar os diarios. Tente mais tarde',true));
-        }finally {
-            setTimeout(() => {
-                setIsLoadingDiaries(false);  
-            }, 5000); 
+        const diaries = data.itens.sort((a, b) =>
+          a.nomeDiario > b.nomeDiario
+            ? 1
+            : b.nomeDiario > a.nomeDiario
+            ? -1
+            : 0,
+        );
 
-            
-        }
-    }, [isLoadingDiaries])
+        const diariesOptimized = diaries.map((item: ItemDiarieProps) => {
+          return {
+            id: item.idDiario,
+            description: item.nomeDiario,
+            isChecked: true,
+          };
+        });
 
+        setIsLoadingDiaries(false);
+        return diariesOptimized;
+      } catch (error) {
+        const dispatch = useDispatch();
+        dispatch(
+          ToastNotifyActions.toastNotifyShow(
+            'Não foi possível carregar os diarios. Tente mais tarde',
+            true,
+          ),
+        );
+      } finally {
+        setTimeout(() => {
+          setIsLoadingDiaries(false);
+        }, 5000);
+      }
+    },
+    [isLoadingDiaries],
+  );
 
-    return { isLoadingDiaries, dataDiaries, diariesGet };
-}
+  return { isLoadingDiaries, dataDiaries, diariesGet };
+};
 
-export const useJournalsGet = () =>{
-    
-    const [isLoadingJournals, setIsLoadingJournals] = useState(false);    
-    const [dataJournals, setDataJournals] = useState<ItemJournalProps[]>([]);
+export const useJournalsGet = () => {
+  const [isLoadingJournals, setIsLoadingJournals] = useState(false);
+  const [dataJournals, setDataJournals] = useState<ItemJournalProps[]>([]);
 
-    const journalsGet = useCallback( async ( diaries : JournalsParamsProps) => {
-        
-        try {
-            setIsLoadingJournals(true);  
+  const journalsGet = useCallback(
+    async (diaries: JournalsParamsProps) => {
+      try {
+        setIsLoadingJournals(true);
 
-            const params = `campos=*&paginaAtual=1&registrosPorPagina=100&IdsDiario=${diaries.IdsDiario.toString()}`;
-            
-            const response: JournalsDataProps  = await Api.get(`/core/v1/cadernos-diarios?${params}`);
+        const params = `campos=*&paginaAtual=1&registrosPorPagina=100&IdsDiario=${diaries.IdsDiario.toString()}`;
 
-            const { data } = response;
-            
-            const journalsOptimized = data.itens.map((item:ItemJournalProps) => {
-                return { 
-                        id:item.id,
-                        description:item.descricao,
-                        isChecked:true
-                    }
-            });
-                     
-            setIsLoadingJournals(false);  
-            return journalsOptimized;
+        const response: JournalsDataProps = await Api.get(
+          `/core/v1/cadernos-diarios?${params}`,
+        );
 
-        } catch (error) {
-            const dispatch = useDispatch();
-            dispatch(ToastNotifyActions.toastNotifyShow('Não foi possível carregar os cadernos. Tente mais tarde',true));
-        }finally {
-            setTimeout(() => {
-                setIsLoadingJournals(false);  
-            }, 5000); 
+        const { data } = response;
 
-            
-        }
-    }, [isLoadingJournals])
+        const journalsOptimized = data.itens.map((item: ItemJournalProps) => {
+          return {
+            id: item.id,
+            description: item.descricao,
+            isChecked: true,
+          };
+        });
 
+        setIsLoadingJournals(false);
+        return journalsOptimized;
+      } catch (error) {
+        const dispatch = useDispatch();
+        dispatch(
+          ToastNotifyActions.toastNotifyShow(
+            'Não foi possível carregar os cadernos. Tente mais tarde',
+            true,
+          ),
+        );
+      } finally {
+        setTimeout(() => {
+          setIsLoadingJournals(false);
+        }, 5000);
+      }
+    },
+    [isLoadingJournals],
+  );
 
-    return { isLoadingJournals, dataJournals, journalsGet };
-}
+  return { isLoadingJournals, dataJournals, journalsGet };
+};

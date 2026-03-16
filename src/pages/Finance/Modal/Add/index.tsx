@@ -1,7 +1,7 @@
 import React, {forwardRef, useCallback, useRef, useState, useEffect} from 'react';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Modal from '@components/Modal';
+import Modal from '@lcomponents/Modal';
 
 import {Footer, Cancel, CancelText, Content, Row, Label, Icon} from './styles';
 

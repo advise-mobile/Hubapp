@@ -1,11 +1,11 @@
 import {useState} from 'react';
 
-import Api from '@services/Api';
-import ToastNotifyActions from 'store/ducks/ToastNotify';
+import Api from '@lservices/Api';
+import ToastNotifyActions from '@lstore/ducks/ToastNotify';
 import {useDispatch} from 'react-redux';
 import {DataProcessProps, ItemProcessProps} from './types';
 
-import {getLoggedUser} from '@helpers/Permissions';
+import {getLoggedUser} from '@lhelpers/Permissions';
 
 export const useGetProcess = () => {
 	const [isLoadingProcess, setIsLoadingProcess] = useState(false);

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  StyleSheet,
-  KeyboardAvoidingView,
-  Keyboard,
-  Platform,
+	StyleSheet,
+	KeyboardAvoidingView,
+	Keyboard,
+	Platform,
 } from 'react-native';
 
 // import jwtDecode from 'jwt-decode';
@@ -22,294 +22,294 @@ import Spinner from '@lcomponents/Spinner';
 // import { changeAmbient } from '@lservices/Api';
 import { registerNotification } from '@lhelpers/Pushs';
 import {
-  AVATAR,
-  TOKEN,
-  REFRESH_TOKEN,
-  SHOW_PROMOTION,
+	AVATAR,
+	TOKEN,
+	REFRESH_TOKEN,
+	SHOW_PROMOTION,
 } from '@lhelpers/StorageKeys';
 
 // Add Hook UseTheme para pegar o tema global addicionado
 import { useTheme } from 'styled-components';
 
 import {
-  Container,
-  Warp,
-  Form,
-  InputGroup,
-  InputGroupPrepend,
-  InputGroupAppend,
-  Input,
-  InputHelpText,
-  Button,
-  ButtonText,
-  ForgotLink,
-  ForgotLinkText,
-  Logo,
-  BadgeRed,
-  BadgeRedText,
-  AnotherOptionText,
-  AnotherOption,
+	Container,
+	Warp,
+	Form,
+	InputGroup,
+	InputGroupPrepend,
+	InputGroupAppend,
+	Input,
+	InputHelpText,
+	Button,
+	ButtonText,
+	ForgotLink,
+	ForgotLinkText,
+	Logo,
+	BadgeRed,
+	BadgeRedText,
+	AnotherOptionText,
+	AnotherOption,
 } from './styles';
 
 const stylesLogin = colors =>
-  StyleSheet.create({
-    hasIcon: {
-      color: colors.fadedBlack,
-      paddingTop: 7,
-      textAlign: 'center',
-      zIndex: 100,
-    },
+	StyleSheet.create({
+		hasIcon: {
+			color: colors.fadedBlack,
+			paddingTop: 7,
+			textAlign: 'center',
+			zIndex: 100,
+		},
 
-    hasIconError: {
-      color: colors.red,
-      paddingTop: 7,
-      textAlign: 'center',
-      zIndex: 100,
-    },
+		hasIconError: {
+			color: colors.red,
+			paddingTop: 7,
+			textAlign: 'center',
+			zIndex: 100,
+		},
 
-    hasError: {
-      borderColor: colors.red,
-    },
+		hasError: {
+			borderColor: colors.red,
+		},
 
-    hasSuccess: {
-      borderColor: colors.backgroundButton,
-    },
-  });
+		hasSuccess: {
+			borderColor: colors.backgroundButton,
+		},
+	});
 
 export default function Login(props) {
-  // Variavel para usar o hook
-  const colorUseTheme = useTheme();
-  const { colors } = colorUseTheme;
-  const style = stylesLogin(colors);
+	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
+	const style = stylesLogin(colors);
 
-  // const [email, setEmail] = useState('testehubv1@emailna.co');
-  // const [password, setPassword] = useState('Senha1234');
+	// const [email, setEmail] = useState('testehubv1@emailna.co');
+	// const [password, setPassword] = useState('Senha1234');
 
-  // const [email, setEmail] = useState('valid.ti@mailna.co');
-  // const [password, setPassword] = useState('Teste@1234');
+	// const [email, setEmail] = useState('valid.ti@mailna.co');
+	// const [password, setPassword] = useState('Teste@1234');
 
-  // const [email, setEmail] = useState('qatestprod@mailna.co');
-  // const [password, setPassword] = useState('Senha123');
+	// const [email, setEmail] = useState('qatestprod@mailna.co');
+	// const [password, setPassword] = useState('Senha123');
 
-  // const [email, setEmail] = useState('hub.producao.ad@gmail.com');
-  // const [password, setPassword] = useState('@Advise123#');
+	// const [email, setEmail] = useState('hub.producao.ad@gmail.com');
+	// const [password, setPassword] = useState('@Advise123#');
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 
-  const [disabled, setDisabled] = useState(false);
-  const [emptyEmail, setEmptyEmail] = useState(false);
-  const [emptyPassword, setEmptyPassword] = useState(false);
-  const [passwordView, setPasswordView] = useState(false);
-  // const [countAmbient, setCountAmbient] = useState(0);
-  // const [ambient, setAmbient] = useState('TESTE');
+	const [disabled, setDisabled] = useState(false);
+	const [emptyEmail, setEmptyEmail] = useState(false);
+	const [emptyPassword, setEmptyPassword] = useState(false);
+	const [passwordView, setPasswordView] = useState(false);
+	// const [countAmbient, setCountAmbient] = useState(0);
+	// const [ambient, setAmbient] = useState('TESTE');
 
-  // const [authorization, setAuthorization] = useState(false);
+	// const [authorization, setAuthorization] = useState(false);
 
-  const passwordRef = useRef();
+	const passwordRef = useRef();
 
-  const [loadingIndicator, setLoadingIndicator] = useState(false);
+	const [loadingIndicator, setLoadingIndicator] = useState(false);
 
-  const login = useSelector(state => state.auth.data);
-  const isAuthorized = useSelector(state => state.auth.isAuthorized);
-  const loading = useSelector(state => state.auth.loading);
-  const acceptTerms = useSelector(state => state.auth.acceptTerms);
+	const login = useSelector(state => state.auth.data);
+	const isAuthorized = useSelector(state => state.auth.isAuthorized);
+	const loading = useSelector(state => state.auth.loading);
+	const acceptTerms = useSelector(state => state.auth.acceptTerms);
 
-  const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
-  const logoImage =
-    colorUseTheme.name === 'dark'
-      ? require('assets/images/logo_hub_branca.png')
-      : require('assets/images/logo_hub.png');
+	const logoImage =
+		colorUseTheme.name === 'dark'
+			? require('assets/images/logo_hub_branca.png')
+			: require('assets/images/logo_hub.png');
 
-  useEffect(() => {
-    props.navigation.addListener('beforeRemove', e => {
-      e.preventDefault();
+	useEffect(() => {
+		props.navigation.addListener('beforeRemove', e => {
+			e.preventDefault();
 
-      return;
-    });
-  }, []);
+			return;
+		});
+	}, []);
 
-  useEffect(() => {
-    passwordRef.current?.setNativeProps({
-      style: { fontFamily: 'CircularStd-Book' },
-    });
-  }, []);
+	useEffect(() => {
+		passwordRef.current?.setNativeProps({
+			style: { fontFamily: 'CircularStd-Book' },
+		});
+	}, []);
 
-  // useEffect(() => {
-  //   if (__DEV__) {
-  //     setEmail('sia@emailna.co')
-  //     setPassword('senha');
-  //   }
-  // }, []);
+	// useEffect(() => {
+	//   if (__DEV__) {
+	//     setEmail('sia@emailna.co')
+	//     setPassword('senha');
+	//   }
+	// }, []);
 
-  useEffect(() => {
-    checkLogin();
-  }, [isAuthorized]);
+	useEffect(() => {
+		checkLogin();
+	}, [isAuthorized]);
 
-  useEffect(() => {
-    setEmptyEmail(email.length > 0 && email.length < 2);
-    setEmptyPassword(password.length > 0 && password.length < 2);
-  }, [email, password]);
+	useEffect(() => {
+		setEmptyEmail(email.length > 0 && email.length < 2);
+		setEmptyPassword(password.length > 0 && password.length < 2);
+	}, [email, password]);
 
-  const resetPromotion = async () => {
-    await AsyncStorage.setItem(SHOW_PROMOTION, JSON.stringify(true));
-  };
+	const resetPromotion = async () => {
+		await AsyncStorage.setItem(SHOW_PROMOTION, JSON.stringify(true));
+	};
 
-  const handleLoginPress = useCallback(() => {
-    setDisabled(true);
-    Keyboard.dismiss();
+	const handleLoginPress = useCallback(() => {
+		setDisabled(true);
+		Keyboard.dismiss();
 
-    setEmptyEmail(email.length == 0);
-    setEmptyPassword(password.length == 0);
+		setEmptyEmail(email.length == 0);
+		setEmptyPassword(password.length == 0);
 
-    resetPromotion();
+		resetPromotion();
 
-    if (email.length && password.length)
-      dispatch(AuthAction.loginRequest(email.trim(), password.trim()));
+		if (email.length && password.length)
+			dispatch(AuthAction.loginRequest(email.trim(), password.trim()));
 
-    setDisabled(false);
-  }, [email, password]);
+		setDisabled(false);
+	}, [email, password]);
 
-  const handleForgotPress = useCallback(() => {
-    props.navigation.navigate('Forgot');
-  }, []);
+	const handleForgotPress = useCallback(() => {
+		props.navigation.navigate('Forgot');
+	}, []);
 
-  const checkLogin = useCallback(async () => {
-    if (!isAuthorized) return;
+	const checkLogin = useCallback(async () => {
+		if (!isAuthorized) return;
 
-    if (login.foto !== undefined && login.foto !== null) {
-      await AsyncStorage.setItem(AVATAR, login.foto);
-    } else {
-      await AsyncStorage.removeItem(AVATAR);
-    }
+		if (login.foto !== undefined && login.foto !== null) {
+			await AsyncStorage.setItem(AVATAR, login.foto);
+		} else {
+			await AsyncStorage.removeItem(AVATAR);
+		}
 
-    dispatch(UserActions.updatePicture());
+		dispatch(UserActions.updatePicture());
 
-    if (login.access_token !== null) {
-      await registerNotification();
+		if (login.access_token !== null) {
+			await registerNotification();
 
-      if (!acceptTerms) {
-        props.navigation.dispatch(StackActions.push('TermsUse'));
-      } else {
-        props.navigation.dispatch(StackActions.push('App'));
-      }
-    }
-  }, [isAuthorized, login]);
+			if (!acceptTerms) {
+				props.navigation.dispatch(StackActions.push('TermsUse'));
+			} else {
+				props.navigation.dispatch(StackActions.push('App'));
+			}
+		}
+	}, [isAuthorized, login]);
 
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : null}
-      style={{ flex: 1 }}
-    >
-      <Container behavior="padding">
-        {loadingIndicator ? (
-          <Spinner />
-        ) : (
-          <Warp>
-            <Logo source={logoImage} resizeMode="contain" />
-            {/* {__DEV__ && (
+	return (
+		<KeyboardAvoidingView
+			behavior={Platform.OS === 'ios' ? 'padding' : null}
+			style={{ flex: 1 }}
+		>
+			<Container behavior="padding">
+				{loadingIndicator ? (
+					<Spinner />
+				) : (
+					<Warp>
+						<Logo source={logoImage} resizeMode="contain" />
+						{/* {__DEV__ && (
               <BadgeRed>
                 <BadgeRedText>VERSÃO DE {ambient}</BadgeRedText>
               </BadgeRed>
             )} */}
-            <Form>
-              <InputGroup>
-                <InputGroupPrepend>
-                  <Icon
-                    name="mail"
-                    size={23}
-                    style={
-                      emptyEmail === true ? style.hasIconError : style.hasIcon
-                    }
-                  />
-                </InputGroupPrepend>
-                <Input
-                  placeholder="E-mail"
-                  placeholderTextColor={colors.grayDarker}
-                  value={email}
-                  onChangeText={text => setEmail(text)}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  onSubmitEditing={() => passwordRef.current?.focus()}
-                  returnKeyType="next"
-                  style={
-                    emptyEmail === true ? style.hasError : style.hasSuccess
-                  }
-                />
-                {!!emptyEmail && (
-                  <InputHelpText>Este campo é obrigatório.</InputHelpText>
-                )}
-              </InputGroup>
-              <InputGroup>
-                <InputGroupPrepend>
-                  <Icon
-                    name="lock"
-                    size={23}
-                    style={
-                      emptyPassword === true
-                        ? style.hasIconError
-                        : style.hasIcon
-                    }
-                  />
-                </InputGroupPrepend>
-                <Input
-                  ref={passwordRef}
-                  placeholder="Senha"
-                  placeholderTextColor={colors.grayDarker}
-                  value={password}
-                  onChangeText={text => setPassword(text)}
-                  onSubmitEditing={handleLoginPress}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  returnKeyType="send"
-                  secureTextEntry={!passwordView}
-                  style={
-                    emptyPassword === true ? style.hasError : style.hasSuccess
-                  }
-                />
-                <InputGroupAppend
-                  onPress={() => setPasswordView(!passwordView)}
-                >
-                  <Icon
-                    name={passwordView ? 'visibility-off' : 'visibility'}
-                    size={23}
-                    style={
-                      emptyEmail === true ? style.hasIconError : style.hasIcon
-                    }
-                  />
-                </InputGroupAppend>
-                {!!emptyPassword && (
-                  <InputHelpText>Este campo é obrigatório.</InputHelpText>
-                )}
-              </InputGroup>
-              <Button onPress={handleLoginPress} disabled={disabled}>
-                {loading ? (
-                  <Spinner
-                    size="small"
-                    height={22}
-                    color={colors.white}
-                    transparent={true}
-                  />
-                ) : (
-                  <ButtonText>Acessar conta</ButtonText>
-                )}
-              </Button>
-            </Form>
-            <ForgotLink onPress={handleForgotPress}>
-              <ForgotLinkText>Esqueceu sua senha de acesso?</ForgotLinkText>
-            </ForgotLink>
-            <AnotherOption>
-              <AnotherOptionText>ou</AnotherOptionText>
-            </AnotherOption>
-            <Button onPress={() => props.navigation.navigate('Client')}>
-              <ButtonText>Ainda não sou cliente</ButtonText>
-            </Button>
-          </Warp>
-        )}
-      </Container>
-    </KeyboardAvoidingView>
-  );
+						<Form>
+							<InputGroup>
+								<InputGroupPrepend>
+									<Icon
+										name="mail"
+										size={23}
+										style={
+											emptyEmail === true ? style.hasIconError : style.hasIcon
+										}
+									/>
+								</InputGroupPrepend>
+								<Input
+									placeholder="E-mail"
+									placeholderTextColor={colors.grayDarker}
+									value={email}
+									onChangeText={text => setEmail(text)}
+									autoCapitalize="none"
+									autoCorrect={false}
+									onSubmitEditing={() => passwordRef.current?.focus()}
+									returnKeyType="next"
+									style={
+										emptyEmail === true ? style.hasError : style.hasSuccess
+									}
+								/>
+								{!!emptyEmail && (
+									<InputHelpText>Este campo é obrigatório.</InputHelpText>
+								)}
+							</InputGroup>
+							<InputGroup>
+								<InputGroupPrepend>
+									<Icon
+										name="lock"
+										size={23}
+										style={
+											emptyPassword === true
+												? style.hasIconError
+												: style.hasIcon
+										}
+									/>
+								</InputGroupPrepend>
+								<Input
+									ref={passwordRef}
+									placeholder="Senha"
+									placeholderTextColor={colors.grayDarker}
+									value={password}
+									onChangeText={text => setPassword(text)}
+									onSubmitEditing={handleLoginPress}
+									autoCapitalize="none"
+									autoCorrect={false}
+									returnKeyType="send"
+									secureTextEntry={!passwordView}
+									style={
+										emptyPassword === true ? style.hasError : style.hasSuccess
+									}
+								/>
+								<InputGroupAppend
+									onPress={() => setPasswordView(!passwordView)}
+								>
+									<Icon
+										name={passwordView ? 'visibility-off' : 'visibility'}
+										size={23}
+										style={
+											emptyEmail === true ? style.hasIconError : style.hasIcon
+										}
+									/>
+								</InputGroupAppend>
+								{!!emptyPassword && (
+									<InputHelpText>Este campo é obrigatório.</InputHelpText>
+								)}
+							</InputGroup>
+							<Button onPress={handleLoginPress} disabled={disabled}>
+								{loading ? (
+									<Spinner
+										size="small"
+										height={22}
+										color={colors.white}
+										transparent={true}
+									/>
+								) : (
+									<ButtonText>Acessar conta</ButtonText>
+								)}
+							</Button>
+						</Form>
+						<ForgotLink onPress={handleForgotPress}>
+							<ForgotLinkText>Esqueceu sua senha de acesso?</ForgotLinkText>
+						</ForgotLink>
+						<AnotherOption>
+							<AnotherOptionText>ou</AnotherOptionText>
+						</AnotherOption>
+						<Button onPress={() => props.navigation.navigate('Client')}>
+							<ButtonText>Ainda não sou cliente</ButtonText>
+						</Button>
+					</Warp>
+				)}
+			</Container>
+		</KeyboardAvoidingView>
+	);
 }
 
 // function incrementChangeAmbient() {

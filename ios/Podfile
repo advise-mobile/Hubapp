@@ -1,44 +1,62 @@
-require_relative '../node_modules/react-native/scripts/react_native_pods'
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
 
-platform :ios, '13.0'
-install! 'cocoapods', :deterministic_uuids => false
+platform :ios, min_ios_version_supported
+prepare_react_native_project!
 
-target 'Advise Hub' do
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
+
+target 'HubApp' do
+  config = use_native_modules!
+
   use_react_native!(
-    :path => '../node_modules/react-native',
-    :hermes_enabled => false
+    :path => config[:reactNativePath],
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # React Native Community packages
-  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
-  pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
-  pod 'RNCClipboard', :path => '../node_modules/@react-native-community/clipboard'
-  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
-  pod 'RNCMaskedView', :path => '../node_modules/@react-native-community/masked-view'
-  pod 'RNCPicker', :path => '../node_modules/@react-native-picker/picker'
-
-  # React Navigation
-  pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
-  pod 'RNScreens', :path => '../node_modules/react-native-screens'
-  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
-  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
-
-  # Other native modules
-  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+  # OneSignal
   pod 'react-native-onesignal', :path => '../node_modules/react-native-onesignal'
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
-  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
-  pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
-  pod 'react-native-simple-toast', :path => '../node_modules/react-native-simple-toast'
-
-  # Enables Flipper.
-  #
-  # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # you should disable these next few lines.
-  # use_flipper!()
 
   post_install do |installer|
-    react_native_post_install(installer)
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false,
+      # :ccache_enabled => true
+    )
+
+    # Garantir NODE_BINARY para o Xcode (script phases não herdam PATH do terminal)
+    ios_dir = File.dirname(installer.sandbox.root)
+    xcode_env_local = File.join(ios_dir, '.xcode.env.local')
+    node_path = Pod::Executable.execute_command('node', ['-e', 'console.log(process.execPath)']).strip
+    if node_path && File.exist?(node_path)
+      File.write(xcode_env_local, "export NODE_BINARY=#{node_path}\n")
+      Pod::UI.puts "Wrote NODE_BINARY=#{node_path} to #{xcode_env_local}".green
+    else
+      Pod::UI.warn "Could not detect node path. Create ios/.xcode.env.local with: export NODE_BINARY=$(which node)"
+    end
+
+    # Deployment target mínimo (evita erro "9.0 not in range 12.0 to 26.2")
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+      end
+    end
+
+    # Hermes script phase: REACT_NATIVE_PATH (Pods fica em ios/Pods, node_modules na raiz do projeto)
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['REACT_NATIVE_PATH'] = '${PODS_ROOT}/../../node_modules/react-native'
+      end
+    end
   end
 end

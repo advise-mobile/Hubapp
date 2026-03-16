@@ -1,18 +1,17 @@
 import styled from 'styled-components/native';
 
 export const ContainerItems = styled.TouchableOpacity`
-	padding: 4px 16px;
-	margin-left: 6px;
-	margin-right: 6px;
+  padding: 6px 12px;
+  margin-right: 8px;
 
-	height: 32px;
-	align-items: center;
-	justify-content: center;
-	border-radius: 4px;
-	border: ${({theme}) => theme.colors.BlackInactive};
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.colors.BlackInactive};
 `;
 
 export const TextItems = styled.Text`
-	font-size: 14px;
-	font-weight: 700;
+  font-size: 13px;
+  font-weight: 700;
 `;

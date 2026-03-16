@@ -1,448 +1,527 @@
-import React, {forwardRef, useState, useCallback, useEffect} from 'react';
+import React, { forwardRef, useState, useCallback, useEffect } from 'react';
 
-import {Dimensions} from 'react-native';
+import { Dimensions } from 'react-native';
 
-import {useForm, Controller} from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
-import Modal from '@components/Modal';
+import Modal from '@lcomponents/Modal';
 
-import Datepicker from '@components/DatePicker';
+import Datepicker from '@lcomponents/DatePicker';
 
-import {FormatFullDateEN, FormatFinalDateEN} from '@helpers/DateFunctions';
+import { FormatFullDateEN, FormatFinalDateEN } from '@lhelpers/DateFunctions';
+import moment from 'moment';
 
-import {removeNull} from '@helpers/functions';
+import { removeNull } from '@helpers/functions';
 
-import Spinner from '@components/Spinner';
+import Spinner from '@lcomponents/Spinner';
 
 import {
-	DataPopulateCategoriesProps,
-	DataPopulateProcessProps,
-	DataPopulatePeopleProps,
+  DataPopulateCategoriesProps,
+  DataPopulateProcessProps,
+  DataPopulatePeopleProps,
 } from './types';
 
 import {
-	Title,
-	Label,
-	Row,
-	Column,
-	Footer,
-	Cancel,
-	CancelText,
-	ToSave,
-	ToSaveText,
-	Releases,
-	ReleaseType,
-	LabelItems,
-	ContainerCategories,
-	Process,
-	Person,
+  Title,
+  Label,
+  Row,
+  Column,
+  Footer,
+  Cancel,
+  CancelText,
+  ToSave,
+  ToSaveText,
+  Releases,
+  ReleaseType,
+  LabelItems,
+  ContainerCategories,
+  Process,
+  Person,
 } from './styles';
 
-import {FilterProps, DataFilterProps} from './types';
+import { FilterProps, DataFilterProps } from './types';
 
 // Add Hook UseTheme para pegar o tema global addicionado
-import {useTheme} from 'styled-components';
-import {useGetPopulateCategories} from '@services/hooks/Finances/useCategories';
-import {useGetPopulateProcess} from '@services/hooks/Finances/useProcess';
-import {useGetPopulatePeople} from '@services/hooks/Finances/usePeople';
+import { useTheme } from 'styled-components';
+import { useGetPopulateCategories } from '@services/hooks/Finances/useCategories';
+import { useGetPopulateProcess } from '@services/hooks/Finances/useProcess';
+import { useGetPopulatePeople } from '@services/hooks/Finances/usePeople';
 
 const launch = [
-	{
-		id: 10, // - Recebe ID apenas para aparecer na contagem dos filtros/limpar do lado direto da tela
-		label: 'Todos os lançamentos',
-		debitoCredito: null,
-	},
-	{
-		id: 1,
-		label: 'Despesas',
-		debitoCredito: 'D',
-	},
-	{
-		id: 2,
-		label: 'Despesas pagas',
-		debitoCredito: 'D',
-	},
-	{
-		id: 3,
-		label: 'Despesas não pagas',
-		debitoCredito: 'D',
-	},
-	{
-		id: 8,
-		label: 'Receitas ',
-		debitoCredito: 'C',
-	},
-	{
-		id: 4,
-		label: 'Receitas recebidas',
-		debitoCredito: 'C',
-	},
-	{
-		id: 5,
-		label: 'Receitas não recebidas',
-		debitoCredito: 'C',
-	},
-	{
-		id: 6,
-		label: 'Lançamentos Fixos',
-		debitoCredito: 'D',
-	},
-	{
-		id: 7,
-		label: 'Lançamentos Parcelados',
-		debitoCredito: 'D',
-	},
+  {
+    id: 10, // - Recebe ID apenas para aparecer na contagem dos filtros/limpar do lado direto da tela
+    label: 'Todos os lançamentos',
+    debitoCredito: null,
+  },
+  {
+    id: 1,
+    label: 'Despesas',
+    debitoCredito: 'D',
+  },
+  {
+    id: 2,
+    label: 'Despesas pagas',
+    debitoCredito: 'D',
+  },
+  {
+    id: 3,
+    label: 'Despesas não pagas',
+    debitoCredito: 'D',
+  },
+  {
+    id: 8,
+    label: 'Receitas ',
+    debitoCredito: 'C',
+  },
+  {
+    id: 4,
+    label: 'Receitas recebidas',
+    debitoCredito: 'C',
+  },
+  {
+    id: 5,
+    label: 'Receitas não recebidas',
+    debitoCredito: 'C',
+  },
+  {
+    id: 6,
+    label: 'Lançamentos Fixos',
+    debitoCredito: 'D',
+  },
+  {
+    id: 7,
+    label: 'Lançamentos Parcelados',
+    debitoCredito: 'D',
+  },
 ];
 
 export default Filters = forwardRef(
-	({handleSubmitFilters, handleClearFilters}: FilterProps, ref) => {
-		const {isLoading, getCategoriesData} = useGetPopulateCategories();
-		const {isLoadingProcess, getProcessData} = useGetPopulateProcess();
-		const {isLoadingPeople, getPeopleData} = useGetPopulatePeople();
+  ({ handleSubmitFilters, handleClearFilters }: FilterProps, ref) => {
+    const { isLoading, getCategoriesData } = useGetPopulateCategories();
+    const { isLoadingProcess, getProcessData } = useGetPopulateProcess();
+    const { isLoadingPeople, getPeopleData } = useGetPopulatePeople();
 
-		const [idDebitCredit, setIdDebitCredit] = useState<number | null>(null);
-		const [idCategory, setIdCategory] = useState<number | null>(null);
-		const [idProcess, setIdProcess] = useState<number | null>(null);
-		const [idPeople, setIdPeople] = useState<number | null>(null);
-		const [minDate, setMinDate] = useState<string | null>(null);
-		const [maxDate, setMaxDate] = useState<string | null>(null);
-		const [clearKey, setClearKey] = useState(0); // Adicionado para forçar re-render
+    const [idDebitCredit, setIdDebitCredit] = useState<number | null>(null);
+    const [idCategory, setIdCategory] = useState<number | null>(null);
+    const [idProcess, setIdProcess] = useState<number | null>(null);
+    const [idPeople, setIdPeople] = useState<number | null>(null);
+    const [minDate, setMinDate] = useState<string | null>(null);
+    const [maxDate, setMaxDate] = useState<string | null>(null);
+    const [clearKey, setClearKey] = useState(0); // Adicionado para forçar re-render
 
-		const [categories, setCategories] = useState<DataPopulateCategoriesProps[]>([]);
-		const [process, setProcess] = useState<DataPopulateProcessProps[]>([]);
-		const [people, setPeople] = useState<DataPopulatePeopleProps[]>([]);
+    const [categories, setCategories] = useState<DataPopulateCategoriesProps[]>(
+      [],
+    );
+    const [process, setProcess] = useState<DataPopulateProcessProps[]>([]);
+    const [people, setPeople] = useState<DataPopulatePeopleProps[]>([]);
 
-		// Variavel para usar o hook
-		const colorUseTheme = useTheme();
-		const {colors} = colorUseTheme;
+    // Variavel para usar o hook
+    const colorUseTheme = useTheme();
+    const { colors } = colorUseTheme;
 
-		// Categories from hook called api
-		useEffect(() => {
-			fetchDataCategories();
-			fetchDataProcess();
-			fetchDataPeople();
-		}, []);
+    // Categories from hook called api
+    useEffect(() => {
+      fetchDataCategories();
+      fetchDataProcess();
+      fetchDataPeople();
+    }, []);
 
-		const fetchDataCategories = async () => {
-			try {
-				const responseCategories = await getCategoriesData();
-				setCategories(responseCategories);
-			} catch (error) {}
-		};
+    const fetchDataCategories = async () => {
+      try {
+        const responseCategories = await getCategoriesData();
+        setCategories(responseCategories);
+      } catch (error) {}
+    };
 
-		const fetchDataProcess = async () => {
-			try {
-				const responseProcess = await getProcessData();
-				setProcess(responseProcess);
-			} catch (error) {}
-		};
+    const fetchDataProcess = async () => {
+      try {
+        const responseProcess = await getProcessData();
+        setProcess(responseProcess);
+      } catch (error) {}
+    };
 
-		const fetchDataPeople = async () => {
-			try {
-				const responsePeople = await getPeopleData();
-				setPeople(responsePeople);
-			} catch (error) {}
-		};
+    const fetchDataPeople = async () => {
+      try {
+        const responsePeople = await getPeopleData();
+        setPeople(responsePeople);
+      } catch (error) {}
+    };
 
-		const handleLaunchClick = (idLaunch: number) => {
-			// busca o debitCredit pelo id
-			const currentDebitCredit = launch.find(item => item.id === idLaunch);
-			setIdDebitCredit(idLaunch);
+    const handleLaunchClick = (idLaunch: number) => {
+      // busca o debitCredit pelo id
+      const currentDebitCredit = launch.find(item => item.id === idLaunch);
+      setIdDebitCredit(idLaunch);
 
-			setValue('repeticaoFixa', false);
-			setValue('parcelado', false);
+      setValue('repeticaoFixa', false);
+      setValue('parcelado', false);
+      setValue('DebitoCredito', null);
 
-			if (idLaunch === 6) {
-				setValue('repeticaoFixa', true);
-				return;
-			}
-			if (idLaunch === 7) {
-				setValue('parcelado', true);
-				return;
-			}
+      if (idLaunch === 6) {
+        setValue('repeticaoFixa', true);
+        return;
+      }
+      if (idLaunch === 7) {
+        setValue('parcelado', true);
+        return;
+      }
 
-			setValue('DebitoCredito', currentDebitCredit?.debitoCredito);
-		};
+      if (currentDebitCredit?.debitoCredito) {
+        setValue('DebitoCredito', currentDebitCredit.debitoCredito);
+      }
+    };
 
-		const handleCategoryClick = (idCategory: number) => {
-			setIdCategory(idCategory);
-		};
+    const handleCategoryClick = (idCategory: number) => {
+      setIdCategory(idCategory);
+    };
 
-		const handleProcessClick = (idProcess: number | null) => {
-			setIdProcess(idProcess);
-		};
+    const handleProcessClick = (idProcess: number | null) => {
+      setIdProcess(idProcess);
+    };
 
-		const handlePeopleClick = (idPeople: number | null) => {
-			setIdPeople(idPeople);
-		};
+    const handlePeopleClick = (idPeople: number | null) => {
+      setIdPeople(idPeople);
+    };
 
-		const {control, handleSubmit, setValue, getValues} = useForm({
-			shouldUnregister: false,
-		});
+    const { control, handleSubmit, setValue, getValues } = useForm({
+      shouldUnregister: false,
+    });
 
-		const onSubmit = (data: DataFilterProps) => {
-			const dataFiltered = removeNull(data);
-			handleSubmitFilters(removeNull(dataFiltered));
-		};
+    const onSubmit = (data: DataFilterProps) => {
+      // Formata as datas corretamente para o formato esperado pela API
+      // dataVencimento: início do dia (00:00:00) no formato YYYY-MM-DDTHH:mm:ss
+      // dataVencimentoFim: final do dia (23:59:59) no formato YYYY-MM-DDTHH:mm:ss
+      const formatDateInicial = (date: string | null) => {
+        if (!date) return null;
+        // Se já está no formato correto (YYYY-MM-DDTHH:mm:ss), retorna como está
+        if (date.includes('T') && !date.includes('Z') && !date.includes('.')) {
+          return date;
+        }
+        // Se está no formato YYYY-MM-DDTHH:mm:ss.xxx ou YYYY-MM-DDTHH:mm:ssZ, extrai apenas a data
+        if (date.includes('T')) {
+          const dateOnly = date.split('T')[0]; // Pega apenas YYYY-MM-DD
+          return `${dateOnly}T00:00:00`;
+        }
+        // Converte de DD/MM/YYYY para YYYY-MM-DD e cria formato YYYY-MM-DDTHH:mm:ss
+        const dateMoment = moment(date, 'DD/MM/YYYY');
+        const dateOnly = dateMoment.format('YYYY-MM-DD');
+        return `${dateOnly}T00:00:00`;
+      };
 
-		const countFilters = useCallback(
-			() => checkNull([minDate, maxDate, idDebitCredit, idCategory, idProcess, idPeople]),
-			[minDate, maxDate, idDebitCredit, idCategory, idProcess, idPeople],
-		);
+      const formatDateFinal = (date: string | null) => {
+        if (!date) return null;
+        // Se já está no formato correto (YYYY-MM-DDTHH:mm:ss), retorna como está
+        if (date.includes('T') && !date.includes('Z') && !date.includes('.')) {
+          return date;
+        }
+        // Se está no formato YYYY-MM-DDTHH:mm:ss.xxx ou YYYY-MM-DDTHH:mm:ssZ, extrai apenas a data
+        if (date.includes('T')) {
+          const dateOnly = date.split('T')[0]; // Pega apenas YYYY-MM-DD
+          return `${dateOnly}T23:59:59`;
+        }
+        // Converte de DD/MM/YYYY para YYYY-MM-DD e cria formato YYYY-MM-DDTHH:mm:ss
+        const dateMoment = moment(date, 'DD/MM/YYYY');
+        const dateOnly = dateMoment.format('YYYY-MM-DD');
+        return `${dateOnly}T23:59:59`;
+      };
 
-		const checkNull = useCallback(
-			states => states.filter(state => state != null && state != 0).length,
-			[],
-		);
+      // Cria objeto com os campos corretos para o filtro de Release
+      const formattedData: any = {
+        ...data,
+        dataVencimento: formatDateInicial((data as any).dataVencimento),
+        dataVencimentoFim: formatDateFinal((data as any).dataVencimentoFim),
+      };
 
-		const clearFilters = useCallback(() => {
-			handleClearFilters();
+      const dataFiltered = removeNull(formattedData);
+      handleSubmitFilters(removeNull(dataFiltered));
+    };
 
-			setMinDate(null);
-			setMaxDate(null);
-			setValue('dataVencimento', null);
-			setValue('dataVencimentoFim', null);
+    const countFilters = useCallback(
+      () =>
+        checkNull([
+          minDate,
+          maxDate,
+          idDebitCredit,
+          idCategory,
+          idProcess,
+          idPeople,
+        ]),
+      [minDate, maxDate, idDebitCredit, idCategory, idProcess, idPeople],
+    );
 
-			setValue('DebitoCredito', null);
-			setIdDebitCredit(null);
+    const checkNull = useCallback(
+      states => states.filter(state => state != null && state != 0).length,
+      [],
+    );
 
-			setIdProcess(null);
-			setValue('idProcesso', null);
+    const clearFilters = useCallback(() => {
+      handleClearFilters();
 
-			setIdCategory(null);
-			setValue('idCategoria', null);
+      setMinDate(null);
+      setMaxDate(null);
+      setValue('dataVencimento', null);
+      setValue('dataVencimentoFim', null);
 
-			setIdPeople(null);
-			setValue('idPessoaCliente', null);
+      setValue('DebitoCredito', null);
+      setIdDebitCredit(null);
 
-			setValue('parcelado', null);
-			setValue('repeticaoFixa', null);
+      setIdProcess(null);
+      setValue('idProcesso', null);
 
-			// Força re-renderização dos Datepickers
-			setClearKey(prev => prev + 1);
-		}, []);
+      setIdCategory(null);
+      setValue('idCategoria', null);
 
-		const closeModal = useCallback(() => ref.current?.close(), []);
+      setIdPeople(null);
+      setValue('idPessoaCliente', null);
 
-		const footer = () => (
-			<Footer>
-				<Cancel onPress={() => closeModal()}>
-					<CancelText>Cancelar</CancelText>
-				</Cancel>
+      setValue('parcelado', null);
+      setValue('repeticaoFixa', null);
 
-				<ToSave onPress={handleSubmit(onSubmit)}>
-					<ToSaveText>Ver resultados</ToSaveText>
-				</ToSave>
-			</Footer>
-		);
-		const heightScreen = Dimensions.get('window').height;
+      // Força re-renderização dos Datepickers
+      setClearKey(prev => prev + 1);
+    }, []);
 
-		const modalHeight = (heightScreen * 70) / 100;
+    const closeModal = useCallback(() => ref.current?.close(), []);
 
-		return (
-			<Modal
-				maxHeight={modalHeight}
-				ref={ref}
-				footer={footer()}
-				title="Filtros"
-				filters={countFilters()}
-				clear={clearFilters}>
-				<Row>
-					<Title>Período</Title>
-				</Row>
+    const footer = () => (
+      <Footer>
+        <Cancel onPress={() => closeModal()}>
+          <CancelText>Cancelar</CancelText>
+        </Cancel>
 
-				<Row>
-					<Column>
-						<Label>De</Label>
-						<Controller
-							name="dataVencimento"
-							control={control}
-							defaultValue={null}
-							render={({onChange}) => (
-								<Datepicker
-									key={`start-date-${clearKey}`}
-									date={minDate}
-									enabled={true}
-									title="dd/mm/aaaa"
-									style={{maxWidth: 100}}
-									maxDate={maxDate || undefined}
-									onDateChange={date => {
-										setMinDate(date), onChange(FormatFullDateEN(date));
-									}}
-								/>
-							)}></Controller>
-					</Column>
-					<Column>
-						<Label>Até</Label>
-						<Controller
-							name="dataVencimentoFim"
-							control={control}
-							defaultValue={null}
-							render={({onChange}) => (
-								<Datepicker
-									key={`end-date-${clearKey}`}
-									date={maxDate}
-									enabled={true}
-									title="dd/mm/aaaa"
-									style={{maxWidth: 100}}
-									minDate={minDate || undefined}
-									onDateChange={date => {
-										setMaxDate(date), onChange(FormatFinalDateEN(date));
-									}}
-								/>
-							)}></Controller>
-					</Column>
-				</Row>
+        <ToSave onPress={handleSubmit(onSubmit)}>
+          <ToSaveText>Ver resultados</ToSaveText>
+        </ToSave>
+      </Footer>
+    );
+    const heightScreen = Dimensions.get('window').height;
 
-				<Row>
-					<Title>Tipo do lançamento</Title>
-				</Row>
+    const modalHeight = (heightScreen * 70) / 100;
 
-				<Releases>
-					<Controller
-						name="DebitoCredito"
-						control={control}
-						defaultValue={null}
-						render={({onChange}) => (
-							<>
-								{launch.map(item => (
-									<ReleaseType
-										key={item.id}
-										onPress={() => handleLaunchClick(item.id)}
-										style={{
-											backgroundColor: colors.gray,
-										}}>
-										<LabelItems
-											style={{
-												color:
-													idDebitCredit === item.id ? colors.backgroundButton : colors.iconGray,
-											}}>
-											{item.label}
-										</LabelItems>
-									</ReleaseType>
-								))}
-							</>
-						)}></Controller>
-				</Releases>
+    return (
+      <Modal
+        maxHeight={modalHeight}
+        ref={ref}
+        footer={footer()}
+        title="Filtros"
+        filters={countFilters()}
+        clear={clearFilters}
+      >
+        <Row>
+          <Title>Período</Title>
+        </Row>
 
-				<Row>
-					<Title>Categorias</Title>
-				</Row>
+        <Row>
+          <Column>
+            <Label>De</Label>
+            <Controller
+              name="dataVencimento"
+              control={control}
+              defaultValue={null}
+              render={() => (
+                <Datepicker
+                  key={`start-date-${clearKey}`}
+                  date={minDate}
+                  enabled={true}
+                  title="dd/mm/aaaa"
+                  style={{ maxWidth: 100 }}
+                  maxDate={maxDate || undefined}
+                  onDateChange={date => {
+                    setMinDate(date);
+                    setValue('dataVencimento', FormatFullDateEN(date));
+                  }}
+                />
+              )}
+            />
+          </Column>
+          <Column>
+            <Label>Até</Label>
+            <Controller
+              name="dataVencimentoFim"
+              control={control}
+              defaultValue={null}
+              render={() => (
+                <Datepicker
+                  key={`end-date-${clearKey}`}
+                  date={maxDate}
+                  enabled={true}
+                  title="dd/mm/aaaa"
+                  style={{ maxWidth: 100 }}
+                  minDate={minDate || undefined}
+                  onDateChange={date => {
+                    setMaxDate(date);
+                    setValue('dataVencimentoFim', FormatFinalDateEN(date));
+                  }}
+                />
+              )}
+            />
+          </Column>
+        </Row>
 
-				{isLoading ? (
-					<Spinner height={50} color={colors.primary} transparent={true} />
-				) : (
-					<ContainerCategories>
-						<Controller
-							name="idCategoria"
-							control={control}
-							defaultValue={null}
-							render={({onChange}) => (
-								<>
-									{categories.map((category, index) => (
-										<ReleaseType
-											key={index}
-											onPress={() => {
-												handleCategoryClick(category.idCategoriaFinanceiro);
-												onChange(category.idCategoriaFinanceiro);
-											}}
-											style={{
-												backgroundColor: colors.gray,
-											}}>
-											<LabelItems
-												style={{
-													color:
-														idCategory === category.idCategoriaFinanceiro
-															? colors.backgroundButton
-															: colors.iconGray,
-												}}>
-												{category.nomeCategoriaFinanceiro}
-											</LabelItems>
-										</ReleaseType>
-									))}
-								</>
-							)}></Controller>
-					</ContainerCategories>
-				)}
+        <Row>
+          <Title>Tipo do lançamento</Title>
+        </Row>
 
-				<Row>
-					<Title>Processos</Title>
-				</Row>
+        <Releases>
+          <Controller
+            name="DebitoCredito"
+            control={control}
+            defaultValue={null}
+            render={() => (
+              <>
+                {launch.map(item => (
+                  <ReleaseType
+                    key={item.id}
+                    onPress={() => handleLaunchClick(item.id)}
+                    style={{
+                      backgroundColor: colors.gray,
+                    }}
+                  >
+                    <LabelItems
+                      style={{
+                        color:
+                          idDebitCredit === item.id
+                            ? colors.backgroundButton
+                            : colors.iconGray,
+                      }}
+                    >
+                      {item.label}
+                    </LabelItems>
+                  </ReleaseType>
+                ))}
+              </>
+            )}
+          />
+        </Releases>
 
-				{isLoadingProcess ? (
-					<Spinner height={50} color={colors.primary} transparent={true} />
-				) : (
-					<Process>
-						<Controller
-							name="idProcesso"
-							control={control}
-							defaultValue={null}
-							render={({onChange}) => (
-								<>
-									{process.map((process, index) => (
-										<ReleaseType
-											key={index}
-											onPress={() => {
-												handleProcessClick(process.idProcesso), onChange(process.idProcesso);
-											}}
-											style={{
-												backgroundColor: colors.gray,
-											}}>
-											<LabelItems
-												style={{
-													color:
-														idProcess === process.idProcesso
-															? colors.backgroundButton
-															: colors.iconGray,
-												}}>
-												{process.numeroProcesso}
-											</LabelItems>
-										</ReleaseType>
-									))}
-								</>
-							)}></Controller>
-					</Process>
-				)}
+        <Row>
+          <Title>Categorias</Title>
+        </Row>
 
-				<Row>
-					<Title>Pessoas</Title>
-				</Row>
+        {isLoading ? (
+          <Spinner height={50} color={colors.primary} transparent={true} />
+        ) : (
+          <ContainerCategories>
+            <Controller
+              name="idCategoria"
+              control={control}
+              defaultValue={null}
+              render={() => (
+                <>
+                  {categories.map((category, index) => (
+                    <ReleaseType
+                      key={index}
+                      onPress={() => {
+                        handleCategoryClick(category.idCategoriaFinanceiro);
+                        setValue('idCategoria', category.idCategoriaFinanceiro);
+                      }}
+                      style={{
+                        backgroundColor: colors.gray,
+                      }}
+                    >
+                      <LabelItems
+                        style={{
+                          color:
+                            idCategory === category.idCategoriaFinanceiro
+                              ? colors.backgroundButton
+                              : colors.iconGray,
+                        }}
+                      >
+                        {category.nomeCategoriaFinanceiro}
+                      </LabelItems>
+                    </ReleaseType>
+                  ))}
+                </>
+              )}
+            />
+          </ContainerCategories>
+        )}
 
-				{isLoadingPeople ? (
-					<Spinner height={50} color={colors.primary} transparent={true} />
-				) : (
-					<Person>
-						<Controller
-							name="idPessoaCliente"
-							control={control}
-							defaultValue={null}
-							render={({onChange}) => (
-								<>
-									{people.map(person => (
-										<ReleaseType
-											key={person.idPessoaCliente}
-											onPress={() => {
-												handlePeopleClick(person.idPessoaCliente), onChange(person.idPessoaCliente);
-											}}
-											style={{
-												backgroundColor: colors.gray,
-											}}>
-											<LabelItems
-												style={{
-													color:
-														idPeople === person.idPessoaCliente
-															? colors.backgroundButton
-															: colors.iconGray,
-												}}>
-												{person.nomePessoaCliente}
-											</LabelItems>
-										</ReleaseType>
-									))}
-								</>
-							)}></Controller>
-					</Person>
-				)}
-			</Modal>
-		);
-	},
+        <Row>
+          <Title>Processos</Title>
+        </Row>
+
+        {isLoadingProcess ? (
+          <Spinner height={50} color={colors.primary} transparent={true} />
+        ) : (
+          <Process>
+            <Controller
+              name="idProcesso"
+              control={control}
+              defaultValue={null}
+              render={() => (
+                <>
+                  {process.map((process, index) => (
+                    <ReleaseType
+                      key={index}
+                      onPress={() => {
+                        handleProcessClick(process.idProcesso);
+                        setValue('idProcesso', process.idProcesso);
+                      }}
+                      style={{
+                        backgroundColor: colors.gray,
+                      }}
+                    >
+                      <LabelItems
+                        style={{
+                          color:
+                            idProcess === process.idProcesso
+                              ? colors.backgroundButton
+                              : colors.iconGray,
+                        }}
+                      >
+                        {process.numeroProcesso}
+                      </LabelItems>
+                    </ReleaseType>
+                  ))}
+                </>
+              )}
+            />
+          </Process>
+        )}
+
+        <Row>
+          <Title>Pessoas</Title>
+        </Row>
+
+        {isLoadingPeople ? (
+          <Spinner height={50} color={colors.primary} transparent={true} />
+        ) : (
+          <Person>
+            <Controller
+              name="idPessoaCliente"
+              control={control}
+              defaultValue={null}
+              render={() => (
+                <>
+                  {people.map(person => (
+                    <ReleaseType
+                      key={person.idPessoaCliente}
+                      onPress={() => {
+                        handlePeopleClick(person.idPessoaCliente);
+                        setValue('idPessoaCliente', person.idPessoaCliente);
+                      }}
+                      style={{
+                        backgroundColor: colors.gray,
+                      }}
+                    >
+                      <LabelItems
+                        style={{
+                          color:
+                            idPeople === person.idPessoaCliente
+                              ? colors.backgroundButton
+                              : colors.iconGray,
+                        }}
+                      >
+                        {person.nomePessoaCliente}
+                      </LabelItems>
+                    </ReleaseType>
+                  ))}
+                </>
+              )}
+            />
+          </Person>
+        )}
+      </Modal>
+    );
+  },
 );
