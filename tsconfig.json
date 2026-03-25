@@ -2,8 +2,14 @@
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
     "baseUrl": ".",
+    "allowJs": true,
     "paths": {
       "@components/*": ["src/components/*"],
+      "@services/*": ["src/services/*"],
+      "@constants/*": ["src/constants/*"],
+      "@models/*": ["src/models/*"],
+      "@lhelpers/*": ["legacy/helpers/*"],
+      "@lservices/*": ["legacy/services/*"],
       "@lassets/styles/global": ["legacy/assets/styles/global.js"]
     }
   },

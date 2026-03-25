@@ -65,17 +65,24 @@ export const RadioLabel = styled.Text`
 `;
 
 export const PickerTouch = styled.TouchableOpacity`
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.colors.grayLighter};
-  border-radius: 4px;
-  padding: 12px;
+  padding: 10px 2px 8px 0;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 `;
 
 export const PickerLabel = styled.Text`
-  font-size: ${fonts.small}px;
+  font-size: ${fonts.regular}px;
   font-family: ${fonts.circularStdBook};
-  color: ${({ theme }) => theme.colors.grayLight};
+  color: ${({ theme }) => theme.colors.grayDarker};
+`;
+
+export const PickerRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  min-height: 36px;
+`;
+
+export const PickerField = styled.View`
+  flex: 1;
 `;

@@ -27,6 +27,8 @@ const config = {
 			// Aliases SEM 'l' para src (código novo)
 			'@store': path.resolve(__dirname, 'src/store'), // Será criado quando migrar
 			'@services': path.resolve(__dirname, 'src/services'),
+			'@constants': path.resolve(__dirname, 'src/constants'),
+			'@models': path.resolve(__dirname, 'src/models'),
 			'@components': path.resolve(__dirname, 'src/components'),
 			'@pages': path.resolve(__dirname, 'src/pages'),
 			'@navigation': path.resolve(__dirname, 'src/navigation'), // Será criado quando migrar

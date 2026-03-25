@@ -19,6 +19,8 @@ module.exports = {
 					// Aliases SEM 'l' para src (código novo)
 					'@store': './src/store', // Será criado quando migrar
 					'@services': './src/services',
+					'@constants': './src/constants',
+					'@models': './src/models',
 					// Aliases ESPECÍFICOS para páginas TypeScript (em src/) - DEVEM VIR ANTES do alias genérico @pages
 					'@pages/MovementsTrash': './src/pages/MovementsTrash',
 					'@pages/Finance': './src/pages/Finance',
