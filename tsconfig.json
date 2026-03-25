@@ -9,6 +9,7 @@
       "@constants/*": ["src/constants/*"],
       "@models/*": ["src/models/*"],
       "@lhelpers/*": ["legacy/helpers/*"],
+      "@lcomponents/*": ["legacy/components/*"],
       "@lservices/*": ["legacy/services/*"],
       "@lassets/styles/global": ["legacy/assets/styles/global.js"]
     }

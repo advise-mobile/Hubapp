@@ -26,3 +26,28 @@ declare module '@lcomponents/DatePicker' {
   const Datepicker: ComponentType<DatePickerProps>;
   export default Datepicker;
 }
+
+declare module '@lcomponents/HasNotPermission' {
+  import type { ComponentType } from 'react';
+  import type { ImageSourcePropType } from 'react-native';
+  export interface HasNotPermissionProps {
+    title?: string;
+    body?: string;
+    hasPermission?: boolean;
+    image?: ImageSourcePropType;
+  }
+  const HasNotPermission: ComponentType<HasNotPermissionProps>;
+  export default HasNotPermission;
+}
+
+declare module '@lcomponents/Spinner' {
+  import type { ComponentType } from 'react';
+  export interface SpinnerProps {
+    size?: number;
+    color?: string | null;
+    transparent?: boolean;
+    height?: string | number;
+  }
+  const Spinner: ComponentType<SpinnerProps>;
+  export default Spinner;
+}
