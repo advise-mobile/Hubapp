@@ -20,10 +20,15 @@ type PermissionState = 'loading' | 'allowed' | 'denied';
 
 export default function Summons() {
 	const colorUseTheme = useTheme();
-	const image =
+	const imagePermissionDenied =
 		colorUseTheme.name === 'dark'
 			? require('assets/images/permissions/summons_black.png')
 			: require('assets/images/permissions/summons_white.png');
+
+	const imageNotFound =
+		colorUseTheme.name === 'dark'
+			? require('assets/images/not_found_white.png')
+			: require('assets/images/not_found.png');
 
 	const [permissionState, setPermissionState] =
 		useState<PermissionState>('loading');
@@ -46,6 +51,7 @@ export default function Summons() {
 				const hasPermission = await checkPermission(PermissionsGroups.SUMMONS);
 				if (mounted) {
 					setPermissionState(hasPermission ? 'allowed' : 'denied');
+					// setPermissionState('denied');
 				}
 			} catch {
 				if (mounted) {
@@ -97,7 +103,7 @@ export default function Summons() {
 		return (
 			<Container>
 				<HasNotPermission
-					image={image}
+					image={imagePermissionDenied}
 					title="Receba intimações oficiais com rapidez e segurança!"
 					body="Acompanhe prazos, evite perdas de comunicação oficial e tenha mais controle sobre suas obrigações processuais."
 				/>
@@ -113,7 +119,7 @@ export default function Summons() {
 					leftActions={headerProps.leftActions}
 					rightActions={headerProps.rightActions}
 				/>
-				<SummonsUI title="Intimações" />
+				<SummonsUI imageNotFound={imageNotFound} />
 				<SummonsFilterModal
 					visible={filterModalVisible}
 					onClose={handleCloseFilter}

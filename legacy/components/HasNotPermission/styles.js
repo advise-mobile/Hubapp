@@ -7,7 +7,7 @@ export const Content = styled.View`
 	align-items: center;
 	justify-content: center;
 	flex: 1;
-	padding: 15px 28px;
+	padding: 15px 63px;
 `;
 
 export const Image = styled.Image`
@@ -30,13 +30,14 @@ export const TextBody = styled.Text`
 `;
 
 export const TextTitle = styled.Text`
-	font-size: 20px;
+	font-size: 16px;
 	line-height: 24px;
 	color: ${({ theme }) => theme.colors.grayDarker};
 	font-family: ${fonts.circularStdBold};
 	text-align: center;
 	margin-bottom: 20px;
 	color: ${({ theme }) => theme.colors.primary};
+	font-weight: 700;
 `;
 
 export const Tag = styled.View`
