@@ -1,7 +1,7 @@
 // Imports antigos removidos - React Navigation v6
 import React from 'react';
 
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -47,7 +47,37 @@ import TermsUse from '@lpages/TermsUse';
 import { PermissionsGroups } from '@lhelpers/Permissions';
 
 import { useTheme } from 'styled-components';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+	SafeAreaView,
+	useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+
+const authSafeAreaStyles = StyleSheet.create({
+	root: { flex: 1 },
+});
+
+/**
+ * hoc para adicionar SafeAreaView ao componente
+ */
+function withAuthSafeArea(Component, edges = ['bottom']) {
+	const Wrapped = props => (
+		<SafeAreaView style={authSafeAreaStyles.root} edges={edges}>
+			<Component {...props} />
+		</SafeAreaView>
+	);
+	Wrapped.displayName = `WithAuthSafeArea(${
+		Component.displayName || Component.name || 'Screen'
+	})`;
+	return Wrapped;
+}
+
+// Instâncias estáveis (nunca chamar withAuthSafeArea dentro do render do navigator).
+const InitialWithSafeArea = withAuthSafeArea(Initial);
+const TermsUseWithSafeArea = withAuthSafeArea(TermsUse);
+const IntroWithSafeArea = withAuthSafeArea(Intro);
+const LoginWithSafeArea = withAuthSafeArea(Login);
+const ForgotWithSafeArea = withAuthSafeArea(Forgot);
+const ClientWithSafeArea = withAuthSafeArea(Client);
 
 const MainStack = createStackNavigator();
 
@@ -194,12 +224,12 @@ const MainScreens = () => (
 	<MainStack.Navigator
 		screenOptions={{ headerShown: false, gestureEnabled: false }}
 	>
-		<MainStack.Screen name="Initial" component={Initial} />
-		<MainStack.Screen name="TermsUse" component={TermsUse} />
-		<MainStack.Screen name="Intro" component={Intro} />
-		<MainStack.Screen name="Login" component={Login} />
-		<MainStack.Screen name="Forgot" component={Forgot} />
-		<MainStack.Screen name="Client" component={Client} />
+		<MainStack.Screen name="Initial" component={InitialWithSafeArea} />
+		<MainStack.Screen name="TermsUse" component={TermsUseWithSafeArea} />
+		<MainStack.Screen name="Intro" component={IntroWithSafeArea} />
+		<MainStack.Screen name="Login" component={LoginWithSafeArea} />
+		<MainStack.Screen name="Forgot" component={ForgotWithSafeArea} />
+		<MainStack.Screen name="Client" component={ClientWithSafeArea} />
 		<MainStack.Screen name="App" component={AppScreens} />
 	</MainStack.Navigator>
 );
