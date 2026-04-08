@@ -29,6 +29,7 @@ module.exports = {
 					'@pages/Finance/Category': './src/pages/Finance/Category',
 					'@pages/Promotion': './src/pages/Promotion',
 					'@pages/Summons': './src/pages/Summons',
+					'@pages/Courts': './src/pages/Courts',
 					// ScrollableTabView está em src/components (TypeScript) - ANTES do alias genérico @components
 					'@components/ScrollableTabView': './src/components/ScrollableTabView',
 					'@components': './src/components',

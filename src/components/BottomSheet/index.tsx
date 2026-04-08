@@ -26,10 +26,6 @@ export type { BottomSheetProps } from './types';
 
 const DEFAULT_BACKDROP_OPACITY = 0.5;
 
-/**
- * Modal que sobe de baixo para cima (bottom sheet).
- * Backdrop e conteúdo ficam acima da tab bar (não cobrem o menu).
- */
 export function BottomSheet({
   visible,
   onClose,

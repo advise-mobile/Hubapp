@@ -55,6 +55,7 @@ const config = {
 			),
 			'@pages/Promotion': path.resolve(__dirname, 'src/pages/Promotion'),
 			'@pages/Summons': path.resolve(__dirname, 'src/pages/Summons'),
+			'@pages/Courts': path.resolve(__dirname, 'src/pages/Courts'),
 			// Aliases para imports sem @ (compatibilidade com código legado)
 			'assets/styles': path.resolve(__dirname, 'legacy/assets/styles'),
 			components: path.resolve(__dirname, 'legacy/components'),

@@ -3,17 +3,17 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { PermissionsGroups, checkPermission } from '@lhelpers/Permissions';
 import HasNotPermission from '@lcomponents/HasNotPermission';
 import Spinner from '@lcomponents/Spinner';
+import { useSummonsListAccessQuery } from '@services/hooks/Summons/useSummonsListAccessQuery';
 import { useTheme } from 'styled-components';
-
 import { Container, Warp } from '@lassets/styles/global';
 import { Header } from '@components/Header';
-
 import {
 	useSummonsHeader,
 	type SummonsFilters,
 } from './hooks/useSummonsHeader';
 import { SummonsFilterModal } from './Modal/Filter';
-import { AddTribunalModal } from './Modal/AddTribunal';
+import { AddCourtsModal } from '../Courts/Modal/AddCourts';
+import { Content, ListPlaceholderText } from './styles';
 import { SummonsUI } from './ui';
 
 type PermissionState = 'loading' | 'allowed' | 'denied';
@@ -43,6 +43,13 @@ export default function Summons() {
 		setFilters,
 	} = useSummonsHeader();
 
+	const listAccessEnabled = permissionState === 'allowed';
+	const {
+		isAwaitingFirstResult,
+		isError: isListAccessError,
+		items: summonsListItems,
+	} = useSummonsListAccessQuery(listAccessEnabled);
+
 	useEffect(() => {
 		let mounted = true;
 
@@ -51,7 +58,6 @@ export default function Summons() {
 				const hasPermission = await checkPermission(PermissionsGroups.SUMMONS);
 				if (mounted) {
 					setPermissionState(hasPermission ? 'allowed' : 'denied');
-					// setPermissionState('denied');
 				}
 			} catch {
 				if (mounted) {
@@ -83,14 +89,6 @@ export default function Summons() {
 		() => setAddModalVisible(false),
 		[setAddModalVisible],
 	);
-	const handleSaveTribunal = useCallback(
-		(_data: Record<string, unknown>) => {
-			// TODO: integrar com API / estado da lista
-			setAddModalVisible(false);
-		},
-		[setAddModalVisible],
-	);
-
 	if (permissionState === 'loading') {
 		return (
 			<Container>
@@ -111,6 +109,9 @@ export default function Summons() {
 		);
 	}
 
+	const showEmptyOnboarding =
+		isListAccessError || summonsListItems.length === 0;
+
 	return (
 		<Container>
 			<Warp>
@@ -119,18 +120,27 @@ export default function Summons() {
 					leftActions={headerProps.leftActions}
 					rightActions={headerProps.rightActions}
 				/>
-				<SummonsUI imageNotFound={imageNotFound} />
+				{isAwaitingFirstResult ? (
+					<Container style={{ alignItems: 'center', justifyContent: 'center' }}>
+						<Spinner height="50" />
+					</Container>
+				) : showEmptyOnboarding ? (
+					<SummonsUI
+						imageNotFound={imageNotFound}
+						onPress={() => setAddModalVisible(true)}
+					/>
+				) : (
+					<Content>
+						<ListPlaceholderText>Tem intimações.</ListPlaceholderText>
+					</Content>
+				)}
 				<SummonsFilterModal
 					visible={filterModalVisible}
 					onClose={handleCloseFilter}
 					onApply={handleApplyFilter}
 					initialFilters={filters}
 				/>
-				<AddTribunalModal
-					visible={addModalVisible}
-					onClose={handleCloseAdd}
-					onSave={handleSaveTribunal}
-				/>
+				<AddCourtsModal visible={addModalVisible} onClose={handleCloseAdd} />
 			</Warp>
 		</Container>
 	);

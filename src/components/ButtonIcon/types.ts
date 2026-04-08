@@ -7,7 +7,6 @@ export interface ButtonIconProps {
 	title: string;
 	backgroundColor: string;
 	titleColor: string;
-	/** Nome do ícone (Material Icons), ex.: `add`, `chevron-right` */
 	icon: string;
 	iconColor: string;
 	onPress?: (event: GestureResponderEvent) => void;

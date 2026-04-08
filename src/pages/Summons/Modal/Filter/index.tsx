@@ -86,7 +86,7 @@ export function SummonsFilterModal({
 	const [idOrgaoJudiciario, setIdOrgaoJudiciario] = useState<number | null>(
 		parseIdOrgaoInitial(initialFilters.idOrgaoJudiciario),
 	);
-	/** Combo Sistema: `idFonteXTipoPesquisa` de `ConsultaFonteIntimacoes` (órgão escolhido). */
+	/** Combo Sistema: idFonteXTipoPesquisa from summons sources API (tribunal selecionado). */
 	const [idFonteXTipoPesquisaSistema, setIdFonteXTipoPesquisaSistema] =
 		useState<number | null>(
 			parseIdFonteInitial(initialFilters.idFonteXTipoPesquisaSistema),

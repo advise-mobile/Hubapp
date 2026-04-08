@@ -12,7 +12,6 @@ import {
 	TOKEN,
 } from '@lhelpers/StorageKeys';
 
-/** Produção — módulos em `src` usam apenas esta base. */
 export const API_BASE_URL = 'https://api.advise.com.br/core/v1';
 
 type RetryableConfig = InternalAxiosRequestConfig & {

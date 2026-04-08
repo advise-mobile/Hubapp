@@ -1,7 +1,6 @@
-export type FonteTipoPesquisaIntimacoesEntry = Record<string, unknown>;
+export type SummonsSearchTypeEntry = Record<string, unknown>;
 
-/** Item de `GET .../consulta-orgao-judiciario/` (combo Tribunal). */
-export interface ConsultaOrgaoJudiciarioItem {
+export interface JudicialAgencyItem {
 	idOrgaoJudiciario: number;
 	nomeExibicao?: string;
 	nome?: string;
@@ -9,9 +8,10 @@ export interface ConsultaOrgaoJudiciarioItem {
 	siglaOrgao?: string;
 }
 
-export type JudicialAgencyOption = ConsultaOrgaoJudiciarioItem;
+/** @deprecated Use `JudicialAgencyItem` */
+export type JudicialAgencyOption = JudicialAgencyItem;
 
-export function getJudicialAgencyLabel(row: JudicialAgencyOption): string {
+export function getJudicialAgencyLabel(row: JudicialAgencyItem): string {
 	return (
 		row.nomeExibicao ??
 		row.nome ??
@@ -20,40 +20,41 @@ export function getJudicialAgencyLabel(row: JudicialAgencyOption): string {
 	);
 }
 
-export interface ConsultaFonteIntimacaoItem {
+export interface SummonsSourceItem {
 	idFonteXTipoPesquisa: number;
 	idOrgaoJudiciario: number;
 	nomeExibicao: string;
 	orgaoJudiciario: string;
 	siglaOrgao: string;
-	fonteTipoPesquisaIntimacoes: FonteTipoPesquisaIntimacoesEntry[];
+	fonteTipoPesquisaIntimacoes: SummonsSearchTypeEntry[];
+	idTipoAcessoFontePesq?: number;
 }
 
-export interface ConsultaFonteIntimacoesPaginacao {
+export interface SummonsPagedListMeta {
 	paginaAtual: number;
 	paginaTotal: number;
 	registrosPorPagina: number;
 	registrosTotal: number;
 }
 
-export interface ConsultaFonteIntimacoesStatus {
+export interface SummonsApiEnvelopeStatus {
 	codigo: number;
 	mensagem: string;
 }
 
-export interface ConsultaOrgaoJudiciarioResponse {
-	itens: ConsultaOrgaoJudiciarioItem[];
-	paginacao: ConsultaFonteIntimacoesPaginacao;
-	status: ConsultaFonteIntimacoesStatus;
+export interface JudicialAgenciesResponse {
+	itens: JudicialAgencyItem[];
+	paginacao: SummonsPagedListMeta;
+	status: SummonsApiEnvelopeStatus;
 }
 
-export interface ConsultaFonteIntimacoesResponse {
-	itens: ConsultaFonteIntimacaoItem[];
-	paginacao: ConsultaFonteIntimacoesPaginacao;
-	status: ConsultaFonteIntimacoesStatus;
+export interface SummonsSourcesResponse {
+	itens: SummonsSourceItem[];
+	paginacao: SummonsPagedListMeta;
+	status: SummonsApiEnvelopeStatus;
 }
 
-export interface ConsultaFonteIntimacoesParams {
+export interface SummonsSourcesRequestParams {
 	idUsuarioCliente: number;
 	idOrgaoJudiciario?: number | null;
 	tipoAcesso?: string;
@@ -61,4 +62,13 @@ export interface ConsultaFonteIntimacoesParams {
 	registrosPorPagina?: number;
 }
 
-export type CourtOption = ConsultaFonteIntimacaoItem;
+export type SummonsListItem = Record<string, unknown>;
+
+export interface SummonsListResponse {
+	itens: SummonsListItem[];
+	paginacao?: SummonsPagedListMeta;
+	status?: SummonsApiEnvelopeStatus;
+}
+
+/** @deprecated Use `SummonsSourceItem` */
+export type CourtOption = SummonsSourceItem;

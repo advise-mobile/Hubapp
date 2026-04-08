@@ -15,11 +15,11 @@ import { useTheme } from 'styled-components';
 
 export interface SummonsUIProps {
 	imageNotFound: ImageSourcePropType;
+	onPress: () => void;
 }
 
-export function SummonsUI({ imageNotFound }: SummonsUIProps) {
-	const colorUseTheme = useTheme();
-	const colors = colorUseTheme.colors;
+export function SummonsUI({ imageNotFound, onPress }: SummonsUIProps) {
+	const { colors } = useTheme();
 
 	return (
 		<Content>
@@ -48,7 +48,7 @@ export function SummonsUI({ imageNotFound }: SummonsUIProps) {
 					titleColor={colors.white}
 					icon="add-circle"
 					iconColor={colors.white}
-					onPress={() => {}}
+					onPress={onPress}
 				/>
 			</EmptyState>
 		</Content>

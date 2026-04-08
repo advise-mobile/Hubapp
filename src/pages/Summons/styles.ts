@@ -56,3 +56,11 @@ export const EmptyStateMessage = styled.Text`
 	margin-bottom: 32px;
 	font-weight: 700;
 `;
+
+export const ListPlaceholderText = styled.Text`
+	padding: 24px;
+	font-size: ${fonts.regular};
+	font-family: ${fonts.circularStdBook};
+	color: ${({ theme }) => theme.colors.primary};
+	text-align: center;
+`;

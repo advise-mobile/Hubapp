@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Appearance, LogBox } from 'react-native';
 import { OneSignal } from 'react-native-onesignal';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MenuProvider } from 'react-native-popup-menu';
 import SplashScreen from 'react-native-splash-screen';
+import { queryClient } from './queryClient';
 import store from '@lstore';
 import { lightTheme, darkTheme } from '@theme';
 import Routes from '@lnavigation/Routes';
@@ -50,16 +52,18 @@ const App = () => {
   return (
     <SafeAreaProvider>
       <Provider store={store}>
-        <MenuProvider>
-          <ThemeProvider theme={currentTheme}>
-            <StatusBar
-              backgroundColor={theme === 'dark' ? '#111111' : '#fff'}
-              barStyle={barStyle}
-            />
-            <Routes />
-            <ToastNotify />
-          </ThemeProvider>
-        </MenuProvider>
+        <QueryClientProvider client={queryClient}>
+          <MenuProvider>
+            <ThemeProvider theme={currentTheme}>
+              <StatusBar
+                backgroundColor={theme === 'dark' ? '#111111' : '#fff'}
+                barStyle={barStyle}
+              />
+              <Routes />
+              <ToastNotify />
+            </ThemeProvider>
+          </MenuProvider>
+        </QueryClientProvider>
       </Provider>
     </SafeAreaProvider>
   );
