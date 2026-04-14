@@ -24,6 +24,8 @@ export interface SelectProps {
 	doneText?: string;
 	loading?: boolean;
 	disabled?: boolean;
+	compact?: boolean;
+	formRowAlign?: boolean;
 }
 
 function SelectDropdownIcon() {
@@ -41,6 +43,8 @@ export function Select({
 	doneText = 'Selecionar',
 	loading = false,
 	disabled = false,
+	compact = false,
+	formRowAlign = false,
 }: SelectProps) {
 	const { colors } = useTheme();
 	const pickerRef = useRef<InstanceType<typeof RNPickerSelect> | null>(null);
@@ -50,11 +54,11 @@ export function Select({
 		return items.find(i => i.value === value)?.label ?? null;
 	}, [items, value]);
 
-	const pickerStyles = useRNPickerSelectStyles();
+	const pickerStyles = useRNPickerSelectStyles(compact, formRowAlign);
 
 	if (loading) {
 		return (
-			<LoadingWrap>
+			<LoadingWrap $compact={compact} $formRowAlign={formRowAlign}>
 				<ActivityIndicator size="small" color={colors.primary} />
 			</LoadingWrap>
 		);
@@ -68,7 +72,7 @@ export function Select({
 	};
 
 	return (
-		<SelectWrap>
+		<SelectWrap $compact={compact} $formRowAlign={formRowAlign}>
 			<RNPickerSelect
 				ref={pickerRef}
 				items={items}

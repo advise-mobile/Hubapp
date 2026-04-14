@@ -5,119 +5,142 @@ import styled from 'styled-components/native';
 import { useTheme } from 'styled-components/native';
 import { fonts } from '@lassets/styles';
 
-/**
- * O `react-native-picker-select` só aceita a prop `style` no formato `PickerStyle`:
- * chaves fixas (`inputIOS`, `inputAndroid`, `headlessAndroidContainer`, etc.) que a
- * lib aplica aos `TextInput` / `Picker` nativos internos. Isso não combina com
- * `styled(Text)` / `styled(TextInput)` — por isso essa parte permanece em `StyleSheet`.
- * O layout à volta (wrap + overlay de toque no iOS) usa styled-components abaixo.
- */
+/* react-native-picker-select exige PickerStyle/StyleSheet; o resto é styled. */
 
 type PickerThemeSlice = {
-  grayDarker: string;
-  grayLight: string;
+	grayDarker: string;
+	grayLight: string;
 };
 
-export const LoadingWrap = styled.View`
-  min-height: 36px;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 10px 2px 8px 0;
-`;
-
-/** Área do picker (overlay de iOS posiciona-se em cima disto). */
-export const SelectWrap = styled.View`
-  position: relative;
-  min-height: 40px;
-  align-self: stretch;
-`;
-
-/**
- * iOS + modal aninhado (ex.: BottomSheet): o toque no texto nem sempre chega ao
- * `TouchableOpacity` interno da lib — esta camada chama `togglePicker` via ref.
- */
-export const SelectTouchOverlay = styled.TouchableOpacity.attrs({
-  activeOpacity: 0.85,
-})`
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 1;
-`;
-
-function createRNPickerSelectStyles(theme: PickerThemeSlice): PickerStyle {
-  const book = String(fonts.circularStdBook);
-  const size = Number(fonts.regular);
-
-  const inputIOS: TextStyle = {
-    fontSize: size,
-    color: theme.grayDarker,
-    fontFamily: book,
-    paddingVertical: 8,
-    paddingRight: 4,
-  };
-
-  const inputAndroid: TextStyle = {
-    height: 40,
-    paddingVertical: 8,
-    paddingHorizontal: 0,
-    fontSize: size,
-    color: theme.grayDarker,
-    fontFamily: book,
-    textAlignVertical: 'center',
-    includeFontPadding: false,
-  };
-
-  const shared = {
-    inputIOS,
-    inputAndroid,
-    inputAndroidContainer: {
-      minHeight: 40,
-    },
-    iconContainer: {
-      top: 10,
-    },
-    placeholder: {
-      color: theme.grayLight,
-    },
-  };
-
-  if (Platform.OS === 'android') {
-    return StyleSheet.create({
-      ...shared,
-      viewContainer: { alignItems: 'center' as const },
-      chevronContainer: { display: 'none' as const },
-      chevron: { display: 'none' as const },
-      headlessAndroidContainer: {
-        minHeight: 40,
-        alignSelf: 'stretch' as const,
-      },
-    }) as unknown as PickerStyle;
-  }
-
-  return StyleSheet.create({
-    ...shared,
-    inputIOSContainer: {
-      minHeight: 40,
-    },
-  }) as unknown as PickerStyle;
+function wrapMinHeight($compact?: boolean, $formRowAlign?: boolean): number {
+	if ($formRowAlign) return 48;
+	if ($compact) return 36;
+	return 40;
 }
 
-/**
- * Lê `grayDarker` / `grayLight` do tema e devolve o `PickerStyle` da lib.
- * A lógica fica numa função pura + `useMemo` porque o pacote exige `StyleSheet`,
- * não `styled()`, e há bifurcação por plataforma.
- */
-export function useRNPickerSelectStyles(): PickerStyle {
-  const { colors } = useTheme();
-  return useMemo(
-    () =>
-      createRNPickerSelectStyles({
-        grayDarker: colors.grayDarker,
-        grayLight: colors.grayLight,
-      }),
-    [colors.grayDarker, colors.grayLight],
-  );
+export const LoadingWrap = styled.View<{
+	$compact?: boolean;
+	$formRowAlign?: boolean;
+}>`
+	min-height: ${({ $compact, $formRowAlign }) =>
+		$formRowAlign ? 48 : $compact ? 32 : 36}px;
+	justify-content: center;
+	align-items: flex-start;
+	padding: ${({ $compact, $formRowAlign }) =>
+		$formRowAlign
+			? '0 2px 0 0'
+			: $compact
+			? '4px 2px 4px 0'
+			: '10px 2px 8px 0'};
+`;
+
+export const SelectWrap = styled.View<{
+	$compact?: boolean;
+	$formRowAlign?: boolean;
+}>`
+	position: relative;
+	min-height: ${({ $compact, $formRowAlign }) =>
+		wrapMinHeight($compact, $formRowAlign)}px;
+	justify-content: center;
+	align-self: stretch;
+`;
+
+/* iOS + sheet: overlay chama togglePicker via ref. */
+export const SelectTouchOverlay = styled.TouchableOpacity.attrs({
+	activeOpacity: 0.85,
+})`
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 1;
+`;
+
+function createRNPickerSelectStyles(
+	theme: PickerThemeSlice,
+	compact: boolean,
+	formRowAlign: boolean,
+): PickerStyle {
+	const book = String(fonts.circularStdBook);
+	const size = formRowAlign
+		? Number(fonts.regular)
+		: compact
+		? Number(fonts.small)
+		: Number(fonts.regular);
+	const rowH = formRowAlign ? 48 : compact ? 36 : 40;
+	const padV = formRowAlign ? 13 : compact ? 4 : 8;
+
+	const inputIOS: TextStyle = {
+		fontSize: size,
+		color: theme.grayDarker,
+		fontFamily: book,
+		paddingVertical: padV,
+		paddingRight: 4,
+		...(formRowAlign ? { lineHeight: Math.round(size * 1.25) } : {}),
+	};
+
+	const inputAndroid: TextStyle = {
+		height: rowH,
+		paddingVertical: formRowAlign ? 0 : padV,
+		paddingHorizontal: 0,
+		fontSize: size,
+		color: theme.grayDarker,
+		fontFamily: book,
+		textAlignVertical: 'center',
+		includeFontPadding: false,
+	};
+
+	const shared = {
+		inputIOS,
+		inputAndroid,
+		inputAndroidContainer: {
+			minHeight: rowH,
+		},
+		iconContainer: {
+			top: formRowAlign ? 15 : compact ? 8 : 10,
+		},
+		placeholder: {
+			color: theme.grayLight,
+		},
+	};
+
+	if (Platform.OS === 'android') {
+		return StyleSheet.create({
+			...shared,
+			viewContainer: { alignItems: 'center' as const },
+			chevronContainer: { display: 'none' as const },
+			chevron: { display: 'none' as const },
+			headlessAndroidContainer: {
+				minHeight: rowH,
+				alignSelf: 'stretch' as const,
+			},
+		}) as unknown as PickerStyle;
+	}
+
+	return StyleSheet.create({
+		...shared,
+		inputIOSContainer: {
+			minHeight: rowH,
+		},
+	}) as unknown as PickerStyle;
+}
+
+export function useRNPickerSelectStyles(
+	compact = false,
+	formRowAlign = false,
+): PickerStyle {
+	const { colors } = useTheme();
+	return useMemo(
+		() =>
+			createRNPickerSelectStyles(
+				{
+					grayDarker: colors.grayDarker,
+					grayLight: colors.grayLight,
+				},
+				compact,
+				formRowAlign,
+			),
+		[colors.grayDarker, colors.grayLight, compact, formRowAlign],
+	);
 }
