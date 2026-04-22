@@ -12,6 +12,8 @@
       "@lhelpers/*": ["legacy/helpers/*"],
       "@lcomponents/*": ["legacy/components/*"],
       "@lservices/*": ["legacy/services/*"],
+      "@lstore": ["legacy/store/index.js"],
+      "@lstore/*": ["legacy/store/*"],
       "@lassets/styles/global": ["legacy/assets/styles/global.js"]
     }
   },

@@ -13,10 +13,11 @@ import {
 	type JudicialAgencyOption,
 } from '@models/filters-summons';
 import { isQrCodeCourtAccessType } from '@models/courts-credentials';
-import { useCourts } from '@services/hooks/Summons/useCourts';
+import type { AddCourtsModalProps } from '@models/courts-components';
+import { useCourts } from '@pages/Summons/hooks/useCourts';
 import { useTheme } from 'styled-components';
 
-import { useRegisterCourtCredentialMutation } from '../../hooks/useRegisterCourtCredentialMutation';
+import { useRegisterCourtCredentialMutation } from '../../hooks';
 import {
 	FormBlock,
 	ResponsibleRow,
@@ -57,11 +58,6 @@ function stripQrSpaces(value: string): string {
 function formatQrInGroups(rawAlnumUpper: string): string {
 	const chunk = rawAlnumUpper.slice(0, 32);
 	return chunk.replace(/(.{4})/g, '$1 ').trim();
-}
-
-export interface AddCourtsModalProps {
-	visible: boolean;
-	onClose: () => void;
 }
 
 export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
@@ -118,10 +114,10 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 	);
 
 	useEffect(() => {
-		if (!requiresQrCode) {
+		if (credentialsFieldsDisabled || !requiresQrCode) {
 			setValue('qrCode', '');
 		}
-	}, [requiresQrCode, setValue]);
+	}, [credentialsFieldsDisabled, requiresQrCode, setValue]);
 
 	useEffect(() => {
 		if (!visible) return;
@@ -376,13 +372,19 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 			</FormBlock>
 
 			<ButtonsFooter>
-				<Button fill variant="outlined" text="Cancelar" onPress={onClose} />
+				<Button
+					fill
+					variant="outlined"
+					text="Cancelar"
+					onPress={onClose}
+					disabled={registerCredential.isPending}
+				/>
 				<Button
 					fill
 					variant="filled"
 					text="Cadastrar"
 					onPress={handleSubmit(onSubmit)}
-					disabled={registerCredential.isPending}
+					loading={registerCredential.isPending}
 				/>
 			</ButtonsFooter>
 		</BottomSheet>

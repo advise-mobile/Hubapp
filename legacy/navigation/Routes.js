@@ -45,6 +45,7 @@ import DeadlinesDetails from '@lpages/Deadlines/Details';
 
 // Summons (Intimações) – módulo em src/pages, não no legado
 import Summons from '@pages/Summons';
+import Courts from '@pages/Courts';
 
 import TermsUse from '@lpages/TermsUse';
 
@@ -137,6 +138,7 @@ const SummonsStack = createStackNavigator();
 const SummonsScreens = () => (
 	<SummonsStack.Navigator screenOptions={{ headerShown: false }}>
 		<SummonsStack.Screen name="Summons" component={Summons} />
+		<SummonsStack.Screen name="CourtsList" component={Courts} />
 	</SummonsStack.Navigator>
 );
 

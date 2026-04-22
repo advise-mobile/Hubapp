@@ -4,21 +4,11 @@ import { useDispatch } from 'react-redux';
 import ToastNotifyActions from '@lstore/ducks/ToastNotify';
 
 import type { CourtOption, JudicialAgencyOption } from '@models/filters-summons';
+import type { UseCourtsReturn } from '@models/summons-hooks-types';
 import {
 	fetchCourtsForSummonsFilter,
 	fetchSystemsForSummonsFilter,
-} from '@services/courts';
-
-export interface UseCourtsReturn {
-	courts: JudicialAgencyOption[];
-	isLoadingCourts: boolean;
-	loadCourts: () => Promise<JudicialAgencyOption[]>;
-
-	systems: CourtOption[];
-	isLoadingSystems: boolean;
-	/** `null` clears without request. */
-	loadSystems: (idOrgaoJudiciario: number | null) => Promise<CourtOption[]>;
-}
+} from '@services/summons';
 
 export function useCourts(): UseCourtsReturn {
 	const dispatch = useDispatch();

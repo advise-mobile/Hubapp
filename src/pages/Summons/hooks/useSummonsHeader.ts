@@ -1,31 +1,19 @@
 import { useCallback, useState } from 'react';
+
 import type { HeaderActionConfig } from '@components/Header';
-
+import type {
+	SummonsFilters,
+	UseSummonsHeaderReturn,
+} from '@models/summons-hooks-types';
 import { useTheme } from 'styled-components';
-
-export interface SummonsFilters {
-	[key: string]: string | number | boolean | null | undefined;
-}
-
-export interface UseSummonsHeaderReturn {
-	headerProps: {
-		title: string;
-		leftActions: HeaderActionConfig[];
-		rightActions: HeaderActionConfig[];
-	};
-	filterModalVisible: boolean;
-	setFilterModalVisible: (v: boolean) => void;
-	addModalVisible: boolean;
-	setAddModalVisible: (v: boolean) => void;
-	filters: SummonsFilters;
-	setFilters: (
-		f: SummonsFilters | ((prev: SummonsFilters) => SummonsFilters),
-	) => void;
-}
 
 const DEFAULT_TITLE = 'Intimações';
 
-export function useSummonsHeader(): UseSummonsHeaderReturn {
+/**
+ * @param filterInteractive - RF 3.1.1: sem cadastro de acesso, o filtro fica desabilitado
+ * (header usa placeholder). Com cadastro (RF 3.2.1), passar `true`.
+ */
+export function useSummonsHeader(filterInteractive = true): UseSummonsHeaderReturn {
 	const colorUseTheme = useTheme();
 	const { colors } = colorUseTheme;
 
@@ -36,9 +24,9 @@ export function useSummonsHeader(): UseSummonsHeaderReturn {
 	const openFilterModal = useCallback(() => setFilterModalVisible(true), []);
 	const openAddModal = useCallback(() => setAddModalVisible(true), []);
 
-	const leftActions: HeaderActionConfig[] = [
-		{ icon: 'filter-list', onPress: openFilterModal },
-	];
+	const leftActions: HeaderActionConfig[] = filterInteractive
+		? [{ icon: 'filter-list', onPress: openFilterModal }]
+		: [];
 
 	const rightActions: HeaderActionConfig[] = [
 		{ icon: 'add-circle', colorIcon: colors.green200, onPress: openAddModal },

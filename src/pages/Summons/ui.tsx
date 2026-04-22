@@ -1,5 +1,9 @@
 import React from 'react';
 
+import type { SummonsUIProps } from '@models/summons-components';
+import { ButtonIcon } from '@components/ButtonIcon';
+import { useTheme } from 'styled-components';
+
 import {
 	Content,
 	DisclaimerContainer,
@@ -9,14 +13,6 @@ import {
 	ImageNotFound,
 	ImageNotFoundWrap,
 } from './styles';
-import { ImageSourcePropType } from 'react-native';
-import { ButtonIcon } from '@components/ButtonIcon';
-import { useTheme } from 'styled-components';
-
-export interface SummonsUIProps {
-	imageNotFound: ImageSourcePropType;
-	onPress: () => void;
-}
 
 export function SummonsUI({ imageNotFound, onPress }: SummonsUIProps) {
 	const { colors } = useTheme();

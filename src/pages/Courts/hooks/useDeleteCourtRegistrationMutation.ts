@@ -2,20 +2,29 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 
 import ToastNotifyActions from '@lstore/ducks/ToastNotify';
-import type { CreateCourtCredentialInput } from '@models/courts-credentials';
-import { createCourts } from '@services/courts';
+import type { DeleteCourtRegistrationResponse } from '@models/court-register';
+import { deleteCourtRegistration } from '@services/courts';
 
 import { COURTS_REGISTRATIONS_LIST_QUERY_KEY } from './useCourtsRegistrationsInfiniteQuery';
 
 const SUMMONS_LIST_QUERY_KEY = ['summons', 'list-access'] as const;
 
-export function useRegisterCourtCredentialMutation() {
+function getSuccessMessage(data: DeleteCourtRegistrationResponse): string {
+	const msg = data.mensagem;
+	if (typeof msg === 'string' && msg.trim() !== '') {
+		return msg.trim();
+	}
+	return 'Cadastro excluído com sucesso.';
+}
+
+export function useDeleteCourtRegistrationMutation() {
 	const dispatch = useDispatch();
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (input: CreateCourtCredentialInput) => createCourts(input),
-		onSuccess: async () => {
+		mutationFn: (summonsSearchId: number) =>
+			deleteCourtRegistration(summonsSearchId),
+		onSuccess: async data => {
 			await Promise.all([
 				queryClient.invalidateQueries({
 					queryKey: [...SUMMONS_LIST_QUERY_KEY],
@@ -25,16 +34,13 @@ export function useRegisterCourtCredentialMutation() {
 				}),
 			]);
 			dispatch(
-				ToastNotifyActions.toastNotifyShow(
-					'Acesso ao tribunal cadastrado com sucesso.',
-					false,
-				),
+				ToastNotifyActions.toastNotifyShow(getSuccessMessage(data), false),
 			);
 		},
 		onError: () => {
 			dispatch(
 				ToastNotifyActions.toastNotifyShow(
-					'Não foi possível cadastrar o acesso ao tribunal.',
+					'Não foi possível excluir o cadastro.',
 					true,
 				),
 			);

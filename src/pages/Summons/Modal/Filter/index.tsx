@@ -4,13 +4,14 @@ import 'moment/locale/pt-br';
 import { BottomSheet } from '@components/BottomSheet';
 import { Select } from '@components/Select';
 import Datepicker from '@lcomponents/DatePicker';
+import type { SummonsFilterModalProps } from '@models/summons-components';
+import type { SummonsFilters } from '@models/summons-hooks-types';
 import {
 	getJudicialAgencyLabel,
 	type CourtOption,
 	type JudicialAgencyOption,
 } from '@models/filters-summons';
-import { useCourts } from '@services/hooks/Summons/useCourts';
-import type { SummonsFilters } from '../../hooks/useSummonsHeader';
+import { useCourts } from '@pages/Summons/hooks/useCourts';
 
 import {
 	Section,
@@ -33,21 +34,16 @@ const SITUACAO_OPTIONS = [
 
 function parseIdOrgaoInitial(value: unknown): number | null {
 	if (value == null || value === '') return null;
-	const n = typeof value === 'number' ? value : Number(value);
-	return Number.isFinite(n) ? n : null;
+	const parsedNumeric =
+		typeof value === 'number' ? value : Number(value);
+	return Number.isFinite(parsedNumeric) ? parsedNumeric : null;
 }
 
 function parseIdFonteInitial(value: unknown): number | null {
 	if (value == null || value === '') return null;
-	const n = typeof value === 'number' ? value : Number(value);
-	return Number.isFinite(n) ? n : null;
-}
-
-export interface SummonsFilterModalProps {
-	visible: boolean;
-	onClose: () => void;
-	onApply: (filters: SummonsFilters) => void;
-	initialFilters?: SummonsFilters;
+	const parsedNumeric =
+		typeof value === 'number' ? value : Number(value);
+	return Number.isFinite(parsedNumeric) ? parsedNumeric : null;
 }
 
 export function SummonsFilterModal({
@@ -69,8 +65,8 @@ export function SummonsFilterModal({
 		useState<SummonsFilters>(initialFilters);
 	const parseDateToPicker = useCallback((str: string): Date | null => {
 		if (!str || typeof str !== 'string') return null;
-		const m = moment(str, 'DD/MM/YYYY', true);
-		return m.isValid() ? m.toDate() : null;
+		const parsedDay = moment(str, 'DD/MM/YYYY', true);
+		return parsedDay.isValid() ? parsedDay.toDate() : null;
 	}, []);
 
 	const [dataDe, setDataDe] = useState(
@@ -95,7 +91,9 @@ export function SummonsFilterModal({
 	const tribunalRow = useMemo((): JudicialAgencyOption | null => {
 		if (idOrgaoJudiciario == null) return null;
 		return (
-			courts.find(c => c.idOrgaoJudiciario === idOrgaoJudiciario) ?? null
+			courts.find(
+				court => court.idOrgaoJudiciario === idOrgaoJudiciario,
+			) ?? null
 		);
 	}, [courts, idOrgaoJudiciario]);
 
@@ -130,7 +128,11 @@ export function SummonsFilterModal({
 		const org = parseIdOrgaoInitial(initialFilters.idOrgaoJudiciario);
 		if (org != null) {
 			setIdOrgaoJudiciario(
-				courts.some(c => c.idOrgaoJudiciario === org) ? org : null,
+				courts.some(
+					court => court.idOrgaoJudiciario === org,
+				)
+					? org
+					: null,
 			);
 		}
 	}, [visible, courts, initialFilters]);
@@ -160,18 +162,18 @@ export function SummonsFilterModal({
 		};
 
 		if (dataDe) {
-			const m = moment(dataDe, 'DD/MM/YYYY', true);
-			if (m.isValid()) {
-				next.dataInicial = m.format('YYYY-MM-DD');
+			const startDateMoment = moment(dataDe, 'DD/MM/YYYY', true);
+			if (startDateMoment.isValid()) {
+				next.dataInicial = startDateMoment.format('YYYY-MM-DD');
 			}
 		} else {
 			delete next.dataInicial;
 		}
 
 		if (dataAte) {
-			const m = moment(dataAte, 'DD/MM/YYYY', true);
-			if (m.isValid()) {
-				next.dataFinal = m.format('YYYY-MM-DD');
+			const endDateMoment = moment(dataAte, 'DD/MM/YYYY', true);
+			if (endDateMoment.isValid()) {
+				next.dataFinal = endDateMoment.format('YYYY-MM-DD');
 			}
 		} else {
 			delete next.dataFinal;
@@ -222,14 +224,14 @@ export function SummonsFilterModal({
 		loadSystems(null);
 	};
 
-	const courtItems = courts.map((c: JudicialAgencyOption) => ({
-		label: getJudicialAgencyLabel(c),
-		value: String(c.idOrgaoJudiciario),
+	const courtItems = courts.map((court: JudicialAgencyOption) => ({
+		label: getJudicialAgencyLabel(court),
+		value: String(court.idOrgaoJudiciario),
 	}));
 
-	const systemItems = systems.map((s: CourtOption) => ({
-		label: s.nomeExibicao,
-		value: String(s.idFonteXTipoPesquisa),
+	const systemItems = systems.map((systemRow: CourtOption) => ({
+		label: systemRow.nomeExibicao,
+		value: String(systemRow.idFonteXTipoPesquisa),
 	}));
 
 	const sistemaDisabled = tribunalRow == null;
@@ -306,14 +308,18 @@ export function SummonsFilterModal({
 									? null
 									: String(idOrgaoJudiciario)
 							}
-							onChange={v => {
+							onChange={selectedValue => {
 								setIdFonteXTipoPesquisaSistema(null);
-								if (v == null || v === '') {
+								if (selectedValue == null || selectedValue === '') {
 									setIdOrgaoJudiciario(null);
 									return;
 								}
-								const n = Number(v);
-								setIdOrgaoJudiciario(Number.isFinite(n) ? n : null);
+								const parsedJudicialOrganId = Number(selectedValue);
+								setIdOrgaoJudiciario(
+									Number.isFinite(parsedJudicialOrganId)
+										? parsedJudicialOrganId
+										: null,
+								);
 							}}
 							loading={isLoadingCourts}
 							placeholder="Selecione"
@@ -334,14 +340,16 @@ export function SummonsFilterModal({
 									? null
 									: String(idFonteXTipoPesquisaSistema)
 							}
-							onChange={v => {
-								if (v == null || v === '') {
+							onChange={selectedValue => {
+								if (selectedValue == null || selectedValue === '') {
 									setIdFonteXTipoPesquisaSistema(null);
 									return;
 								}
-								const n = Number(v);
+								const parsedSourceSearchId = Number(selectedValue);
 								setIdFonteXTipoPesquisaSistema(
-									Number.isFinite(n) ? n : null,
+									Number.isFinite(parsedSourceSearchId)
+										? parsedSourceSearchId
+										: null,
 								);
 							}}
 							loading={isLoadingSystems}

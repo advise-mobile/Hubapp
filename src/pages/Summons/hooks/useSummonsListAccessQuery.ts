@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 
 import ToastNotifyActions from '@lstore/ducks/ToastNotify';
-import { fetchSummonsList } from '@services/courts';
+import { fetchSummonsList } from '@services/summons';
 
 const QUERY_KEY = ['summons', 'list-access'] as const;
 
