@@ -60,11 +60,17 @@ const authSafeAreaStyles = StyleSheet.create({
  * hoc para adicionar SafeAreaView ao componente
  */
 function withAuthSafeArea(Component, edges = ['bottom']) {
-	const Wrapped = props => (
-		<SafeAreaView style={authSafeAreaStyles.root} edges={edges}>
-			<Component {...props} />
-		</SafeAreaView>
-	);
+	function Wrapped(props) {
+		const { colors } = useTheme();
+		return (
+			<SafeAreaView
+				style={[authSafeAreaStyles.root, { backgroundColor: colors.white }]}
+				edges={edges}
+			>
+				<Component {...props} />
+			</SafeAreaView>
+		);
+	}
 	Wrapped.displayName = `WithAuthSafeArea(${
 		Component.displayName || Component.name || 'Screen'
 	})`;
@@ -220,19 +226,26 @@ const AppScreens = () => {
 	);
 };
 
-const MainScreens = () => (
-	<MainStack.Navigator
-		screenOptions={{ headerShown: false, gestureEnabled: false }}
-	>
-		<MainStack.Screen name="Initial" component={InitialWithSafeArea} />
-		<MainStack.Screen name="TermsUse" component={TermsUseWithSafeArea} />
-		<MainStack.Screen name="Intro" component={IntroWithSafeArea} />
-		<MainStack.Screen name="Login" component={LoginWithSafeArea} />
-		<MainStack.Screen name="Forgot" component={ForgotWithSafeArea} />
-		<MainStack.Screen name="Client" component={ClientWithSafeArea} />
-		<MainStack.Screen name="App" component={AppScreens} />
-	</MainStack.Navigator>
-);
+const MainScreens = () => {
+	const { colors } = useTheme();
+	return (
+		<MainStack.Navigator
+			screenOptions={{
+				headerShown: false,
+				gestureEnabled: false,
+				cardStyle: { flex: 1, backgroundColor: colors.white },
+			}}
+		>
+			<MainStack.Screen name="Initial" component={InitialWithSafeArea} />
+			<MainStack.Screen name="TermsUse" component={TermsUseWithSafeArea} />
+			<MainStack.Screen name="Intro" component={IntroWithSafeArea} />
+			<MainStack.Screen name="Login" component={LoginWithSafeArea} />
+			<MainStack.Screen name="Forgot" component={ForgotWithSafeArea} />
+			<MainStack.Screen name="Client" component={ClientWithSafeArea} />
+			<MainStack.Screen name="App" component={AppScreens} />
+		</MainStack.Navigator>
+	);
+};
 
 const Routes = () => (
 	<NavigationContainer ref={navigationRef}>
