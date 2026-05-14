@@ -3,6 +3,11 @@ import type {
 	CourtRegisterListItem,
 } from '@models/court-register';
 
+import {
+	PROCESSING_ACCESS_MESSAGE,
+	PROCESSING_ACCESS_TEXT_COLOR,
+} from '../components/CardRegisterData/situationColors';
+
 function stripDiacritics(value: string): string {
 	return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
@@ -39,6 +44,9 @@ export function mapCourtRegisterApiItemToListItem(
 	const registerId =
 		raw.idPesqIntimacao ?? raw.idDadoAcessoFonte ?? undefined;
 
+	const messageFromApi = raw.classificacaoMensagem?.trim() ?? '';
+	const hasClassificationMessage = messageFromApi.length > 0;
+
 	return {
 		registerId,
 		idPesqIntimacao: raw.idPesqIntimacao,
@@ -46,11 +54,14 @@ export function mapCourtRegisterApiItemToListItem(
 		courtAbbreviation: raw.sigla ?? '',
 		system: raw.sistema ?? '',
 		accessLogin: raw.dadoAcesso ?? '',
-		situationMessage: raw.classificacaoMensagem ?? '',
-		situationTextColor:
-			typeof raw.corFundo === 'string' && raw.corFundo.trim() !== ''
+		situationMessage: hasClassificationMessage
+			? messageFromApi
+			: PROCESSING_ACCESS_MESSAGE,
+		situationTextColor: hasClassificationMessage
+			? typeof raw.corFundo === 'string' && raw.corFundo.trim() !== ''
 				? raw.corFundo.trim()
-				: undefined,
+				: undefined
+			: PROCESSING_ACCESS_TEXT_COLOR,
 		isActive: isClientSummonsSearchActive(raw.sitPesqIntimacaoUsCliente),
 	};
 }
