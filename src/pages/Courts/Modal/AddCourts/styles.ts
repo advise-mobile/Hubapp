@@ -35,11 +35,10 @@ export const ResponsibleName = styled.Text`
 `;
 
 export const ButtonsFooter = styled.View`
+	align-self: stretch;
+	width: 100%;
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
 	gap: 12px;
-	margin-top: 20px;
-	padding-bottom: 8px;
-	padding-horizontal: ${SHEET_H_PADDING}px;
 `;

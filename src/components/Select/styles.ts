@@ -108,12 +108,27 @@ function createRNPickerSelectStyles(
 	if (Platform.OS === 'android') {
 		return StyleSheet.create({
 			...shared,
-			viewContainer: { alignItems: 'center' as const },
+			viewContainer: { alignSelf: 'stretch' as const },
 			chevronContainer: { display: 'none' as const },
 			chevron: { display: 'none' as const },
 			headlessAndroidContainer: {
+				position: 'relative' as const,
 				minHeight: rowH,
 				alignSelf: 'stretch' as const,
+				overflow: 'hidden' as const,
+				justifyContent: 'center' as const,
+			},
+			headlessAndroidPicker: {
+				position: 'absolute' as const,
+				top: 0,
+				left: 0,
+				right: 0,
+				bottom: 0,
+				width: '100%',
+				height: '100%',
+				opacity: 0,
+				color: 'transparent',
+				backgroundColor: 'transparent',
 			},
 		}) as unknown as PickerStyle;
 	}

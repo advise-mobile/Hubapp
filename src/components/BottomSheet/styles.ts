@@ -43,16 +43,19 @@ export const ClearText = styled.Text`
 `;
 
 export const SheetWrapper = styled.View`
+  flex-direction: column;
   background-color: ${({ theme }) => theme.colors.white};
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
   max-height: 100%;
 `;
 
-export const Content = styled.View`
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-bottom: 16px;
+export const Content = styled.ScrollView.attrs({
+  keyboardShouldPersistTaps: 'handled',
+  nestedScrollEnabled: true,
+  showsVerticalScrollIndicator: true,
+})`
+  flex-shrink: 1;
 `;
 
 export const Footer = styled.View`

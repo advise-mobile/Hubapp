@@ -9,6 +9,8 @@ export interface BottomSheetProps {
   title: string;
   /** Conteúdo do meio do sheet. */
   children: ReactNode;
+  /** Rodapé customizado (ex.: botões Cancelar/Cadastrar), renderizado fora do scroll. */
+  footer?: ReactNode;
   /** Texto do botão principal no rodapé (ex.: "Ver Resultados"). Se não informado, não renderiza botão. */
   primaryButtonText?: string;
   /** Chamado ao tocar no botão principal. */

@@ -95,9 +95,7 @@ export function Select({
 					pointerEvents: 'none',
 				}}
 				pickerProps={
-					Platform.OS === 'android'
-						? { style: { zIndex: 2, elevation: 2 } }
-						: undefined
+					Platform.OS === 'android' ? { mode: 'dialog' } : undefined
 				}
 				touchableWrapperProps={
 					Platform.OS === 'android'

@@ -13,11 +13,12 @@ export const Root = styled.TouchableOpacity<{
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	min-width: ${BUTTON_MIN_WIDTH}px;
+	min-width: ${({ $fill }) => ($fill ? 0 : BUTTON_MIN_WIDTH)}px;
 	height: ${BUTTON_HEIGHT}px;
 	padding-horizontal: 16px;
 	border-radius: ${BUTTON_RADIUS}px;
 	flex: ${({ $fill }) => ($fill ? 1 : undefined)};
+	flex-shrink: ${({ $fill }) => ($fill ? 1 : 0)};
 	opacity: ${({ $disabled }) => ($disabled ? 0.5 : 1)};
 	background-color: ${({ theme, $variant }) =>
 		$variant === 'filled' ? theme.colors.green200 : theme.colors.niceBackground};

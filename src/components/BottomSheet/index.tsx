@@ -31,12 +31,13 @@ export function BottomSheet({
   onClose,
   title,
   children,
+  footer,
   primaryButtonText,
   onPrimaryPress,
   clearFiltersLabel,
   onClearFilters,
   maxHeightRatio = 0.6,
-  bottomInset = Platform.OS === 'android' ? 64 : 80,
+  bottomInset = Platform.OS === 'android' ? 62 : 78,
 }: BottomSheetProps) {
   const { height: screenHeight } = useMemo(() => Dimensions.get('window'), []);
   const maxHeight = Math.round(screenHeight * maxHeightRatio);
@@ -88,7 +89,16 @@ export function BottomSheet({
             </ClearFilters>
           )}
         </Header>
-        <Content>{children}</Content>
+        <Content
+          contentContainerStyle={{
+            paddingLeft: 24,
+            paddingRight: 24,
+            paddingBottom: 16,
+          }}
+        >
+          {children}
+        </Content>
+        {footer != null ? <Footer>{footer}</Footer> : null}
         {primaryButtonText != null && onPrimaryPress != null && (
           <Footer>
             <PrimaryButton onPress={onPrimaryPress} activeOpacity={0.8}>

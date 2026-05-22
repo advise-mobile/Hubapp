@@ -260,7 +260,7 @@ export function SummonsFilterModal({
 				clearFiltersCount > 0 ? `Limpar (${clearFiltersCount})` : undefined
 			}
 			onClearFilters={clearFiltersCount > 0 ? handleClear : undefined}
-			maxHeightRatio={0.7}
+			maxHeightRatio={0.72}
 		>
 			<Section>
 				<SectionTitle>Período</SectionTitle>

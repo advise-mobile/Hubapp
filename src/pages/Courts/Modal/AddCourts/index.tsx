@@ -185,6 +185,24 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 			onClose={onClose}
 			title="Nova captura de intimação"
 			maxHeightRatio={0.72}
+			footer={
+				<ButtonsFooter>
+					<Button
+						fill
+						variant="outlined"
+						text="Cancelar"
+						onPress={onClose}
+						disabled={registerCredential.isPending}
+					/>
+					<Button
+						fill
+						variant="filled"
+						text="Cadastrar"
+						onPress={handleSubmit(onSubmit)}
+						loading={registerCredential.isPending}
+					/>
+				</ButtonsFooter>
+			}
 		>
 			<FormBlock>
 				<ResponsibleRow>
@@ -370,23 +388,6 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 					</FormSheetRow>
 				) : null}
 			</FormBlock>
-
-			<ButtonsFooter>
-				<Button
-					fill
-					variant="outlined"
-					text="Cancelar"
-					onPress={onClose}
-					disabled={registerCredential.isPending}
-				/>
-				<Button
-					fill
-					variant="filled"
-					text="Cadastrar"
-					onPress={handleSubmit(onSubmit)}
-					loading={registerCredential.isPending}
-				/>
-			</ButtonsFooter>
 		</BottomSheet>
 	);
 }
