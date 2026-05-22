@@ -11,7 +11,7 @@ export const DisclaimerContainer = styled.View`
 	background-color: ${({ theme }) => theme.colors.white};
 	border-radius: 8px;
 	border-bottom-width: 0.3px;
-	border-bottom-color: ${({ theme }) => theme.colors.primary};
+	border-bottom-color: ${({ theme }) => theme.colors.borderLight};
 	padding: 24px 20px 20px;
 `;
 

@@ -1,14 +1,15 @@
 import { api } from '@constants/API';
 import { ApiUrl } from '@constants/urls';
 import { getLoggedUser } from '@lhelpers/Permissions';
+import type { SummonsFilters } from '@models/summons-hooks-types';
+import { summonsFiltersToQueryParams } from '@models/summons-filters';
 import type {
 	JudicialAgenciesResponse,
 	JudicialAgencyItem,
-	SummonsListItem,
-	SummonsListResponse,
 	SummonsSourceItem,
 	SummonsSourcesResponse,
 } from '@models/filters-summons';
+import type { SummonsListPageResponse } from '@models/summons-list';
 
 export async function fetchCourtsForSummonsFilter(): Promise<
 	JudicialAgencyItem[]
@@ -37,11 +38,10 @@ export async function fetchCourtsForSummonsFilter(): Promise<
 	return data.itens ?? [];
 }
 
-const SUMMONS_LIST_PAGE_SIZE = 20;
+export const SUMMONS_LIST_PAGE_SIZE = 20;
 
-export async function fetchSummonsList(): Promise<SummonsListItem[]> {
+async function resolveClientUserId(): Promise<number> {
 	const user = await getLoggedUser();
-
 	const clientUserId = Number(
 		(user as { idUsuarioCliente?: number | string }).idUsuarioCliente,
 	);
@@ -50,16 +50,35 @@ export async function fetchSummonsList(): Promise<SummonsListItem[]> {
 		throw new Error('Missing or invalid idUsuarioCliente on logged user.');
 	}
 
+	return clientUserId;
+}
+
+export async function fetchSummonsListPage(
+	page: number,
+	filters: SummonsFilters = {},
+): Promise<SummonsListPageResponse> {
+	const clientUserId = await resolveClientUserId();
+
 	const queryParams = new URLSearchParams();
 	queryParams.set('idUsuarioCliente', String(clientUserId));
-	queryParams.set('paginaAtual', '1');
+	queryParams.set('paginaAtual', String(page));
 	queryParams.set('registrosPorPagina', String(SUMMONS_LIST_PAGE_SIZE));
 
-	const { data } = await api.get<SummonsListResponse>(
+	const listFilters = summonsFiltersToQueryParams(filters);
+	Object.entries(listFilters).forEach(([key, value]) => {
+		queryParams.set(key, value);
+	});
+
+	const { data } = await api.get<SummonsListPageResponse>(
 		`${ApiUrl.SUMMONS_LIST_LOOKUP}?${queryParams.toString()}`,
 	);
 
-	return data.itens ?? [];
+	return data;
+}
+
+export async function fetchSummonsList() {
+	const page = await fetchSummonsListPage(1);
+	return page.itens ?? [];
 }
 
 export async function fetchSystemsForSummonsFilter(

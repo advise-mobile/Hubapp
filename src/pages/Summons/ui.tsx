@@ -4,10 +4,9 @@ import type { SummonsUIProps } from '@models/summons-components';
 import { ButtonIcon } from '@components/ButtonIcon';
 import { useTheme } from 'styled-components';
 
+import { SummonsDisclaimer } from './components/SummonsDisclaimer';
 import {
 	Content,
-	DisclaimerContainer,
-	DisclaimerText,
 	EmptyState,
 	EmptyStateMessage,
 	ImageNotFound,
@@ -19,13 +18,7 @@ export function SummonsUI({ imageNotFound, onPress }: SummonsUIProps) {
 
 	return (
 		<Content>
-			<DisclaimerContainer>
-				<DisclaimerText>
-					{
-						'A captura de intimações é feita através de login e senha de\nacesso aos tribunais. Os dados são confidenciais e nosso\nsistema não inicia os prazos.'
-					}
-				</DisclaimerText>
-			</DisclaimerContainer>
+			<SummonsDisclaimer />
 
 			<EmptyState>
 				<ImageNotFoundWrap>

@@ -3,6 +3,15 @@ import type { HeaderActionConfig } from '@components/Header';
 import type { CourtOption, JudicialAgencyOption } from './filters-summons';
 
 export interface SummonsFilters {
+	dataInicial?: string;
+	dataFinal?: string;
+	FlLido?: boolean;
+	idOrgaoJudiciario?: number;
+	idFonteXTipoPesquisa?: number;
+	idFonteXTipoPesquisaSistema?: number;
+	dataDe?: string;
+	dataAte?: string;
+	situacao?: 'all' | 'read' | 'unread';
 	[key: string]: string | number | boolean | null | undefined;
 }
 
@@ -29,6 +38,5 @@ export interface UseCourtsReturn {
 
 	systems: CourtOption[];
 	isLoadingSystems: boolean;
-	/** `null` clears without request. */
 	loadSystems: (idOrgaoJudiciario: number | null) => Promise<CourtOption[]>;
 }

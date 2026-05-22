@@ -6,6 +6,7 @@ import { Select } from '@components/Select';
 import Datepicker from '@lcomponents/DatePicker';
 import type { SummonsFilterModalProps } from '@models/summons-components';
 import type { SummonsFilters } from '@models/summons-hooks-types';
+import { countActiveSummonsFilters } from '@models/summons-filters';
 import {
 	getJudicialAgencyLabel,
 	type CourtOption,
@@ -78,14 +79,15 @@ export function SummonsFilterModal({
 	const [situacao, setSituacao] = useState<string>(
 		(initialFilters.situacao as string) ?? 'all',
 	);
-	/** Combo Tribunal: `idOrgaoJudiciario` de `consulta-orgao-judiciario`. */
 	const [idOrgaoJudiciario, setIdOrgaoJudiciario] = useState<number | null>(
 		parseIdOrgaoInitial(initialFilters.idOrgaoJudiciario),
 	);
-	/** Combo Sistema: idFonteXTipoPesquisa from summons sources API (tribunal selecionado). */
 	const [idFonteXTipoPesquisaSistema, setIdFonteXTipoPesquisaSistema] =
 		useState<number | null>(
-			parseIdFonteInitial(initialFilters.idFonteXTipoPesquisaSistema),
+			parseIdFonteInitial(
+				initialFilters.idFonteXTipoPesquisaSistema ??
+					initialFilters.idFonteXTipoPesquisa,
+			),
 		);
 
 	const tribunalRow = useMemo((): JudicialAgencyOption | null => {
@@ -111,13 +113,20 @@ export function SummonsFilterModal({
 			setSituacao(
 				typeof initialFilters.situacao === 'string'
 					? initialFilters.situacao
-					: 'all',
+					: initialFilters.FlLido === true
+						? 'read'
+						: initialFilters.FlLido === false
+							? 'unread'
+							: 'all',
 			);
 			setIdOrgaoJudiciario(
 				parseIdOrgaoInitial(initialFilters.idOrgaoJudiciario),
 			);
 			setIdFonteXTipoPesquisaSistema(
-				parseIdFonteInitial(initialFilters.idFonteXTipoPesquisaSistema),
+				parseIdFonteInitial(
+					initialFilters.idFonteXTipoPesquisaSistema ??
+						initialFilters.idFonteXTipoPesquisa,
+				),
 			);
 		}
 	}, [visible, initialFilters]);
@@ -191,28 +200,30 @@ export function SummonsFilterModal({
 			next.idOrgaoJudiciario = idOrgaoJudiciario;
 			if (idFonteXTipoPesquisaSistema != null) {
 				next.idFonteXTipoPesquisa = idFonteXTipoPesquisaSistema;
-				next.idFonteXTipoPesquisaSistema = idFonteXTipoPesquisaSistema;
 			} else {
 				delete next.idFonteXTipoPesquisa;
-				delete next.idFonteXTipoPesquisaSistema;
 			}
 		} else {
 			delete next.idOrgaoJudiciario;
 			delete next.idFonteXTipoPesquisa;
-			delete next.idFonteXTipoPesquisaSistema;
 		}
+
+		delete next.idFonteXTipoPesquisaSistema;
 
 		onApply(next);
 		onClose();
 	};
 
-	const clearFiltersCount = [
+	const draftFilters: SummonsFilters = {
+		...localFilters,
 		dataDe,
 		dataAte,
-		situacao !== 'all',
-		idOrgaoJudiciario != null,
-		idFonteXTipoPesquisaSistema != null,
-	].filter(Boolean).length;
+		situacao,
+		idOrgaoJudiciario: idOrgaoJudiciario ?? undefined,
+		idFonteXTipoPesquisaSistema: idFonteXTipoPesquisaSistema ?? undefined,
+	};
+
+	const clearFiltersCount = countActiveSummonsFilters(draftFilters);
 
 	const handleClear = () => {
 		setDataDe('');
@@ -222,6 +233,8 @@ export function SummonsFilterModal({
 		setIdFonteXTipoPesquisaSistema(null);
 		setLocalFilters({});
 		loadSystems(null);
+		onApply({});
+		onClose();
 	};
 
 	const courtItems = courts.map((court: JudicialAgencyOption) => ({

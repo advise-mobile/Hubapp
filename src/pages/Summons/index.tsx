@@ -5,16 +5,19 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import { PermissionsGroups, checkPermission } from '@lhelpers/Permissions';
 import HasNotPermission from '@lcomponents/HasNotPermission';
 import Spinner from '@lcomponents/Spinner';
-import { useSummonsListAccessQuery } from '@pages/Summons/hooks/useSummonsListAccessQuery';
+import { useSummonsInfiniteQuery } from '@pages/Summons/hooks/useSummonsInfiniteQuery';
 import { useTheme } from 'styled-components';
 import { Container, Warp } from '@lassets/styles/global';
 import { Header, type HeaderActionConfig } from '@components/Header';
 import type { SummonsFilters } from '@models/summons-hooks-types';
+import { countActiveSummonsFilters } from '@models/summons-filters';
+import type { SummonsListItemViewModel } from '@models/summons-list';
 
+import { SummonsList } from './components/SummonsList';
 import { useSummonsHeader } from './hooks/useSummonsHeader';
 import { SummonsFilterModal } from './Modal/Filter';
 import { AddCourtsModal } from '../Courts/Modal/AddCourts';
-import { Content, ListPlaceholderText } from './styles';
+import { Content } from './styles';
 import { SummonsUI } from './ui';
 import type { SummonsStackParamList } from '../../navigation/paramLists';
 
@@ -38,18 +41,21 @@ export default function Summons() {
 	const [permissionState, setPermissionState] =
 		useState<PermissionState>('loading');
 
-	const listAccessEnabled = permissionState === 'allowed';
-	const {
-		isAwaitingFirstResult,
-		isError: isListAccessError,
-		items: summonsListItems,
-	} = useSummonsListAccessQuery(listAccessEnabled);
+	const listEnabled = permissionState === 'allowed';
+	const [filters, setFilters] = useState<SummonsFilters>({});
 
-	/** RF 3.1.1 / 3.2.1: filtro só interativo quando já existe ao menos um retorno na lista (proxy de cadastro). */
-	const summonsFilterInteractive =
-		!isAwaitingFirstResult &&
-		!isListAccessError &&
-		summonsListItems.length > 0;
+	const {
+		items: summonsListItems,
+		isAwaitingFirstResult,
+		isError: isListError,
+		isFetchingNextPage,
+		hasNextPage,
+		fetchNextPage,
+	} = useSummonsInfiniteQuery(listEnabled, filters);
+
+	const activeFiltersCount = countActiveSummonsFilters(filters);
+
+	const summonsFilterInteractive = !isAwaitingFirstResult && !isListError;
 
 	const {
 		headerProps,
@@ -57,8 +63,6 @@ export default function Summons() {
 		setFilterModalVisible,
 		addModalVisible,
 		setAddModalVisible,
-		filters,
-		setFilters,
 	} = useSummonsHeader(summonsFilterInteractive);
 
 	useEffect(() => {
@@ -88,6 +92,7 @@ export default function Summons() {
 		() => setFilterModalVisible(false),
 		[setFilterModalVisible],
 	);
+
 	const handleApplyFilter = useCallback(
 		(newFilters: SummonsFilters) => {
 			setFilters(newFilters);
@@ -100,6 +105,15 @@ export default function Summons() {
 		() => setAddModalVisible(false),
 		[setAddModalVisible],
 	);
+
+	const handleEndReached = useCallback(() => {
+		if (hasNextPage && !isFetchingNextPage) {
+			fetchNextPage();
+		}
+	}, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+	const handleMenuPress = useCallback((_item: SummonsListItemViewModel) => {}, []);
+
 	if (permissionState === 'loading') {
 		return (
 			<Container>
@@ -121,11 +135,14 @@ export default function Summons() {
 	}
 
 	const showEmptyOnboarding =
-		isListAccessError || summonsListItems.length === 0;
+		isListError ||
+		(!isAwaitingFirstResult &&
+			summonsListItems.length === 0 &&
+			activeFiltersCount === 0);
 
 	const rightActions: HeaderActionConfig[] = [
 		...headerProps.rightActions,
-		...(summonsListItems.length > 0
+		...(summonsListItems.length > 0 || activeFiltersCount > 0
 			? [
 					{
 						icon: 'assignment',
@@ -157,7 +174,14 @@ export default function Summons() {
 					/>
 				) : (
 					<Content>
-						<ListPlaceholderText>Tem intimações.</ListPlaceholderText>
+						<SummonsList
+							items={summonsListItems}
+							isFetchingNextPage={isFetchingNextPage}
+							hasNextPage={hasNextPage ?? false}
+							onEndReached={handleEndReached}
+							onMenuPress={handleMenuPress}
+							showEmptyMessage={summonsListItems.length === 0}
+						/>
 					</Content>
 				)}
 				<SummonsFilterModal

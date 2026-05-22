@@ -51,6 +51,7 @@ const darkTheme = {
     during: 'rgba(255, 255, 255, .12)',
 
     bordercolor: '#BDBDBD',
+    borderLight: '#E0E0E0',
     tabcolor: '#FFFFFF',
     textTab: '#000',
     textvalue: '#ffffff',

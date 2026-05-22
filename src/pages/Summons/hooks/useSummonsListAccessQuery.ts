@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 
 import ToastNotifyActions from '@lstore/ducks/ToastNotify';
-import { fetchSummonsList } from '@services/summons';
+import { fetchSummonsListPage } from '@services/summons';
 
 const QUERY_KEY = ['summons', 'list-access'] as const;
 
@@ -12,7 +12,10 @@ export function useSummonsListAccessQuery(enabled: boolean) {
 
 	const query = useQuery({
 		queryKey: [...QUERY_KEY],
-		queryFn: fetchSummonsList,
+		queryFn: async () => {
+			const page = await fetchSummonsListPage(1);
+			return page.itens ?? [];
+		},
 		enabled,
 	});
 
