@@ -1,0 +1,63 @@
+import { Alert } from 'react-native';
+
+import type { SwipeRowAction } from '@components/SwipeRow';
+import type { SummonsListItemViewModel } from '@models/summons-list';
+
+const NEUTRAL_VARIANT = 'neutral' as const;
+
+function showActionAlert(title: string) {
+	Alert.alert(title, `${title}. Esta ação será implementada em breve.`);
+}
+
+export function getSummonsSwipeActions(
+	item: SummonsListItemViewModel,
+): SwipeRowAction<SummonsListItemViewModel>[] {
+	const markReadLabel = item.isRead
+		? 'Marcar como não lido'
+		: 'Marcar como lido';
+
+	return [
+		{
+			id: 'toggle-read',
+			icon: item.isRead ? 'visibility-off' : 'visibility',
+			label: markReadLabel,
+			variant: NEUTRAL_VARIANT,
+			onPress: () => showActionAlert(markReadLabel),
+		},
+		{
+			id: 'register-deadline',
+			icon: 'event',
+			label: 'Cadastrar prazo',
+			variant: NEUTRAL_VARIANT,
+			onPress: () => showActionAlert('Cadastrar prazo'),
+		},
+		{
+			id: 'send-email',
+			icon: 'mail-outline',
+			label: 'Enviar por e-mail',
+			variant: NEUTRAL_VARIANT,
+			onPress: () => showActionAlert('Enviar por e-mail'),
+		},
+		{
+			id: 'download',
+			icon: 'file-download',
+			label: 'Baixar movimentação',
+			variant: NEUTRAL_VARIANT,
+			onPress: () => showActionAlert('Baixar movimentação'),
+		},
+		{
+			id: 'share',
+			icon: 'share',
+			label: 'Compartilhar',
+			variant: NEUTRAL_VARIANT,
+			onPress: () => showActionAlert('Compartilhar'),
+		},
+		{
+			id: 'delete',
+			icon: 'delete-outline',
+			label: 'Excluir',
+			variant: NEUTRAL_VARIANT,
+			onPress: () => showActionAlert('Excluir'),
+		},
+	];
+}

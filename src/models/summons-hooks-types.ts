@@ -18,17 +18,19 @@ export interface SummonsFilters {
 export interface UseSummonsHeaderReturn {
 	headerProps: {
 		title: string;
-		leftActions: HeaderActionConfig[];
 		rightActions: HeaderActionConfig[];
 	};
-	filterModalVisible: boolean;
-	setFilterModalVisible: (visible: boolean) => void;
 	addModalVisible: boolean;
 	setAddModalVisible: (visible: boolean) => void;
+}
+
+export interface UseSummonsHeaderFiltersReturn {
 	filters: SummonsFilters;
-	setFilters: (
-		filters: SummonsFilters | ((previous: SummonsFilters) => SummonsFilters),
-	) => void;
+	applyFilters: (filters: SummonsFilters) => void;
+	closeFilterModal: () => void;
+	filterModalVisible: boolean;
+	openFilterModal: () => void;
+	activeFiltersCount: number;
 }
 
 export interface UseCourtsReturn {

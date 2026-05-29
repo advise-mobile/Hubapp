@@ -11,22 +11,22 @@ import { Container, Warp } from '@lassets/styles/global';
 import ConfirmModal from '@components/ConfirmModal';
 import { Header } from '@components/Header';
 import { fonts } from '@lassets/styles';
-import type { CourtsRegistrationsAppliedFilters } from '@models/court-registrations-filters';
 import type { CourtRegisterListItem } from '@models/court-register';
-import {
-	useCourtsAccessCreditQuery,
-	useCourtsHeader,
-	useCourtsRegistrationsInfiniteQuery,
-	useActivateCourtRegistrationMutation,
-	useDeleteCourtRegistrationMutation,
-	useInactivateCourtRegistrationMutation,
-} from './hooks';
 
 import { CardAccessAvailable } from './components/CardAccessAvailable';
 import { CardRegisterData } from './components/CardRegisterData';
-import { Content } from './styles';
+import {
+	useActivateCourtRegistrationMutation,
+	useCourtsAccessCreditQuery,
+	useCourtsHeader,
+	useCourtsHeaderFilters,
+	useCourtsRegistrationsInfiniteQuery,
+	useDeleteCourtRegistrationMutation,
+	useInactivateCourtRegistrationMutation,
+} from './hooks';
 import { AddCourtsModal } from './Modal/AddCourts';
 import { CourtsFilterModal } from './Modal/Filter';
+import { Content } from './styles';
 
 export default function Courts() {
 	const { colors } = useTheme();
@@ -34,11 +34,15 @@ export default function Courts() {
 		headerProps,
 		addModalVisible,
 		setAddModalVisible,
-		filterModalVisible,
-		setFilterModalVisible,
-		filters: registrationsFilters,
-		setFilters: setRegistrationsFilters,
 	} = useCourtsHeader();
+
+	const {
+		filters: registrationsFilters,
+		applyFilters: handleApplyRegistrationsFilters,
+		closeFilterModal: handleCloseFilter,
+		filterModalVisible,
+		filterRightActions,
+	} = useCourtsHeaderFilters();
 
 	const {
 		contractedCountDisplayText,
@@ -74,18 +78,6 @@ export default function Courts() {
 		[setAddModalVisible],
 	);
 
-	const handleCloseFilter = useCallback(
-		() => setFilterModalVisible(false),
-		[setFilterModalVisible],
-	);
-
-	const handleApplyRegistrationsFilters = useCallback(
-		(next: CourtsRegistrationsAppliedFilters) => {
-			setRegistrationsFilters(next);
-		},
-		[setRegistrationsFilters],
-	);
-
 	const handleDeleteModalCancel = useCallback(() => {
 		deleteConfirmModalRef.current?.close();
 		setPendingDeleteId(null);
@@ -106,6 +98,11 @@ export default function Courts() {
 			},
 		});
 	}, [pendingDeleteId, deleteRegistration]);
+
+	const headerRightActions = useMemo(
+		() => [...headerProps.rightActions, ...filterRightActions],
+		[filterRightActions, headerProps.rightActions],
+	);
 
 	const listHeader = useMemo(
 		() => (
@@ -241,7 +238,7 @@ export default function Courts() {
 				<Header
 					title={headerProps.title}
 					leftActions={headerProps.leftActions}
-					rightActions={headerProps.rightActions}
+					rightActions={headerRightActions}
 				/>
 				<Content>
 					<FlatList

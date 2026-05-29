@@ -9,8 +9,10 @@ import {
 import { useTheme } from 'styled-components';
 import { fonts } from '@lassets/styles';
 
+import { SwipeRow, SwipeRowProvider, useSwipeRowRegistry } from '@components/SwipeRow';
 import type { SummonsListItemViewModel } from '@models/summons-list';
 
+import { getSummonsSwipeActions } from '../../config/summonsSwipeActions';
 import { SummonsDisclaimer } from '../SummonsDisclaimer';
 import { SummonsListItemCard } from '../SummonsListItemCard';
 
@@ -19,8 +21,25 @@ export interface SummonsListProps {
 	isFetchingNextPage: boolean;
 	hasNextPage: boolean;
 	onEndReached: () => void;
-	onMenuPress?: (item: SummonsListItemViewModel) => void;
 	showEmptyMessage?: boolean;
+}
+
+function SummonsListRow({ item }: { item: SummonsListItemViewModel }) {
+	const { openRight } = useSwipeRowRegistry();
+
+	const handleMenuPress = useCallback(() => {
+		openRight(item.id);
+	}, [item.id, openRight]);
+
+	return (
+		<SwipeRow
+			item={item}
+			itemKey={item.id}
+			rightActions={getSummonsSwipeActions(item)}
+		>
+			<SummonsListItemCard item={item} onMenuPress={handleMenuPress} />
+		</SwipeRow>
+	);
 }
 
 export function SummonsList({
@@ -28,7 +47,6 @@ export function SummonsList({
 	isFetchingNextPage,
 	hasNextPage,
 	onEndReached,
-	onMenuPress,
 	showEmptyMessage = false,
 }: SummonsListProps) {
 	const { colors } = useTheme();
@@ -39,10 +57,8 @@ export function SummonsList({
 	);
 
 	const renderItem: ListRenderItem<SummonsListItemViewModel> = useCallback(
-		({ item }) => (
-			<SummonsListItemCard item={item} onMenuPress={onMenuPress} />
-		),
-		[onMenuPress],
+		({ item }) => <SummonsListRow item={item} />,
+		[],
 	);
 
 	const listHeader = useMemo(() => <SummonsDisclaimer />, []);
@@ -105,21 +121,23 @@ export function SummonsList({
 	);
 
 	return (
-		<FlatList
-			data={items}
-			keyExtractor={keyExtractor}
-			renderItem={renderItem}
-			ListHeaderComponent={listHeader}
-			ItemSeparatorComponent={itemSeparator}
-			ListFooterComponent={listFooter}
-			ListEmptyComponent={listEmpty}
-			onEndReached={handleEndReached}
-			onEndReachedThreshold={0.35}
-			contentContainerStyle={{
-				paddingBottom: 32,
-				flexGrow: 1,
-			}}
-			showsVerticalScrollIndicator={false}
-		/>
+		<SwipeRowProvider>
+			<FlatList
+				data={items}
+				keyExtractor={keyExtractor}
+				renderItem={renderItem}
+				ListHeaderComponent={listHeader}
+				ItemSeparatorComponent={itemSeparator}
+				ListFooterComponent={listFooter}
+				ListEmptyComponent={listEmpty}
+				onEndReached={handleEndReached}
+				onEndReachedThreshold={0.35}
+				contentContainerStyle={{
+					paddingBottom: 32,
+					flexGrow: 1,
+				}}
+				showsVerticalScrollIndicator={false}
+			/>
+		</SwipeRowProvider>
 	);
 }

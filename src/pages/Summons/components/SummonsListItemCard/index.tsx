@@ -34,7 +34,10 @@ function SummonsListItemCardComponent({
 		<Card>
 			<CardHeader>
 				<CardTitle>{item.title}</CardTitle>
-				<MenuButton onPress={handleMenuPress} accessibilityLabel="Mais opções">
+				<MenuButton
+					onPress={handleMenuPress}
+					accessibilityLabel="Mais opções"
+				>
 					<MaterialIcons
 						name="more-horiz"
 						size={24}

@@ -38,7 +38,26 @@ function resolveListItemId(raw: SummonsListApiItem, index: number): string {
 	if (raw.idIntimacao != null) {
 		return String(raw.idIntimacao);
 	}
+	if (raw.id != null) {
+		return String(raw.id);
+	}
 	return `summons-${index}`;
+}
+
+function resolvePrazoLabel(raw: SummonsListApiItem): string {
+	if (hasText(raw.prazoTratado)) {
+		return formatTagLabel(raw.prazoTratado.trim());
+	}
+
+	if (hasText(raw.prazo)) {
+		return formatTagLabel(raw.prazo.trim());
+	}
+
+	if (raw.prazo != null && String(raw.prazo).trim() !== '') {
+		return formatTagLabel(String(raw.prazo).trim());
+	}
+
+	return 'Não informado';
 }
 
 export function mapSummonsApiItemToViewModel(
@@ -77,11 +96,7 @@ export function mapSummonsApiItemToViewModel(
 		}
 	}
 
-	const prazoRaw = hasText(raw.prazoTratado)
-		? raw.prazoTratado.trim()
-		: 'Não informado';
-	const prazoLabel =
-		prazoRaw === 'Não informado' ? prazoRaw : formatTagLabel(prazoRaw);
+	const prazoLabel = resolvePrazoLabel(raw);
 	badges.push({
 		label: `Prazo: ${prazoLabel}`,
 		backgroundColor: metaTagBg,

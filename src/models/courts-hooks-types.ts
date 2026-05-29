@@ -8,11 +8,29 @@ export interface UseCourtsHeaderReturn {
 		leftActions: HeaderActionConfig[];
 		rightActions: HeaderActionConfig[];
 	};
-	filterModalVisible: boolean;
-	setFilterModalVisible: (visible: boolean) => void;
 	addModalVisible: boolean;
 	setAddModalVisible: (visible: boolean) => void;
+}
+
+export interface UseCourtsHeaderFiltersReturn {
 	filters: CourtsRegistrationsAppliedFilters;
+	applyFilters: (filters: CourtsRegistrationsAppliedFilters) => void;
+	closeFilterModal: () => void;
+	filterModalVisible: boolean;
+	filterRightActions: HeaderActionConfig[];
+	activeFiltersCount: number;
+}
+
+/** @deprecated Use UseCourtsHeaderReturn + UseCourtsHeaderFiltersReturn */
+export interface UseCourtsHeaderLegacyReturn
+	extends UseCourtsHeaderReturn,
+		UseCourtsHeaderFiltersReturn {
+	headerProps: {
+		title: string;
+		leftActions: HeaderActionConfig[];
+		rightActions: HeaderActionConfig[];
+	};
+	setFilterModalVisible: (visible: boolean) => void;
 	setFilters: (
 		filters:
 			| CourtsRegistrationsAppliedFilters

@@ -8,6 +8,7 @@ export interface SummonsListApiItem {
 	sistema?: string;
 	responsavel?: string;
 	dataExpedicao?: string;
+	prazo?: string | number;
 	prazoTratado?: string;
 	numeroProcesso?: string;
 	flLido?: boolean;
