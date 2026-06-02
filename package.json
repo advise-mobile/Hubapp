@@ -9,7 +9,7 @@
 		"lint": "eslint .",
 		"start": "react-native start",
 		"test": "jest",
-		"ios:clear-all": "rm -rf node_modules && cd ios && rm -rf Pods && rm -rf Podfile.lock && cd .. && yarn install && cd ios && pod install && cd ..",
+		"ios:clear-all": "rm -rf node_modules && cd ios && rm -rf Pods && rm -rf Podfile.lock && cd .. && yarn install && sed -i '' 's/objectVersion = 70;/objectVersion = 56;/g' ios/HubApp.xcodeproj/project.pbxproj && cd ios && pod install && cd ..",
 		"android:copy-service-json": "cp ../Android/google-services.json android/app/ || echo '⚠️ google-services.json não encontrada em ../Android/hubapp-key.keystore'",
 		"android:copy-keystore": "cp ../Android/hubapp-key.keystore android/app/ || echo '⚠️  Keystore não encontrada em ../Android/hubapp-key.keystore'",
 		"android:clean": "cd android && ./gradlew clean || (rm -rf app/.cxx app/build && ./gradlew clean) && cd ..",
