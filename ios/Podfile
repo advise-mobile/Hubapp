@@ -58,5 +58,33 @@ target 'HubApp' do
         config.build_settings['REACT_NATIVE_PATH'] = '${PODS_ROOT}/../../node_modules/react-native'
       end
     end
+
+    # fmt 11.x + Xcode 26: C++20 consteval quebra em format.cc — forçar C++17 no pod fmt
+    installer.pods_project.targets.each do |target|
+      next unless target.name == 'fmt'
+
+      target.build_configurations.each do |config|
+        config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+      end
+    end
+
+    %w[fmt.debug.xcconfig fmt.release.xcconfig].each do |xcconfig_name|
+      xcconfig_path = File.join(
+        installer.sandbox.root,
+        'Target Support Files',
+        'fmt',
+        xcconfig_name,
+      )
+      next unless File.exist?(xcconfig_path)
+
+      contents = File.read(xcconfig_path)
+      unless contents.include?('CLANG_CXX_LANGUAGE_STANDARD = c++17')
+        File.write(
+          xcconfig_path,
+          "CLANG_CXX_LANGUAGE_STANDARD = c++17\n#{contents}",
+        )
+        Pod::UI.puts "Ajustado #{xcconfig_name}: fmt com C++17 (Xcode 26 / consteval)".green
+      end
+    end
   end
 end
