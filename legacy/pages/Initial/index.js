@@ -37,7 +37,10 @@ const Initial = props => {
     } else {
       if (token) {
         getLogin().then(response => {
-          if (!response) props.navigation.navigate('Login');
+          if (!response) {
+            props.navigation.navigate('Login');
+            return;
+          }
 
           registerNotification();
 

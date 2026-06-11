@@ -2,18 +2,19 @@ import React, { useEffect } from 'react';
 import { Linking } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import {
-  Content,
-  Description,
-  Option,
-  Infos,
-  Subtitle,
-  OptionText,
-  OptionButton,
-  Attendance,
-  AttendanceTitle,
-  AttendanceText,
+	Content,
+	Description,
+	Option,
+	Infos,
+	Subtitle,
+	OptionText,
+	OptionButton,
+	Attendance,
+	AttendanceTitle,
+	AttendanceText,
 } from './styles';
 
 import { Container, Warp } from '@lassets/styles/global';
@@ -22,73 +23,67 @@ import { Container, Warp } from '@lassets/styles/global';
 import { useTheme } from 'styled-components';
 
 const Help = props => {
-  useEffect(() => {
-    if (!props.selected) return;
+	useEffect(() => {
+		if (!props.selected) return;
 
-    props.setCustomActions(null);
-  }, [props.selected]);
+		props.setCustomActions(null);
+	}, [props.selected]);
 
-  // Variavel para usar o hook
-  const colorUseTheme = useTheme();
-  const { colors } = colorUseTheme;
+	// Variavel para usar o hook
+	const colorUseTheme = useTheme();
+	const { colors } = colorUseTheme;
 
-  return (
-    <Container>
-      <Warp>
-        <Content>
-          <Infos>
-            <Description>
-              Em caso de dúvida, entre em contato com a nossa equipe de suporte
-              pelos canais abaixo.
-            </Description>
+	return (
+		<Container>
+			<Warp>
+				<Content>
+					<Infos>
+						<Description>
+							Em caso de dúvida, entre em contato com a nossa equipe de suporte
+							pelos canais abaixo.
+						</Description>
 
-            <Subtitle>Fale com a gente</Subtitle>
-            <OptionButton onPress={() => props.navigation.navigate('Chat')}>
-              <Option>
-                <Icon name={'chat'} size={22} color={colors.advise} />
-                <OptionText>Chat em tempo real</OptionText>
-              </Option>
-            </OptionButton>
+						<Subtitle>Fale com a gente</Subtitle>
+						<OptionButton onPress={() => props.navigation.navigate('Chat')}>
+							<Option>
+								<Icon name={'chat'} size={22} color={colors.advise} />
+								<OptionText>Chat em tempo real</OptionText>
+							</Option>
+						</OptionButton>
 
-            <Subtitle>Email</Subtitle>
-            <OptionButton
-              onPress={() =>
-                Linking.openURL('mailto:atendimento@advise.com.br')
-              }
-            >
-              <Option>
-                <Icon name={'email'} size={22} color={colors.advise} />
-                <OptionText>atendimento@advise.com.br</OptionText>
-              </Option>
-            </OptionButton>
+						<Subtitle>Email</Subtitle>
+						<OptionButton
+							onPress={() =>
+								Linking.openURL('mailto:atendimento@advise.com.br')
+							}
+						>
+							<Option>
+								<Icon name={'email'} size={22} color={colors.advise} />
+								<OptionText>atendimento@advise.com.br</OptionText>
+							</Option>
+						</OptionButton>
 
-            <Subtitle>Capitais e regiões metropolitanas</Subtitle>
-            <OptionButton onPress={() => Linking.openURL('tel:40033196')}>
-              <Option>
-                <Icon name={'phone'} size={22} color={colors.advise} />
-                <OptionText>4003 3196</OptionText>
-              </Option>
-            </OptionButton>
-
-            <Subtitle>Demais regiões</Subtitle>
-            <OptionButton onPress={() => Linking.openURL('tel:08005009926')}>
-              <Option>
-                <Icon name={'phone'} size={22} color={colors.advise} />
-                <OptionText>0800 500 9926</OptionText>
-              </Option>
-            </OptionButton>
-          </Infos>
-          <Attendance>
-            <AttendanceTitle>Horário de atendimento</AttendanceTitle>
-            <AttendanceText>Segunda a quinta: 8:00 às 18:00</AttendanceText>
-            <AttendanceText>
-              Sexta: 8:00 às 17:30, exceto feriados
-            </AttendanceText>
-          </Attendance>
-        </Content>
-      </Warp>
-    </Container>
-  );
+						<Subtitle>WhatsApp</Subtitle>
+						<OptionButton
+							onPress={() => Linking.openURL('https://wa.me/5543999522101')}
+						>
+							<Option>
+								<FontAwesome name="whatsapp" size={22} color={colors.advise} />
+								<OptionText>(43) 99952-2101</OptionText>
+							</Option>
+						</OptionButton>
+					</Infos>
+					<Attendance>
+						<AttendanceTitle>Horário de atendimento</AttendanceTitle>
+						<AttendanceText>Segunda a quinta: 8:00 às 18:00</AttendanceText>
+						<AttendanceText>
+							Sexta: 8:00 às 17:30, exceto feriados
+						</AttendanceText>
+					</Attendance>
+				</Content>
+			</Warp>
+		</Container>
+	);
 };
 
 export default Help;

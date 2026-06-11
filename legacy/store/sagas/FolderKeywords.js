@@ -48,7 +48,8 @@ export function* getFolderKeywords(action) {
 			FolderKeywordsActions.folderKeywordsSuccess({...data, endReached, movementsNotRead}, page),
 		);
 	} catch (err) {
-		const {status} = err.response;
+		const status = err?.response?.status;
+
 		if (status !== 401) {
 			yield put(
 				ToastNotifyActions.toastNotifyShow(
@@ -56,8 +57,8 @@ export function* getFolderKeywords(action) {
 					true,
 				),
 			);
-
-			yield put(FolderKeywordsActions.folderKeywordsFailure());
 		}
+
+		yield put(FolderKeywordsActions.folderKeywordsFailure());
 	}
 }

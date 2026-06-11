@@ -200,7 +200,7 @@ export default function Login(props) {
 	return (
 		<KeyboardAvoidingView
 			behavior={Platform.OS === 'ios' ? 'padding' : null}
-			style={{ flex: 1 }}
+			style={{ flex: 1, backgroundColor: colors.white }}
 		>
 			<Container behavior="padding">
 				{loadingIndicator ? (

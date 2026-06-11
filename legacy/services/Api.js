@@ -14,15 +14,116 @@ import {
   EXPIRES_TOKEN,
   AVATAR,
 } from '@lhelpers/StorageKeys';
-// const TOKEN = '@Advise:token';
-// const REFRESH_TOKEN = '@Advise:refreshToken';
-// const EXPIRES_TOKEN = '@Advise:expires';
 
 const api = axios.create({
   baseURL: BASE_URL,
 });
 
-// Interceptor para logar todas as requisições (HABILITADO para debug)
+const AUTH_ROUTE_FRAGMENTS = [
+  '/login/v1/token',
+  '/login/v1/refresh-token',
+  '/login/v1/redefinir-senha',
+];
+
+function isAuthRoute(url = '') {
+  return AUTH_ROUTE_FRAGMENTS.some(fragment => url.includes(fragment));
+}
+
+async function persistTokens(data) {
+  const expires = new Date(data['.expires']);
+
+  await AsyncStorage.multiSet([
+    [TOKEN, data.access_token || null],
+    [REFRESH_TOKEN, data.refresh_token || null],
+    [EXPIRES_TOKEN, expires.toString()],
+  ]);
+
+  if (data.foto) {
+    await AsyncStorage.setItem(AVATAR, data.foto);
+  }
+
+  if (data.access_token) {
+    api.defaults.headers.common.Authorization = `Bearer ${data.access_token}`;
+  }
+}
+
+export async function restoreSessionHeaders() {
+  const token = await AsyncStorage.getItem(TOKEN);
+  if (token) {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+  }
+  return token;
+}
+
+export function logTokenExpiryMinutes(context = '') {
+  if (!__DEV__) return;
+
+  AsyncStorage.getItem(EXPIRES_TOKEN).then(raw => {
+    if (!raw) {
+      console.log('[TOKEN]', context, { expires: null, minutesLeft: null });
+      return;
+    }
+    const expires = new Date(raw);
+    const minutesLeft = (expires.getTime() - Date.now()) / (60 * 1000);
+    console.log('[TOKEN]', context, {
+      expires: expires.toISOString(),
+      minutesLeft: minutesLeft.toFixed(1),
+      expired: minutesLeft <= 0,
+    });
+  });
+}
+
+let isRefreshing = false;
+let failedQueue = [];
+let refreshPromise = null;
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
+async function getTokenForRequest() {
+  const expiresRaw = await AsyncStorage.getItem(EXPIRES_TOKEN);
+  const expires = expiresRaw ? new Date(expiresRaw) : new Date(0);
+  const token = await AsyncStorage.getItem(TOKEN);
+
+  if (!token) {
+    return null;
+  }
+
+  if (expires > new Date()) {
+    return token;
+  }
+
+  if (!refreshPromise) {
+    refreshPromise = getAccessToken()
+      .then(data => {
+        if (!data?.access_token) {
+          throw new Error('Token refresh failed');
+        }
+        return data.access_token;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+
+  return refreshPromise;
+}
+
+function applyTokenToRequest(requestConfig, accessToken) {
+  requestConfig.headers = requestConfig.headers || {};
+  requestConfig.headers.Authorization = `Bearer ${accessToken}`;
+  api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+}
+
 if (__DEV__) {
   api.interceptors.request.use(
     config => {
@@ -37,11 +138,9 @@ if (__DEV__) {
     },
   );
 
-  //Interceptor para logar todas as respostas (HABILITADO para debug)
   api.interceptors.response.use(
     response => {
       console.log('✅ [API RESPONSE]', response.status, response.config.url);
-      console.log('📥 [RESPONSE DATA]', response.data);
       return response;
     },
     error => {
@@ -56,58 +155,29 @@ if (__DEV__) {
   );
 }
 
-export async function getUrl() {
-  if (!__DEV__) return DEV_URL;
+api.interceptors.request.use(
+  async config => {
+    const url = config.url || '';
 
-  const urlStorage = await AsyncStorage.getItem('@BaseUrl').then(urlStorage => {
-    return urlStorage;
-  });
-
-  return urlStorage ? urlStorage : DEV_URL;
-}
-
-// api.interceptors.request.use(async config => {
-//   const TOKEN_URL = `/login/v1/token`;
-
-//   const { url } = config;
-
-//   if (url === TOKEN_URL) return Promise.resolve(config);
-
-//   const expires = new Date(await AsyncStorage.getItem(EXPIRES_TOKEN));
-//   const now = new Date();
-
-//   let token = await AsyncStorage.getItem(TOKEN);
-
-//   if (expires < now) {
-//     const data = await getAccessToken();
-
-//     token = data.access_token;
-//   }
-
-//   const headers = { Authorization: `bearer ${token}` };
-
-//   if (token != null)
-//     config.headers = headers;
-
-//   return Promise.resolve(config);
-// },
-//   (error) => Promise.reject(error)
-// );
-
-let isRefreshing = false;
-let failedQueue = [];
-
-const processQueue = (error, token = null) => {
-  failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
+    if (isAuthRoute(url) || config._skipAuth) {
+      return config;
     }
-  });
 
-  failedQueue = [];
-};
+    try {
+      const token = await getTokenForRequest();
+      if (token) {
+        applyTokenToRequest(config, token);
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('[API] Falha ao anexar token na request:', url, error);
+      }
+    }
+
+    return config;
+  },
+  error => Promise.reject(error),
+);
 
 api.interceptors.response.use(
   function (response) {
@@ -116,7 +186,11 @@ api.interceptors.response.use(
   async function (error) {
     const originalRequest = error.config;
 
-    const { redirectLogin } = originalRequest;
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    const redirectLogin = originalRequest.redirectLogin;
 
     if (
       error.response &&
@@ -128,12 +202,10 @@ api.interceptors.response.use(
           failedQueue.push({ resolve, reject });
         })
           .then(token => {
-            originalRequest.headers.Authorization = 'Bearer ' + token;
-            return axios(originalRequest);
+            applyTokenToRequest(originalRequest, token);
+            return api(originalRequest);
           })
-          .catch(err => {
-            return Promise.reject(err);
-          });
+          .catch(err => Promise.reject(err));
       }
 
       originalRequest._retry = true;
@@ -150,74 +222,65 @@ api.interceptors.response.use(
         axios
           .post(`${BASE_URL}/login/v1/refresh-token`, userData)
           .then(async ({ data }) => {
-            const expires = new Date(data['.expires']);
-
-            await AsyncStorage.setItem(TOKEN, data.access_token);
-            await AsyncStorage.setItem(REFRESH_TOKEN, data.refresh_token);
-            await AsyncStorage.setItem(EXPIRES_TOKEN, expires.toString());
-
-            if (data.foto) {
-              await AsyncStorage.setItem(AVATAR, data.foto);
-            }
-
-            api.defaults.headers.common.Authorization =
-              'Bearer ' + data.access_token;
-            originalRequest.Authorization = `Bearer ${data.access_token}`;
-
+            await persistTokens(data);
+            applyTokenToRequest(originalRequest, data.access_token);
             processQueue(null, data.access_token);
-            resolve(axios(originalRequest));
+            resolve(api(originalRequest));
           })
-          .catch(async () => {
+          .catch(async refreshErr => {
             if (redirectLogin) {
-              reject(error);
+              processQueue(refreshErr, null);
+              reject(refreshErr);
               return;
             }
 
-            const loginObject = await AsyncStorage.getItem('@loginObject');
+            try {
+              const loginObject = await AsyncStorage.getItem('@loginObject');
+              if (!loginObject) {
+                throw refreshErr;
+              }
 
-            const credentials = JSON.parse(loginObject);
+              const credentials = JSON.parse(loginObject);
+              const accessData = {
+                username: credentials.username,
+                password: credentials.password,
+                grant_type: 'password',
+                access_type: '94be650011cf412ca906fc335f615cdc',
+              };
 
-            const accessData = {
-              username: credentials.username,
-              password: credentials.password,
-              grant_type: 'password',
-              access_type: '94be650011cf412ca906fc335f615cdc',
-            };
+              const { data } = await axios.post(
+                `${BASE_URL}/login/v1/token`,
+                accessData,
+              );
 
-            axios
-              .post(`${BASE_URL}/login/v1/token`, accessData)
-              .then(async ({ data }) => {
-                const expires = new Date(data['.expires']);
-
-                await AsyncStorage.setItem(TOKEN, data.access_token);
-                await AsyncStorage.setItem(REFRESH_TOKEN, data.refresh_token);
-                await AsyncStorage.setItem(EXPIRES_TOKEN, expires.toString());
-
-                if (data.foto) {
-                  await AsyncStorage.setItem(AVATAR, data.foto);
-                }
-
-                api.defaults.headers.common.Authorization =
-                  'Bearer ' + data.access_token;
-                originalRequest.Authorization = `Bearer ${data.access_token}`;
-
-                processQueue(null, data.access_token);
-                resolve(axios(originalRequest));
-              })
-              .catch(err => {
-                processQueue(err, null);
-                reject(err);
-              });
+              await persistTokens(data);
+              applyTokenToRequest(originalRequest, data.access_token);
+              processQueue(null, data.access_token);
+              resolve(api(originalRequest));
+            } catch (fallbackErr) {
+              processQueue(fallbackErr, null);
+              reject(fallbackErr);
+            }
           })
           .finally(() => {
             isRefreshing = false;
           });
       });
-    } else {
-      return Promise.reject(error);
     }
+
+    return Promise.reject(error);
   },
 );
+
+export async function getUrl() {
+  if (!__DEV__) return DEV_URL;
+
+  const urlStorage = await AsyncStorage.getItem('@BaseUrl').then(urlStorage => {
+    return urlStorage;
+  });
+
+  return urlStorage ? urlStorage : DEV_URL;
+}
 
 export async function changeAmbient() {
   if (!__DEV__) return;
@@ -231,12 +294,24 @@ export async function changeAmbient() {
 }
 
 export async function getLogin() {
-  const expires = new Date(await AsyncStorage.getItem(EXPIRES_TOKEN));
+  logTokenExpiryMinutes('getLogin');
+
+  const expiresRaw = await AsyncStorage.getItem(EXPIRES_TOKEN);
+  const expires = expiresRaw ? new Date(expiresRaw) : new Date(0);
   const now = new Date();
 
-  if (expires > now) return true;
+  if (expires > now) {
+    await restoreSessionHeaders();
+    return true;
+  }
 
-  return await getAccessToken();
+  const data = await getAccessToken();
+  if (!data) {
+    return false;
+  }
+
+  await restoreSessionHeaders();
+  return data;
 }
 
 export async function getAccessToken() {
@@ -252,41 +327,33 @@ export async function getAccessToken() {
       userData,
     );
 
-    const expires = new Date(data['.expires']);
-
-    await AsyncStorage.setItem(TOKEN, data.access_token);
-    await AsyncStorage.setItem(REFRESH_TOKEN, data.refresh_token);
-    await AsyncStorage.setItem(EXPIRES_TOKEN, expires.toString());
-    if (data.foto) {
-      await AsyncStorage.setItem(AVATAR, data.foto);
-    }
-
+    await persistTokens(data);
+    logTokenExpiryMinutes('getAccessToken:afterRefresh');
     return data;
   } catch (err) {
-    const credentials = JSON.parse(await AsyncStorage.getItem('@loginObject'));
-
-    const accessData = {
-      username: credentials.email,
-      password: credentials.password,
-      grant_type: 'password',
-      access_type: '94be650011cf412ca906fc335f615cdc',
-    };
-
     try {
+      const loginObject = await AsyncStorage.getItem('@loginObject');
+      if (!loginObject) {
+        return false;
+      }
+
+      const credentials = JSON.parse(loginObject);
+      const accessData = {
+        username: credentials.username,
+        password: credentials.password,
+        grant_type: 'password',
+        access_type: '94be650011cf412ca906fc335f615cdc',
+      };
+
       const { data } = await axios.post(
         `${BASE_URL}/login/v1/token`,
         accessData,
       );
 
-      await AsyncStorage.setItem(TOKEN, data.access_token);
-      await AsyncStorage.setItem(REFRESH_TOKEN, data.refresh_token);
-      await AsyncStorage.setItem(EXPIRES_TOKEN, expires.toString());
-      if (data.foto) {
-        await AsyncStorage.setItem(AVATAR, data.foto);
-      }
-
+      await persistTokens(data);
+      logTokenExpiryMinutes('getAccessToken:afterPasswordFallback');
       return data;
-    } catch (err) {
+    } catch (fallbackErr) {
       return false;
     }
   }

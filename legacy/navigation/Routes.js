@@ -1,7 +1,7 @@
 // Imports antigos removidos - React Navigation v6
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -45,6 +45,8 @@ import DeadlinesDetails from '@lpages/Deadlines/Details';
 
 // Summons (Intimações) – módulo em src/pages, não no legado
 import Summons from '@pages/Summons';
+// Import explícito evita resolução errada do Metro (Summons/index no lugar do Detail)
+import SummonsDetail from '../../src/pages/Summons/detail/index';
 import Courts from '@pages/Courts';
 
 import TermsUse from '@lpages/TermsUse';
@@ -52,50 +54,43 @@ import TermsUse from '@lpages/TermsUse';
 import { PermissionsGroups } from '@lhelpers/Permissions';
 
 import { useTheme } from 'styled-components';
+import {
+	SafeAreaView,
+	useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
-function TabIconFolders({ color }) {
-	return (
-		<CustomIcon group={PermissionsGroups.MOVEMENTS}>
-			<MaterialCommunityIcons name="lightning-bolt" size={25} color={color} />
-		</CustomIcon>
-	);
+const authSafeAreaStyles = StyleSheet.create({
+	root: { flex: 1 },
+});
+
+/**
+ * hoc para adicionar SafeAreaView ao componente
+ */
+function withAuthSafeArea(Component, edges = ['bottom']) {
+	function Wrapped(props) {
+		const { colors } = useTheme();
+		return (
+			<SafeAreaView
+				style={[authSafeAreaStyles.root, { backgroundColor: colors.white }]}
+				edges={edges}
+			>
+				<Component {...props} />
+			</SafeAreaView>
+		);
+	}
+	Wrapped.displayName = `WithAuthSafeArea(${
+		Component.displayName || Component.name || 'Screen'
+	})`;
+	return Wrapped;
 }
 
-function TabIconDeadlines({ color }) {
-	return (
-		<CustomIcon group={PermissionsGroups.SCHEDULE}>
-			<MaterialIcons name="event" size={25} color={color} />
-		</CustomIcon>
-	);
-}
-
-function TabIconFinance({ color }) {
-	return (
-		<CustomIcon group={PermissionsGroups.FINANCES}>
-			<MaterialIcons name="attach-money" size={25} color={color} />
-		</CustomIcon>
-	);
-}
-
-function TabIconAccount({ color }) {
-	return (
-		<CustomIcon group={PermissionsGroups.ACCOUNT}>
-			<UserIcon color={color} />
-		</CustomIcon>
-	);
-}
-
-function TabIconSummons({ color }) {
-	return (
-		<CustomIcon group={PermissionsGroups.SUMMONS}>
-			<MaterialCommunityIcons
-				name="clipboard-clock-outline"
-				size={25}
-				color={color}
-			/>
-		</CustomIcon>
-	);
-}
+// Instâncias estáveis (nunca chamar withAuthSafeArea dentro do render do navigator).
+const InitialWithSafeArea = withAuthSafeArea(Initial);
+const TermsUseWithSafeArea = withAuthSafeArea(TermsUse);
+const IntroWithSafeArea = withAuthSafeArea(Intro);
+const LoginWithSafeArea = withAuthSafeArea(Login);
+const ForgotWithSafeArea = withAuthSafeArea(Forgot);
+const ClientWithSafeArea = withAuthSafeArea(Client);
 
 const MainStack = createStackNavigator();
 
@@ -139,6 +134,11 @@ const SummonsScreens = () => (
 	<SummonsStack.Navigator screenOptions={{ headerShown: false }}>
 		<SummonsStack.Screen name="Summons" component={Summons} />
 		<SummonsStack.Screen name="CourtsList" component={Courts} />
+		<SummonsStack.Screen
+			name="SummonsDetail"
+			component={SummonsDetail}
+			options={{ gestureEnabled: false }}
+		/>
 	</SummonsStack.Navigator>
 );
 
@@ -155,80 +155,132 @@ const AccountScreens = () => (
 
 const AppScreens = () => {
 	const colorUseTheme = useTheme();
+	const insets = useSafeAreaInsets();
 
-	const screenOptions = useMemo(
-		() => ({
-			headerShown: false,
-			tabBarShowLabel: false,
-			tabBarScrollEnabled: true,
-			tabBarActiveTintColor: colorUseTheme.colors.advise,
-			tabBarInactiveTintColor: colorUseTheme.colors.grayLight,
-			tabBarInactiveBackgroundColor: colorUseTheme.colors.white,
-			tabBarActiveBackgroundColor: colorUseTheme.colors.white,
-			tabBarItemStyle: {
-				width: 60,
-				alignItems: 'center',
-				justifyContent: 'center',
-			},
-			tabBarStyle: {
-				backgroundColor: colorUseTheme.colors.white,
-				height: Platform.OS === 'android' ? 64 : 80,
-				paddingTop: Platform.OS === 'android' ? 8 : 16,
-				paddingBottom: Platform.OS === 'android' ? 8 : 20,
-				marginBottom: -2,
-			},
-		}),
-		[colorUseTheme],
-	);
+	// Altura fixa + inset inferior: evita sobreposição da barra de navegação do sistema
+	// (comum em Android com gestos / 3 botões em POCO, Samsung, etc.)
+	const androidTabBarHeight = 64 + insets.bottom;
+	const androidTabPaddingBottom = 8 + insets.bottom;
+	const iosTabBarHeight = 80 + insets.bottom;
+	const iosTabPaddingBottom = 20 + insets.bottom;
 
 	return (
 		<TabsStack.Navigator
 			initialRouteName="Folders"
-			screenOptions={screenOptions}
+			screenOptions={{
+				headerShown: false,
+				tabBarShowLabel: false,
+				tabBarScrollEnabled: true,
+				tabBarActiveTintColor: colorUseTheme.colors.advise,
+				tabBarInactiveTintColor: colorUseTheme.colors.grayLight,
+				tabBarInactiveBackgroundColor: colorUseTheme.colors.white,
+				tabBarActiveBackgroundColor: colorUseTheme.colors.white,
+				tabBarItemStyle: {
+					width: 60,
+					alignItems: 'center',
+					justifyContent: 'center',
+				},
+				tabBarStyle: {
+					backgroundColor: colorUseTheme.colors.white,
+					height:
+						Platform.OS === 'android' ? androidTabBarHeight : iosTabBarHeight,
+					paddingTop: Platform.OS === 'android' ? 8 : 16,
+					paddingBottom:
+						Platform.OS === 'android'
+							? androidTabPaddingBottom
+							: iosTabPaddingBottom,
+				},
+			}}
 		>
 			<TabsStack.Screen
 				component={FoldersScreens}
 				name="Folders"
-				options={{ tabBarIcon: TabIconFolders }}
+				options={{
+					tabBarIcon: ({ color }) => (
+						<CustomIcon group={PermissionsGroups.MOVEMENTS}>
+							<MaterialCommunityIcons
+								name="lightning-bolt"
+								size={25}
+								color={color}
+							/>
+						</CustomIcon>
+					),
+				}}
 			/>
 			<TabsStack.Screen
 				component={SummonsScreens}
 				name="Summons"
-				options={{ tabBarIcon: TabIconSummons }}
+				options={{
+					tabBarIcon: ({ color }) => (
+						<CustomIcon group={PermissionsGroups.SUMMONS}>
+							<MaterialCommunityIcons
+								name="clipboard-clock-outline"
+								size={25}
+								color={color}
+							/>
+						</CustomIcon>
+					),
+				}}
 			/>
 			<TabsStack.Screen
 				component={DeadlinesScreens}
 				name="Deadlines"
-				options={{ tabBarIcon: TabIconDeadlines }}
+				options={{
+					tabBarIcon: ({ color }) => (
+						<CustomIcon group={PermissionsGroups.SCHEDULE}>
+							<MaterialIcons name="event" size={25} color={color} />
+						</CustomIcon>
+					),
+				}}
 			/>
+
 			<TabsStack.Screen
 				component={FinanceScreens}
 				name="Finance"
-				options={{ tabBarIcon: TabIconFinance }}
+				options={{
+					tabBarIcon: ({ color }) => (
+						<CustomIcon group={PermissionsGroups.FINANCES}>
+							<MaterialIcons name="attach-money" size={25} color={color} />
+						</CustomIcon>
+					),
+				}}
 			/>
 
 			<TabsStack.Screen
 				component={AccountScreens}
 				name="Account"
-				options={{ tabBarIcon: TabIconAccount }}
+				options={{
+					tabBarIcon: ({ color }) => (
+						<CustomIcon group={PermissionsGroups.ACCOUNT}>
+							<UserIcon color={color} />
+						</CustomIcon>
+					),
+				}}
 			/>
 		</TabsStack.Navigator>
 	);
 };
 
-const MainScreens = () => (
-	<MainStack.Navigator
-		screenOptions={{ headerShown: false, gestureEnabled: false }}
-	>
-		<MainStack.Screen name="Initial" component={Initial} />
-		<MainStack.Screen name="TermsUse" component={TermsUse} />
-		<MainStack.Screen name="Intro" component={Intro} />
-		<MainStack.Screen name="Login" component={Login} />
-		<MainStack.Screen name="Forgot" component={Forgot} />
-		<MainStack.Screen name="Client" component={Client} />
-		<MainStack.Screen name="App" component={AppScreens} />
-	</MainStack.Navigator>
-);
+const MainScreens = () => {
+	const { colors } = useTheme();
+	return (
+		<MainStack.Navigator
+			screenOptions={{
+				headerShown: false,
+				gestureEnabled: false,
+				cardStyle: { flex: 1, backgroundColor: colors.white },
+			}}
+		>
+			<MainStack.Screen name="Initial" component={InitialWithSafeArea} />
+			<MainStack.Screen name="TermsUse" component={TermsUseWithSafeArea} />
+			<MainStack.Screen name="Intro" component={IntroWithSafeArea} />
+			<MainStack.Screen name="Login" component={LoginWithSafeArea} />
+			<MainStack.Screen name="Forgot" component={ForgotWithSafeArea} />
+			<MainStack.Screen name="Client" component={ClientWithSafeArea} />
+			<MainStack.Screen name="App" component={AppScreens} />
+		</MainStack.Navigator>
+	);
+};
 
 const Routes = () => (
 	<NavigationContainer ref={navigationRef}>
