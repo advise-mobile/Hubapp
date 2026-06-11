@@ -22,4 +22,6 @@ export interface BottomSheetProps {
   maxHeightRatio?: number;
   /** Margem inferior (ex.: altura da tab bar) para o sheet não esconder o menu. Padrão: 64 (Android) / 80 (iOS). */
   bottomInset?: number;
+  /** Chamado após a animação de fechamento (útil para encadear outro modal). */
+  onModalHide?: () => void;
 }

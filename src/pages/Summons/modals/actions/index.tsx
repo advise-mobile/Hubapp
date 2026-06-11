@@ -1,0 +1,135 @@
+import React, { useCallback, useMemo } from 'react';
+
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useTheme } from 'styled-components';
+
+import { BottomSheet } from '@components/BottomSheet';
+import { Button } from '@components/Button';
+import type { SummonsDetailActionsModalProps } from '@models/summons-components';
+
+import {
+	ActionItem,
+	ActionItemText,
+	ActionsList,
+	ButtonsFooter,
+} from './styles';
+
+type ActionConfig = {
+	id: string;
+	icon: string;
+	label: string;
+	onPress?: () => void;
+};
+
+export function SummonsDetailActionsModal({
+	visible,
+	onClose,
+	onModalHide,
+	showRegisterDeadline = true,
+	onRegisterDeadline,
+	onSendEmail,
+	onDownload,
+	onShare,
+	onDelete,
+}: SummonsDetailActionsModalProps) {
+	const { colors } = useTheme();
+
+	const actions = useMemo<ActionConfig[]>(() => {
+		const items: ActionConfig[] = [];
+
+		if (showRegisterDeadline) {
+			items.push({
+				id: 'register-deadline',
+				icon: 'event',
+				label: 'Cadastrar prazo',
+				onPress: onRegisterDeadline,
+			});
+		}
+
+		items.push(
+			{
+				id: 'send-email',
+				icon: 'mail',
+				label: 'Enviar por email',
+				onPress: onSendEmail,
+			},
+			{
+				id: 'download',
+				icon: 'file-download',
+				label: 'Baixar movimentação',
+				onPress: onDownload,
+			},
+			{
+				id: 'share',
+				icon: 'share',
+				label: 'Compartilhar',
+				onPress: onShare,
+			},
+			{
+				id: 'delete',
+				icon: 'delete',
+				label: 'Excluir',
+				onPress: onDelete,
+			},
+		);
+
+		return items;
+	}, [
+		showRegisterDeadline,
+		onRegisterDeadline,
+		onSendEmail,
+		onDownload,
+		onShare,
+		onDelete,
+	]);
+
+	const handleActionPress = useCallback(
+		(action: ActionConfig) => {
+			if (action.id === 'register-deadline') {
+				action.onPress?.();
+				return;
+			}
+
+			onClose();
+			action.onPress?.();
+		},
+		[onClose],
+	);
+
+	const footer = useMemo(
+		() => (
+			<ButtonsFooter>
+				<Button fill variant="outlined" text="Cancelar" onPress={onClose} />
+			</ButtonsFooter>
+		),
+		[onClose],
+	);
+
+	return (
+		<BottomSheet
+			visible={visible}
+			onClose={onClose}
+			onModalHide={onModalHide}
+			title="O que deseja?"
+			maxHeightRatio={0.42}
+			footer={footer}
+		>
+			<ActionsList>
+				{actions.map(action => (
+					<ActionItem
+						key={action.id}
+						onPress={() => handleActionPress(action)}
+						activeOpacity={0.7}
+					>
+						<MaterialIcons
+							name={action.icon}
+							size={22}
+							color={colors.fadedBlack}
+						/>
+						<ActionItemText>{action.label}</ActionItemText>
+					</ActionItem>
+				))}
+			</ActionsList>
+		</BottomSheet>
+	);
+}

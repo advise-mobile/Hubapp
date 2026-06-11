@@ -14,7 +14,7 @@ import {
 	getJudicialAgencyLabel,
 	type JudicialAgencyOption,
 } from '@models/filters-summons';
-import { useCourts } from '@pages/Summons/hooks/useCourts';
+import { useCourts } from '@pages/Summons/hooks';
 
 import {
 	PickerField,

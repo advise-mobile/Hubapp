@@ -174,6 +174,8 @@ function SwipeRowComponent<TItem>({
 			renderLeftActions={leftActions.length > 0 ? renderLeftActions : undefined}
 			onSwipeableOpen={handleSwipeableOpen}
 			onSwipeableClose={handleSwipeableClose}
+			activeOffsetX={[-20, 20]}
+			failOffsetY={[-12, 12]}
 			overshootRight={false}
 			overshootLeft={false}
 		>

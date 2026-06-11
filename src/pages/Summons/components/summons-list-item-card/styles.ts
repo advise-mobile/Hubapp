@@ -1,30 +1,22 @@
+import { TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { fonts } from '@lassets/styles';
+
+export const CardTouchable = styled(TouchableOpacity)`
+	width: 100%;
+`;
 
 export const Card = styled.View`
 	padding: 16px 20px;
 	background-color: ${({ theme }) => theme.colors.white};
 `;
 
-export const CardHeader = styled.View`
-	flex-direction: row;
-	align-items: flex-start;
-	justify-content: space-between;
-	margin-bottom: 8px;
-`;
-
 export const CardTitle = styled.Text`
-	flex: 1;
 	font-size: ${fonts.regular};
 	font-family: ${fonts.circularStdBold};
 	color: ${({ theme }) => theme.colors.primary};
 	font-weight: 700;
-	padding-right: 8px;
-`;
-
-export const MenuButton = styled.TouchableOpacity`
-	padding: 4px;
-	margin-top: -4px;
+	margin-bottom: 8px;
 `;
 
 export const CardDescription = styled.Text`

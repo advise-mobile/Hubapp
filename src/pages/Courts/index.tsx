@@ -13,8 +13,8 @@ import { Header } from '@components/Header';
 import { fonts } from '@lassets/styles';
 import type { CourtRegisterListItem } from '@models/court-register';
 
-import { CardAccessAvailable } from './components/CardAccessAvailable';
-import { CardRegisterData } from './components/CardRegisterData';
+import { CardAccessAvailable } from './components/card-access-available';
+import { CardRegisterData } from './components/card-register-data';
 import {
 	useActivateCourtRegistrationMutation,
 	useCourtsAccessCreditQuery,
@@ -24,8 +24,8 @@ import {
 	useDeleteCourtRegistrationMutation,
 	useInactivateCourtRegistrationMutation,
 } from './hooks';
-import { AddCourtsModal } from './Modal/AddCourts';
-import { CourtsFilterModal } from './Modal/Filter';
+import { AddCourtsModal } from './modals/add-courts';
+import { CourtsFilterModal } from './modals/filter';
 import { Content } from './styles';
 
 export default function Courts() {

@@ -12,7 +12,7 @@ import {
 	type CourtOption,
 	type JudicialAgencyOption,
 } from '@models/filters-summons';
-import { useCourts } from '@pages/Summons/hooks/useCourts';
+import { useCourts } from '@pages/Summons/hooks';
 
 import {
 	Section,

@@ -9,37 +9,28 @@ import {
 import { useTheme } from 'styled-components';
 import { fonts } from '@lassets/styles';
 
-import { SwipeRow, SwipeRowProvider, useSwipeRowRegistry } from '@components/SwipeRow';
 import type { SummonsListItemViewModel } from '@models/summons-list';
 
-import { getSummonsSwipeActions } from '../../config/summonsSwipeActions';
-import { SummonsDisclaimer } from '../SummonsDisclaimer';
-import { SummonsListItemCard } from '../SummonsListItemCard';
+import { SummonsDisclaimer } from '../summons-disclaimer';
+import { SummonsListItemCard } from '../summons-list-item-card';
 
 export interface SummonsListProps {
 	items: SummonsListItemViewModel[];
 	isFetchingNextPage: boolean;
 	hasNextPage: boolean;
 	onEndReached: () => void;
+	onItemPress?: (item: SummonsListItemViewModel) => void;
 	showEmptyMessage?: boolean;
 }
 
-function SummonsListRow({ item }: { item: SummonsListItemViewModel }) {
-	const { openRight } = useSwipeRowRegistry();
-
-	const handleMenuPress = useCallback(() => {
-		openRight(item.id);
-	}, [item.id, openRight]);
-
-	return (
-		<SwipeRow
-			item={item}
-			itemKey={item.id}
-			rightActions={getSummonsSwipeActions(item)}
-		>
-			<SummonsListItemCard item={item} onMenuPress={handleMenuPress} />
-		</SwipeRow>
-	);
+function SummonsListRow({
+	item,
+	onItemPress,
+}: {
+	item: SummonsListItemViewModel;
+	onItemPress?: (item: SummonsListItemViewModel) => void;
+}) {
+	return <SummonsListItemCard item={item} onPress={onItemPress} />;
 }
 
 export function SummonsList({
@@ -47,6 +38,7 @@ export function SummonsList({
 	isFetchingNextPage,
 	hasNextPage,
 	onEndReached,
+	onItemPress,
 	showEmptyMessage = false,
 }: SummonsListProps) {
 	const { colors } = useTheme();
@@ -57,8 +49,8 @@ export function SummonsList({
 	);
 
 	const renderItem: ListRenderItem<SummonsListItemViewModel> = useCallback(
-		({ item }) => <SummonsListRow item={item} />,
-		[],
+		({ item }) => <SummonsListRow item={item} onItemPress={onItemPress} />,
+		[onItemPress],
 	);
 
 	const listHeader = useMemo(() => <SummonsDisclaimer />, []);
@@ -121,23 +113,21 @@ export function SummonsList({
 	);
 
 	return (
-		<SwipeRowProvider>
-			<FlatList
-				data={items}
-				keyExtractor={keyExtractor}
-				renderItem={renderItem}
-				ListHeaderComponent={listHeader}
-				ItemSeparatorComponent={itemSeparator}
-				ListFooterComponent={listFooter}
-				ListEmptyComponent={listEmpty}
-				onEndReached={handleEndReached}
-				onEndReachedThreshold={0.35}
-				contentContainerStyle={{
-					paddingBottom: 32,
-					flexGrow: 1,
-				}}
-				showsVerticalScrollIndicator={false}
-			/>
-		</SwipeRowProvider>
+		<FlatList
+			data={items}
+			keyExtractor={keyExtractor}
+			renderItem={renderItem}
+			ListHeaderComponent={listHeader}
+			ItemSeparatorComponent={itemSeparator}
+			ListFooterComponent={listFooter}
+			ListEmptyComponent={listEmpty}
+			onEndReached={handleEndReached}
+			onEndReachedThreshold={0.35}
+			contentContainerStyle={{
+				paddingBottom: 32,
+				flexGrow: 1,
+			}}
+			showsVerticalScrollIndicator={false}
+		/>
 	);
 }

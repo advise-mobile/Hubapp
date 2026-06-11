@@ -9,6 +9,7 @@ import type {
 	SummonsSourceItem,
 	SummonsSourcesResponse,
 } from '@models/filters-summons';
+import type { SummonsDetailResponse } from '@models/summons-detail';
 import type { SummonsListPageResponse } from '@models/summons-list';
 
 export async function fetchCourtsForSummonsFilter(): Promise<
@@ -79,6 +80,43 @@ export async function fetchSummonsListPage(
 export async function fetchSummonsList() {
 	const page = await fetchSummonsListPage(1);
 	return page.itens ?? [];
+}
+
+export async function fetchSummonsDetail(
+	idMovProcUsuarioCliente: number,
+): Promise<SummonsDetailResponse> {
+	const clientUserId = await resolveClientUserId();
+
+	const { data } = await api.put<SummonsDetailResponse>(
+		ApiUrl.SUMMONS_DETAIL_LOOKUP,
+		{
+			itens: [
+				{
+					idUsuarioCliente: String(clientUserId),
+					IdMovProcUsuarioCliente: [idMovProcUsuarioCliente],
+				},
+			],
+		},
+	);
+
+	return data;
+}
+
+export async function markSummonsAsRead(params: {
+	id: number;
+	idMovProcessoCliente: number;
+}): Promise<void> {
+	const clientUserId = await resolveClientUserId();
+
+	await api.put(ApiUrl.SUMMONS_MARK_READ, {
+		itens: [
+			{
+				id: params.id,
+				idMovProcessoCliente: params.idMovProcessoCliente,
+				idUsuarioCliente: String(clientUserId),
+			},
+		],
+	});
 }
 
 export async function fetchSystemsForSummonsFilter(

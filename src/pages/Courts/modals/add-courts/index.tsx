@@ -14,7 +14,7 @@ import {
 } from '@models/filters-summons';
 import { isQrCodeCourtAccessType } from '@models/courts-credentials';
 import type { AddCourtsModalProps } from '@models/courts-components';
-import { useCourts } from '@pages/Summons/hooks/useCourts';
+import { useCourts } from '@pages/Summons/hooks';
 import { useTheme } from 'styled-components';
 
 import { useRegisterCourtCredentialMutation } from '../../hooks';

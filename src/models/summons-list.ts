@@ -1,7 +1,11 @@
 import type { SummonsPagedListMeta, SummonsApiEnvelopeStatus } from './filters-summons';
 
 export interface SummonsListApiItem {
+	id?: number | string;
 	idIntimacao?: number;
+	idMovProcessoCliente?: number | string;
+	idMovProcUsuarioCliente?: number | string;
+	IdMovProcUsuarioCliente?: number | string;
 	tribunal?: string;
 	nomeTribunal?: string;
 	descricacaoIntimacao?: string;
@@ -22,6 +26,10 @@ export interface SummonsListBadgeViewModel {
 
 export interface SummonsListItemViewModel {
 	id: string;
+	markAsReadId?: number;
+	idMovProcessoCliente?: number;
+	idMovProcUsuarioCliente?: number;
+	nomeTribunal?: string;
 	title: string;
 	description: string;
 	isRead: boolean;

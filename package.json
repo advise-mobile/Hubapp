@@ -3,7 +3,8 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"postinstall": "patch-package && node scripts/fix-rn-fetch-blob.js",
+		"postinstall": "patch-package && node scripts/fix-rn-fetch-blob.js && node scripts/sync-android-icon-fonts.js",
+		"sync:android-icon-fonts": "node scripts/sync-android-icon-fonts.js",
 		"android": "react-native run-android",
 		"ios": "react-native run-ios --simulator='iPhone 15 Pro Max'",
 		"lint": "eslint .",

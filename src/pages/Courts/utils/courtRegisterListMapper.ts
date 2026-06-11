@@ -6,7 +6,7 @@ import type {
 import {
 	PROCESSING_ACCESS_MESSAGE,
 	PROCESSING_ACCESS_TEXT_COLOR,
-} from '../components/CardRegisterData/situationColors';
+} from '../components/card-register-data/situationColors';
 
 function stripDiacritics(value: string): string {
 	return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');

@@ -34,6 +34,29 @@ function formatExpeditionDate(value: string): string | null {
 	return FormatDateBR(parsed);
 }
 
+function resolveMovProcUsuarioClienteId(
+	raw: SummonsListApiItem,
+): number | undefined {
+	const value =
+		raw.idMovProcUsuarioCliente ?? raw.IdMovProcUsuarioCliente;
+
+	if (value == null) {
+		return undefined;
+	}
+
+	const parsed = Number(value);
+	return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function resolveNumericId(value: unknown): number | undefined {
+	if (value == null) {
+		return undefined;
+	}
+
+	const parsed = Number(value);
+	return Number.isFinite(parsed) ? parsed : undefined;
+}
+
 function resolveListItemId(raw: SummonsListApiItem, index: number): string {
 	if (raw.idIntimacao != null) {
 		return String(raw.idIntimacao);
@@ -111,6 +134,12 @@ export function mapSummonsApiItemToViewModel(
 
 	return {
 		id: resolveListItemId(raw, index),
+		markAsReadId: resolveNumericId(raw.id),
+		idMovProcessoCliente: resolveNumericId(raw.idMovProcessoCliente),
+		idMovProcUsuarioCliente: resolveMovProcUsuarioClienteId(raw),
+		nomeTribunal: hasText(raw.nomeTribunal)
+			? raw.nomeTribunal.trim()
+			: undefined,
 		title: buildTitle(raw.tribunal, raw.nomeTribunal),
 		description: hasText(raw.descricacaoIntimacao)
 			? raw.descricacaoIntimacao.trim()

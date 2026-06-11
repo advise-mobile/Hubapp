@@ -1,6 +1,7 @@
 import type { HeaderActionConfig } from '@components/Header';
 
 import type { CourtOption, JudicialAgencyOption } from './filters-summons';
+import type { SummonsDetailViewModel } from './summons-detail';
 
 export interface SummonsFilters {
 	dataInicial?: string;
@@ -41,4 +42,17 @@ export interface UseCourtsReturn {
 	systems: CourtOption[];
 	isLoadingSystems: boolean;
 	loadSystems: (idOrgaoJudiciario: number | null) => Promise<CourtOption[]>;
+}
+
+export interface UseSummonsDetailQueryParams {
+	idMovProcUsuarioCliente: number;
+	flLido: boolean;
+	markAsReadId?: number;
+	idMovProcessoCliente?: number;
+}
+
+export interface UseSummonsDetailQueryReturn {
+	detail: SummonsDetailViewModel | undefined;
+	isLoading: boolean;
+	isError: boolean;
 }

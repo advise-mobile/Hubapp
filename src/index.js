@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Appearance, LogBox } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { OneSignal } from 'react-native-onesignal';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
@@ -50,22 +51,24 @@ const App = () => {
   });
 
   return (
-    <SafeAreaProvider>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <MenuProvider>
-            <ThemeProvider theme={currentTheme}>
-              <StatusBar
-                backgroundColor={theme === 'dark' ? '#111111' : '#fff'}
-                barStyle={barStyle}
-              />
-              <Routes />
-              <ToastNotify />
-            </ThemeProvider>
-          </MenuProvider>
-        </QueryClientProvider>
-      </Provider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <Provider store={store}>
+          <QueryClientProvider client={queryClient}>
+            <MenuProvider>
+              <ThemeProvider theme={currentTheme}>
+                <StatusBar
+                  backgroundColor={theme === 'dark' ? '#111111' : '#fff'}
+                  barStyle={barStyle}
+                />
+                <Routes />
+                <ToastNotify />
+              </ThemeProvider>
+            </MenuProvider>
+          </QueryClientProvider>
+        </Provider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 };
 

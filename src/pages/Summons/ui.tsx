@@ -4,7 +4,7 @@ import type { SummonsUIProps } from '@models/summons-components';
 import { ButtonIcon } from '@components/ButtonIcon';
 import { useTheme } from 'styled-components';
 
-import { SummonsDisclaimer } from './components/SummonsDisclaimer';
+import { SummonsDisclaimer } from './components/summons-disclaimer';
 import {
 	Content,
 	EmptyState,

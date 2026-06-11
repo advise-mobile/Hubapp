@@ -1,30 +1,34 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useTheme } from 'styled-components';
+import type { SummonsListItemViewModel } from '@models/summons-list';
 
 import { Header, type HeaderActionConfig } from '@components/Header';
 import { LoadingView } from '@components/LoadingView';
 import { Container, Warp } from '@lassets/styles/global';
 import HasNotPermission from '@lcomponents/HasNotPermission';
 import { PermissionsGroups, checkPermission } from '@lhelpers/Permissions';
-import { useSummonsInfiniteQuery } from '@pages/Summons/hooks/useSummonsInfiniteQuery';
+import type { SummonsStackParamList } from '@navigation/paramLists';
 
-import { AddCourtsModal } from '../Courts/Modal/AddCourts';
-import { SummonsList } from './components/SummonsList';
-import { useSummonsHeader } from './hooks/useSummonsHeader';
-import { useSummonsHeaderFilters } from './hooks/useSummonsHeaderFilters';
-import { SummonsFilterModal } from './Modal/Filter';
+import { AddCourtsModal } from '../Courts/modals/add-courts';
+import { SummonsList } from './components/summons-list';
+import {
+	useSummonsHeader,
+	useSummonsHeaderFilters,
+	useSummonsInfiniteQuery,
+} from './hooks';
+import { SummonsFilterModal } from './modals/filter';
 import { Content } from './styles';
 import { SummonsUI } from './ui';
-import type { SummonsStackParamList } from '../../navigation/paramLists';
 
 type PermissionState = 'loading' | 'allowed' | 'denied';
 
 export default function Summons() {
 	const navigation =
 		useNavigation<StackNavigationProp<SummonsStackParamList>>();
+	const route = useRoute();
 	const theme = useTheme();
 	const { colors } = theme;
 
@@ -117,6 +121,22 @@ export default function Summons() {
 		navigation.navigate('CourtsList');
 	}, [navigation]);
 
+	const handleItemPress = useCallback(
+		(item: SummonsListItemViewModel) => {
+			if (item.idMovProcUsuarioCliente == null) {
+				return;
+			}
+
+			navigation.navigate('SummonsDetail', {
+				idMovProcUsuarioCliente: item.idMovProcUsuarioCliente,
+				flLido: item.isRead,
+				markAsReadId: item.markAsReadId,
+				idMovProcessoCliente: item.idMovProcessoCliente,
+			});
+		},
+		[navigation],
+	);
+
 	const rightActions: HeaderActionConfig[] = useMemo(
 		() => [
 			...headerProps.rightActions,
@@ -152,6 +172,10 @@ export default function Summons() {
 			summonsListItems.length,
 		],
 	);
+
+	if (route.name !== 'Summons') {
+		return null;
+	}
 
 	if (permissionState === 'loading') {
 		return (
@@ -195,6 +219,7 @@ export default function Summons() {
 							isFetchingNextPage={isFetchingNextPage}
 							hasNextPage={hasNextPage ?? false}
 							onEndReached={handleEndReached}
+							onItemPress={handleItemPress}
 							showEmptyMessage={summonsListItems.length === 0}
 						/>
 					</Content>

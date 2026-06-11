@@ -15,6 +15,7 @@ export interface SwipeRowHandle {
 interface SwipeRowContextValue {
 	register: (key: string, handle: SwipeRowHandle) => () => void;
 	openRight: (key: string) => void;
+	closeRow: (key: string) => void;
 	notifyOpen: (key: string) => void;
 	notifyClose: (key: string) => void;
 }
@@ -55,6 +56,13 @@ export function SwipeRowProvider({ children }: { children: ReactNode }) {
 		[closeOpenRow],
 	);
 
+	const closeRow = useCallback((key: string) => {
+		rowsRef.current.get(key)?.close();
+		if (openKeyRef.current === key) {
+			openKeyRef.current = null;
+		}
+	}, []);
+
 	const notifyOpen = useCallback(
 		(key: string) => {
 			closeOpenRow(key);
@@ -73,10 +81,11 @@ export function SwipeRowProvider({ children }: { children: ReactNode }) {
 		() => ({
 			register,
 			openRight,
+			closeRow,
 			notifyOpen,
 			notifyClose,
 		}),
-		[register, openRight, notifyOpen, notifyClose],
+		[register, openRight, closeRow, notifyOpen, notifyClose],
 	);
 
 	return (

@@ -38,6 +38,7 @@ export function BottomSheet({
   onClearFilters,
   maxHeightRatio = 0.6,
   bottomInset = Platform.OS === 'android' ? 62 : 78,
+  onModalHide,
 }: BottomSheetProps) {
   const { height: screenHeight } = useMemo(() => Dimensions.get('window'), []);
   const maxHeight = Math.round(screenHeight * maxHeightRatio);
@@ -66,6 +67,7 @@ export function BottomSheet({
     <RNModal
       isVisible={visible}
       onBackButtonPress={onClose}
+      onModalHide={onModalHide}
       animationIn="slideInUp"
       animationOut="slideOutDown"
       style={modalStyle}
