@@ -41,6 +41,13 @@ export interface SummonsSendEmailModalProps {
 	visible: boolean;
 	onClose: () => void;
 	idMovProcessoCliente: number;
+	onSuccess?: () => void;
+}
+
+export interface SummonsMarkAsReadConfirmModalProps {
+	loading: boolean;
+	onCancel: () => void;
+	onSubmit: () => void;
 }
 
 export interface SummonsDeleteConfirmModalProps {

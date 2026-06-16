@@ -1,27 +1,33 @@
-import { Alert } from 'react-native';
-
 import type { SwipeRowAction } from '@components/SwipeRow';
 import type { SummonsListItemViewModel } from '@models/summons-list';
 
 const NEUTRAL_VARIANT = 'neutral' as const;
 
-function showActionAlert(title: string) {
-	Alert.alert(title, `${title}. Esta ação será implementada em breve.`);
-}
-
 export type SummonsSwipeActionHandlers = {
 	onToggleRead: (item: SummonsListItemViewModel) => void;
+	onRegisterDeadline: (item: SummonsListItemViewModel) => void;
+	onSendEmail: (item: SummonsListItemViewModel) => void;
+	onDownload: (item: SummonsListItemViewModel) => void;
+	onShare: (item: SummonsListItemViewModel) => void;
+	onDelete: (item: SummonsListItemViewModel) => void;
+};
+
+export type SummonsSwipeActionsOptions = {
+	showRegisterDeadline?: boolean;
 };
 
 export function getSummonsSwipeActions(
 	item: SummonsListItemViewModel,
 	handlers: SummonsSwipeActionHandlers,
+	options?: SummonsSwipeActionsOptions,
 ): SwipeRowAction<SummonsListItemViewModel>[] {
 	const markReadLabel = item.isRead
 		? 'Marcar como não lido'
 		: 'Marcar como lido';
 
-	return [
+	const showRegisterDeadline = options?.showRegisterDeadline !== false;
+
+	const actions: SwipeRowAction<SummonsListItemViewModel>[] = [
 		{
 			id: 'toggle-read',
 			icon: item.isRead ? 'visibility-off' : 'visibility',
@@ -29,40 +35,48 @@ export function getSummonsSwipeActions(
 			variant: NEUTRAL_VARIANT,
 			onPress: () => handlers.onToggleRead(item),
 		},
-		{
+	];
+
+	if (showRegisterDeadline) {
+		actions.push({
 			id: 'register-deadline',
 			icon: 'event',
 			label: 'Cadastrar prazo',
 			variant: NEUTRAL_VARIANT,
-			onPress: () => showActionAlert('Cadastrar prazo'),
-		},
+			onPress: () => handlers.onRegisterDeadline(item),
+		});
+	}
+
+	actions.push(
 		{
 			id: 'send-email',
 			icon: 'mail-outline',
 			label: 'Enviar por e-mail',
 			variant: NEUTRAL_VARIANT,
-			onPress: () => showActionAlert('Enviar por e-mail'),
+			onPress: () => handlers.onSendEmail(item),
 		},
 		{
 			id: 'download',
 			icon: 'file-download',
 			label: 'Baixar intimação',
 			variant: NEUTRAL_VARIANT,
-			onPress: () => showActionAlert('Baixar intimação'),
+			onPress: () => handlers.onDownload(item),
 		},
 		{
 			id: 'share',
 			icon: 'share',
 			label: 'Compartilhar',
 			variant: NEUTRAL_VARIANT,
-			onPress: () => showActionAlert('Compartilhar'),
+			onPress: () => handlers.onShare(item),
 		},
 		{
 			id: 'delete',
 			icon: 'delete-outline',
 			label: 'Excluir',
 			variant: NEUTRAL_VARIANT,
-			onPress: () => showActionAlert('Excluir'),
+			onPress: () => handlers.onDelete(item),
 		},
-	];
+	);
+
+	return actions;
 }

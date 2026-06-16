@@ -15,6 +15,7 @@ export function SummonsSendEmailModal({
 	visible,
 	onClose,
 	idMovProcessoCliente,
+	onSuccess,
 }: SummonsSendEmailModalProps) {
 	const sendEmail = useSendSummonsEmailMutation();
 	const [email, setEmail] = useState('');
@@ -42,11 +43,12 @@ export function SummonsSendEmailModal({
 				idMovProcessoCliente,
 				destinatarios: parseEmailDestinatarios(email),
 			});
+			onSuccess?.();
 			onClose();
 		} catch {
 			/* toast no hook */
 		}
-	}, [email, idMovProcessoCliente, onClose, sendEmail]);
+	}, [email, idMovProcessoCliente, onClose, onSuccess, sendEmail]);
 
 	return (
 		<BottomSheet
