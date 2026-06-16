@@ -11,12 +11,32 @@ export const Card = styled.View`
 	background-color: ${({ theme }) => theme.colors.white};
 `;
 
+export const CardHeader = styled.View`
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	margin-bottom: 8px;
+`;
+
+export const CardTitleTouchable = styled(TouchableOpacity)`
+	flex: 1;
+	min-width: 0;
+	margin-right: 16px;
+`;
+
+export const CardActionButton = styled(TouchableOpacity)`
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	padding: 4px;
+`;
+
 export const CardTitle = styled.Text`
 	font-size: ${fonts.regular};
 	font-family: ${fonts.circularStdBold};
 	color: ${({ theme }) => theme.colors.primary};
 	font-weight: 700;
-	margin-bottom: 8px;
 `;
 
 export const CardDescription = styled.Text`

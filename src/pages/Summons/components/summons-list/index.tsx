@@ -9,7 +9,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { useTheme } from 'styled-components';
 import { fonts } from '@lassets/styles';
-import { SwipeRow, SwipeRowProvider } from '@components/SwipeRow';
+import { SwipeRow, SwipeRowProvider, useSwipeRowRegistry } from '@components/SwipeRow';
 import { PermissionsGroups, checkPermission } from '@lhelpers/Permissions';
 import type { SummonsListItemViewModel } from '@models/summons-list';
 import ToastNotifyActions from '@lstore/ducks/ToastNotify';
@@ -58,6 +58,12 @@ function SummonsListRow({
 	onDelete: (item: SummonsListItemViewModel) => void;
 	showRegisterDeadline: boolean;
 }) {
+	const { openRight } = useSwipeRowRegistry();
+
+	const handleOpenActions = useCallback(() => {
+		openRight(item.id);
+	}, [item.id, openRight]);
+
 	const actions = useMemo(
 		() =>
 			getSummonsSwipeActions(
@@ -86,7 +92,11 @@ function SummonsListRow({
 
 	return (
 		<SwipeRow item={item} itemKey={item.id} rightActions={actions}>
-			<SummonsListItemCard item={item} onPress={onItemPress} />
+			<SummonsListItemCard
+				item={item}
+				onPress={onItemPress}
+				onOpenActions={handleOpenActions}
+			/>
 		</SwipeRow>
 	);
 }
