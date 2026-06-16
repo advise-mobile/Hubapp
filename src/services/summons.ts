@@ -11,6 +11,7 @@ import type {
 } from '@models/filters-summons';
 import type { SummonsDetailResponse } from '@models/summons-detail';
 import type { SendSummonsEmailInput } from '@models/summons-email';
+import type { DeleteSummonsInput } from '@models/summons-delete';
 import type { SummonsListPageResponse } from '@models/summons-list';
 
 export async function fetchCourtsForSummonsFilter(): Promise<
@@ -159,4 +160,17 @@ export async function sendSummonsEmail(
 		idsMovimentos: input.idMovProcessoCliente,
 		destinatarios: input.destinatarios,
 	});
+}
+
+export async function deleteSummons(input: DeleteSummonsInput): Promise<void> {
+	const clientUserId = await resolveClientUserId();
+
+	await api.put(ApiUrl.SUMMONS_DELETE, [
+		{
+			idPastaUsuarioCliente: input.idPastaUsuarioCliente,
+			idMovimentoProcessoCliente: input.idMovimentoProcessoCliente,
+			idUsuarioCliente: String(clientUserId),
+			excluirPrazosVinculados: true,
+		},
+	]);
 }

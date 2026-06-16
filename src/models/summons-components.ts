@@ -42,3 +42,9 @@ export interface SummonsSendEmailModalProps {
 	onClose: () => void;
 	idMovProcessoCliente: number;
 }
+
+export interface SummonsDeleteConfirmModalProps {
+	loading: boolean;
+	onCancel: () => void;
+	onSubmit: () => void;
+}

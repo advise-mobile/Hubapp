@@ -83,7 +83,7 @@ export function SummonsDetailActionsModal({
 		onDelete,
 	]);
 
-	const CHAINED_ACTION_IDS = new Set(['register-deadline', 'send-email']);
+	const CHAINED_ACTION_IDS = new Set(['register-deadline', 'send-email', 'delete']);
 
 	const handleActionPress = useCallback(
 		(action: ActionConfig) => {

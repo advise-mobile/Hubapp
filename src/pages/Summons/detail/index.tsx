@@ -11,9 +11,10 @@ import { PermissionsGroups, checkPermission } from '@lhelpers/Permissions';
 import type { SummonsStackParamList } from '@navigation/paramLists';
 import ToastNotifyActions from '@lstore/ducks/ToastNotify';
 
-import { useSummonsDetailQuery, useSummonsPdfDownload } from '../hooks';
+import { useSummonsDetailQuery, useDeleteSummonsMutation, useSummonsPdfDownload, useSummonsPdfShare } from '../hooks';
 import { SummonsAddDeadlineModal } from '../modals/add-deadline';
 import { SummonsDetailActionsModal } from '../modals/actions';
+import { SummonsDeleteConfirmModal } from '../modals/delete-confirm';
 import { SummonsSendEmailModal } from '../modals/send-email';
 import { SummonsDetailUI } from './ui';
 
@@ -28,6 +29,9 @@ export default function SummonsDetail() {
 
 	const { detail, isLoading } = useSummonsDetailQuery(params);
 	const { downloadPdf, isDownloading } = useSummonsPdfDownload();
+	const { sharePdf, isSharing } = useSummonsPdfShare();
+	const { mutate: deleteSummons, isPending: isDeleting } =
+		useDeleteSummonsMutation();
 
 	const [actionsModalVisible, setActionsModalVisible] = useState(false);
 	const [addDeadlineVisible, setAddDeadlineVisible] = useState(false);
@@ -35,6 +39,10 @@ export default function SummonsDetail() {
 	const [hasSchedulePermission, setHasSchedulePermission] = useState(false);
 	const pendingAddDeadlineRef = useRef(false);
 	const pendingSendEmailRef = useRef(false);
+	const pendingDeleteRef = useRef(false);
+	const deleteConfirmModalRef = useRef<{ open: () => void; close: () => void } | null>(
+		null,
+	);
 
 	useEffect(() => {
 		let mounted = true;
@@ -70,6 +78,14 @@ export default function SummonsDetail() {
 
 	const closeSendEmailModal = useCallback(() => {
 		setSendEmailVisible(false);
+	}, []);
+
+	const goBack = useCallback(() => {
+		navigation.goBack();
+	}, [navigation]);
+
+	const handleDeleteModalCancel = useCallback(() => {
+		deleteConfirmModalRef.current?.close();
 	}, []);
 
 	const handleRegisterDeadline = useCallback(() => {
@@ -115,12 +131,93 @@ export default function SummonsDetail() {
 			return;
 		}
 
-		if (isDownloading) {
+		if (isDownloading || isSharing) {
 			return;
 		}
 
 		downloadPdf(params.idMovProcessoCliente);
-	}, [dispatch, downloadPdf, isDownloading, params?.idMovProcessoCliente]);
+	}, [
+		dispatch,
+		downloadPdf,
+		isDownloading,
+		isSharing,
+		params?.idMovProcessoCliente,
+	]);
+
+	const handleShare = useCallback(() => {
+		if (params?.idMovProcessoCliente == null) {
+			dispatch(
+				ToastNotifyActions.toastNotifyShow(
+					'Não foi possível identificar a intimação para compartilhar.',
+					true,
+				),
+			);
+			return;
+		}
+
+		if (isSharing || isDownloading) {
+			return;
+		}
+
+		sharePdf(params.idMovProcessoCliente);
+	}, [
+		dispatch,
+		isDownloading,
+		isSharing,
+		params?.idMovProcessoCliente,
+		sharePdf,
+	]);
+
+	const handleDelete = useCallback(() => {
+		if (
+			params?.idPastaUsuarioCliente == null ||
+			params?.idMovProcessoCliente == null
+		) {
+			closeActionsModal();
+			dispatch(
+				ToastNotifyActions.toastNotifyShow(
+					'Não foi possível identificar a intimação para excluir.',
+					true,
+				),
+			);
+			return;
+		}
+
+		pendingDeleteRef.current = true;
+		closeActionsModal();
+	}, [
+		closeActionsModal,
+		dispatch,
+		params?.idMovProcessoCliente,
+		params?.idPastaUsuarioCliente,
+	]);
+
+	const handleDeleteConfirm = useCallback(() => {
+		if (
+			params?.idPastaUsuarioCliente == null ||
+			params?.idMovProcessoCliente == null
+		) {
+			return;
+		}
+
+		deleteSummons(
+			{
+				idPastaUsuarioCliente: params.idPastaUsuarioCliente,
+				idMovimentoProcessoCliente: params.idMovProcessoCliente,
+			},
+			{
+				onSuccess: () => {
+					deleteConfirmModalRef.current?.close();
+					goBack();
+				},
+			},
+		);
+	}, [
+		deleteSummons,
+		goBack,
+		params?.idMovProcessoCliente,
+		params?.idPastaUsuarioCliente,
+	]);
 
 	const handleActionsModalHide = useCallback(() => {
 		if (pendingAddDeadlineRef.current) {
@@ -132,12 +229,14 @@ export default function SummonsDetail() {
 		if (pendingSendEmailRef.current) {
 			pendingSendEmailRef.current = false;
 			setSendEmailVisible(true);
+			return;
+		}
+
+		if (pendingDeleteRef.current) {
+			pendingDeleteRef.current = false;
+			deleteConfirmModalRef.current?.open();
 		}
 	}, []);
-
-	const goBack = useCallback(() => {
-		navigation.goBack();
-	}, [navigation]);
 
 	useEffect(() => {
 		if (params?.idMovProcUsuarioCliente == null) {
@@ -187,6 +286,8 @@ export default function SummonsDetail() {
 					onRegisterDeadline={handleRegisterDeadline}
 					onSendEmail={handleSendEmail}
 					onDownload={handleDownload}
+					onShare={handleShare}
+					onDelete={handleDelete}
 				/>
 				<SummonsAddDeadlineModal
 					visible={addDeadlineVisible}
@@ -197,6 +298,12 @@ export default function SummonsDetail() {
 					visible={sendEmailVisible}
 					onClose={closeSendEmailModal}
 					idMovProcessoCliente={idMovProcessoCliente}
+				/>
+				<SummonsDeleteConfirmModal
+					ref={deleteConfirmModalRef}
+					loading={isDeleting}
+					onCancel={handleDeleteModalCancel}
+					onSubmit={handleDeleteConfirm}
 				/>
 			</Warp>
 		</Container>

@@ -137,6 +137,9 @@ export function mapSummonsApiItemToViewModel(
 		markAsReadId: resolveNumericId(raw.id),
 		idMovProcessoCliente: resolveNumericId(raw.idMovProcessoCliente),
 		idMovProcUsuarioCliente: resolveMovProcUsuarioClienteId(raw),
+		idPastaUsuarioCliente: resolveNumericId(
+			raw.idPastaUsuarioCliente ?? raw.IdPastaUsuarioCliente,
+		),
 		nomeTribunal: hasText(raw.nomeTribunal)
 			? raw.nomeTribunal.trim()
 			: undefined,

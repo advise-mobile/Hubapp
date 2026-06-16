@@ -6,6 +6,8 @@ export interface SummonsListApiItem {
 	idMovProcessoCliente?: number | string;
 	idMovProcUsuarioCliente?: number | string;
 	IdMovProcUsuarioCliente?: number | string;
+	idPastaUsuarioCliente?: number | string;
+	IdPastaUsuarioCliente?: number | string;
 	tribunal?: string;
 	nomeTribunal?: string;
 	descricacaoIntimacao?: string;
@@ -29,6 +31,7 @@ export interface SummonsListItemViewModel {
 	markAsReadId?: number;
 	idMovProcessoCliente?: number;
 	idMovProcUsuarioCliente?: number;
+	idPastaUsuarioCliente?: number;
 	nomeTribunal?: string;
 	title: string;
 	description: string;

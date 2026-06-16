@@ -20,7 +20,10 @@ export interface BottomSheetProps {
   onClearFilters?: () => void;
   /** Altura máxima em % da tela (0–1). Padrão 0.6. */
   maxHeightRatio?: number;
-  /** Margem inferior (ex.: altura da tab bar) para o sheet não esconder o menu. Padrão: 64 (Android) / 80 (iOS). */
+  /**
+   * Margem inferior reservada para a tab bar (sheet e backdrop param acima dela).
+   * Padrão: mesma altura da tab bar em Routes.js (64/80 + safe area inferior).
+   */
   bottomInset?: number;
   /** Chamado após a animação de fechamento (útil para encadear outro modal). */
   onModalHide?: () => void;

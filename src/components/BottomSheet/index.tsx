@@ -6,6 +6,7 @@ import {
   View,
 } from 'react-native';
 import RNModal from 'react-native-modal';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   Handle,
@@ -26,6 +27,12 @@ export type { BottomSheetProps } from './types';
 
 const DEFAULT_BACKDROP_OPACITY = 0.5;
 
+/** Alinhado à tab bar em legacy/navigation/Routes.js */
+function resolveTabBarBottomInset(insetsBottom: number): number {
+  const tabBarBaseHeight = Platform.OS === 'android' ? 64 : 80;
+  return tabBarBaseHeight + insetsBottom;
+}
+
 export function BottomSheet({
   visible,
   onClose,
@@ -37,11 +44,14 @@ export function BottomSheet({
   clearFiltersLabel,
   onClearFilters,
   maxHeightRatio = 0.6,
-  bottomInset = Platform.OS === 'android' ? 62 : 78,
+  bottomInset,
   onModalHide,
 }: BottomSheetProps) {
+  const insets = useSafeAreaInsets();
   const { height: screenHeight } = useMemo(() => Dimensions.get('window'), []);
   const maxHeight = Math.round(screenHeight * maxHeightRatio);
+  const resolvedBottomInset =
+    bottomInset ?? resolveTabBarBottomInset(insets.bottom);
 
   const modalStyle = {
     justifyContent: 'flex-end' as const,
@@ -54,13 +64,13 @@ export function BottomSheet({
         <View
           style={{
             flex: 1,
-            marginBottom: bottomInset,
+            marginBottom: resolvedBottomInset,
             backgroundColor: `rgba(0,0,0,${DEFAULT_BACKDROP_OPACITY})`,
           }}
         />
       </TouchableWithoutFeedback>
     ),
-    [onClose, bottomInset],
+    [onClose, resolvedBottomInset],
   );
 
   return (
@@ -77,7 +87,7 @@ export function BottomSheet({
       backdropOpacity={1}
     >
       <SheetWrapper
-        style={{ maxHeight, marginBottom: bottomInset }}
+        style={{ maxHeight, marginBottom: resolvedBottomInset }}
         accessible={false}
       >
         <Handle>

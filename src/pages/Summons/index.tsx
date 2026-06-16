@@ -132,6 +132,7 @@ export default function Summons() {
 				flLido: item.isRead,
 				markAsReadId: item.markAsReadId,
 				idMovProcessoCliente: item.idMovProcessoCliente,
+				idPastaUsuarioCliente: item.idPastaUsuarioCliente,
 			});
 		},
 		[navigation],

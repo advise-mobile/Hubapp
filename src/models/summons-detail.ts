@@ -6,6 +6,7 @@ export interface SummonsDetailNavParams {
 	flLido: boolean;
 	markAsReadId?: number;
 	idMovProcessoCliente?: number;
+	idPastaUsuarioCliente?: number;
 }
 
 export interface SummonsDetailApiItem {
