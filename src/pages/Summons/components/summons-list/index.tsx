@@ -8,9 +8,11 @@ import {
 } from 'react-native';
 import { useTheme } from 'styled-components';
 import { fonts } from '@lassets/styles';
-
+import { SwipeRow, SwipeRowProvider } from '@components/SwipeRow';
 import type { SummonsListItemViewModel } from '@models/summons-list';
 
+import { getSummonsSwipeActions } from '../../config/summonsSwipeActions';
+import { useToggleSummonsReadMutation } from '../../hooks';
 import { SummonsDisclaimer } from '../summons-disclaimer';
 import { SummonsListItemCard } from '../summons-list-item-card';
 
@@ -26,11 +28,22 @@ export interface SummonsListProps {
 function SummonsListRow({
 	item,
 	onItemPress,
+	onToggleRead,
 }: {
 	item: SummonsListItemViewModel;
 	onItemPress?: (item: SummonsListItemViewModel) => void;
+	onToggleRead: (item: SummonsListItemViewModel) => void;
 }) {
-	return <SummonsListItemCard item={item} onPress={onItemPress} />;
+	const actions = useMemo(
+		() => getSummonsSwipeActions(item, { onToggleRead }),
+		[item, onToggleRead],
+	);
+
+	return (
+		<SwipeRow item={item} itemKey={item.id} rightActions={actions}>
+			<SummonsListItemCard item={item} onPress={onItemPress} />
+		</SwipeRow>
+	);
 }
 
 export function SummonsList({
@@ -42,6 +55,14 @@ export function SummonsList({
 	showEmptyMessage = false,
 }: SummonsListProps) {
 	const { colors } = useTheme();
+	const { mutate: toggleRead } = useToggleSummonsReadMutation();
+
+	const handleToggleRead = useCallback(
+		(item: SummonsListItemViewModel) => {
+			toggleRead(item);
+		},
+		[toggleRead],
+	);
 
 	const keyExtractor = useCallback(
 		(item: SummonsListItemViewModel) => item.id,
@@ -49,8 +70,14 @@ export function SummonsList({
 	);
 
 	const renderItem: ListRenderItem<SummonsListItemViewModel> = useCallback(
-		({ item }) => <SummonsListRow item={item} onItemPress={onItemPress} />,
-		[onItemPress],
+		({ item }) => (
+			<SummonsListRow
+				item={item}
+				onItemPress={onItemPress}
+				onToggleRead={handleToggleRead}
+			/>
+		),
+		[handleToggleRead, onItemPress],
 	);
 
 	const listHeader = useMemo(() => <SummonsDisclaimer />, []);
@@ -113,21 +140,23 @@ export function SummonsList({
 	);
 
 	return (
-		<FlatList
-			data={items}
-			keyExtractor={keyExtractor}
-			renderItem={renderItem}
-			ListHeaderComponent={listHeader}
-			ItemSeparatorComponent={itemSeparator}
-			ListFooterComponent={listFooter}
-			ListEmptyComponent={listEmpty}
-			onEndReached={handleEndReached}
-			onEndReachedThreshold={0.35}
-			contentContainerStyle={{
-				paddingBottom: 32,
-				flexGrow: 1,
-			}}
-			showsVerticalScrollIndicator={false}
-		/>
+		<SwipeRowProvider>
+			<FlatList
+				data={items}
+				keyExtractor={keyExtractor}
+				renderItem={renderItem}
+				ListHeaderComponent={listHeader}
+				ItemSeparatorComponent={itemSeparator}
+				ListFooterComponent={listFooter}
+				ListEmptyComponent={listEmpty}
+				onEndReached={handleEndReached}
+				onEndReachedThreshold={0.35}
+				contentContainerStyle={{
+					paddingBottom: 32,
+					flexGrow: 1,
+				}}
+				showsVerticalScrollIndicator={false}
+			/>
+		</SwipeRowProvider>
 	);
 }

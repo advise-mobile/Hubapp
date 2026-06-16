@@ -9,8 +9,13 @@ function showActionAlert(title: string) {
 	Alert.alert(title, `${title}. Esta ação será implementada em breve.`);
 }
 
+export type SummonsSwipeActionHandlers = {
+	onToggleRead: (item: SummonsListItemViewModel) => void;
+};
+
 export function getSummonsSwipeActions(
 	item: SummonsListItemViewModel,
+	handlers: SummonsSwipeActionHandlers,
 ): SwipeRowAction<SummonsListItemViewModel>[] {
 	const markReadLabel = item.isRead
 		? 'Marcar como não lido'
@@ -22,7 +27,7 @@ export function getSummonsSwipeActions(
 			icon: item.isRead ? 'visibility-off' : 'visibility',
 			label: markReadLabel,
 			variant: NEUTRAL_VARIANT,
-			onPress: () => showActionAlert(markReadLabel),
+			onPress: () => handlers.onToggleRead(item),
 		},
 		{
 			id: 'register-deadline',

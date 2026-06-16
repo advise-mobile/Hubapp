@@ -121,6 +121,23 @@ export async function markSummonsAsRead(params: {
 	});
 }
 
+export async function unmarkSummonsAsRead(params: {
+	id: number;
+	idMovProcessoCliente: number;
+}): Promise<void> {
+	const clientUserId = await resolveClientUserId();
+
+	await api.put(ApiUrl.SUMMONS_UNMARK_READ, {
+		itens: [
+			{
+				id: params.id,
+				idMovProcessoCliente: params.idMovProcessoCliente,
+				idUsuarioCliente: String(clientUserId),
+			},
+		],
+	});
+}
+
 export async function fetchSystemsForSummonsFilter(
 	judicialAgencyId: number,
 ): Promise<SummonsSourceItem[]> {
