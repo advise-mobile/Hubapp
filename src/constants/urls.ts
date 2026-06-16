@@ -6,6 +6,8 @@ export const ApiUrl = {
 	SUMMONS_LIST_LOOKUP: `${API_BASE_URL}/intimacao/ConsultaListaIntimacoes`,
 	SUMMONS_DETAIL_LOOKUP: `${API_BASE_URL}/intimacao/ConsultaDetalhe`,
 	SUMMONS_MARK_READ: `${API_BASE_URL}/movimento-processo-cliente-lido/marcar`,
+	SUMMONS_SEND_EMAIL: `${API_BASE_URL}/envio-email-intimacoes`,
+	SUMMONS_DOWNLOAD: `${API_BASE_URL}/intimacoes-download`,
 	COURTS_CREDENTIAL_CREATE: `${API_BASE_URL}/intimacao`,
 	USER_CLIENT_FEATURE_CREDIT_LOOKUP: `${API_BASE_URL}/usuario-cliente-funcionalidade/consultar-credito`,
 	COURTS_REGISTRATIONS_LOOKUP: `${API_BASE_URL}/intimacao/ConsultaCadastroAcessos`,

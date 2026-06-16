@@ -56,7 +56,7 @@ export function SummonsDetailActionsModal({
 			{
 				id: 'download',
 				icon: 'file-download',
-				label: 'Baixar movimentação',
+				label: 'Baixar intimação',
 				onPress: onDownload,
 			},
 			{
@@ -83,9 +83,11 @@ export function SummonsDetailActionsModal({
 		onDelete,
 	]);
 
+	const CHAINED_ACTION_IDS = new Set(['register-deadline', 'send-email']);
+
 	const handleActionPress = useCallback(
 		(action: ActionConfig) => {
-			if (action.id === 'register-deadline') {
+			if (CHAINED_ACTION_IDS.has(action.id)) {
 				action.onPress?.();
 				return;
 			}

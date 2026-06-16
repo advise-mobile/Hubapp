@@ -10,6 +10,7 @@ import type {
 	SummonsSourcesResponse,
 } from '@models/filters-summons';
 import type { SummonsDetailResponse } from '@models/summons-detail';
+import type { SendSummonsEmailInput } from '@models/summons-email';
 import type { SummonsListPageResponse } from '@models/summons-list';
 
 export async function fetchCourtsForSummonsFilter(): Promise<
@@ -149,4 +150,13 @@ export async function fetchSystemsForSummonsFilter(
 	);
 
 	return data.itens ?? [];
+}
+
+export async function sendSummonsEmail(
+	input: SendSummonsEmailInput,
+): Promise<void> {
+	await api.post(ApiUrl.SUMMONS_SEND_EMAIL, {
+		idsMovimentos: input.idMovProcessoCliente,
+		destinatarios: input.destinatarios,
+	});
 }

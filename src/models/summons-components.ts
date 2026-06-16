@@ -36,3 +36,9 @@ export interface SummonsAddDeadlineModalProps {
 	onClose: () => void;
 	idMovProcessoCliente: number;
 }
+
+export interface SummonsSendEmailModalProps {
+	visible: boolean;
+	onClose: () => void;
+	idMovProcessoCliente: number;
+}

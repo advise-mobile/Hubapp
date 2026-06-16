@@ -11,9 +11,10 @@ import { PermissionsGroups, checkPermission } from '@lhelpers/Permissions';
 import type { SummonsStackParamList } from '@navigation/paramLists';
 import ToastNotifyActions from '@lstore/ducks/ToastNotify';
 
-import { useSummonsDetailQuery } from '../hooks';
+import { useSummonsDetailQuery, useSummonsPdfDownload } from '../hooks';
 import { SummonsAddDeadlineModal } from '../modals/add-deadline';
 import { SummonsDetailActionsModal } from '../modals/actions';
+import { SummonsSendEmailModal } from '../modals/send-email';
 import { SummonsDetailUI } from './ui';
 
 type SummonsDetailRouteProp = RouteProp<SummonsStackParamList, 'SummonsDetail'>;
@@ -26,11 +27,14 @@ export default function SummonsDetail() {
 	const dispatch = useDispatch();
 
 	const { detail, isLoading } = useSummonsDetailQuery(params);
+	const { downloadPdf, isDownloading } = useSummonsPdfDownload();
 
 	const [actionsModalVisible, setActionsModalVisible] = useState(false);
 	const [addDeadlineVisible, setAddDeadlineVisible] = useState(false);
+	const [sendEmailVisible, setSendEmailVisible] = useState(false);
 	const [hasSchedulePermission, setHasSchedulePermission] = useState(false);
 	const pendingAddDeadlineRef = useRef(false);
+	const pendingSendEmailRef = useRef(false);
 
 	useEffect(() => {
 		let mounted = true;
@@ -64,12 +68,16 @@ export default function SummonsDetail() {
 		setAddDeadlineVisible(false);
 	}, []);
 
+	const closeSendEmailModal = useCallback(() => {
+		setSendEmailVisible(false);
+	}, []);
+
 	const handleRegisterDeadline = useCallback(() => {
 		if (params?.idMovProcessoCliente == null) {
 			closeActionsModal();
 			dispatch(
 				ToastNotifyActions.toastNotifyShow(
-					'Não foi possível identificar a movimentação para cadastrar o prazo.',
+					'Não foi possível identificar a intimação para cadastrar o prazo.',
 					true,
 				),
 			);
@@ -80,13 +88,51 @@ export default function SummonsDetail() {
 		closeActionsModal();
 	}, [closeActionsModal, dispatch, params?.idMovProcessoCliente]);
 
-	const handleActionsModalHide = useCallback(() => {
-		if (!pendingAddDeadlineRef.current) {
+	const handleSendEmail = useCallback(() => {
+		if (params?.idMovProcessoCliente == null) {
+			closeActionsModal();
+			dispatch(
+				ToastNotifyActions.toastNotifyShow(
+					'Não foi possível identificar a intimação para enviar por email.',
+					true,
+				),
+			);
 			return;
 		}
 
-		pendingAddDeadlineRef.current = false;
-		setAddDeadlineVisible(true);
+		pendingSendEmailRef.current = true;
+		closeActionsModal();
+	}, [closeActionsModal, dispatch, params?.idMovProcessoCliente]);
+
+	const handleDownload = useCallback(() => {
+		if (params?.idMovProcessoCliente == null) {
+			dispatch(
+				ToastNotifyActions.toastNotifyShow(
+					'Não foi possível identificar a intimação para download.',
+					true,
+				),
+			);
+			return;
+		}
+
+		if (isDownloading) {
+			return;
+		}
+
+		downloadPdf(params.idMovProcessoCliente);
+	}, [dispatch, downloadPdf, isDownloading, params?.idMovProcessoCliente]);
+
+	const handleActionsModalHide = useCallback(() => {
+		if (pendingAddDeadlineRef.current) {
+			pendingAddDeadlineRef.current = false;
+			setAddDeadlineVisible(true);
+			return;
+		}
+
+		if (pendingSendEmailRef.current) {
+			pendingSendEmailRef.current = false;
+			setSendEmailVisible(true);
+		}
 	}, []);
 
 	const goBack = useCallback(() => {
@@ -139,10 +185,17 @@ export default function SummonsDetail() {
 					onModalHide={handleActionsModalHide}
 					showRegisterDeadline={hasSchedulePermission}
 					onRegisterDeadline={handleRegisterDeadline}
+					onSendEmail={handleSendEmail}
+					onDownload={handleDownload}
 				/>
 				<SummonsAddDeadlineModal
 					visible={addDeadlineVisible}
 					onClose={closeAddDeadlineModal}
+					idMovProcessoCliente={idMovProcessoCliente}
+				/>
+				<SummonsSendEmailModal
+					visible={sendEmailVisible}
+					onClose={closeSendEmailModal}
 					idMovProcessoCliente={idMovProcessoCliente}
 				/>
 			</Warp>

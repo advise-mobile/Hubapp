@@ -41,9 +41,9 @@ export function getSummonsSwipeActions(
 		{
 			id: 'download',
 			icon: 'file-download',
-			label: 'Baixar movimentação',
+			label: 'Baixar intimação',
 			variant: NEUTRAL_VARIANT,
-			onPress: () => showActionAlert('Baixar movimentação'),
+			onPress: () => showActionAlert('Baixar intimação'),
 		},
 		{
 			id: 'share',
