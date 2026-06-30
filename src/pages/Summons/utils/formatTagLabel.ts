@@ -29,3 +29,7 @@ export function formatTagLabel(value: string): string {
 		})
 		.join(' ');
 }
+
+export function formatSummonsCodeLabel(value: string): string {
+	return value.trim().toUpperCase();
+}

@@ -9,6 +9,7 @@ import type { SummonsFilters } from '@models/summons-hooks-types';
 import { countActiveSummonsFilters } from '@models/summons-filters';
 import {
 	getJudicialAgencyLabel,
+	getSummonsSourceSystemName,
 	type CourtOption,
 	type JudicialAgencyOption,
 } from '@models/filters-summons';
@@ -38,6 +39,14 @@ function parseIdOrgaoInitial(value: unknown): number | null {
 	const parsedNumeric =
 		typeof value === 'number' ? value : Number(value);
 	return Number.isFinite(parsedNumeric) ? parsedNumeric : null;
+}
+
+function parseFonteNomeSistemaInitial(value: unknown): string | null {
+	if (typeof value !== 'string') {
+		return null;
+	}
+	const trimmed = value.trim();
+	return trimmed !== '' ? trimmed : null;
 }
 
 function parseIdFonteInitial(value: unknown): number | null {
@@ -82,13 +91,9 @@ export function SummonsFilterModal({
 	const [idOrgaoJudiciario, setIdOrgaoJudiciario] = useState<number | null>(
 		parseIdOrgaoInitial(initialFilters.idOrgaoJudiciario),
 	);
-	const [idFonteXTipoPesquisaSistema, setIdFonteXTipoPesquisaSistema] =
-		useState<number | null>(
-			parseIdFonteInitial(
-				initialFilters.idFonteXTipoPesquisaSistema ??
-					initialFilters.idFonteXTipoPesquisa,
-			),
-		);
+	const [fonteNomeSistema, setFonteNomeSistema] = useState<string | null>(
+		parseFonteNomeSistemaInitial(initialFilters.fonteNomeSistema),
+	);
 
 	const tribunalRow = useMemo((): JudicialAgencyOption | null => {
 		if (idOrgaoJudiciario == null) return null;
@@ -122,11 +127,8 @@ export function SummonsFilterModal({
 			setIdOrgaoJudiciario(
 				parseIdOrgaoInitial(initialFilters.idOrgaoJudiciario),
 			);
-			setIdFonteXTipoPesquisaSistema(
-				parseIdFonteInitial(
-					initialFilters.idFonteXTipoPesquisaSistema ??
-						initialFilters.idFonteXTipoPesquisa,
-				),
+			setFonteNomeSistema(
+				parseFonteNomeSistemaInitial(initialFilters.fonteNomeSistema),
 			);
 		}
 	}, [visible, initialFilters]);
@@ -155,6 +157,33 @@ export function SummonsFilterModal({
 			loadSystems(null);
 		}
 	}, [visible, tribunalRow?.idOrgaoJudiciario, loadSystems]);
+
+	useEffect(() => {
+		if (!visible || systems.length === 0) {
+			return;
+		}
+
+		if (parseFonteNomeSistemaInitial(initialFilters.fonteNomeSistema) != null) {
+			return;
+		}
+
+		const legacyId = parseIdFonteInitial(
+			initialFilters.idFonteXTipoPesquisaSistema ??
+				initialFilters.idFonteXTipoPesquisa,
+		);
+
+		if (legacyId == null) {
+			return;
+		}
+
+		const match = systems.find(
+			systemRow => systemRow.idFonteXTipoPesquisa === legacyId,
+		);
+
+		if (match != null) {
+			setFonteNomeSistema(getSummonsSourceSystemName(match));
+		}
+	}, [visible, systems, initialFilters]);
 
 	useEffect(() => {
 		if (visible) {
@@ -198,16 +227,17 @@ export function SummonsFilterModal({
 
 		if (idOrgaoJudiciario != null) {
 			next.idOrgaoJudiciario = idOrgaoJudiciario;
-			if (idFonteXTipoPesquisaSistema != null) {
-				next.idFonteXTipoPesquisa = idFonteXTipoPesquisaSistema;
+			if (fonteNomeSistema != null) {
+				next.fonteNomeSistema = fonteNomeSistema;
 			} else {
-				delete next.idFonteXTipoPesquisa;
+				delete next.fonteNomeSistema;
 			}
 		} else {
 			delete next.idOrgaoJudiciario;
-			delete next.idFonteXTipoPesquisa;
+			delete next.fonteNomeSistema;
 		}
 
+		delete next.idFonteXTipoPesquisa;
 		delete next.idFonteXTipoPesquisaSistema;
 
 		onApply(next);
@@ -220,7 +250,7 @@ export function SummonsFilterModal({
 		dataAte,
 		situacao,
 		idOrgaoJudiciario: idOrgaoJudiciario ?? undefined,
-		idFonteXTipoPesquisaSistema: idFonteXTipoPesquisaSistema ?? undefined,
+		fonteNomeSistema: fonteNomeSistema ?? undefined,
 	};
 
 	const clearFiltersCount = countActiveSummonsFilters(draftFilters);
@@ -230,7 +260,7 @@ export function SummonsFilterModal({
 		setDataAte('');
 		setSituacao('all');
 		setIdOrgaoJudiciario(null);
-		setIdFonteXTipoPesquisaSistema(null);
+		setFonteNomeSistema(null);
 		setLocalFilters({});
 		loadSystems(null);
 		onApply({});
@@ -244,7 +274,7 @@ export function SummonsFilterModal({
 
 	const systemItems = systems.map((systemRow: CourtOption) => ({
 		label: systemRow.nomeExibicao,
-		value: String(systemRow.idFonteXTipoPesquisa),
+		value: getSummonsSourceSystemName(systemRow),
 	}));
 
 	const sistemaDisabled = tribunalRow == null;
@@ -322,7 +352,7 @@ export function SummonsFilterModal({
 									: String(idOrgaoJudiciario)
 							}
 							onChange={selectedValue => {
-								setIdFonteXTipoPesquisaSistema(null);
+								setFonteNomeSistema(null);
 								if (selectedValue == null || selectedValue === '') {
 									setIdOrgaoJudiciario(null);
 									return;
@@ -348,22 +378,13 @@ export function SummonsFilterModal({
 					<PickerField>
 						<Select
 							items={systemItems}
-							value={
-								idFonteXTipoPesquisaSistema == null
-									? null
-									: String(idFonteXTipoPesquisaSistema)
-							}
+							value={fonteNomeSistema}
 							onChange={selectedValue => {
 								if (selectedValue == null || selectedValue === '') {
-									setIdFonteXTipoPesquisaSistema(null);
+									setFonteNomeSistema(null);
 									return;
 								}
-								const parsedSourceSearchId = Number(selectedValue);
-								setIdFonteXTipoPesquisaSistema(
-									Number.isFinite(parsedSourceSearchId)
-										? parsedSourceSearchId
-										: null,
-								);
+								setFonteNomeSistema(selectedValue);
 							}}
 							loading={isLoadingSystems}
 							disabled={sistemaDisabled}

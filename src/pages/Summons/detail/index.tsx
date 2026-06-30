@@ -270,6 +270,7 @@ export default function SummonsDetail() {
 			<Warp>
 				<Header
 					title={headerTitle}
+					lower={true}
 					leftActions={leftActions}
 					rightActions={rightActions}
 				/>

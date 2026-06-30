@@ -42,7 +42,8 @@ export const TextTitle = styled.Text`
 
 export const Tag = styled.View`
 	text-align: center;
-	background: ${({ theme }) => theme.colors.grayLight};
+	background: ${({ theme }) =>
+		theme.name === 'dark' ? '#FEFEFE' : '#2D2D2D'};
 	padding: 2px 10px;
 	border-radius: 17px;
 	margin-bottom: 20px;
@@ -52,4 +53,6 @@ export const TagText = styled.Text`
 	font-size: 16px;
 	font-family: ${fonts.circularStdBold};
 	text-align: center;
+	color: ${({ theme }) =>
+		theme.name === 'dark' ? '#2D2D2D' : '#FEFEFE'};
 `;

@@ -5,7 +5,7 @@ import { MaskCnj } from '@lhelpers/Mask';
 import type { SummonsListApiItem, SummonsListItemViewModel } from '@models/summons-list';
 
 import { formatPrazoLabel } from './formatPrazoLabel';
-import { formatTagLabel } from './formatTagLabel';
+import { formatSummonsCodeLabel, formatTagLabel } from './formatTagLabel';
 
 export type SummonsBadgeThemeColors = {
 	amber: string;
@@ -18,14 +18,19 @@ function hasText(value: unknown): value is string {
 }
 
 function buildTitle(tribunal?: string, nomeTribunal?: string): string {
-	const parts = [tribunal, nomeTribunal].filter(hasText);
+	const tribunalLabel = hasText(tribunal) ? formatSummonsCodeLabel(tribunal) : '';
+	const nomeLabel = hasText(nomeTribunal) ? formatTagLabel(nomeTribunal) : '';
+	const parts = [tribunalLabel, nomeLabel].filter(part => part !== '');
+
 	if (parts.length === 0) {
 		return 'Intimação';
 	}
+
 	if (parts.length === 1) {
-		return formatTagLabel(parts[0]);
+		return parts[0];
 	}
-	return `${formatTagLabel(parts[0])} - ${formatTagLabel(parts[1])}`;
+
+	return `${parts[0]} - ${parts[1]}`;
 }
 
 function formatExpeditionDate(value: string): string | null {
@@ -99,7 +104,7 @@ export function mapSummonsApiItemToViewModel(
 
 	if (hasText(raw.sistema)) {
 		badges.push({
-			label: formatTagLabel(raw.sistema),
+			label: formatSummonsCodeLabel(raw.sistema),
 			backgroundColor: tag1Bg,
 		});
 	}

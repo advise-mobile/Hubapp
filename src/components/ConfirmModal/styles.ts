@@ -25,15 +25,17 @@ const CancelText = styled.Text`
   font-family: ${fonts.circularStdBold};
 `;
 
-const Submit = styled.TouchableOpacity`
+const Submit = styled.TouchableOpacity<{ $tone: 'primary' | 'danger' }>`
   flex: 1;
   padding: 8px;
-  background:  ${({ theme }) => theme.colors.red};
+  background: ${({ theme, $tone }) =>
+		$tone === 'primary' ? theme.colors.primary : theme.colors.red};
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   border-width: 1px;
-  border-color:  ${({ theme }) => theme.colors.red}; 
+  border-color: ${({ theme, $tone }) =>
+		$tone === 'primary' ? theme.colors.primary : theme.colors.red};
 `;
 
 const SubmitText = styled.Text`

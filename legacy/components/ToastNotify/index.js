@@ -42,7 +42,7 @@ class ToastNotify extends Component {
 		const {show, message, error} = this.props.toastNotify;
 
 		return (
-			<Container>
+			<Container pointerEvents="box-none">
 				{show === true ? (
 					<Notify style={[error === true ? styles.hasError : styles.hasSuccess]}>
 						<NotifyMessage>{message}</NotifyMessage>

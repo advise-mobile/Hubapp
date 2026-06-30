@@ -24,12 +24,18 @@ export default ConfirmModal = forwardRef((props: ConfirmModalProps, ref) => {
   const colorUseTheme = useTheme();
   const { colors } = colorUseTheme;
 
+  const submitTone = props.submitTone ?? 'danger';
+
   const footer = () => (
     <Footer>
       <Cancel onPress={() => props.onCancel()}>
         <CancelText>{props.cancelText}</CancelText>
       </Cancel>
-      <Submit onPress={() => props.onSubmit()}>
+      <Submit
+        $tone={submitTone}
+        disabled={props.loading}
+        onPress={() => props.onSubmit()}
+      >
         {props.loading ? (
           <Spinner transparent={true} color={colors.white} height="14" />
         ) : (

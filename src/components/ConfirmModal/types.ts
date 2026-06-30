@@ -1,3 +1,5 @@
+export type ConfirmModalSubmitTone = 'primary' | 'danger';
+
 export interface ConfirmModalProps {
   title: string;
   description: string;
@@ -7,4 +9,5 @@ export interface ConfirmModalProps {
   onSubmit: () => void;
   loading: boolean;
   maxHeight?: number;
+  submitTone?: ConfirmModalSubmitTone;
 }

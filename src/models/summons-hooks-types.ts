@@ -8,6 +8,7 @@ export interface SummonsFilters {
 	dataFinal?: string;
 	FlLido?: boolean;
 	idOrgaoJudiciario?: number;
+	fonteNomeSistema?: string;
 	idFonteXTipoPesquisa?: number;
 	idFonteXTipoPesquisaSistema?: number;
 	dataDe?: string;

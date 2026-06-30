@@ -28,6 +28,31 @@ export interface SummonsSourceItem {
 	siglaOrgao: string;
 	fonteTipoPesquisaIntimacoes: SummonsSearchTypeEntry[];
 	idTipoAcessoFontePesq?: number;
+	fonteNomeSistema?: string;
+	FonteNomeSistema?: string;
+	sistema?: string;
+}
+
+function hasNonEmptyString(value: unknown): value is string {
+	return typeof value === 'string' && value.trim() !== '';
+}
+
+export function getSummonsSourceSystemName(row: SummonsSourceItem): string {
+	const record = row as SummonsSourceItem & Record<string, unknown>;
+	const candidates = [
+		record.fonteNomeSistema,
+		record.FonteNomeSistema,
+		record.sistema,
+		row.nomeExibicao,
+	];
+
+	for (const candidate of candidates) {
+		if (hasNonEmptyString(candidate)) {
+			return candidate.trim();
+		}
+	}
+
+	return String(row.idFonteXTipoPesquisa);
 }
 
 export interface SummonsPagedListMeta {

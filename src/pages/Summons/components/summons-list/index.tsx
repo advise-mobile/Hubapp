@@ -27,6 +27,10 @@ import { SummonsSendEmailModal } from '../../modals/send-email';
 import { SummonsDisclaimer } from '../summons-disclaimer';
 import { SummonsFilteredEmptyState } from '../summons-filtered-empty-state';
 import { SummonsListItemCard } from '../summons-list-item-card';
+import {
+	clearScheduledMarkAsReadPrompt,
+	scheduleMarkAsReadPrompt,
+} from '../../utils/scheduleMarkAsReadPrompt';
 
 export interface SummonsListProps {
 	items: SummonsListItemViewModel[];
@@ -127,6 +131,13 @@ export function SummonsList({
 	} | null>(null);
 	const downloadItemRef = useRef<SummonsListItemViewModel | null>(null);
 	const shareItemRef = useRef<SummonsListItemViewModel | null>(null);
+	const markAsReadItemRef = useRef<SummonsListItemViewModel | null>(null);
+	const markAsReadPromptTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+		null,
+	);
+	const pendingEmailMarkAsReadRef = useRef<SummonsListItemViewModel | null>(
+		null,
+	);
 
 	const [hasSchedulePermission, setHasSchedulePermission] = useState(false);
 	const [addDeadlineVisible, setAddDeadlineVisible] = useState(false);
@@ -138,18 +149,25 @@ export function SummonsList({
 	const [emailItem, setEmailItem] = useState<SummonsListItemViewModel | null>(
 		null,
 	);
-	const [markAsReadItem, setMarkAsReadItem] =
-		useState<SummonsListItemViewModel | null>(null);
 	const [deleteItem, setDeleteItem] = useState<SummonsListItemViewModel | null>(
 		null,
 	);
 
+	const clearMarkAsReadPromptTimeout = useCallback(() => {
+		clearScheduledMarkAsReadPrompt(markAsReadPromptTimeoutRef);
+	}, []);
+
 	const promptMarkAsReadIfUnread = useCallback(
 		(item: SummonsListItemViewModel | null) => {
-			if (item != null && !item.isRead) {
-				setMarkAsReadItem(item);
-				markAsReadConfirmModalRef.current?.open();
+			if (item == null || item.isRead) {
+				return;
 			}
+
+			markAsReadItemRef.current = item;
+
+			scheduleMarkAsReadPrompt(() => {
+				markAsReadConfirmModalRef.current?.open();
+			}, markAsReadPromptTimeoutRef);
 		},
 		[],
 	);
@@ -193,6 +211,12 @@ export function SummonsList({
 			mounted = false;
 		};
 	}, []);
+
+	useEffect(() => {
+		return () => {
+			clearMarkAsReadPromptTimeout();
+		};
+	}, [clearMarkAsReadPromptTimeout]);
 
 	const handleToggleRead = useCallback(
 		(item: SummonsListItemViewModel) => {
@@ -243,14 +267,25 @@ export function SummonsList({
 	);
 
 	const closeSendEmailModal = useCallback(() => {
+		pendingEmailMarkAsReadRef.current = null;
 		setSendEmailVisible(false);
 		setEmailItem(null);
 	}, []);
 
 	const handleSendEmailSuccess = useCallback(() => {
-		promptMarkAsReadIfUnread(emailItem);
+		pendingEmailMarkAsReadRef.current = emailItem;
+		setSendEmailVisible(false);
+	}, [emailItem]);
+
+	const handleSendEmailModalHide = useCallback(() => {
+		const item = pendingEmailMarkAsReadRef.current;
+		pendingEmailMarkAsReadRef.current = null;
 		setEmailItem(null);
-	}, [emailItem, promptMarkAsReadIfUnread]);
+
+		if (item != null) {
+			promptMarkAsReadIfUnread(item);
+		}
+	}, [promptMarkAsReadIfUnread]);
 
 	const handleDownload = useCallback(
 		(item: SummonsListItemViewModel) => {
@@ -353,22 +388,25 @@ export function SummonsList({
 	}, [deleteItem, deleteSummons]);
 
 	const handleMarkAsReadCancel = useCallback(() => {
+		clearMarkAsReadPromptTimeout();
 		markAsReadConfirmModalRef.current?.close();
-		setMarkAsReadItem(null);
-	}, []);
+		markAsReadItemRef.current = null;
+	}, [clearMarkAsReadPromptTimeout]);
 
 	const handleMarkAsReadConfirm = useCallback(() => {
-		if (markAsReadItem == null) {
+		const item = markAsReadItemRef.current;
+
+		if (item == null) {
 			return;
 		}
 
-		toggleRead(markAsReadItem, {
+		toggleRead(item, {
 			onSuccess: () => {
 				markAsReadConfirmModalRef.current?.close();
-				setMarkAsReadItem(null);
+				markAsReadItemRef.current = null;
 			},
 		});
-	}, [markAsReadItem, toggleRead]);
+	}, [toggleRead]);
 
 	const keyExtractor = useCallback(
 		(item: SummonsListItemViewModel) => item.id,
@@ -467,6 +505,7 @@ export function SummonsList({
 			<SummonsSendEmailModal
 				visible={sendEmailVisible}
 				onClose={closeSendEmailModal}
+				onModalHide={handleSendEmailModalHide}
 				idMovProcessoCliente={emailIdMovProcessoCliente}
 				onSuccess={handleSendEmailSuccess}
 			/>

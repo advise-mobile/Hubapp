@@ -22,6 +22,7 @@ export const SummonsMarkAsReadConfirmModal = forwardRef<
 			description=""
 			loading={loading}
 			maxHeight={200}
+			submitTone="primary"
 		/>
 	);
 });

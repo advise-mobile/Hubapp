@@ -7,7 +7,7 @@ export interface SummonsListQueryFilters {
 	dataFinal?: string;
 	FlLido?: string;
 	idOrgaoJudiciario?: string;
-	idFonteXTipoPesquisa?: string;
+	FonteNomeSistema?: string;
 }
 
 function hasNonEmptyString(value: unknown): value is string {
@@ -46,11 +46,12 @@ export function summonsFiltersToQueryParams(
 		params.idOrgaoJudiciario = String(orgaoId);
 	}
 
-	const fonteId = parseFiniteNumber(
-		filters.idFonteXTipoPesquisa ?? filters.idFonteXTipoPesquisaSistema,
-	);
-	if (fonteId != null) {
-		params.idFonteXTipoPesquisa = String(fonteId);
+	const fonteNomeSistema =
+		typeof filters.fonteNomeSistema === 'string'
+			? filters.fonteNomeSistema.trim()
+			: '';
+	if (fonteNomeSistema !== '') {
+		params.FonteNomeSistema = fonteNomeSistema;
 	}
 
 	return params;
@@ -73,8 +74,6 @@ export function countActiveSummonsFilters(filters: SummonsFilters = {}): number 
 		hasDataAte,
 		hasSituacao,
 		parseFiniteNumber(filters.idOrgaoJudiciario) != null,
-		parseFiniteNumber(
-			filters.idFonteXTipoPesquisa ?? filters.idFonteXTipoPesquisaSistema,
-		) != null,
+		hasNonEmptyString(filters.fonteNomeSistema),
 	].filter(Boolean).length;
 }

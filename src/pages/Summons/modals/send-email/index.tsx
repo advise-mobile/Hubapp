@@ -14,6 +14,7 @@ import { ButtonsFooter, FieldInput, FieldRow, HintText } from './styles';
 export function SummonsSendEmailModal({
 	visible,
 	onClose,
+	onModalHide,
 	idMovProcessoCliente,
 	onSuccess,
 }: SummonsSendEmailModalProps) {
@@ -44,7 +45,6 @@ export function SummonsSendEmailModal({
 				destinatarios: parseEmailDestinatarios(email),
 			});
 			onSuccess?.();
-			onClose();
 		} catch {
 			/* toast no hook */
 		}
@@ -54,6 +54,7 @@ export function SummonsSendEmailModal({
 		<BottomSheet
 			visible={visible}
 			onClose={onClose}
+			onModalHide={onModalHide}
 			title="Enviar por email"
 			maxHeightRatio={0.32}
 			footer={

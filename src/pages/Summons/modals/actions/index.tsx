@@ -114,7 +114,7 @@ export function SummonsDetailActionsModal({
 			onClose={onClose}
 			onModalHide={onModalHide}
 			title="O que deseja?"
-			maxHeightRatio={0.42}
+			maxHeightRatio={0.55}
 			footer={footer}
 		>
 			<ActionsList>

@@ -40,6 +40,7 @@ export interface SummonsAddDeadlineModalProps {
 export interface SummonsSendEmailModalProps {
 	visible: boolean;
 	onClose: () => void;
+	onModalHide?: () => void;
 	idMovProcessoCliente: number;
 	onSuccess?: () => void;
 }
