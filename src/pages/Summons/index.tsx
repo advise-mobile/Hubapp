@@ -222,6 +222,7 @@ export default function Summons() {
 							onEndReached={handleEndReached}
 							onItemPress={handleItemPress}
 							showEmptyMessage={summonsListItems.length === 0}
+							emptyStateImage={imageNotFound}
 						/>
 					</Content>
 				)}

@@ -1,8 +1,10 @@
 import moment from 'moment';
 
 import { FormatDateBR } from '@lhelpers/DateFunctions';
+import { MaskCnj } from '@lhelpers/Mask';
 import type { SummonsListApiItem, SummonsListItemViewModel } from '@models/summons-list';
 
+import { formatPrazoLabel } from './formatPrazoLabel';
 import { formatTagLabel } from './formatTagLabel';
 
 export type SummonsBadgeThemeColors = {
@@ -69,15 +71,15 @@ function resolveListItemId(raw: SummonsListApiItem, index: number): string {
 
 function resolvePrazoLabel(raw: SummonsListApiItem): string {
 	if (hasText(raw.prazoTratado)) {
-		return formatTagLabel(raw.prazoTratado.trim());
+		return formatPrazoLabel(raw.prazoTratado);
 	}
 
 	if (hasText(raw.prazo)) {
-		return formatTagLabel(raw.prazo.trim());
+		return formatPrazoLabel(raw.prazo);
 	}
 
 	if (raw.prazo != null && String(raw.prazo).trim() !== '') {
-		return formatTagLabel(String(raw.prazo).trim());
+		return formatPrazoLabel(String(raw.prazo));
 	}
 
 	return 'Não informado';
@@ -127,7 +129,7 @@ export function mapSummonsApiItemToViewModel(
 
 	if (hasText(raw.numeroProcesso)) {
 		badges.push({
-			label: `Proc.: ${raw.numeroProcesso.trim()}`,
+			label: `Proc.: ${MaskCnj(raw.numeroProcesso.trim())}`,
 			backgroundColor: metaTagBg,
 		});
 	}

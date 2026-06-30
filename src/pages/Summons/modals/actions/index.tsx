@@ -6,6 +6,7 @@ import { useTheme } from 'styled-components';
 import { BottomSheet } from '@components/BottomSheet';
 import { Button } from '@components/Button';
 import type { SummonsDetailActionsModalProps } from '@models/summons-components';
+import { SUMMONS_ACTION_ICONS } from '@pages/Summons/config/summonsActionIcons';
 
 import {
 	ActionItem,
@@ -49,7 +50,7 @@ export function SummonsDetailActionsModal({
 		items.push(
 			{
 				id: 'send-email',
-				icon: 'mail',
+				icon: SUMMONS_ACTION_ICONS.sendEmail,
 				label: 'Enviar por email',
 				onPress: onSendEmail,
 			},
@@ -67,7 +68,7 @@ export function SummonsDetailActionsModal({
 			},
 			{
 				id: 'delete',
-				icon: 'delete',
+				icon: SUMMONS_ACTION_ICONS.delete,
 				label: 'Excluir',
 				onPress: onDelete,
 			},

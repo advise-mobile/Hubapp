@@ -1,6 +1,8 @@
 import type { SwipeRowAction } from '@components/SwipeRow';
 import type { SummonsListItemViewModel } from '@models/summons-list';
 
+import { SUMMONS_ACTION_ICONS } from './summonsActionIcons';
+
 const NEUTRAL_VARIANT = 'neutral' as const;
 
 export type SummonsSwipeActionHandlers = {
@@ -50,7 +52,7 @@ export function getSummonsSwipeActions(
 	actions.push(
 		{
 			id: 'send-email',
-			icon: 'mail-outline',
+			icon: SUMMONS_ACTION_ICONS.sendEmail,
 			label: 'Enviar por e-mail',
 			variant: NEUTRAL_VARIANT,
 			onPress: () => handlers.onSendEmail(item),
@@ -71,7 +73,7 @@ export function getSummonsSwipeActions(
 		},
 		{
 			id: 'delete',
-			icon: 'delete-outline',
+			icon: SUMMONS_ACTION_ICONS.delete,
 			label: 'Excluir',
 			variant: NEUTRAL_VARIANT,
 			onPress: () => handlers.onDelete(item),

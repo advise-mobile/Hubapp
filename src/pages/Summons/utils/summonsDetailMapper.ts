@@ -1,12 +1,14 @@
 import moment from 'moment';
 
 import { FormatDateBR } from '@lhelpers/DateFunctions';
+import { MaskCnj } from '@lhelpers/Mask';
 import type {
 	SummonsDetailApiItem,
 	SummonsDetailViewModel,
 } from '@models/summons-detail';
 import type { SummonsListBadgeViewModel } from '@models/summons-list';
 
+import { formatPrazoLabel } from './formatPrazoLabel';
 import { formatTagLabel } from './formatTagLabel';
 
 export type SummonsDetailBadgeThemeColors = {
@@ -40,11 +42,11 @@ function formatExpeditionDate(value: string): string | null {
 
 function resolvePrazoLabel(raw: SummonsDetailApiItem): string {
 	if (hasText(raw.prazoTratado)) {
-		return formatTagLabel(raw.prazoTratado.trim());
+		return formatPrazoLabel(raw.prazoTratado);
 	}
 
 	if (raw.prazo != null && String(raw.prazo).trim() !== '') {
-		return formatTagLabel(String(raw.prazo).trim());
+		return formatPrazoLabel(String(raw.prazo));
 	}
 
 	return 'Não informado';
@@ -87,7 +89,7 @@ export function mapSummonsDetailApiItemToViewModel(
 	});
 
 	const processNumber = hasText(raw.numeroProcesso)
-		? raw.numeroProcesso.trim()
+		? MaskCnj(raw.numeroProcesso.trim())
 		: undefined;
 
 	return {

@@ -3,12 +3,11 @@ import {
 	ActivityIndicator,
 	FlatList,
 	ListRenderItem,
-	Text,
 	View,
+	type ImageSourcePropType,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { useTheme } from 'styled-components';
-import { fonts } from '@lassets/styles';
 import { SwipeRow, SwipeRowProvider, useSwipeRowRegistry } from '@components/SwipeRow';
 import { PermissionsGroups, checkPermission } from '@lhelpers/Permissions';
 import type { SummonsListItemViewModel } from '@models/summons-list';
@@ -26,6 +25,7 @@ import { SummonsDeleteConfirmModal } from '../../modals/delete-confirm';
 import { SummonsMarkAsReadConfirmModal } from '../../modals/mark-as-read-confirm';
 import { SummonsSendEmailModal } from '../../modals/send-email';
 import { SummonsDisclaimer } from '../summons-disclaimer';
+import { SummonsFilteredEmptyState } from '../summons-filtered-empty-state';
 import { SummonsListItemCard } from '../summons-list-item-card';
 
 export interface SummonsListProps {
@@ -35,6 +35,7 @@ export interface SummonsListProps {
 	onEndReached: () => void;
 	onItemPress?: (item: SummonsListItemViewModel) => void;
 	showEmptyMessage?: boolean;
+	emptyStateImage?: ImageSourcePropType;
 }
 
 function SummonsListRow({
@@ -108,6 +109,7 @@ export function SummonsList({
 	onEndReached,
 	onItemPress,
 	showEmptyMessage = false,
+	emptyStateImage,
 }: SummonsListProps) {
 	const { colors } = useTheme();
 	const dispatch = useDispatch();
@@ -433,29 +435,10 @@ export function SummonsList({
 
 	const listEmpty = useMemo(
 		() =>
-			showEmptyMessage ? (
-				<View
-					style={{
-						flex: 1,
-						paddingVertical: 48,
-						paddingHorizontal: 24,
-						alignItems: 'center',
-						justifyContent: 'center',
-					}}
-				>
-					<Text
-						style={{
-							fontFamily: String(fonts.circularStdBook),
-							fontSize: Number(fonts.regular),
-							color: colors.grayLight,
-							textAlign: 'center',
-						}}
-					>
-						Nenhuma intimação encontrada.
-					</Text>
-				</View>
+			showEmptyMessage && emptyStateImage ? (
+				<SummonsFilteredEmptyState imageSource={emptyStateImage} />
 			) : null,
-		[colors.grayLight, showEmptyMessage],
+		[emptyStateImage, showEmptyMessage],
 	);
 
 	return (

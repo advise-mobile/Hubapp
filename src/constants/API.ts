@@ -12,7 +12,16 @@ import {
 	TOKEN,
 } from '@lhelpers/StorageKeys';
 
-export const API_BASE_URL = 'https://api.advise.com.br/core/v1';
+import { IS_PRODUCTION } from '@constants/environment';
+
+const API_BASE_URL_PROD = 'https://api.advise.com.br/core/v1';
+const API_BASE_URL_HOMOLOG =
+	'https://homologacao-api.advise.com.br/core/v1';
+
+export { IS_PRODUCTION };
+export const API_BASE_URL = IS_PRODUCTION
+	? API_BASE_URL_PROD
+	: API_BASE_URL_HOMOLOG;
 
 type RetryableConfig = InternalAxiosRequestConfig & {
 	_retry?: boolean;

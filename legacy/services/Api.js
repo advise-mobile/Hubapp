@@ -1,19 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const DEV_URL = 'https://dev-api.advise.com.br';
-const HOMOLOG_URL = 'https://homologacao-api.advise.com.br';
-const PROD_URL = 'https://api.advise.com.br';
-
-// let BASE_URL = getUrl();
-export const BASE_URL = PROD_URL;
-
+import { IS_PRODUCTION } from '@constants/environment';
 import {
   TOKEN,
   REFRESH_TOKEN,
   EXPIRES_TOKEN,
   AVATAR,
 } from '@lhelpers/StorageKeys';
+
+const DEV_URL = 'https://dev-api.advise.com.br';
+const HOMOLOG_URL = 'https://homologacao-api.advise.com.br';
+const PROD_URL = 'https://api.advise.com.br';
+
+export { IS_PRODUCTION };
+export const BASE_URL = IS_PRODUCTION ? PROD_URL : HOMOLOG_URL;
 
 const api = axios.create({
   baseURL: BASE_URL,

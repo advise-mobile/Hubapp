@@ -64,3 +64,34 @@ export const ListPlaceholderText = styled.Text`
 	color: ${({ theme }) => theme.colors.primary};
 	text-align: center;
 `;
+
+export const FilteredEmptyState = styled.View`
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	min-height: 280px;
+`;
+
+export const FilteredEmptyImage = styled.Image.attrs({
+	resizeMode: 'contain',
+})`
+	width: 170px;
+	height: 170px;
+	margin-bottom: 12px;
+`;
+
+export const FilteredEmptyTitle = styled.Text`
+	font-size: ${fonts.big};
+	color: ${({ theme }) => theme.colors.grayDarker};
+	font-family: ${fonts.circularStdBold};
+	text-align: center;
+	margin-bottom: 8px;
+`;
+
+export const FilteredEmptySubtitle = styled.Text`
+	color: ${({ theme }) => theme.colors.grayLight};
+	font-size: ${fonts.regular};
+	font-family: ${fonts.circularStdBook};
+	text-align: center;
+`;
