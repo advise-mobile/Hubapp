@@ -3,15 +3,11 @@ import moment from 'moment';
 import { FormatDateBR } from '@lhelpers/DateFunctions';
 import { MaskCnj } from '@lhelpers/Mask';
 import type { SummonsListApiItem, SummonsListItemViewModel } from '@models/summons-list';
+import type { DefaultTheme } from 'styled-components';
 
+import { resolveSummonsListBadgeBackgrounds } from './summonsBadgeColors';
 import { formatPrazoLabel } from './formatPrazoLabel';
 import { formatSummonsCodeLabel, formatTagLabel } from './formatTagLabel';
-
-export type SummonsBadgeThemeColors = {
-	amber: string;
-	orange200: string;
-	gray: string;
-};
 
 function hasText(value: unknown): value is string {
 	return typeof value === 'string' && value.trim() !== '';
@@ -93,12 +89,13 @@ function resolvePrazoLabel(raw: SummonsListApiItem): string {
 export function mapSummonsApiItemToViewModel(
 	raw: SummonsListApiItem,
 	index: number,
-	colors: SummonsBadgeThemeColors,
+	theme: DefaultTheme,
 ): SummonsListItemViewModel {
 	const isRead = raw.flLido === true;
-	const tag1Bg = isRead ? colors.gray : colors.amber;
-	const tag2Bg = isRead ? colors.gray : colors.orange200;
-	const metaTagBg = colors.gray;
+	const { tag1Bg, tag2Bg, metaTagBg } = resolveSummonsListBadgeBackgrounds(
+		theme,
+		isRead,
+	);
 
 	const badges: SummonsListItemViewModel['badges'] = [];
 

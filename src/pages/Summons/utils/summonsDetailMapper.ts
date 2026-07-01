@@ -7,15 +7,11 @@ import type {
 	SummonsDetailViewModel,
 } from '@models/summons-detail';
 import type { SummonsListBadgeViewModel } from '@models/summons-list';
+import type { DefaultTheme } from 'styled-components';
 
+import { resolveSummonsListBadgeBackgrounds } from './summonsBadgeColors';
 import { formatPrazoLabel } from './formatPrazoLabel';
 import { formatSummonsCodeLabel, formatTagLabel } from './formatTagLabel';
-
-export type SummonsDetailBadgeThemeColors = {
-	amber: string;
-	gray: string;
-	orange200: string;
-};
 
 function hasText(value: unknown): value is string {
 	return typeof value === 'string' && value.trim() !== '';
@@ -60,21 +56,26 @@ function resolvePrazoLabel(raw: SummonsDetailApiItem): string {
 
 export function mapSummonsDetailApiItemToViewModel(
 	raw: SummonsDetailApiItem,
-	colors: SummonsDetailBadgeThemeColors,
+	theme: DefaultTheme,
+	isRead: boolean,
 ): SummonsDetailViewModel {
+	const { tag1Bg, tag2Bg, metaTagBg } = resolveSummonsListBadgeBackgrounds(
+		theme,
+		isRead,
+	);
 	const badges: SummonsListBadgeViewModel[] = [];
 
 	if (hasText(raw.responsavel)) {
 		badges.push({
 			label: formatTagLabel(raw.responsavel),
-			backgroundColor: colors.orange200,
+			backgroundColor: tag2Bg,
 		});
 	}
 
 	if (hasText(raw.sistema)) {
 		badges.push({
 			label: formatSummonsCodeLabel(raw.sistema),
-			backgroundColor: colors.amber,
+			backgroundColor: tag1Bg,
 		});
 	}
 
@@ -83,7 +84,7 @@ export function mapSummonsDetailApiItemToViewModel(
 		if (formattedDate) {
 			badges.push({
 				label: `Data expedição: ${formattedDate}`,
-				backgroundColor: colors.gray,
+				backgroundColor: metaTagBg,
 			});
 		}
 	}
@@ -91,7 +92,7 @@ export function mapSummonsDetailApiItemToViewModel(
 	const prazoLabel = resolvePrazoLabel(raw);
 	badges.push({
 		label: `Prazo: ${prazoLabel}`,
-		backgroundColor: colors.gray,
+		backgroundColor: metaTagBg,
 	});
 
 	const processNumber = hasText(raw.numeroProcesso)

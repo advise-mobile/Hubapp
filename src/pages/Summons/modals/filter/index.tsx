@@ -1,8 +1,17 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { StyleSheet } from 'react-native';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import RadioForm, {
+	RadioButton,
+	RadioButtonInput,
+	RadioButtonLabel,
+} from 'react-native-simple-radio-button';
+import { useTheme } from 'styled-components';
+
 import { BottomSheet } from '@components/BottomSheet';
 import { Select } from '@components/Select';
+import { fonts } from '@lassets/styles';
 import Datepicker from '@lcomponents/DatePicker';
 import type { SummonsFilterModalProps } from '@models/summons-components';
 import type { SummonsFilters } from '@models/summons-hooks-types';
@@ -21,9 +30,7 @@ import {
 	DateRow,
 	DateField,
 	DateLabel,
-	RadioOption,
-	RadioCircle,
-	RadioLabel,
+	RBRow,
 	PickerRow,
 	PickerField,
 } from './styles';
@@ -32,7 +39,7 @@ const SITUACAO_OPTIONS = [
 	{ value: 'all', label: 'Todas situações' },
 	{ value: 'read', label: 'Lidas' },
 	{ value: 'unread', label: 'Não lidas' },
-] as const;
+];
 
 function parseIdOrgaoInitial(value: unknown): number | null {
 	if (value == null || value === '') return null;
@@ -62,6 +69,8 @@ export function SummonsFilterModal({
 	onApply,
 	initialFilters = {},
 }: SummonsFilterModalProps) {
+	const { colors } = useTheme();
+	const RBLabel = stylesRBLabel(colors);
 	const {
 		courts,
 		isLoadingCourts,
@@ -328,16 +337,27 @@ export function SummonsFilterModal({
 
 			<Section>
 				<SectionTitle>Situação</SectionTitle>
-				{SITUACAO_OPTIONS.map(opt => (
-					<RadioOption
-						key={opt.value}
-						onPress={() => setSituacao(opt.value)}
-						activeOpacity={0.7}
-					>
-						<RadioCircle $selected={situacao === opt.value} />
-						<RadioLabel>{opt.label}</RadioLabel>
-					</RadioOption>
-				))}
+				<RadioForm animation style={{ flex: 1 }}>
+					{SITUACAO_OPTIONS.map(obj => (
+						<RBRow as={RadioButton} key={obj.value}>
+							<RadioButtonInput
+								obj={obj}
+								isSelected={situacao === obj.value}
+								onPress={value => setSituacao(value)}
+								borderWidth={1}
+								buttonInnerColor={colors.primary}
+								buttonOuterColor={colors.primary}
+								buttonSize={12}
+								buttonOuterSize={18}
+							/>
+							<RadioButtonLabel
+								obj={obj}
+								labelStyle={RBLabel.label}
+								onPress={value => setSituacao(value)}
+							/>
+						</RBRow>
+					))}
+				</RadioForm>
 			</Section>
 
 			<Section>
@@ -397,3 +417,12 @@ export function SummonsFilterModal({
 		</BottomSheet>
 	);
 }
+
+const stylesRBLabel = (colors: { grayDarker: string }) =>
+	StyleSheet.create({
+		label: {
+			color: colors.grayDarker,
+			fontFamily: fonts.circularStdBook,
+			fontSize: fonts.regular,
+		},
+	});

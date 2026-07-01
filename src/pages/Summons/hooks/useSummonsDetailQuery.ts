@@ -19,7 +19,7 @@ export const SUMMONS_DETAIL_QUERY_KEY = ['summons', 'detail'] as const;
 export function useSummonsDetailQuery(params: UseSummonsDetailQueryParams | undefined) {
 	const dispatch = useDispatch();
 	const queryClient = useQueryClient();
-	const { colors } = useTheme();
+	const theme = useTheme();
 
 	const idMovProcUsuarioCliente = params?.idMovProcUsuarioCliente;
 	const enabled = idMovProcUsuarioCliente != null;
@@ -38,11 +38,12 @@ export function useSummonsDetailQuery(params: UseSummonsDetailQueryParams | unde
 				throw new Error('Missing idMovProcUsuarioCliente for summons detail.');
 			}
 
-			if (
+			const shouldMarkAsRead =
 				params?.flLido === false &&
 				params.markAsReadId != null &&
-				params.idMovProcessoCliente != null
-			) {
+				params.idMovProcessoCliente != null;
+
+			if (shouldMarkAsRead) {
 				await markSummonsAsRead({
 					id: params.markAsReadId,
 					idMovProcessoCliente: params.idMovProcessoCliente,
@@ -59,11 +60,15 @@ export function useSummonsDetailQuery(params: UseSummonsDetailQueryParams | unde
 				throw new Error('Summons detail response has no items.');
 			}
 
-			return mapSummonsDetailApiItemToViewModel(detailItem, {
-				amber: colors.amber,
-				gray: colors.gray,
-				orange200: colors.orange200,
-			});
+			const isRead =
+				params?.flLido === true ||
+				(params?.flLido === false && shouldMarkAsRead);
+
+			return mapSummonsDetailApiItemToViewModel(
+				detailItem,
+				theme,
+				isRead,
+			);
 		},
 	});
 

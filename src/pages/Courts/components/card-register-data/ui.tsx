@@ -1,11 +1,12 @@
 import React from 'react';
-import { ActivityIndicator, Platform, Switch, View } from 'react-native';
+import { ActivityIndicator, Switch, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from 'styled-components';
 
 import type { CardRegisterDataProps } from '@models/courts-components';
 
 import { getSituationMessageColor } from './situationColors';
+import { getCourtRegisterSwitchColors } from './switchColors';
 import {
 	ActionsInline,
 	Card,
@@ -35,7 +36,9 @@ export function CardRegisterData({
 	onActiveChange,
 	onDeletePress,
 }: CardRegisterDataProps) {
-	const { colors } = useTheme();
+	const theme = useTheme();
+	const { colors } = theme;
+	const switchColors = getCourtRegisterSwitchColors(theme, isActive);
 	const hasValidId =
 		idPesqIntimacao != null && Number.isFinite(idPesqIntimacao);
 	const isToggling = isInactivating || isActivating;
@@ -77,15 +80,9 @@ export function CardRegisterData({
 									value={isActive}
 									onValueChange={onActiveChange ?? (() => {})}
 									disabled={switchDisabled}
-									trackColor={{
-										false: colors.gray ?? '#E0E0E0',
-										true: colors.green200 ?? '#689F38',
-									}}
-									thumbColor={
-										Platform.OS === 'android'
-											? colors.realWhite ?? '#FFFFFF'
-											: undefined
-									}
+									trackColor={switchColors.trackColor}
+									thumbColor={switchColors.thumbColor}
+									ios_backgroundColor={switchColors.ios_backgroundColor}
 								/>
 							)}
 						</View>
@@ -101,7 +98,11 @@ export function CardRegisterData({
 								<MaterialIcons
 									name="delete"
 									size={20}
-									color={trashDisabled ? '#BBBBBB' : '#666666'}
+									color={
+										trashDisabled
+											? colors.textInactive
+											: colors.primary
+									}
 								/>
 							)}
 						</TrashButton>

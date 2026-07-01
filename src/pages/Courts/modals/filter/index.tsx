@@ -1,7 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { StyleSheet } from 'react-native';
+import RadioForm, {
+	RadioButton,
+	RadioButtonInput,
+	RadioButtonLabel,
+} from 'react-native-simple-radio-button';
+import { useTheme } from 'styled-components';
 
 import { BottomSheet } from '@components/BottomSheet';
 import { Select } from '@components/Select';
+import { fonts } from '@lassets/styles';
 import type { CourtsFilterModalProps } from '@models/courts-components';
 import {
 	countActiveCourtRegistrationsFilters,
@@ -19,9 +27,7 @@ import { useCourts } from '@pages/Summons/hooks';
 import {
 	PickerField,
 	PickerRow,
-	RadioCircle,
-	RadioLabel,
-	RadioOption,
+	RBRow,
 	Section,
 	SectionTitle,
 } from './styles';
@@ -68,6 +74,8 @@ export function CourtsFilterModal({
 	onApply,
 	initialFilters = DEFAULT_COURTS_REGISTRATIONS_FILTERS,
 }: CourtsFilterModalProps) {
+	const { colors } = useTheme();
+	const RBLabel = stylesRBLabel(colors);
 	const { courts, isLoadingCourts, loadCourts } = useCourts();
 
 	const [acesso, setAcesso] = useState<CourtsRegistrationsAccessFilter>(
@@ -154,16 +162,27 @@ export function CourtsFilterModal({
 		>
 			<Section>
 				<SectionTitle>Acesso</SectionTitle>
-				{ACCESS_OPTIONS.map(opt => (
-					<RadioOption
-						key={opt.value}
-						onPress={() => setAcesso(opt.value)}
-						activeOpacity={0.7}
-					>
-						<RadioCircle $selected={acesso === opt.value} />
-						<RadioLabel>{opt.label}</RadioLabel>
-					</RadioOption>
-				))}
+				<RadioForm animation style={{ flex: 1 }}>
+					{ACCESS_OPTIONS.map(obj => (
+						<RBRow as={RadioButton} key={obj.value}>
+							<RadioButtonInput
+								obj={obj}
+								isSelected={acesso === obj.value}
+								onPress={value => setAcesso(value)}
+								borderWidth={1}
+								buttonInnerColor={colors.primary}
+								buttonOuterColor={colors.primary}
+								buttonSize={12}
+								buttonOuterSize={18}
+							/>
+							<RadioButtonLabel
+								obj={obj}
+								labelStyle={RBLabel.label}
+								onPress={value => setAcesso(value)}
+							/>
+						</RBRow>
+					))}
+				</RadioForm>
 			</Section>
 
 			<Section>
@@ -199,17 +218,37 @@ export function CourtsFilterModal({
 
 			<Section>
 				<SectionTitle>Situação</SectionTitle>
-				{SITUATION_OPTIONS.map(opt => (
-					<RadioOption
-						key={opt.value}
-						onPress={() => setSituacao(opt.value)}
-						activeOpacity={0.7}
-					>
-						<RadioCircle $selected={situacao === opt.value} />
-						<RadioLabel>{opt.label}</RadioLabel>
-					</RadioOption>
-				))}
+				<RadioForm animation style={{ flex: 1 }}>
+					{SITUATION_OPTIONS.map(obj => (
+						<RBRow as={RadioButton} key={obj.value}>
+							<RadioButtonInput
+								obj={obj}
+								isSelected={situacao === obj.value}
+								onPress={value => setSituacao(value)}
+								borderWidth={1}
+								buttonInnerColor={colors.primary}
+								buttonOuterColor={colors.primary}
+								buttonSize={12}
+								buttonOuterSize={18}
+							/>
+							<RadioButtonLabel
+								obj={obj}
+								labelStyle={RBLabel.label}
+								onPress={value => setSituacao(value)}
+							/>
+						</RBRow>
+					))}
+				</RadioForm>
 			</Section>
 		</BottomSheet>
 	);
 }
+
+const stylesRBLabel = (colors: { grayDarker: string }) =>
+	StyleSheet.create({
+		label: {
+			color: colors.grayDarker,
+			fontFamily: fonts.circularStdBook,
+			fontSize: fonts.regular,
+		},
+	});

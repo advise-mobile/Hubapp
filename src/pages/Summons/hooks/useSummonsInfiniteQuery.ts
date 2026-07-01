@@ -20,7 +20,7 @@ export function useSummonsInfiniteQuery(
 	filters: SummonsFilters = {},
 ) {
 	const dispatch = useDispatch();
-	const { colors } = useTheme();
+	const theme = useTheme();
 
 	const query = useInfiniteQuery({
 		queryKey: [...SUMMONS_LIST_QUERY_KEY, filters],
@@ -74,23 +74,14 @@ export function useSummonsInfiniteQuery(
 					const mapped = mapSummonsApiItemToViewModel(
 						raw,
 						globalIndex,
-						{
-							amber: colors.amber,
-							orange200: colors.orange200,
-							gray: colors.gray,
-						},
+						theme,
 					);
 					globalIndex += 1;
 					return mapped;
 				}),
 			) ?? []
 		);
-	}, [
-		query.data,
-		colors.amber,
-		colors.gray,
-		colors.orange200,
-	]);
+	}, [query.data, theme]);
 
 	const isAwaitingFirstResult = enabled && !query.isFetched;
 
