@@ -101,7 +101,7 @@ export function mapSummonsApiItemToViewModel(
 
 	if (hasText(raw.sistema)) {
 		badges.push({
-			label: formatSummonsCodeLabel(raw.sistema),
+			label: raw.sistema.trim(),
 			backgroundColor: tag1Bg,
 		});
 	}

@@ -20,7 +20,7 @@ function hasText(value: unknown): value is string {
 function buildTitle(tribunal?: string, sistema?: string): string {
 	const parts = [
 		hasText(tribunal) ? formatSummonsCodeLabel(tribunal) : '',
-		hasText(sistema) ? formatSummonsCodeLabel(sistema) : '',
+		hasText(sistema) ? sistema.trim() : '',
 	].filter(part => part !== '');
 
 	if (parts.length === 0) {
@@ -74,7 +74,7 @@ export function mapSummonsDetailApiItemToViewModel(
 
 	if (hasText(raw.sistema)) {
 		badges.push({
-			label: formatSummonsCodeLabel(raw.sistema),
+			label: raw.sistema.trim(),
 			backgroundColor: tag1Bg,
 		});
 	}
