@@ -94,3 +94,10 @@ hub-ai-docs/
 CODIGO_MORTO.md
 LEGACY_MIGRATION_PLAN.md
 README.md
+
+# WIP / QA local
+.tmp-repro/
+src/pages/Summons/mocks/
+divergencias doc orginal - testes qa.md
+relatorio-atividades-hubapp-jan-jul-2026.md
+relatorio-atividades-hubapp-jan-jul-2026.pdf
