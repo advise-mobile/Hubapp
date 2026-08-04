@@ -40,7 +40,15 @@ export default function Summons() {
 		[theme.name],
 	);
 
-	const imageNotFound = useMemo(
+	const imageEmptyOnboarding = useMemo(
+		() =>
+			theme.name === 'dark'
+				? require('assets/images/not_found_white.png')
+				: require('assets/images/not_found.png'),
+		[theme.name],
+	);
+
+	const imageEmptyFiltered = useMemo(
 		() =>
 			theme.name === 'dark'
 				? require('assets/images/not_found/movements_white.png')
@@ -210,7 +218,7 @@ export default function Summons() {
 					<LoadingView height="50" />
 				) : showEmptyOnboarding ? (
 					<SummonsUI
-						imageNotFound={imageNotFound}
+						imageNotFound={imageEmptyOnboarding}
 						onPress={() => setAddModalVisible(true)}
 					/>
 				) : (
@@ -222,7 +230,7 @@ export default function Summons() {
 							onEndReached={handleEndReached}
 							onItemPress={handleItemPress}
 							showEmptyMessage={summonsListItems.length === 0}
-							emptyStateImage={imageNotFound}
+							emptyStateImage={imageEmptyFiltered}
 						/>
 					</Content>
 				)}
