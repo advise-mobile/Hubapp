@@ -1,6 +1,6 @@
 export interface UserClientFeatureCreditItem {
 	qtdUtilizada?: number;
-	qtdContratada?: number | null;
+	qtdTotalContratado?: number | null;
 }
 
 export interface UserClientFeatureCreditListResponse {

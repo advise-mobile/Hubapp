@@ -51,7 +51,7 @@ export function useCourtsAccessCreditQuery(enabled: boolean) {
 
 		const item = query.data;
 		const quantityUtilized = item?.qtdUtilizada ?? 0;
-		const quantityContracted = item?.qtdContratada;
+		const quantityContracted = item?.qtdTotalContratado;
 
 		const contractedRowText =
 			quantityContracted === undefined || quantityContracted === null

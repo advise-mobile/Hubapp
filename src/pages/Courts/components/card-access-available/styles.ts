@@ -21,7 +21,6 @@ export const Row = styled.View`
 	flex-direction: row;
 	align-items: center;
 	margin-top: 8px;
-	padding-right: 128px;
 `;
 
 export const RowLabel = styled.Text`
