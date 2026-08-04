@@ -7,7 +7,7 @@ export const CardTouchable = styled(TouchableOpacity)`
 `;
 
 export const Card = styled.View`
-	padding: 16px 20px;
+	padding: 12px 24px;
 	background-color: ${({ theme }) => theme.colors.white};
 `;
 
@@ -22,14 +22,14 @@ export const CardHeader = styled.View`
 export const CardTitleTouchable = styled(TouchableOpacity)`
 	flex: 1;
 	min-width: 0;
-	margin-right: 16px;
+	margin-right: 8px;
 `;
 
 export const CardActionButton = styled(TouchableOpacity)`
 	flex-shrink: 0;
 	align-items: center;
 	justify-content: center;
-	padding: 4px;
+	padding: 0;
 `;
 
 export const CardTitle = styled.Text`

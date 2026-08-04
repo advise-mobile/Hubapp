@@ -43,8 +43,8 @@ export default function Summons() {
 	const imageNotFound = useMemo(
 		() =>
 			theme.name === 'dark'
-				? require('assets/images/not_found_white.png')
-				: require('assets/images/not_found.png'),
+				? require('assets/images/not_found/movements_white.png')
+				: require('assets/images/not_found/movements.png'),
 		[theme.name],
 	);
 

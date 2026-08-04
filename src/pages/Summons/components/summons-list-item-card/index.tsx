@@ -58,7 +58,7 @@ function SummonsListItemCardComponent({
 				>
 					<MaterialIcons
 						name="more-horiz"
-						size={25}
+						size={24}
 						color={colors.fadedBlack}
 					/>
 				</CardActionButton>
