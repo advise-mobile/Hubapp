@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
+  Keyboard,
   Platform,
   TouchableWithoutFeedback,
   View,
@@ -26,6 +27,7 @@ import type { BottomSheetProps } from './types';
 export type { BottomSheetProps } from './types';
 
 const DEFAULT_BACKDROP_OPACITY = 0.5;
+const MIN_SHEET_HEIGHT = 200;
 
 /** Alinhado à tab bar em legacy/navigation/Routes.js */
 function resolveTabBarBottomInset(insetsBottom: number): number {
@@ -49,9 +51,47 @@ export function BottomSheet({
 }: BottomSheetProps) {
   const insets = useSafeAreaInsets();
   const { height: screenHeight } = useMemo(() => Dimensions.get('window'), []);
-  const maxHeight = Math.round(screenHeight * maxHeightRatio);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
   const resolvedBottomInset =
     bottomInset ?? resolveTabBarBottomInset(insets.bottom);
+
+  useEffect(() => {
+    if (!visible) {
+      setKeyboardHeight(0);
+      return;
+    }
+
+    const showEvent =
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const onShow = Keyboard.addListener(showEvent, event => {
+      setKeyboardHeight(event.endCoordinates.height);
+    });
+    const onHide = Keyboard.addListener(hideEvent, () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      onShow.remove();
+      onHide.remove();
+    };
+  }, [visible]);
+
+  // Com teclado aberto ele cobre a tab — não somar tab + teclado.
+  const sheetBottomInset =
+    keyboardHeight > 0 ? keyboardHeight : resolvedBottomInset;
+
+  const availableForSheet = Math.max(
+    MIN_SHEET_HEIGHT,
+    screenHeight - sheetBottomInset - Math.max(insets.top, 8),
+  );
+  const maxHeight = Math.min(
+    Math.round(screenHeight * maxHeightRatio),
+    availableForSheet,
+  );
 
   const modalStyle = {
     justifyContent: 'flex-end' as const,
@@ -64,13 +104,13 @@ export function BottomSheet({
         <View
           style={{
             flex: 1,
-            marginBottom: resolvedBottomInset,
+            marginBottom: sheetBottomInset,
             backgroundColor: `rgba(0,0,0,${DEFAULT_BACKDROP_OPACITY})`,
           }}
         />
       </TouchableWithoutFeedback>
     ),
-    [onClose, resolvedBottomInset],
+    [onClose, sheetBottomInset],
   );
 
   return (
@@ -87,7 +127,7 @@ export function BottomSheet({
       backdropOpacity={1}
     >
       <SheetWrapper
-        style={{ maxHeight, marginBottom: resolvedBottomInset }}
+        style={{ maxHeight, marginBottom: sheetBottomInset }}
         accessible={false}
       >
         <Handle>
