@@ -5,7 +5,10 @@ import { useDispatch } from 'react-redux';
 import ToastNotifyActions from '@lstore/ducks/ToastNotify';
 import { fetchCourtsAccessCredit } from '@services/courts';
 
-const QUERY_KEY = ['courts', 'access-credit'] as const;
+export const COURTS_ACCESS_CREDIT_QUERY_KEY = [
+	'courts',
+	'access-credit',
+] as const;
 
 function formatAccessCountPhrase(count: number): string {
 	const accessWord = count === 1 ? 'acesso' : 'acessos';
@@ -16,7 +19,7 @@ export function useCourtsAccessCreditQuery(enabled: boolean) {
 	const dispatch = useDispatch();
 
 	const query = useQuery({
-		queryKey: [...QUERY_KEY],
+		queryKey: [...COURTS_ACCESS_CREDIT_QUERY_KEY],
 		queryFn: fetchCourtsAccessCredit,
 		enabled,
 	});
