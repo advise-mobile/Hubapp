@@ -79,7 +79,23 @@ export default function Summons() {
 		fetchNextPage,
 	} = useSummonsInfiniteQuery(listEnabled, filters);
 
-	const filterInteractive = !isAwaitingFirstResult && !isListError;
+	const showEmptyOnboarding = useMemo(
+		() =>
+			isListError ||
+			(!isAwaitingFirstResult &&
+				summonsListItems.length === 0 &&
+				activeFiltersCount === 0),
+		[
+			activeFiltersCount,
+			isAwaitingFirstResult,
+			isListError,
+			summonsListItems.length,
+		],
+	);
+
+	// RF 3.1.1: sem cadastro / empty onboarding → não exibir filtro
+	const filterInteractive =
+		!isAwaitingFirstResult && !isListError && !showEmptyOnboarding;
 
 	const filterLeftActions: HeaderActionConfig[] = useMemo(
 		() =>
@@ -164,20 +180,6 @@ export default function Summons() {
 			colors.black,
 			headerProps.rightActions,
 			navigateCourtsList,
-			summonsListItems.length,
-		],
-	);
-
-	const showEmptyOnboarding = useMemo(
-		() =>
-			isListError ||
-			(!isAwaitingFirstResult &&
-				summonsListItems.length === 0 &&
-				activeFiltersCount === 0),
-		[
-			activeFiltersCount,
-			isAwaitingFirstResult,
-			isListError,
 			summonsListItems.length,
 		],
 	);
