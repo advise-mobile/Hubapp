@@ -20,6 +20,15 @@ export function getJudicialAgencyLabel(row: JudicialAgencyItem): string {
 	);
 }
 
+/** Preferência pela sigla (`siglaOrgao`); fallback para o nome completo. */
+export function getJudicialAgencySiglaLabel(row: JudicialAgencyItem): string {
+	const siglaOrgaoRaw = row.siglaOrgao;
+	if (typeof siglaOrgaoRaw === 'string' && siglaOrgaoRaw.trim() !== '') {
+		return siglaOrgaoRaw.trim();
+	}
+	return getJudicialAgencyLabel(row);
+}
+
 export interface SummonsSourceItem {
 	idFonteXTipoPesquisa: number;
 	idOrgaoJudiciario: number;

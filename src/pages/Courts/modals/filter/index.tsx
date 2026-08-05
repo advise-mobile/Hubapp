@@ -19,7 +19,7 @@ import {
 	type CourtsRegistrationsSituationFilter,
 } from '@models/court-registrations-filters';
 import {
-	getJudicialAgencyLabel,
+	getJudicialAgencySiglaLabel,
 	type JudicialAgencyOption,
 } from '@models/filters-summons';
 import { useCourts } from '@pages/Summons/hooks';
@@ -50,14 +50,6 @@ const SITUATION_OPTIONS: {
 	{ value: 'failure', label: 'Falha ao acessar' },
 	{ value: 'processing', label: 'Processando' },
 ];
-
-function getTribunalFilterLabel(row: JudicialAgencyOption): string {
-	const siglaOrgaoRaw = row.siglaOrgao;
-	if (typeof siglaOrgaoRaw === 'string' && siglaOrgaoRaw.trim() !== '') {
-		return siglaOrgaoRaw.trim();
-	}
-	return getJudicialAgencyLabel(row);
-}
 
 function parseIdOrgaoInitial(
 	value: CourtsRegistrationsAppliedFilters['idOrgaoJudiciario'],
@@ -141,7 +133,7 @@ export function CourtsFilterModal({
 	const courtItems = useMemo(
 		() =>
 			courts.map((court: JudicialAgencyOption) => ({
-				label: getTribunalFilterLabel(court),
+				label: getJudicialAgencySiglaLabel(court),
 				value: String(court.idOrgaoJudiciario),
 			})),
 		[courts],

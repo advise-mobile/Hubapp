@@ -8,7 +8,7 @@ import { FormInputWithoutBorder } from '@components/FormInputWithoutBorder';
 import { Select } from '@components/Select';
 import { getLoggedUser } from '@lhelpers/Permissions';
 import {
-	getJudicialAgencyLabel,
+	getJudicialAgencySiglaLabel,
 	type CourtOption,
 	type JudicialAgencyOption,
 } from '@models/filters-summons';
@@ -139,7 +139,7 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 	const courtItems = useMemo(
 		() =>
 			courts.map((judicialAgency: JudicialAgencyOption) => ({
-				label: getJudicialAgencyLabel(judicialAgency),
+				label: getJudicialAgencySiglaLabel(judicialAgency),
 				value: String(judicialAgency.idOrgaoJudiciario),
 			})),
 		[courts],
