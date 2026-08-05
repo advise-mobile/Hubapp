@@ -298,6 +298,7 @@ export default function SummonsDetail() {
 				<SummonsSendEmailModal
 					visible={sendEmailVisible}
 					onClose={closeSendEmailModal}
+					onSuccess={closeSendEmailModal}
 					idMovProcessoCliente={idMovProcessoCliente}
 				/>
 				<SummonsDeleteConfirmModal
