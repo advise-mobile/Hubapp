@@ -1,12 +1,10 @@
 import styled from 'styled-components';
-import { Platform } from 'react-native';
 import { fonts, metrics } from '@lassets/styles';
 
 const Container = styled.View`
-  bottom: ${Platform.OS === 'android'
-    ? metrics.baseMargin
-    : metrics.baseMargin + 70};
+  elevation: 9999;
   position: absolute;
+  z-index: 9999;
 `;
 
 const Notify = styled.View`
