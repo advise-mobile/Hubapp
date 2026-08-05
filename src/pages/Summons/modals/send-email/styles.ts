@@ -31,7 +31,9 @@ export const FieldInput = styled.TextInput<{ $error?: boolean }>`
 
 export const HintText = styled.Text`
 	margin-top: 8px;
+	margin-bottom: 4px;
 	color: ${({ theme }) => theme.colors.grayLight};
 	font-size: ${fonts.small}px;
 	font-family: ${fonts.circularStdBook};
+	line-height: 18px;
 `;

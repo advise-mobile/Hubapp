@@ -56,7 +56,7 @@ export function SummonsSendEmailModal({
 			onClose={onClose}
 			onModalHide={onModalHide}
 			title="Enviar por email"
-			maxHeightRatio={0.32}
+			maxHeightRatio={0.45}
 			footer={
 				<ButtonsFooter>
 					<Button
@@ -95,7 +95,7 @@ export function SummonsSendEmailModal({
 					editable={!sendEmail.isPending}
 				/>
 			</FieldRow>
-			<HintText>Vários emails separados por &quot;;&quot;</HintText>
+			<HintText>Vários emails separados por {`';'`}</HintText>
 		</BottomSheet>
 	);
 }
