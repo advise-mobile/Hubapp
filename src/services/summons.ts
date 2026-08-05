@@ -9,6 +9,7 @@ import type {
 	SummonsSourceItem,
 	SummonsSourcesResponse,
 } from '@models/filters-summons';
+import { isSelectableCourtSourceForApp } from '@models/filters-summons';
 import type { SummonsDetailResponse } from '@models/summons-detail';
 import type { SendSummonsEmailInput } from '@models/summons-email';
 import type { DeleteSummonsInput } from '@models/summons-delete';
@@ -167,7 +168,8 @@ export async function fetchSystemsForSummonsFilter(
 		`${ApiUrl.SUMMONS_SOURCES_LOOKUP}?${queryParams.toString()}`,
 	);
 
-	return data.itens ?? [];
+	// RF6 / QA item 9: API às vezes ainda devolve certificado (-3) apesar de tipoAcesso=-1,-2.
+	return (data.itens ?? []).filter(isSelectableCourtSourceForApp);
 }
 
 export async function sendSummonsEmail(
