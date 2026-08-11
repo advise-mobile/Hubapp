@@ -28,7 +28,7 @@ export function isCertificateCourtAccessType(value: unknown): boolean {
 	return Number(value) === COURT_ACCESS_TYPE_CERTIFICATE;
 }
 
-/** Tipos que o app pode exibir no select (Guideline RF6: tipoAcesso=-1,-2). */
+/** Tipos que o app pode exibir no select (RF6: tipoAcesso=-1 e -2). */
 export function isAppSupportedCourtAccessType(value: unknown): boolean {
 	const accessTypeId = Number(value);
 	return (

@@ -8,6 +8,7 @@ import { FormInputWithoutBorder } from '@components/FormInputWithoutBorder';
 import { Select } from '@components/Select';
 import { getLoggedUser } from '@lhelpers/Permissions';
 import {
+	getCourtAccessTypeId,
 	getJudicialAgencySiglaLabel,
 	type CourtOption,
 	type JudicialAgencyOption,
@@ -104,12 +105,14 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 			return undefined;
 		}
 		return systems.find(
-			(row: CourtOption) => row.idFonteXTipoPesquisa === systemId,
+			(row: CourtOption) => Number(row.idFonteXTipoPesquisa) === systemId,
 		);
 	}, [systems, watchedSystemId]);
 
 	const requiresQrCode = useMemo(
-		() => isQrCodeCourtAccessType(selectedCourtSystem?.idTipoAcessoFontePesq),
+		() =>
+			selectedCourtSystem != null &&
+			isQrCodeCourtAccessType(getCourtAccessTypeId(selectedCourtSystem)),
 		[selectedCourtSystem],
 	);
 
@@ -158,9 +161,12 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 		const judicialOrganId = Number(values.idOrgaoJudiciario);
 		const courtSystemSourceId = Number(values.idFonteXTipoPesquisaSistema);
 		const selectedRow = systems.find(
-			(row: CourtOption) => row.idFonteXTipoPesquisa === courtSystemSourceId,
+			(row: CourtOption) =>
+				Number(row.idFonteXTipoPesquisa) === courtSystemSourceId,
 		);
-		const needQr = isQrCodeCourtAccessType(selectedRow?.idTipoAcessoFontePesq);
+		const needQr =
+			selectedRow != null &&
+			isQrCodeCourtAccessType(getCourtAccessTypeId(selectedRow));
 
 		try {
 			await registerCredential.mutateAsync({

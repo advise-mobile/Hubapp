@@ -1,5 +1,6 @@
 import { api } from '@constants/API';
 import { ApiUrl } from '@constants/urls';
+import { USE_SUMMONS_LIST_MOCK } from '@constants/environment';
 import { getLoggedUser } from '@lhelpers/Permissions';
 import type { SummonsFilters } from '@models/summons-hooks-types';
 import { summonsFiltersToQueryParams } from '@models/summons-filters';
@@ -14,6 +15,7 @@ import type { SummonsDetailResponse } from '@models/summons-detail';
 import type { SendSummonsEmailInput } from '@models/summons-email';
 import type { DeleteSummonsInput } from '@models/summons-delete';
 import type { SummonsListPageResponse } from '@models/summons-list';
+import { getMockSummonsListPage } from '@pages/Summons/mocks/summons-list-mock';
 
 export async function fetchCourtsForSummonsFilter(): Promise<
 	JudicialAgencyItem[]
@@ -61,6 +63,10 @@ export async function fetchSummonsListPage(
 	page: number,
 	filters: SummonsFilters = {},
 ): Promise<SummonsListPageResponse> {
+	if (USE_SUMMONS_LIST_MOCK) {
+		return getMockSummonsListPage(page, SUMMONS_LIST_PAGE_SIZE);
+	}
+
 	const clientUserId = await resolveClientUserId();
 
 	const queryParams = new URLSearchParams();
@@ -160,7 +166,9 @@ export async function fetchSystemsForSummonsFilter(
 	queryParams.set('campos', '*');
 	queryParams.set('idOrgaoJudiciario', String(judicialAgencyId));
 	queryParams.set('idUsuarioCliente', String(clientUserId));
-	queryParams.set('tipoAcesso', '-1,-2');
+	// Retorno APP item 9: API espera params repetidos (não "-1,-2" em um único valor).
+	queryParams.append('tipoAcesso', '-1');
+	queryParams.append('tipoAcesso', '-2');
 	queryParams.set('paginaAtual', '1');
 	queryParams.set('registrosPorPagina', '999');
 
@@ -168,7 +176,7 @@ export async function fetchSystemsForSummonsFilter(
 		`${ApiUrl.SUMMONS_SOURCES_LOOKUP}?${queryParams.toString()}`,
 	);
 
-	// RF6 / QA item 9: API às vezes ainda devolve certificado (-3) apesar de tipoAcesso=-1,-2.
+	// Rede de segurança: API às vezes ainda devolve certificado (-3).
 	return (data.itens ?? []).filter(isSelectableCourtSourceForApp);
 }
 
