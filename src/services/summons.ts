@@ -1,6 +1,5 @@
 import { api } from '@constants/API';
 import { ApiUrl } from '@constants/urls';
-import { USE_SUMMONS_LIST_MOCK } from '@constants/environment';
 import { getLoggedUser } from '@lhelpers/Permissions';
 import type { SummonsFilters } from '@models/summons-hooks-types';
 import { summonsFiltersToQueryParams } from '@models/summons-filters';
@@ -15,7 +14,6 @@ import type { SummonsDetailResponse } from '@models/summons-detail';
 import type { SendSummonsEmailInput } from '@models/summons-email';
 import type { DeleteSummonsInput } from '@models/summons-delete';
 import type { SummonsListPageResponse } from '@models/summons-list';
-import { getMockSummonsListPage } from '@pages/Summons/mocks/summons-list-mock';
 
 export async function fetchCourtsForSummonsFilter(): Promise<
 	JudicialAgencyItem[]
@@ -63,10 +61,6 @@ export async function fetchSummonsListPage(
 	page: number,
 	filters: SummonsFilters = {},
 ): Promise<SummonsListPageResponse> {
-	if (USE_SUMMONS_LIST_MOCK) {
-		return getMockSummonsListPage(page, SUMMONS_LIST_PAGE_SIZE);
-	}
-
 	const clientUserId = await resolveClientUserId();
 
 	const queryParams = new URLSearchParams();
