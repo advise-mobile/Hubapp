@@ -6,6 +6,7 @@ import sendLead from '@lhelpers/RD';
 import Modal from 'react-native-modal';
 import { useForm, Controller } from 'react-hook-form';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import Header from '@lcomponents/Header';
 
@@ -23,12 +24,6 @@ import {
   Infos,
   ModalHeading,
   ModalTitle,
-  ModalSubtitle,
-  ModalOptionText,
-  ModalOptionButton,
-  Attendance,
-  AttendanceTitle,
-  AttendanceText,
   HelpContainer,
   HelpText,
   Row,
@@ -72,11 +67,9 @@ const Client = props => {
   const [emailErr, setEmailErr] = useState(false);
   const [phoneErr, setPhoneErr] = useState(false);
 
-  const [isCallModalVisible, setCallModalVisible] = useState(false);
   const [isHelpModalVisible, setHelpModalVisible] = useState(false);
   const [isContactModalVisible, setContactModalVisible] = useState(false);
 
-  const toggleCallModal = useCallback(() => setCallModalVisible(!isCallModalVisible), [isCallModalVisible]);
   const toggleHelpModal = useCallback(() => setHelpModalVisible(!isHelpModalVisible), [isHelpModalVisible]);
   const toggleContactModal = useCallback(() => {
     setContactModalVisible(!isContactModalVisible);
@@ -146,10 +139,12 @@ const Client = props => {
             </Description>
           </ContentRow>
           <ContentRow>
-            <OptionButton onPress={toggleCallModal}>
+            <OptionButton
+              onPress={() => Linking.openURL('https://wa.me/5543999522101')}
+            >
               <Option>
-                <Icon name={"phone"} size={20} color={colors.fadedBlack} />
-                <OptionText>Quero ligar para a Advise</OptionText>
+                <FontAwesome name="whatsapp" size={22} color={colors.advise} />
+                <OptionText>(43) 99952-2101</OptionText>
               </Option>
             </OptionButton>
           </ContentRow>
@@ -163,40 +158,6 @@ const Client = props => {
           </ContentRow>
         </Content>
       </Warp>
-      <Modal isVisible={isCallModalVisible} onBackdropPress={toggleCallModal} style={{ justifyContent: 'flex-start' }}>
-        <ModalContent device={Platform.OS}>
-          <Infos>
-            <ModalHeading>
-              <ModalTitle>Ligue para a Advise</ModalTitle>
-              <Button onPress={toggleCallModal}>
-                <Icon name={"close"} size={22} color={colors.grayDarker} />
-              </Button>
-            </ModalHeading>
-            <Description>Escolha como prefere ligar de acordo com a sua região.</Description>
-
-            <ModalSubtitle>Capitais e regiões metropolitanas</ModalSubtitle>
-            <ModalOptionButton onPress={() => Linking.openURL('tel:40033196')}>
-              <Option>
-                <Icon name={"phone"} size={22} color={colors.advise} />
-                <ModalOptionText>4003 3196</ModalOptionText>
-              </Option>
-            </ModalOptionButton>
-
-            <ModalSubtitle>Demais regiões</ModalSubtitle>
-            <ModalOptionButton onPress={() => Linking.openURL('tel:08005009926')}>
-              <Option>
-                <Icon name={"phone"} size={22} color={colors.advise} />
-                <ModalOptionText>0800 500 9926</ModalOptionText>
-              </Option>
-            </ModalOptionButton>
-          </Infos>
-          <Attendance>
-            <AttendanceTitle>Horário de atendimento</AttendanceTitle>
-            <AttendanceText>Segunda a quinta: 8:00 às 18:00</AttendanceText>
-            <AttendanceText>Sexta: 8:00 às 17:30, exceto feriados</AttendanceText>
-          </Attendance>
-        </ModalContent>
-      </Modal>
       <Modal isVisible={isHelpModalVisible} onBackdropPress={toggleHelpModal} style={{ justifyContent: 'flex-start' }}>
         <ModalContent device={Platform.OS}>
           <Infos>
