@@ -20,11 +20,11 @@ export function* getDeadlines({ param }) {
   try {
     const user = yield getLoggedUser();
 
-    yield put(AuthAction.contractsRequest());
-
-    yield delay(200);
-
-    yield put(UserActions.updatePicture());
+    if (param.page <= 1) {
+      yield put(AuthAction.contractsRequest());
+      yield delay(200);
+      yield put(UserActions.updatePicture());
+    }
 
     const filters = getFilters(param.filters);
 
@@ -45,18 +45,28 @@ export function* getDeadlines({ param }) {
       `/core/v1/eventos-agenda?${query}&${paginator}${filters}`,
     );
 
+    const pagination = data.paginacao || {};
+
     // Limpar dados para evitar referências circulares
     const cleanData = {
       itens: data.itens || [],
-      totalRegistros: data.totalRegistros || 0,
-      totalPaginas: data.totalPaginas || 0,
-      paginaAtual: data.paginaAtual || 0,
-      registrosPorPagina: data.registrosPorPagina || 0,
+      totalRegistros: pagination.registrosTotal || data.totalRegistros || 0,
+      totalPaginas: pagination.paginaTotal || data.totalPaginas || 0,
+      paginaAtual:
+        pagination.paginaAtual || data.paginaAtual || param.page,
+      registrosPorPagina:
+        pagination.registrosPorPagina ||
+        data.registrosPorPagina ||
+        param.perPage,
     };
 
-    const endReached = cleanData.itens.length == 0;
+    const itemCount = cleanData.itens.length;
+    const paginaAtual = cleanData.paginaAtual || param.page;
+    const endReached =
+      itemCount === 0 ||
+      itemCount < param.perPage ||
+      (cleanData.totalPaginas > 0 && paginaAtual >= cleanData.totalPaginas);
 
-    yield delay(2000);
     yield put(
       DeadlineActions.deadlinesSuccess(
         { ...cleanData, endReached },

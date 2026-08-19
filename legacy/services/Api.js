@@ -129,7 +129,6 @@ if (__DEV__) {
   api.interceptors.request.use(
     config => {
       console.log('🔗 [API REQUEST]', config.method?.toUpperCase(), config.url);
-      console.log('📤 [DATA]', config.data);
       console.log('📋 [HEADERS]', config.headers);
       return config;
     },
@@ -142,6 +141,7 @@ if (__DEV__) {
   api.interceptors.response.use(
     response => {
       console.log('✅ [API RESPONSE]', response.status, response.config.url);
+      console.log('📥 [DATA]', response.data);
       return response;
     },
     error => {
