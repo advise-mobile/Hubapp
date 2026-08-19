@@ -84,3 +84,14 @@ export const GetYearOnlyMonthsPeriod = () => {
 		endOfYear: moment().endOf('year').format('YYYY-MM'),
 	};
 };
+
+export const getDeadlineEndDateTime = dataHoraInicio => {
+	const inicio = moment(dataHoraInicio);
+	const fim = inicio.clone().add(1, 'hours');
+
+	if (!fim.isSame(inicio, 'day')) {
+		return `${inicio.format('YYYY-MM-DD')}T23:59:59`;
+	}
+
+	return fim.format('YYYY-MM-DDTHH:mm:ss');
+};

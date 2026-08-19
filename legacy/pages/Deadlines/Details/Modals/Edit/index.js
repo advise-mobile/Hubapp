@@ -10,7 +10,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CheckBox from '@react-native-community/checkbox';
 import moment from 'moment';
 
-import { FormatFullDateEN } from '@lhelpers/DateFunctions';
+import { FormatFullDateEN, getDeadlineEndDateTime } from '@lhelpers/DateFunctions';
 
 import Modal from '@lcomponents/Modal';
 import Spinner from '@lcomponents/Spinner';
@@ -215,7 +215,7 @@ export default Edit = forwardRef((props, ref) => {
     // Quando desmarcado: adiciona 1 hora ao início
     const dataHoraFim = diaInteiro
       ? `${dataBase.format('YYYY-MM-DD')}T23:59:59`
-      : moment(dataHoraInicio).add(1, 'hours').format('YYYY-MM-DDTHH:mm:ss');
+      : getDeadlineEndDateTime(dataHoraInicio);
 
     const type = types.find(type => type.id == currentType);
 
