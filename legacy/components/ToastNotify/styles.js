@@ -3,7 +3,9 @@ import { fonts, metrics } from '@lassets/styles';
 
 const Container = styled.View`
   elevation: 9999;
+  left: 0;
   position: absolute;
+  right: 0;
   z-index: 9999;
 `;
 

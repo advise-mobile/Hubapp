@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import RNModal from 'react-native-modal';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getTabBarMetrics } from '@lhelpers/tabBarInsets';
 
 import {
   Handle,
@@ -29,10 +30,9 @@ export type { BottomSheetProps } from './types';
 const DEFAULT_BACKDROP_OPACITY = 0.5;
 const MIN_SHEET_HEIGHT = 200;
 
-/** Alinhado à tab bar em legacy/navigation/Routes.js */
 function resolveTabBarBottomInset(insetsBottom: number): number {
-  const tabBarBaseHeight = Platform.OS === 'android' ? 64 : 80;
-  return tabBarBaseHeight + insetsBottom;
+  const { height } = getTabBarMetrics(insetsBottom);
+  return height;
 }
 
 export function BottomSheet({

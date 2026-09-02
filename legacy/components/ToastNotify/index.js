@@ -1,24 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from 'styled-components';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ToastNotifyActions from '@lstore/ducks/ToastNotify';
-import { metrics } from '@lassets/styles';
+import { getToastBottomOffset } from '@lhelpers/tabBarInsets';
 
 import { Container, Notify, NotifyMessage } from './styles';
 
 const TOAST_VISIBLE_MS = 4000;
-
-/** Alinhado à tab bar em legacy/navigation/Routes.js e BottomSheet. */
-function resolveTabBarBottomInset(insetsBottom) {
-	const tabBarBaseHeight = Platform.OS === 'android' ? 64 : 80;
-	return tabBarBaseHeight + insetsBottom;
-}
 
 const stylesToastNotify = colors =>
 	StyleSheet.create({
@@ -52,7 +46,7 @@ function ToastNotify({ toastNotify, toastNotifyHide }) {
 		};
 	}, [show, toastNotifyHide]);
 
-	const bottom = metrics.baseMargin + resolveTabBarBottomInset(insets.bottom);
+	const bottom = getToastBottomOffset(insets.bottom);
 
 	return (
 		<Container pointerEvents="box-none" style={{ bottom }}>
