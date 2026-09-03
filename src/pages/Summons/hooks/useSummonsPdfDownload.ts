@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { useCallback, useRef } from 'react';
 import { Platform } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import { useDispatch } from 'react-redux';
@@ -53,8 +54,19 @@ export function useSummonsPdfDownload(
 		},
 	});
 
+	const downloadingIdRef = useRef<number | null>(null);
+
+	const downloadPdf = useCallback(
+		(id: number, callbackOptions?: Parameters<typeof mutation.mutate>[1]) => {
+			downloadingIdRef.current = id;
+			mutation.mutate(id, callbackOptions);
+		},
+		[mutation],
+	);
+
 	return {
-		downloadPdf: mutation.mutate,
+		downloadPdf,
 		isDownloading: mutation.isPending,
+		downloadingId: mutation.isPending ? downloadingIdRef.current : null,
 	};
 }

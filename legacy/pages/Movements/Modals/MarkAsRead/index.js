@@ -65,7 +65,7 @@ export default MarkAsRead = forwardRef((props, ref) => {
   );
 
   return (
-    <Modal ref={ref} title={movement?.idTipoMovProcesso === -1 ? "Deseja marcar o andamento como lido?" : "Deseja marcar a publicação como lida?"} footer={footer()}>
+    <Modal ref={ref} title={movement?.idTipoMovProcesso === -1 ? "Deseja marcar o andamento como lido?" : "Deseja marcar a publicação como lida?"} footer={footer()} adjustToContentHeight>
       <Content>
 
       </Content>

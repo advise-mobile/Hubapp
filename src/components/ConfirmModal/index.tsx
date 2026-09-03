@@ -51,6 +51,7 @@ export default ConfirmModal = forwardRef((props: ConfirmModalProps, ref) => {
       title={props.title}
       footer={footer()}
       maxHeight={props.maxHeight}
+      adjustToContentHeight={props.adjustToContentHeight ?? true}
     >
       <Content>
         <Message>{props.description}</Message>

@@ -128,14 +128,14 @@ export default Movements = props => {
 
   const [folder] = useState(props.route.params.item);
 
-  const [downloading, setDownloading] = useState(false);
+  const [downloadingId, setDownloadingId] = useState(null);
   const [trigger, setTrigger] = useState(false);
   const [currentMove, setCurrentMove] = useState(movements[0]);
   const [formattedData, setFormattedData] = useState({});
   // const [selecteds, setSelecteds] = useState(0);
   // const [selectAll, setSelectedAll] = useState(selecteds > 0 ? true : false);
 
-  const [sharing, setSharing] = useState(false);
+  const [sharingId, setSharingId] = useState(null);
 
   const [hasSchedulePermission, setHasSchedulePermission] = useState(false);
 
@@ -301,7 +301,7 @@ export default Movements = props => {
         return;
       }
 
-      setSharing(true);
+      setSharingId(data.item.idMovProcessoCliente);
       const { file, fileName } = await downloadMovement(data, true);
       const error = await RNShareFile(file, fileName);
 
@@ -322,7 +322,7 @@ export default Movements = props => {
         ),
       );
     } finally {
-      setSharing(false);
+      setSharingId(null);
     }
   });
 
@@ -359,7 +359,7 @@ export default Movements = props => {
         setCurrentMove(item);
 
         if (!sharing) {
-          setDownloading(true);
+          setDownloadingId(item.idMovProcessoCliente);
 
           Toast.show(
             `Download ${
@@ -457,7 +457,7 @@ export default Movements = props => {
 
             reject();
           })
-          .finally(() => setDownloading(false));
+          .finally(() => setDownloadingId(null));
       } catch (error) {
         reject(error);
       }
@@ -588,8 +588,8 @@ export default Movements = props => {
       <ActionButton onPress={() => handleEmail(data)}>
         <MaterialIcons name="mail" size={24} color={colors.fadedBlack} />
       </ActionButton>
-      <ActionButton onPress={() => !downloading && downloadMovement(data)}>
-        {downloading ? (
+      <ActionButton onPress={() => !downloadingId && downloadMovement(data)}>
+        {downloadingId === data.item.idMovProcessoCliente ? (
           <Spinner height={24} />
         ) : (
           <MaterialIcons
@@ -599,8 +599,8 @@ export default Movements = props => {
           />
         )}
       </ActionButton>
-      <ActionButton onPress={() => !sharing && share(data)}>
-        {sharing ? (
+      <ActionButton onPress={() => !sharingId && share(data)}>
+        {sharingId === data.item.idMovProcessoCliente ? (
           <Spinner height={24} />
         ) : (
           <MaterialIcons name="share" size={24} color={colors.fadedBlack} />
@@ -610,7 +610,7 @@ export default Movements = props => {
         <MaterialIcons name="delete" size={24} color={colors.fadedBlack} />
       </ActionButton>
     </Actions>
-  ));
+  ), [hasSchedulePermission, downloadingId, sharingId]);
 
   const renderItem = useCallback(
     ({ item }) => (

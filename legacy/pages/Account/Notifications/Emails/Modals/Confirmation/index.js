@@ -66,7 +66,7 @@ export default Confirmation = forwardRef((props, ref) => {
   );
 
   return (
-    <Modal ref={ref} title="Deseja excluir esse email?" footer={footer()}>
+    <Modal ref={ref} title="Deseja excluir esse email?" footer={footer()} adjustToContentHeight>
       <Content>
         <Message>Ao excluir um email você opta por deixar de enviar para o destinatário notificações de novas publicações e andamentos de sua conta.</Message>
       </Content>
