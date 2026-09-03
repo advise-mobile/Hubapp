@@ -51,6 +51,8 @@ import {
 // Add Hook UseTheme para pegar o tema global addicionado
 import { useTheme } from 'styled-components';
 
+const GENDER_LABELS = { [-1]: 'Masculino', [-2]: 'Feminino', [-3]: 'Não informar' };
+
 const Infos = props => {
   // Variavel para usar o hook
   const colorUseTheme = useTheme();
@@ -326,35 +328,31 @@ const Infos = props => {
                   </InfoContainer>
                   <InfoContainer>
                     <InfoTitle>Gênero</InfoTitle>
-                    <InfoCustomValue editable={editMode}>
-                      <RNPickerSelect
-                        placeholder={{}}
-                        disabled={!editMode}
-                        doneText="Selecionar"
-                        style={pickerSelectStyles}
-                        value={userData.data.idSexo}
-                        onValueChange={value =>
-                          setUserData({
-                            data: { ...userData.data, idSexo: value },
-                          })
-                        }
-                        useNativeAndroidPickerStyle={false}
-                        items={[
-                          {
-                            label: 'Masculino',
-                            value: -1,
-                          },
-                          {
-                            label: 'Feminino',
-                            value: -2,
-                          },
-                          {
-                            label: 'Não informar',
-                            value: -3,
-                          },
-                        ]}
-                      />
-                    </InfoCustomValue>
+                    {editMode ? (
+                      <InfoCustomValue editable>
+                        <RNPickerSelect
+                          placeholder={{}}
+                          doneText="Selecionar"
+                          style={pickerSelectStyles}
+                          value={userData.data.idSexo}
+                          onValueChange={value =>
+                            setUserData({
+                              data: { ...userData.data, idSexo: value },
+                            })
+                          }
+                          useNativeAndroidPickerStyle={false}
+                          items={[
+                            { label: 'Masculino', value: -1 },
+                            { label: 'Feminino', value: -2 },
+                            { label: 'Não informar', value: -3 },
+                          ]}
+                        />
+                      </InfoCustomValue>
+                    ) : (
+                      <InfoText>
+                        {GENDER_LABELS[userData.data.idSexo] || 'Não informado'}
+                      </InfoText>
+                    )}
                   </InfoContainer>
                   <InfoContainer>
                     <InfoTitle>Telefone</InfoTitle>
