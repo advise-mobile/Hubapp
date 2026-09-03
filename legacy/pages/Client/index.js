@@ -208,7 +208,7 @@ const Client = props => {
                     control={control}
                     defaultValue={null}
                     rules={{ required: false }}
-                    render={({ onChange }) => (
+                    render={({ field: { onChange } }) => (
                       <Input
                         value={name}
                         ref={nameRef}
@@ -235,7 +235,7 @@ const Client = props => {
                     control={control}
                     defaultValue={null}
                     rules={{ required: false }}
-                    render={({ onChange }) => (
+                    render={({ field: { onChange } }) => (
                       <Input
                         value={email}
                         ref={emailRef}
@@ -262,7 +262,7 @@ const Client = props => {
                     control={control}
                     defaultValue={null}
                     rules={{ required: false }}
-                    render={({ onChange }) => (
+                    render={({ field: { onChange } }) => (
                       <Input
                         value={phone}
                         ref={phoneRef}
