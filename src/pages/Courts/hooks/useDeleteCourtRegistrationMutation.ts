@@ -8,6 +8,7 @@ import { deleteCourtRegistration } from '@services/courts';
 import { SUMMONS_LIST_QUERY_KEY } from '@pages/Summons/hooks/useSummonsInfiniteQuery';
 
 import { COURTS_REGISTRATIONS_LIST_QUERY_KEY } from './useCourtsRegistrationsInfiniteQuery';
+import { COURTS_ACCESS_CREDIT_QUERY_KEY } from './useCourtsAccessCreditQuery';
 
 const SUMMONS_LIST_ACCESS_QUERY_KEY = ['summons', 'list-access'] as const;
 
@@ -36,6 +37,9 @@ export function useDeleteCourtRegistrationMutation() {
 				}),
 				queryClient.invalidateQueries({
 					queryKey: [...COURTS_REGISTRATIONS_LIST_QUERY_KEY],
+				}),
+				queryClient.invalidateQueries({
+					queryKey: [...COURTS_ACCESS_CREDIT_QUERY_KEY],
 				}),
 			]);
 			dispatch(

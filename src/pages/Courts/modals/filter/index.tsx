@@ -37,8 +37,8 @@ const ACCESS_OPTIONS: {
 	label: string;
 }[] = [
 	{ value: 'all', label: 'Todos' },
-	{ value: 'active', label: 'Ativo' },
-	{ value: 'inactive', label: 'Inativo' },
+	{ value: 'active', label: 'Ativos' },
+	{ value: 'inactive', label: 'Inativos' },
 ];
 
 const SITUATION_OPTIONS: {
@@ -153,7 +153,7 @@ export function CourtsFilterModal({
 			maxHeightRatio={0.72}
 		>
 			<Section>
-				<SectionTitle>Acesso</SectionTitle>
+				<SectionTitle>Acessos</SectionTitle>
 				<RadioForm animation style={{ flex: 1 }}>
 					{ACCESS_OPTIONS.map(obj => (
 						<RBRow as={RadioButton} key={obj.value}>
