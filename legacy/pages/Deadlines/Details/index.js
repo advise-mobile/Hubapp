@@ -130,9 +130,10 @@ export default function DeadlinesDetails(props) {
         openConfirmation={() => confirmationRef.current?.open()}
         share={() => share()}
         movement={movementData}
+        onUpdate={updated => setDeadline(updated)}
       />
     ),
-    [movementData],
+    [movementData, deadline],
   );
 
   const renderProcesses = useCallback(
