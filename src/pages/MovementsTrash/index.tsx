@@ -8,8 +8,7 @@ import React, {
 import { View } from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
-import Image from 'react-native-remote-svg';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { SwipeListView } from 'react-native-swipe-list-view';
 
@@ -73,15 +72,8 @@ export default MovementsTrash = () => {
       ? require('assets/images/not_found/movements_white.png')
       : require('assets/images/not_found/movements.png');
 
-  const iconDelete =
-    colorUseTheme.name === 'dark'
-      ? require('assets/images/movements-trash-delete-dark.png')
-      : require('assets/images/movements-trash-delete-white.png');
-
-  const iconRestore =
-    colorUseTheme.name === 'dark'
-      ? require('assets/images/movements-trash-restore-dark.png')
-      : require('assets/images/movements-trash-restore-white.png');
+  const iconColor =
+    colorUseTheme.name === 'dark' ? colors.white : colors.fadedBlack;
 
   const { isLoadingRecover, recoverMoviment } = useMovementRecover();
   const { isLoadingDelete, deleteMovement } = useMovementDelete();
@@ -182,14 +174,14 @@ export default MovementsTrash = () => {
         }}
       >
         <ActionButton onPress={() => handleRecover(item)}>
-          <Image source={iconRestore} style={{ width: 30, height: 45 }} />
+          <MaterialCommunityIcons name="delete-restore" size={30} color={iconColor} />
         </ActionButton>
         <ActionButton onPress={() => handleDelete(item)}>
-          <Image source={iconDelete} style={{ width: 30, height: 45 }} />
+          <MaterialCommunityIcons name="delete-forever-outline" size={30} color={iconColor} />
         </ActionButton>
       </Actions>
     ),
-    [iconRestore, iconDelete],
+    [iconColor],
   );
 
   const renderConfirmation = useMemo(
