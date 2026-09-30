@@ -8,6 +8,7 @@ import {
 	Slide,
 	Title,
 	Icon,
+	ImageWrapper,
 	Image,
 	Text,
 	NextButton,
@@ -33,7 +34,9 @@ export function IntroUI({
 					resizeMode="contain"
 					style={sliderStyles.icon}
 				/>
-				<Image source={item.image} resizeMode="contain" />
+				<ImageWrapper renderToHardwareTextureAndroid>
+					<Image source={item.image} resizeMode="cover" />
+				</ImageWrapper>
 				<SlideContainer>
 					<Title>{item.title}</Title>
 					<Text>{item.text}</Text>

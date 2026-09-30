@@ -27,10 +27,17 @@ export const Icon = styled.Image`
   height: 24px;
 `;
 
-export const Image = styled.Image`
+export const ImageWrapper = styled.View`
   margin: 0 32px 32px 32px;
   flex: 4;
   border-radius: 16px;
+  overflow: hidden;
+  border-width: 1px;
+  border-color: transparent;
+`;
+
+export const Image = styled.Image`
+  flex: 1;
 `;
 
 export const Title = styled.Text`
