@@ -92,8 +92,10 @@ const Badge = styled.TouchableOpacity`
     props.error
       ? props.theme.colors.redLight
       : props.active
-      ? props.theme.colors.grayDarker
-      : props.theme.colors.gray};
+        ? props.theme.colors.grayDarker
+        : props.theme.name === 'dark'
+          ? props.theme.colors.colorlessBadge
+          : props.theme.colors.gray};
   border-radius: 16px;
   padding: 4px 8px;
   margin-right: 8px;
@@ -106,8 +108,8 @@ const BadgeText = styled.Text`
     props.error
       ? props.theme.colors.red
       : props.active
-      ? props.theme.colors.white
-      : 'rgba(0, 0, 0, 0.38)'};
+        ? props.theme.colors.white
+        : props.theme.colors.grayDarker};
   font-size: ${fonts.smaller};
 `;
 

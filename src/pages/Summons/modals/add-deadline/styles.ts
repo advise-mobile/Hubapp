@@ -67,7 +67,9 @@ export const TypeBadge = styled.TouchableOpacity<{
 			? theme.colors.redLight
 			: $active
 				? theme.colors.grayDarker
-				: theme.colors.gray};
+				: theme.name === 'dark'
+					? theme.colors.colorlessBadge
+					: theme.colors.gray};
 	border-radius: 16px;
 	padding: 4px 8px;
 	margin-right: 8px;
@@ -85,7 +87,7 @@ export const TypeBadgeText = styled.Text<{
 			? theme.colors.red
 			: $active
 				? theme.colors.white
-				: 'rgba(0, 0, 0, 0.38)'};
+				: theme.colors.grayDarker};
 `;
 
 export const AllDayBox = styled.View`

@@ -85,7 +85,14 @@ const Badges = styled.View`
 `;
 
 const Badge = styled.TouchableOpacity`
-  background: ${props => props.error ? props.theme.colors.redLight : props.active ? props.theme.colors.grayDarker : props.theme.colors.gray};
+  background: ${props =>
+    props.error
+      ? props.theme.colors.redLight
+      : props.active
+        ? props.theme.colors.grayDarker
+        : props.theme.name === 'dark'
+          ? props.theme.colors.colorlessBadge
+          : props.theme.colors.gray};
   border-radius: 16px;
   padding: 4px 8px;
   margin-right: 8px;
@@ -94,7 +101,12 @@ const Badge = styled.TouchableOpacity`
 
 const BadgeText = styled.Text`
   font-family: ${fonts.circularStdBold};
-  color: ${props => props.error ? props.theme.colors.red : props.active ? props.theme.colors.white : 'rgba(0, 0, 0, 0.38)'};
+  color: ${props =>
+    props.error
+      ? props.theme.colors.red
+      : props.active
+        ? props.theme.colors.white
+        : props.theme.colors.grayDarker};
   font-size: ${fonts.smaller};
 `;
 
