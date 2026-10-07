@@ -11,6 +11,9 @@ export const DetailContent = styled(ScrollView).attrs({
 	flex: 1;
 	width: 100%;
 	background-color: ${({ theme }) => theme.colors.white};
+	border-top-width: 1px;
+	border-color: ${({ theme }) => theme.colors.grayLighter};
+	margin-top: 10px;
 `;
 
 export const DetailBody = styled.View`
