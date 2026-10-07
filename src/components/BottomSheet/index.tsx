@@ -117,6 +117,7 @@ export function BottomSheet({
     <RNModal
       isVisible={visible}
       onBackButtonPress={onClose}
+      onBackdropPress={onClose}
       onModalHide={onModalHide}
       animationIn="slideInUp"
       animationOut="slideOutDown"

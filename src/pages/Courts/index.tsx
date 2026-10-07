@@ -258,7 +258,9 @@ export default function Courts() {
 						showsVerticalScrollIndicator={false}
 					/>
 				</Content>
-				<AddCourtsModal visible={addModalVisible} onClose={handleCloseAdd} />
+				{addModalVisible ? (
+					<AddCourtsModal visible onClose={handleCloseAdd} />
+				) : null}
 				<CourtsFilterModal
 					visible={filterModalVisible}
 					onClose={handleCloseFilter}

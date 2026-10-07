@@ -76,6 +76,7 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 	const [responsibleDisplay, setResponsibleDisplay] = useState(
 		RESPONSIBLE_FALLBACK,
 	);
+	const [selectResetKey, setSelectResetKey] = useState(0);
 
 	const {
 		control,
@@ -125,8 +126,9 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 	useEffect(() => {
 		if (!visible) return;
 		reset(defaultValues);
-		loadCourts().catch(() => {});
 		loadSystems(null);
+		setSelectResetKey(key => key + 1);
+		loadCourts().catch(() => {});
 		getLoggedUser()
 			.then(user => {
 				const nome = (user as { nome?: string }).nome;
@@ -148,14 +150,15 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 		[courts],
 	);
 
-	const systemItems = useMemo(
-		() =>
-			systems.map((courtSystem: CourtOption) => ({
-				label: courtSystem.nomeExibicao,
-				value: String(courtSystem.idFonteXTipoPesquisa),
-			})),
-		[systems],
-	);
+	const systemItems = useMemo(() => {
+		if (systemSelectDisabled) {
+			return [];
+		}
+		return systems.map((courtSystem: CourtOption) => ({
+			label: courtSystem.nomeExibicao,
+			value: String(courtSystem.idFonteXTipoPesquisa),
+		}));
+	}, [systemSelectDisabled, systems]);
 
 	const onSubmit = async (values: FormValues) => {
 		const judicialOrganId = Number(values.idOrgaoJudiciario);
@@ -210,7 +213,8 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 				</ButtonsFooter>
 			}
 		>
-			<FormBlock>
+			{visible ? (
+			<FormBlock key={selectResetKey}>
 				<ResponsibleRow>
 					<ResponsibleLabel>Responsável</ResponsibleLabel>
 					<ResponsibleName>{responsibleDisplay}</ResponsibleName>
@@ -226,6 +230,7 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 						rules={{ required: requiredFieldMessage }}
 						render={({ field: { onChange, value } }) => (
 							<Select
+								key={`tribunal-${selectResetKey}`}
 								compact
 								formRowAlign
 								items={courtItems}
@@ -265,11 +270,18 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 						rules={{ required: requiredFieldMessage }}
 						render={({ field: { onChange, value } }) => (
 							<Select
+								key={`sistema-${selectResetKey}`}
 								compact
 								formRowAlign
 								items={systemItems}
-								value={value || null}
+								value={
+									systemSelectDisabled ? null : value || null
+								}
 								onChange={selectedValue => {
+									if (systemSelectDisabled) {
+										onChange('');
+										return;
+									}
 									onChange(selectedValue ?? '');
 									setValue('login', '');
 									setValue('password', '');
@@ -394,6 +406,7 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 					</FormSheetRow>
 				) : null}
 			</FormBlock>
+			) : null}
 		</BottomSheet>
 	);
 }
