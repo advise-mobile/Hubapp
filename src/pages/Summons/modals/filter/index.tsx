@@ -18,6 +18,7 @@ import type { SummonsFilters } from '@models/summons-hooks-types';
 import { countActiveSummonsFilters } from '@models/summons-filters';
 import {
 	getJudicialAgencyLabel,
+	getJudicialAgencySiglaLabel,
 	getSummonsSourceSystemName,
 	type CourtOption,
 	type JudicialAgencyOption,
@@ -277,7 +278,7 @@ export function SummonsFilterModal({
 	};
 
 	const courtItems = courts.map((court: JudicialAgencyOption) => ({
-		label: getJudicialAgencyLabel(court),
+		label: getJudicialAgencySiglaLabel(court),
 		value: String(court.idOrgaoJudiciario),
 	}));
 
