@@ -30,8 +30,9 @@ export function Header({
           leftActions.map((action, index) => (
             <HeaderAction
               key={`left-${index}`}
-              onPress={action.onPress}
-              activeOpacity={0.7}
+              onPress={action.disabled ? undefined : action.onPress}
+              disabled={action.disabled}
+              activeOpacity={action.disabled ? 1 : 0.7}
             >
               <MaterialIcons
                 name={action.icon as any}

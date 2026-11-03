@@ -93,16 +93,20 @@ export default function Summons() {
 		],
 	);
 
-	// RF 3.1.1: sem cadastro / empty onboarding → não exibir filtro
+	// RF 3.1.1 / Figma tela inicial: filtro visível; desabilitado sem listagem
 	const filterInteractive =
 		!isAwaitingFirstResult && !isListError && !showEmptyOnboarding;
 
 	const filterLeftActions: HeaderActionConfig[] = useMemo(
-		() =>
-			filterInteractive
-				? [{ icon: 'filter-list', onPress: openFilterModal }]
-				: [],
-		[filterInteractive, openFilterModal],
+		() => [
+			{
+				icon: 'filter-list',
+				onPress: openFilterModal,
+				disabled: !filterInteractive,
+				colorIcon: filterInteractive ? undefined : colors.grayLight,
+			},
+		],
+		[colors.grayLight, filterInteractive, openFilterModal],
 	);
 
 	const { headerProps, addModalVisible, setAddModalVisible } = useSummonsHeader();
@@ -213,7 +217,7 @@ export default function Summons() {
 			<Warp>
 				<Header
 					title={headerProps.title}
-					leftActions={filterInteractive ? filterLeftActions : []}
+					leftActions={filterLeftActions}
 					rightActions={rightActions}
 				/>
 				{isAwaitingFirstResult ? (

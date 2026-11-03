@@ -1,7 +1,8 @@
 export interface HeaderActionConfig {
 	icon: string;
 	colorIcon?: string;
-	onPress: () => void;
+	onPress?: () => void;
+	disabled?: boolean;
 }
 
 export interface HeaderProps {
