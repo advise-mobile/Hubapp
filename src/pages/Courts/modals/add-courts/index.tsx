@@ -394,7 +394,7 @@ export function AddCourtsModal({ visible, onClose }: AddCourtsModalProps) {
 										onChange(formatQrInGroups(alnum));
 									}}
 									onBlur={onBlur}
-									placeholder="XXXX XXXX …"
+									placeholder="Digite o código"
 									placeholderTextColor={colors.grayLight}
 									autoCapitalize="characters"
 									autoCorrect={false}
