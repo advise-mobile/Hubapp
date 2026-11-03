@@ -50,46 +50,80 @@ export function BottomSheet({
   onModalHide,
 }: BottomSheetProps) {
   const insets = useSafeAreaInsets();
-  const { height: screenHeight } = useMemo(() => Dimensions.get('window'), []);
+  const [windowHeight, setWindowHeight] = useState(
+    () => Dimensions.get('window').height,
+  );
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const resolvedBottomInset =
     bottomInset ?? resolveTabBarBottomInset(insets.bottom);
+  const isKeyboardVisible = keyboardHeight > 0;
+
+  useEffect(() => {
+    const sub = Dimensions.addEventListener('change', ({ window }) => {
+      setWindowHeight(window.height);
+    });
+    return () => sub.remove();
+  }, []);
 
   useEffect(() => {
     if (!visible) {
       setKeyboardHeight(0);
+      setWindowHeight(Dimensions.get('window').height);
       return;
     }
 
-    const showEvent =
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvent =
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const showEvents =
+      Platform.OS === 'ios'
+        ? (['keyboardWillShow', 'keyboardDidShow'] as const)
+        : (['keyboardDidShow'] as const);
+    const hideEvents =
+      Platform.OS === 'ios'
+        ? (['keyboardWillHide', 'keyboardDidHide'] as const)
+        : (['keyboardDidHide'] as const);
 
-    const onShow = Keyboard.addListener(showEvent, event => {
-      setKeyboardHeight(event.endCoordinates.height);
-    });
-    const onHide = Keyboard.addListener(hideEvent, () => {
+    const onShow = (event: { endCoordinates: { height: number } }) => {
+      const height = event.endCoordinates.height;
+      if (height <= 0) {
+        return;
+      }
+      setWindowHeight(Dimensions.get('window').height);
+      setKeyboardHeight(height);
+    };
+    const onHide = () => {
       setKeyboardHeight(0);
-    });
+      setWindowHeight(Dimensions.get('window').height);
+    };
+
+    const showSubs = showEvents.map(eventName =>
+      Keyboard.addListener(eventName, onShow),
+    );
+    const hideSubs = hideEvents.map(eventName =>
+      Keyboard.addListener(eventName, onHide),
+    );
 
     return () => {
-      onShow.remove();
-      onHide.remove();
+      showSubs.forEach(sub => sub.remove());
+      hideSubs.forEach(sub => sub.remove());
     };
   }, [visible]);
 
-  // Com teclado aberto ele cobre a tab — não somar tab + teclado.
-  const sheetBottomInset =
-    keyboardHeight > 0 ? keyboardHeight : resolvedBottomInset;
+  // Android: o sistema já aplica IME (adjustResize / window insets). Somar
+  // keyboardHeight de novo empurra o sheet para fora da área visível.
+  // iOS: o window não encolhe — usar a altura do teclado como inset.
+  const sheetBottomInset = isKeyboardVisible
+    ? Platform.OS === 'ios'
+      ? keyboardHeight
+      : 0
+    : resolvedBottomInset;
 
   const availableForSheet = Math.max(
     MIN_SHEET_HEIGHT,
-    screenHeight - sheetBottomInset - Math.max(insets.top, 8),
+    windowHeight - (isKeyboardVisible ? keyboardHeight : resolvedBottomInset) -
+      Math.max(insets.top, 8),
   );
   const maxHeight = Math.min(
-    Math.round(screenHeight * maxHeightRatio),
+    Math.round(windowHeight * maxHeightRatio),
     availableForSheet,
   );
 
@@ -128,7 +162,16 @@ export function BottomSheet({
       backdropOpacity={1}
     >
       <SheetWrapper
-        style={{ maxHeight, marginBottom: sheetBottomInset }}
+        style={{
+          maxHeight: isKeyboardVisible && Platform.OS === 'android' ? '100%' : maxHeight,
+          marginBottom: sheetBottomInset,
+          ...(isKeyboardVisible
+            ? {
+                height:
+                  Platform.OS === 'android' ? '100%' : maxHeight,
+              }
+            : null),
+        }}
         accessible={false}
       >
         <Handle>
@@ -143,6 +186,7 @@ export function BottomSheet({
           )}
         </Header>
         <Content
+          $keyboardOpen={isKeyboardVisible}
           contentContainerStyle={{
             paddingLeft: 24,
             paddingRight: 24,

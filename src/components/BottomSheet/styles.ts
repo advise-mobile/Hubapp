@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { fonts } from '@lassets/styles';
 
@@ -54,11 +55,15 @@ export const Content = styled.ScrollView.attrs({
   keyboardShouldPersistTaps: 'handled',
   nestedScrollEnabled: true,
   showsVerticalScrollIndicator: true,
-})`
+  keyboardDismissMode: Platform.OS === 'ios' ? 'interactive' : 'on-drag',
+  automaticallyAdjustKeyboardInsets: true,
+})<{ $keyboardOpen?: boolean }>`
+  flex: ${({ $keyboardOpen }) => ($keyboardOpen ? 1 : 'none')};
   flex-shrink: 1;
 `;
 
 export const Footer = styled.View`
+  flex-shrink: 0;
   padding: 16px 24px 24px;
   padding-bottom: 24px;
 `;
