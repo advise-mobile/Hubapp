@@ -35,7 +35,7 @@ export const Tag = styled.View<{ background: string }>`
 `;
 
 export const TagText = styled.Text`
-	color: ${({ theme }) => theme.colors.grayDarker};
+	color: ${({ theme }) => theme.colors.Darkesgray};
 	font-family: ${fonts.circularStdBlack};
 	font-size: ${fonts.smaller};
 `;
