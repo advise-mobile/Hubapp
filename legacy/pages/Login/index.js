@@ -94,6 +94,10 @@ export default function Login(props) {
 	// const [email, setEmail] = useState('hub.producao.ad@gmail.com');
 	// const [password, setPassword] = useState('@Advise123#');
 
+	// const [email, setEmail] = useState('testeleticia@vomoto.com');
+	// const [password, setPassword] = useState('Senha123');
+	
+
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
