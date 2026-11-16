@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Animated, Platform, ScrollView } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
+import { Animated, Platform, ScrollView, View } from 'react-native';
 import moment from 'moment';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -149,6 +149,86 @@ const filters = [
 	},
 ];
 
+const DeadlineRow = memo(
+	({
+		item,
+		expired,
+		updating,
+		currentIdUpdate,
+		colors,
+		onPressItem,
+		onToggleRead,
+		onOpenRow,
+		onToggleImportant,
+	}) => {
+		const animatedValue = rowTranslateAnimatedValues[item.id];
+
+		return (
+			<Animated.View
+				style={{
+					overflow: 'hidden',
+					maxHeight: animatedValue
+						? animatedValue.interpolate({
+								inputRange: [0, 1],
+								outputRange: [0, 500],
+						  })
+						: 500,
+				}}
+			>
+				<ListItem
+					onPress={() => onPressItem(item)}
+					underlayColor={colors.white}
+					activeOpacity={1}
+				>
+					<ListGrid>
+						<ReadButton
+							concluded={item.concluido}
+							onPress={() => onToggleRead(item)}
+						/>
+						<ListContainer>
+							<ListHeader>
+								<ListSchedule expired={expired}>
+									{moment(item.dataHoraInicio).format('DD/MM/YYYY')} •{' '}
+									{item.diaInteiro
+										? 'Dia todo'
+										: moment(item.dataHoraInicio).format('HH:mm')}
+								</ListSchedule>
+								<ListAction onPress={() => onOpenRow(item.id)}>
+									<MaterialIcons
+										name="more-horiz"
+										size={25}
+										color={colors.fadedBlack}
+									/>
+								</ListAction>
+							</ListHeader>
+							<ListTitle expired={expired}>{item.titulo}</ListTitle>
+							<Badge type={expired ? 0 : item.idPadraoTipoEventoAgenda}>
+								<BadgeText expired={expired}>{item.tipoEventoAgenda}</BadgeText>
+							</Badge>
+
+							{item.importante && (
+								<ImportantFlag
+									onPress={() => !updating && onToggleImportant(item)}
+								>
+									{updating && item.id === currentIdUpdate ? (
+										<Spinner height="auto" />
+									) : (
+										<MaterialIcons
+											name="flag"
+											size={24}
+											color={colors.blueImportant}
+										/>
+									)}
+								</ImportantFlag>
+							)}
+						</ListContainer>
+					</ListGrid>
+				</ListItem>
+			</Animated.View>
+		);
+	},
+);
+
 // Add Hook UseTheme para pegar o tema global addicionado
 import { useTheme } from 'styled-components';
 
@@ -224,21 +304,21 @@ export default function Deadlines(props) {
 	const triggerChange = useSelector(state => state.deadlines.triggerChange);
 	const endReached = useSelector(state => state.deadlines.endReached);
 	const loading = useSelector(state => state.deadlines.loading);
+	const loadingMore = useSelector(state => state.deadlines.loadingMore);
+	const totalRegistros = useSelector(state => state.deadlines.totalRegistros);
+	const totalPaginas = useSelector(state => state.deadlines.totalPaginas);
 	const updating = useSelector(state => state.deadlines.updating);
 	const deleting = useSelector(state => state.deadlines.deleting);
 
-	const dataAll = useSelector(state =>
-		state.deadlines.data.map(prazo => {
-			rowTranslateAnimatedValues[prazo.id] = new Animated.Value(1);
+	const deadlinesData = useSelector(state => state.deadlines.data);
 
-			return prazo;
-		}),
-	);
+	deadlinesData.forEach(prazo => {
+		if (!rowTranslateAnimatedValues[prazo.id]) {
+			rowTranslateAnimatedValues[prazo.id] = new Animated.Value(1);
+		}
+	});
 
 	const [currentFilter, setCurrentFilter] = useState('a-vencer');
-
-	// Ordem vem só do backend (ordenacao em legacy/store/sagas/Deadlines.js).
-	const deadlinesData = dataAll;
 
 	const [currentIdUpdate, setCurrentIdUpdate] = useState(null);
 	const [customFilters, setCustomFilters] = useState(() => ({}));
@@ -251,6 +331,9 @@ export default function Deadlines(props) {
 	const [trigger, setTrigger] = useState(false);
 	const [page, setPage] = useState(1);
 	const [havePermission, setPermission] = useState(false);
+	const loadingMoreRef = useRef(false);
+	const queryFiltersRef = useRef({ currentFilter, customFilters });
+	queryFiltersRef.current = { currentFilter, customFilters };
 
 	const active = useSelector(state => state.auth.active);
 
@@ -336,6 +419,34 @@ export default function Deadlines(props) {
 			);
 		}
 	}, [currentFilter, customFilters, havePermission]);
+
+	// Paginação: busca páginas seguintes sem misturar com o fetch de filtros
+	useEffect(() => {
+		if (!havePermission || page <= 1) return;
+
+		const { currentFilter: filterId, customFilters: extraFilters } =
+			queryFiltersRef.current;
+		const { params } = filters.find(item => item.id == filterId);
+
+		const mergedFilters =
+			Object.keys(extraFilters).length > 0
+				? { ...params, ...extraFilters }
+				: { ...params };
+
+		dispatch(
+			DeadlinesActions.deadlinesRequest({
+				filters: mergedFilters,
+				page,
+				perPage: 20,
+			}),
+		);
+	}, [page, havePermission, dispatch]);
+
+	useEffect(() => {
+		if (!loading && !loadingMore) {
+			loadingMoreRef.current = false;
+		}
+	}, [loading, loadingMore]);
 
 	const clearCustomFilters = useCallback(() => setCustomFilters({}), []);
 
@@ -438,10 +549,15 @@ export default function Deadlines(props) {
 		[currentDeadline],
 	);
 
-	const renderFooter = useCallback(
-		() => (!loading ? null : <Spinner />),
-		[loading],
-	);
+	const renderFooter = useCallback(() => {
+		if (!loadingMore) return null;
+
+		return (
+			<View style={{ paddingVertical: 16 }}>
+				<Spinner height="auto" />
+			</View>
+		);
+	}, [loadingMore]);
 
 	const handleMonthChange = useCallback(
 		month => {
@@ -670,10 +786,29 @@ export default function Deadlines(props) {
 	}, []);
 
 	const onEndReached = useCallback(() => {
-		if (endReached || loading) return;
+		if (endReached || loading || loadingMore || loadingMoreRef.current) {
+			return;
+		}
 
-		setPage(page + 1);
-	});
+		if (totalRegistros > 0 && deadlinesData.length >= totalRegistros) {
+			return;
+		}
+
+		if (totalPaginas > 0 && page >= totalPaginas) {
+			return;
+		}
+
+		loadingMoreRef.current = true;
+		setPage(p => p + 1);
+	}, [
+		endReached,
+		loading,
+		loadingMore,
+		totalRegistros,
+		totalPaginas,
+		deadlinesData.length,
+		page,
+	]);
 
 	const removeFromList = id => {
 		if (rowTranslateAnimatedValues[id]) {
@@ -778,81 +913,39 @@ export default function Deadlines(props) {
 		</Actions>
 	));
 
+	const handleItemPress = useCallback(
+		item => {
+			props.navigation.navigate('DeadlinesDetails', { deadline: item });
+		},
+		[props.navigation],
+	);
+
+	const expired = currentFilter == 'vencidos';
+
 	const renderItem = useCallback(
 		({ item }) => (
-			<Animated.View
-				style={{
-					overflow: 'hidden',
-					maxHeight: rowTranslateAnimatedValues[item.id].interpolate({
-						inputRange: [0, 1],
-						outputRange: [0, 500],
-					}),
-				}}
-			>
-				<ListItem
-					onPress={() =>
-						props.navigation.navigate('DeadlinesDetails', { deadline: item })
-					}
-					underlayColor={colors.white}
-					activeOpacity={1}
-				>
-					<ListGrid>
-						<ReadButton
-							concluded={item.concluido}
-							onPress={() => markAsRead(item)}
-						/>
-						<ListContainer>
-							<ListHeader>
-								<ListSchedule expired={currentFilter == 'vencidos'}>
-									{moment(item.dataHoraInicio).format('DD/MM/YYYY')} •{' '}
-									{item.diaInteiro
-										? 'Dia todo'
-										: moment(item.dataHoraInicio).format('HH:mm')}
-								</ListSchedule>
-								<ListAction onPress={() => openRow(item.id)}>
-									<MaterialIcons
-										name="more-horiz"
-										size={25}
-										color={colors.fadedBlack}
-									/>
-								</ListAction>
-							</ListHeader>
-							<ListTitle expired={currentFilter == 'vencidos'}>
-								{item.titulo}
-							</ListTitle>
-							<Badge
-								type={
-									currentFilter == 'vencidos'
-										? 0
-										: item.idPadraoTipoEventoAgenda
-								}
-							>
-								<BadgeText expired={currentFilter == 'vencidos'}>
-									{item.tipoEventoAgenda}
-								</BadgeText>
-							</Badge>
-
-							{item.importante && (
-								<ImportantFlag
-									onPress={() => !updating && markAsImportant(item)}
-								>
-									{updating && item.id === currentIdUpdate ? (
-										<Spinner height="auto" />
-									) : (
-										<MaterialIcons
-											name="flag"
-											size={24}
-											color={colors.blueImportant}
-										/>
-									)}
-								</ImportantFlag>
-							)}
-						</ListContainer>
-					</ListGrid>
-				</ListItem>
-			</Animated.View>
+			<DeadlineRow
+				item={item}
+				expired={expired}
+				updating={updating}
+				currentIdUpdate={currentIdUpdate}
+				colors={colors}
+				onPressItem={handleItemPress}
+				onToggleRead={markAsRead}
+				onOpenRow={openRow}
+				onToggleImportant={markAsImportant}
+			/>
 		),
-		[deadlinesData],
+		[
+			expired,
+			updating,
+			currentIdUpdate,
+			colors,
+			handleItemPress,
+			markAsRead,
+			openRow,
+			markAsImportant,
+		],
 	);
 
 	return (
@@ -906,10 +999,17 @@ export default function Deadlines(props) {
 												previewOpenDelay={2000}
 												renderItem={renderItem}
 												onEndReached={onEndReached}
+												onEndReachedThreshold={0.1}
 												ListFooterComponent={renderFooter}
-												// style={{ overflow: 'hidden', flex: 1, backgroundColor: colors.white }}
+												style={{ flex: 1 }}
 												renderHiddenItem={renderHiddenItem}
-												keyExtractor={item => item.id}
+												keyExtractor={item => String(item.id)}
+												removeClippedSubviews
+												maxToRenderPerBatch={8}
+												updateCellsBatchingPeriod={50}
+												initialNumToRender={12}
+												windowSize={7}
+												extraData={`${currentFilter}-${updating}-${currentIdUpdate}-${loadingMore}`}
 											/>
 										) : (
 											<ScrollView

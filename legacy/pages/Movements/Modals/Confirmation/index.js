@@ -78,7 +78,7 @@ export default Confirmation = forwardRef((props, ref) => {
   );
 
   return (
-    <Modal ref={ref} title={movement?.idTipoMovProcesso === -1 ? "Deseja enviar para a Lixeira?" : "Deseja enviar para lixeira?"} footer={footer()}>
+    <Modal ref={ref} title={movement?.idTipoMovProcesso === -1 ? "Deseja enviar para a Lixeira?" : "Deseja enviar para lixeira?"} footer={footer()} adjustToContentHeight>
       <Content>
         {movement?.idTipoMovProcesso === -1 ?
           <Message>Ao enviá-lo para a Lixeira, você elimina as informações referentes a essa movimentação. No ambiente da Lixeira, você pode restaurar o documento em um período de {daysDeleteMovTrash} dias, depois deste período o sistema exclui permanentemente.</Message>

@@ -40,31 +40,41 @@ export default Menu = forwardRef((props, ref) => {
 
   const markAsRead = useCallback(() => {
     const { concluido, id, idAgenda } = deadline;
+    const newConcluido = !concluido;
 
     dispatch(
       DeadlinesActions.deadlinesMarkAsConcluded({
-        concluido: !concluido,
+        concluido: newConcluido,
         id,
         idAgenda,
       })
     );
 
+    const updated = { ...deadline, concluido: newConcluido };
+    setDeadline(updated);
+    if (props.onUpdate) props.onUpdate(updated);
+
     setTimeout(() => closeModal(), 500);
-  }, [props]);
+  }, [deadline, props.onUpdate]);
 
   const markAsImportant = useCallback(() => {
     const { importante, id, idAgenda } = deadline;
+    const newImportante = !importante;
 
     dispatch(
       DeadlinesActions.deadlinesMarkAsImportant({
-        importante: !importante,
+        importante: newImportante,
         id,
         idAgenda,
       })
     );
 
+    const updated = { ...deadline, importante: newImportante };
+    setDeadline(updated);
+    if (props.onUpdate) props.onUpdate(updated);
+
     setTimeout(() => closeModal(), 500);
-  }, []);
+  }, [deadline, props.onUpdate]);
 
   const share = useCallback(async () => {
     const movement = props.movement;
@@ -162,7 +172,7 @@ export default Menu = forwardRef((props, ref) => {
         </Item>
         <Item onPress={() => markAsImportant()}>
           <MaterialIcons name={'flag'} size={22} color={colors.fadedBlack} />
-          <ItemText>Marcar como importante</ItemText>
+          <ItemText>{deadline.importante ? 'Desmarcar' : 'Marcar'} como importante</ItemText>
         </Item>
         <Item onPress={() => share()}>
           <MaterialIcons name={'share'} size={22} color={colors.fadedBlack} />

@@ -85,7 +85,18 @@ vendor/
 !.yarn/sdks
 !.yarn/versions
 
-# Docs internos / planejamento (não enviar ao repositório remoto)
+# Script local de reset iOS (cada dev pode manter o seu)
+scripts/ios-full-reset.sh
+docs/
+hub-ai-docs/
+
+# Planejamento local (opcional)
 CODIGO_MORTO.md
 LEGACY_MIGRATION_PLAN.md
 README.md
+
+# WIP / QA local
+.tmp-repro/
+divergencias doc orginal - testes qa.md
+relatorio-atividades-hubapp-jan-jul-2026.md
+relatorio-atividades-hubapp-jan-jul-2026.pdf

@@ -46,9 +46,10 @@ const InfoContainer = styled.View`
 `;
 
 const InfoTitle = styled.Text`
-  color:  ${({ theme }) => theme.colors.grayDarker};
+  color: ${({ theme }) => theme.colors.grayDarker};
   font-size: ${fonts.regular};
   font-family: ${fonts.circularStdBold};
+  flex-shrink: 0;
   margin-right: 12;
 `;
 
@@ -74,9 +75,9 @@ const InfoText = styled.Text`
   color: ${({ theme }) => theme.colors.fadedBlack};
   font-size: ${fonts.small};
   font-family: ${fonts.circularStdBook};
+  flex: 1;
   flex-wrap: wrap;
   flex-shrink: 1;
-  max-width: 225;
 `;
 
 const InfoContent = styled.View`

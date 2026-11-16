@@ -15,7 +15,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import UserIcon from '@lcomponents/UserIcon';
 import CustomIcon from '@lcomponents/CustomIcon';
 
-import Intro from '@lpages/Intro';
+// Intro importada do código principal (src/pages), não do legado
+import Intro from '@pages/Intro';
 import Login from '@lpages/Login';
 import Initial from '@lpages/Initial';
 import Forgot from '@lpages/Forgot';
@@ -41,6 +42,12 @@ import Category from '@pages/Finance/Category';
 
 import Deadlines from '@lpages/Deadlines';
 import DeadlinesDetails from '@lpages/Deadlines/Details';
+
+// Summons (Intimações) – módulo em src/pages, não no legado
+import Summons from '@pages/Summons';
+// Import explícito evita resolução errada do Metro (Summons/index no lugar do Detail)
+import SummonsDetail from '../../src/pages/Summons/detail/index';
+import Courts from '@pages/Courts';
 
 import TermsUse from '@lpages/TermsUse';
 
@@ -122,6 +129,19 @@ const DeadlinesScreens = () => (
 	</DeadlinesStack.Navigator>
 );
 
+const SummonsStack = createStackNavigator();
+const SummonsScreens = () => (
+	<SummonsStack.Navigator screenOptions={{ headerShown: false }}>
+		<SummonsStack.Screen name="Summons" component={Summons} />
+		<SummonsStack.Screen name="CourtsList" component={Courts} />
+		<SummonsStack.Screen
+			name="SummonsDetail"
+			component={SummonsDetail}
+			options={{ gestureEnabled: false }}
+		/>
+	</SummonsStack.Navigator>
+);
+
 const AccountStack = createStackNavigator();
 const AccountScreens = () => (
 	<AccountStack.Navigator screenOptions={{ headerShown: false }}>
@@ -180,6 +200,21 @@ const AppScreens = () => {
 						<CustomIcon group={PermissionsGroups.MOVEMENTS}>
 							<MaterialCommunityIcons
 								name="lightning-bolt"
+								size={25}
+								color={color}
+							/>
+						</CustomIcon>
+					),
+				}}
+			/>
+			<TabsStack.Screen
+				component={SummonsScreens}
+				name="Summons"
+				options={{
+					tabBarIcon: ({ color }) => (
+						<CustomIcon group={PermissionsGroups.SUMMONS}>
+							<MaterialCommunityIcons
+								name="clipboard-clock-outline"
 								size={25}
 								color={color}
 							/>

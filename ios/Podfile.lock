@@ -9,9 +9,9 @@ PODS:
   - hermes-engine (0.82.0):
     - hermes-engine/Pre-built (= 0.82.0)
   - hermes-engine/Pre-built (0.82.0)
-  - OneSignalXCFramework (5.2.15):
-    - OneSignalXCFramework/OneSignalComplete (= 5.2.15)
-  - OneSignalXCFramework/OneSignal (5.2.15):
+  - OneSignalXCFramework (5.5.0):
+    - OneSignalXCFramework/OneSignalComplete (= 5.5.0)
+  - OneSignalXCFramework/OneSignal (5.5.0):
     - OneSignalXCFramework/OneSignalCore
     - OneSignalXCFramework/OneSignalExtension
     - OneSignalXCFramework/OneSignalLiveActivities
@@ -19,38 +19,38 @@ PODS:
     - OneSignalXCFramework/OneSignalOSCore
     - OneSignalXCFramework/OneSignalOutcomes
     - OneSignalXCFramework/OneSignalUser
-  - OneSignalXCFramework/OneSignalComplete (5.2.15):
+  - OneSignalXCFramework/OneSignalComplete (5.5.0):
     - OneSignalXCFramework/OneSignal
     - OneSignalXCFramework/OneSignalInAppMessages
     - OneSignalXCFramework/OneSignalLocation
-  - OneSignalXCFramework/OneSignalCore (5.2.15)
-  - OneSignalXCFramework/OneSignalExtension (5.2.15):
+  - OneSignalXCFramework/OneSignalCore (5.5.0)
+  - OneSignalXCFramework/OneSignalExtension (5.5.0):
     - OneSignalXCFramework/OneSignalCore
     - OneSignalXCFramework/OneSignalOutcomes
-  - OneSignalXCFramework/OneSignalInAppMessages (5.2.15):
+  - OneSignalXCFramework/OneSignalInAppMessages (5.5.0):
     - OneSignalXCFramework/OneSignalCore
     - OneSignalXCFramework/OneSignalNotifications
     - OneSignalXCFramework/OneSignalOSCore
     - OneSignalXCFramework/OneSignalOutcomes
     - OneSignalXCFramework/OneSignalUser
-  - OneSignalXCFramework/OneSignalLiveActivities (5.2.15):
+  - OneSignalXCFramework/OneSignalLiveActivities (5.5.0):
     - OneSignalXCFramework/OneSignalCore
     - OneSignalXCFramework/OneSignalOSCore
     - OneSignalXCFramework/OneSignalUser
-  - OneSignalXCFramework/OneSignalLocation (5.2.15):
+  - OneSignalXCFramework/OneSignalLocation (5.5.0):
     - OneSignalXCFramework/OneSignalCore
     - OneSignalXCFramework/OneSignalNotifications
     - OneSignalXCFramework/OneSignalOSCore
     - OneSignalXCFramework/OneSignalUser
-  - OneSignalXCFramework/OneSignalNotifications (5.2.15):
+  - OneSignalXCFramework/OneSignalNotifications (5.5.0):
     - OneSignalXCFramework/OneSignalCore
     - OneSignalXCFramework/OneSignalExtension
     - OneSignalXCFramework/OneSignalOutcomes
-  - OneSignalXCFramework/OneSignalOSCore (5.2.15):
+  - OneSignalXCFramework/OneSignalOSCore (5.5.0):
     - OneSignalXCFramework/OneSignalCore
-  - OneSignalXCFramework/OneSignalOutcomes (5.2.15):
+  - OneSignalXCFramework/OneSignalOutcomes (5.5.0):
     - OneSignalXCFramework/OneSignalCore
-  - OneSignalXCFramework/OneSignalUser (5.2.15):
+  - OneSignalXCFramework/OneSignalUser (5.5.0):
     - OneSignalXCFramework/OneSignalCore
     - OneSignalXCFramework/OneSignalNotifications
     - OneSignalXCFramework/OneSignalOSCore
@@ -1857,12 +1857,38 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-onesignal (5.2.14):
-    - OneSignalXCFramework (= 5.2.15)
-    - React (< 1.0.0, >= 0.13.0)
+  - react-native-onesignal (5.4.3):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - OneSignalXCFramework (= 5.5.0)
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
   - react-native-render-html (6.3.4):
     - React-Core
-  - react-native-safe-area-context (5.6.1):
+  - react-native-safe-area-context (5.7.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -1880,8 +1906,8 @@ PODS:
     - React-graphics
     - React-ImageManager
     - React-jsi
-    - react-native-safe-area-context/common (= 5.6.1)
-    - react-native-safe-area-context/fabric (= 5.6.1)
+    - react-native-safe-area-context/common (= 5.7.0)
+    - react-native-safe-area-context/fabric (= 5.7.0)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -1892,7 +1918,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-safe-area-context/common (5.6.1):
+  - react-native-safe-area-context/common (5.7.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -1920,7 +1946,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-safe-area-context/fabric (5.6.1):
+  - react-native-safe-area-context/fabric (5.7.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -1980,7 +2006,7 @@ PODS:
     - Yoga
   - react-native-splash-screen (3.3.0):
     - React-Core
-  - react-native-webview (13.16.0):
+  - react-native-webview (13.16.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2608,7 +2634,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNDateTimePicker (8.5.0):
+  - RNDateTimePicker (8.6.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2636,7 +2662,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNGestureHandler (2.29.0):
+  - RNGestureHandler (2.31.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2980,7 +3006,7 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 8642d8f14a548ab718ec112e9bebdfdd154138b5
-  OneSignalXCFramework: ea9e14a95b92ad48d9b35037cbae88a9542bdea3
+  OneSignalXCFramework: 943852e7d70d719f73e9669d48620aeec1b93022
   RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
   RCTDeprecation: 22bf66112da540a7d40e536366ddd8557934fca1
   RCTRequired: a0ed4dc41b35f79fbb6d8ba320e06882a8c792cf
@@ -3015,12 +3041,12 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 499069c3dcd4b438a70fcc2a65e8a4185ea9170b
   React-microtasksnativemodule: f0238469cb9894fd18c419137d312665b8fc05b3
   react-native-image-picker: 0314366753615115fa55c3cc937ac44cb7e75702
-  react-native-onesignal: b68c981956150f288c1585889871affcef3c0b8b
+  react-native-onesignal: 45a8a3875f08720a981b707ce3011ff0eaf815f5
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
-  react-native-safe-area-context: c6e2edd1c1da07bdce287fa9d9e60c5f7b514616
+  react-native-safe-area-context: befb5404eb8a16fdc07fa2bebab3568ecabcbb8a
   react-native-simple-toast: e3add86605446b2c4fb2f77884ef7040c36817d2
   react-native-splash-screen: 95994222cc95c236bd3cdc59fe45ed5f27969594
-  react-native-webview: 654f794a7686b47491cf43aa67f7f428bea00eed
+  react-native-webview: 8407aaaf6b539b1e38b72fabb55d6885de03beaf
   React-NativeModulesApple: 628df250681ccb569bd203494ed5187269580d6f
   React-oscompat: 80ca388c4831481cd03a6b45ecfc82739ca9a95e
   React-perflogger: 9725c8b401ca406f52e4bb59bf0b22ef9354f96a
@@ -3057,13 +3083,13 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 29f0230e1a25f36c20b05f65e2eb8958d6526e82
   RNCCheckbox: 33b44487ca8008394ce658cc32b26eab04f426ef
   RNCPicker: bf95ec4b2483e2ab256047130bc536b437cd916c
-  RNDateTimePicker: 776fed1b26cfd8d7fff6dd382d6291546fdbe755
-  RNGestureHandler: 6859520a21304f0bedf0643d0cf0beade47c83f2
+  RNDateTimePicker: 97a86d7c8b51f2d51f694a9dddfe5996dfd9a407
+  RNGestureHandler: f8754f00f0e28317a1ddecc2911994fb05b234be
   RNVectorIcons: 791f13226ec4a3fd13062eda9e892159f0981fae
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
   Yoga: edeb9900b9e5bb5b27b9a6a2d5914e4fe4033c1b
 
-PODFILE CHECKSUM: fb9478f9588fbfdce08a93e03a5dc4f29ebb310d
+PODFILE CHECKSUM: 6a6249d99ce11edbb382f8b38e78a7289a7ce87b
 
 COCOAPODS: 1.16.2

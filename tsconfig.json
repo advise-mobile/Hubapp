@@ -1,5 +1,22 @@
 {
   "extends": "@react-native/typescript-config",
-  "include": ["**/*.ts", "**/*.tsx"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "allowJs": true,
+    "paths": {
+      "@pages/*": ["src/pages/*"],
+      "@components/*": ["src/components/*"],
+      "@services/*": ["src/services/*"],
+      "@constants/*": ["src/constants/*"],
+      "@models/*": ["src/models/*"],
+      "@lhelpers/*": ["legacy/helpers/*"],
+      "@lcomponents/*": ["legacy/components/*"],
+      "@lservices/*": ["legacy/services/*"],
+      "@lstore": ["legacy/store/index.js"],
+      "@lstore/*": ["legacy/store/*"],
+      "@lassets/styles/global": ["legacy/assets/styles/global.js"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
   "exclude": ["**/node_modules", "**/Pods"]
 }

@@ -591,15 +591,11 @@ const Emails = props => {
 															onPress={() => onPressShowTooltip()}
 															style={styles.touchElement}
 														>
-															{colorUseTheme.name === 'dark' ? (
-																<Image
-																	source={require('assets/images/icons/info_icon_white.png')}
-																/>
-															) : (
-																<Image
-																	source={require('assets/images/icons/info_icon.png')}
-																/>
-															)}
+															<MaterialIcons
+																name="help"
+																size={18}
+																color={colorUseTheme.name === 'dark' ? colors.white : colors.fadedBlack}
+															/>
 														</TouchableOpacity>
 														<RadioButtonLabel
 															obj={{
@@ -642,15 +638,11 @@ const Emails = props => {
 															onPress={() => onPressShowTooltip()}
 															style={styles.touchElement2}
 														>
-															{colorUseTheme.name === 'dark' ? (
-																<Image
-																	source={require('assets/images/icons/info_icon_white.png')}
-																/>
-															) : (
-																<Image
-																	source={require('assets/images/icons/info_icon.png')}
-																/>
-															)}
+															<MaterialIcons
+																name="help"
+																size={18}
+																color={colorUseTheme.name === 'dark' ? colors.white : colors.fadedBlack}
+															/>
 														</TouchableOpacity>
 
 														<RadioButtonLabel

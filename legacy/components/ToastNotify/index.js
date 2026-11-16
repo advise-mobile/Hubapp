@@ -1,56 +1,62 @@
-import React, {Component} from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from 'styled-components';
 
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import ToastNotifyActions from '@lstore/ducks/ToastNotify';
+import { getToastBottomOffset } from '@lhelpers/tabBarInsets';
 
-import {Container, Notify, NotifyMessage} from './styles';
+import { Container, Notify, NotifyMessage } from './styles';
 
-const stylesToastNotify = (colors) => StyleSheet.create({
-	hasError: {
-		backgroundColor: colors.toastError || '#ff4757',
-	},
-	hasSuccess: {
-		backgroundColor: colors.success || '#2ed573',
-	},
-});
+const TOAST_VISIBLE_MS = 4000;
 
-class ToastNotify extends Component {
-	componentDidUpdate() {
-		this.hidenMessage();
-	}
+const stylesToastNotify = colors =>
+	StyleSheet.create({
+		hasError: {
+			backgroundColor: colors.toastError || '#ff4757',
+		},
+		hasSuccess: {
+			backgroundColor: colors.success || '#2ed573',
+		},
+	});
 
-	hidenMessage = () => {
-		const {show} = this.props.toastNotify;
+function ToastNotify({ toastNotify, toastNotifyHide }) {
+	const insets = useSafeAreaInsets();
+	const theme = useTheme();
+	const styles = stylesToastNotify(theme?.colors || {});
+	const { show, message, error } = toastNotify;
+	const hideTimeoutRef = useRef(null);
 
-		if (show) {
-			setTimeout(() => {
-				this.props.toastNotifyHide();
-			}, 4000);
+	useEffect(() => {
+		if (!show) {
+			return undefined;
 		}
-	};
 
-	
-    
+		clearTimeout(hideTimeoutRef.current);
+		hideTimeoutRef.current = setTimeout(() => {
+			toastNotifyHide();
+		}, TOAST_VISIBLE_MS);
 
-	render() {
-		const { theme } = this.props;
-		const styles = stylesToastNotify(theme?.colors || {});
-		const {show, message, error} = this.props.toastNotify;
+		return () => {
+			clearTimeout(hideTimeoutRef.current);
+		};
+	}, [show, toastNotifyHide]);
 
-		return (
-			<Container>
-				{show === true ? (
-					<Notify style={[error === true ? styles.hasError : styles.hasSuccess]}>
-						<NotifyMessage>{message}</NotifyMessage>
-					</Notify>
-				) : null}
-			</Container>
-		);
-	}
+	const bottom = getToastBottomOffset(insets.bottom);
+
+	return (
+		<Container pointerEvents="box-none" style={{ bottom }}>
+			{show === true ? (
+				<Notify style={[error === true ? styles.hasError : styles.hasSuccess]}>
+					<NotifyMessage>{message}</NotifyMessage>
+				</Notify>
+			) : null}
+		</Container>
+	);
 }
 
 ToastNotify.defaultProps = {
@@ -74,6 +80,7 @@ const mapStateToProps = state => ({
 	toastNotify: state.toastNotify,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(ToastNotifyActions, dispatch);
+const mapDispatchToProps = dispatch =>
+	bindActionCreators(ToastNotifyActions, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToastNotify);

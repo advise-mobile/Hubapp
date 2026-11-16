@@ -5,133 +5,140 @@ import { jwtDecode } from 'jwt-decode';
 import { TOKEN, PERMISSIONS } from '@lhelpers/StorageKeys';
 
 export const getLoggedUser = async () => {
-  const token = (await AsyncStorage.getItem(TOKEN)) || null;
+	const token = (await AsyncStorage.getItem(TOKEN)) || null;
 
-  return jwtDecode(token);
+	return jwtDecode(token);
 };
 
 export const getUserPermissions = () =>
-  Api.get(
-    `core/v1/permissoes-usuario-cliente?ativo=true&campos=idFuncionalidade,idUsuarioClienteXFuncionalidade,quantidadePermitida,quantidadeUtilizada&registrosPorPagina=-1`,
-  );
+	Api.get(
+		`core/v1/permissoes-usuario-cliente?ativo=true&campos=idFuncionalidade,idUsuarioClienteXFuncionalidade,quantidadePermitida,quantidadeUtilizada&registrosPorPagina=-1`,
+	);
 
 export const PermissionsMap = {
-  movements: {
-    createDiary: -1, // Cadastrar diários
-    createKeyword: -2, // Cadastrar palavras-chave
-    createSearchVariation: -3, // Cadastrar variações de pesquisa
-    createExclusionVariation: -4, // Cadastrar variações de exclusão
-    combinedSearch: -5, // Cadastrar busca combinada
-    downloadPublications: -6, // Gerar publicações em arquivo
-    recordPublications: -7, // Consultar publicações
-    createProcess: -8, // Cadastrar processos
-    createMovements: -9, // Consultar andamentos
-    createManualMovements: -10, // Cadastrar andamentos manuais
-    transformProcessIntoManual: -11, // Transformar processo automático em manual
-    downloadMovements: -12, // Gerar andamentos em arquivo
-    transformProcessIntoAutomatic: -16, // Transformar processo manual em automático
-    processesWithAutomaticMovementsSearch: -32, // Processos com busca automática de andamentos
-    searchAutomaticMovements: -31, // Pesquisar andamentos automáticos
-  },
-  publications: {
-    createDiary: -1, // Cadastrar diários
-    createKeyword: -2, // Cadastrar palavras-chave
-    createSearchVariation: -3, // Cadastrar variações de pesquisa
-    createExclusionVariation: -4, // Cadastrar variações de exclusão
-    combinedSearch: -5, // Cadastrar busca combinada
-    downloadPublications: -6, // Gerar publicações em arquivo
-    recordPublications: -7, // Consultar publicações
-  },
-  processes: {
-    createProcess: -8, // Cadastrar processos
-    createMovements: -9, // Consultar andamentos
-    createManualMovements: -10, // Cadastrar andamentos manuais
-    transformProcessIntoManual: -11, // Transformar processo automático em manual
-    downloadMovements: -12, // Gerar andamentos em arquivo
-    transformProcessIntoAutomatic: -16, // Transformar processo manual em automático
-    processesWithAutomaticMovementsSearch: -32, // Processos com busca automática de andamentos
-    searchAutomaticMovements: -31, // Pesquisar andamentos automáticos
-  },
-  insurance: {
-    createInsurance: -18, // Contratar seguro
-  },
-  schedule: {
-    createSchedule: -21, // Criar agenda
-    recordSchedule: -22, // Consultar agenda
-    createAppointments: -23, // Cadastrar compromissos em agenda
-  },
-  finances: {
-    financesLowsMaintenance: -50, // Manutenção de Baixas Financeiras
-    financesLowsConsultation: -49, // Consultar Baixas Financeiras
-    financesAccountJumps: -48, // Consultar Saldos de Contas Financeiras
-    financesPostingsMaintenance: -47, // Manutenção de Lançamentos Financeiros
-    financesPostingsConsultation: -46, // Consultar Lançamentos Financeiros
-    financesAccountsMaintenance: -45, // Manutenção de Contas Financeiras
-    financesAccountsConsultation: -44, // Consultar Contas Financeiras
-    financesCategoriesMaintenance: -43, // Manutenção de Categorias
-    financesCategoriesConsultation: -42, // Consultar Categorias
-    financesMaintenance: -41, // Manutenção de Financeiros
-    financesConsultation: -40, // Consultar Financeiros
-  },
-  contacts: {
-    createContactList: -24, // Criar lista de contato
-    createContactType: -25, // Criar tipos de contato
-    createContact: -26, // Criar contatos
-    recordContacts: -27, // Consultar contatos
-    createContactActivity: -28, // Cadastrar atividades de contato
-    recordContactActivity: -29, // Ver atividades de contatos
-  },
-  custummers: {
-    createUsers: -30, // Cadastrar usuários
-  },
-  people: {
-    contactListMaintenance: -29, // Manutenção de Lista de Contatos
-    consultContactList: -28, // Consultar Lista de Contatos
-    maintainingMarkers: -27, // Manutenção de Marcadores
-    consultBookmarks: -26, // Consultar Marcadores
-    contactMaintenance: -25, // Manutenção de Contatos
-    consultContacts: -24, // Consultar Contatos
-  },
+	movements: {
+		createDiary: -1, // Cadastrar diários
+		createKeyword: -2, // Cadastrar palavras-chave
+		createSearchVariation: -3, // Cadastrar variações de pesquisa
+		createExclusionVariation: -4, // Cadastrar variações de exclusão
+		combinedSearch: -5, // Cadastrar busca combinada
+		downloadPublications: -6, // Gerar publicações em arquivo
+		recordPublications: -7, // Consultar publicações
+		createProcess: -8, // Cadastrar processos
+		createMovements: -9, // Consultar andamentos
+		createManualMovements: -10, // Cadastrar andamentos manuais
+		transformProcessIntoManual: -11, // Transformar processo automático em manual
+		downloadMovements: -12, // Gerar andamentos em arquivo
+		transformProcessIntoAutomatic: -16, // Transformar processo manual em automático
+		processesWithAutomaticMovementsSearch: -32, // Processos com busca automática de andamentos
+		searchAutomaticMovements: -31, // Pesquisar andamentos automáticos
+	},
+	publications: {
+		createDiary: -1, // Cadastrar diários
+		createKeyword: -2, // Cadastrar palavras-chave
+		createSearchVariation: -3, // Cadastrar variações de pesquisa
+		createExclusionVariation: -4, // Cadastrar variações de exclusão
+		combinedSearch: -5, // Cadastrar busca combinada
+		downloadPublications: -6, // Gerar publicações em arquivo
+		recordPublications: -7, // Consultar publicações
+	},
+	processes: {
+		createProcess: -8, // Cadastrar processos
+		createMovements: -9, // Consultar andamentos
+		createManualMovements: -10, // Cadastrar andamentos manuais
+		transformProcessIntoManual: -11, // Transformar processo automático em manual
+		downloadMovements: -12, // Gerar andamentos em arquivo
+		transformProcessIntoAutomatic: -16, // Transformar processo manual em automático
+		processesWithAutomaticMovementsSearch: -32, // Processos com busca automática de andamentos
+		searchAutomaticMovements: -31, // Pesquisar andamentos automáticos
+	},
+	insurance: {
+		createInsurance: -18, // Contratar seguro
+	},
+	schedule: {
+		createSchedule: -21, // Criar agenda
+		recordSchedule: -22, // Consultar agenda
+		createAppointments: -23, // Cadastrar compromissos em agenda
+	},
+	finances: {
+		financesLowsMaintenance: -50, // Manutenção de Baixas Financeiras
+		financesLowsConsultation: -49, // Consultar Baixas Financeiras
+		financesAccountJumps: -48, // Consultar Saldos de Contas Financeiras
+		financesPostingsMaintenance: -47, // Manutenção de Lançamentos Financeiros
+		financesPostingsConsultation: -46, // Consultar Lançamentos Financeiros
+		financesAccountsMaintenance: -45, // Manutenção de Contas Financeiras
+		financesAccountsConsultation: -44, // Consultar Contas Financeiras
+		financesCategoriesMaintenance: -43, // Manutenção de Categorias
+		financesCategoriesConsultation: -42, // Consultar Categorias
+		financesMaintenance: -41, // Manutenção de Financeiros
+		financesConsultation: -40, // Consultar Financeiros
+	},
+	contacts: {
+		createContactList: -24, // Criar lista de contato
+		createContactType: -25, // Criar tipos de contato
+		createContact: -26, // Criar contatos
+		recordContacts: -27, // Consultar contatos
+		createContactActivity: -28, // Cadastrar atividades de contato
+		recordContactActivity: -29, // Ver atividades de contatos
+	},
+	custummers: {
+		createUsers: -30, // Cadastrar usuários
+	},
+	people: {
+		contactListMaintenance: -29, // Manutenção de Lista de Contatos
+		consultContactList: -28, // Consultar Lista de Contatos
+		maintainingMarkers: -27, // Manutenção de Marcadores
+		consultBookmarks: -26, // Consultar Marcadores
+		contactMaintenance: -25, // Manutenção de Contatos
+		consultContacts: -24, // Consultar Contatos
+	},
+	// Summons (Intimações) – IDs de funcionalidade a preencher quando o backend definir
+	summons: {
+		accessSummons: -72, // Acessar Intimações
+	},
 };
 
 export const PermissionsGroups = {
-  MOVEMENTS: 'movements',
-  PUBLICATIONS: 'publications',
-  PROCESSES: 'processes',
-  INSURANCE: 'insurance',
-  SCHEDULE: 'schedule',
-  FINANCES: 'finances',
-  CONTACTS: 'contacts',
-  CUSTUMMERS: 'custummers',
-  PEOPLE: 'people',
+	MOVEMENTS: 'movements',
+	PUBLICATIONS: 'publications',
+	PROCESSES: 'processes',
+	INSURANCE: 'insurance',
+	SCHEDULE: 'schedule',
+	FINANCES: 'finances',
+	CONTACTS: 'contacts',
+	CUSTUMMERS: 'custummers',
+	PEOPLE: 'people',
+	SUMMONS: 'summons',
 };
 
 export const checkPermission = async permissionGroup => {
-  const userPermissions = await AsyncStorage.getItem(PERMISSIONS);
+	const userPermissions = await AsyncStorage.getItem(PERMISSIONS);
 
-  let permissions = JSON.parse(userPermissions);
+	let permissions = JSON.parse(userPermissions);
 
-  if (!userPermissions) {
-    let user = await getLoggedUser();
+	if (!userPermissions) {
+		let user = await getLoggedUser();
 
-    let { data } = await getUserPermissions(user.idUsuarioCliente);
+		let { data } = await getUserPermissions(user.idUsuarioCliente);
 
-    await AsyncStorage.setItem(PERMISSIONS, JSON.stringify(data));
+		console.log('data', data);
 
-    permissions = data;
-  }
+		await AsyncStorage.setItem(PERMISSIONS, JSON.stringify(data));
 
-  if (!permissions) return false;
+		permissions = data;
+	}
 
-  const permissionsId = permissions.itens.map(
-    permission => permission.idFuncionalidade,
-  );
+	if (!permissions) return false;
 
-  const hasPermission = Object.values(PermissionsMap[permissionGroup]).filter(
-    funcionalidade => permissionsId.includes(funcionalidade),
-  );
+	const permissionsId = permissions.itens.map(
+		permission => permission.idFuncionalidade,
+	);
 
-  if (hasPermission.length <= 0) return false;
+	const hasPermission = Object.values(PermissionsMap[permissionGroup]).filter(
+		funcionalidade => permissionsId.includes(funcionalidade),
+	);
 
-  return true;
+	if (hasPermission.length <= 0) return false;
+
+	return true;
 };

@@ -39,15 +39,17 @@ export default Modal = forwardRef((props, ref) => {
     [props],
   );
 
+  const fitContent = props.adjustToContentHeight ?? false;
+
   return (
     <Modalize
       ref={ref}
-      adjustToContentHeight={false}
-      modalHeight={modalHeight}
+      adjustToContentHeight={fitContent}
+      modalHeight={fitContent ? undefined : modalHeight}
       modalStyle={{
         backgroundColor: colors.white,
       }}
-      childrenStyle={{ maxHeight: modalHeight }}
+      childrenStyle={fitContent ? undefined : { maxHeight: modalHeight }}
       HeaderComponent={renderHeader}
       handlePosition="inside"
       handleStyle={{ backgroundColor: colors.grayDarker, marginTop: 8 }}

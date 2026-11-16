@@ -51,6 +51,8 @@ import {
 // Add Hook UseTheme para pegar o tema global addicionado
 import { useTheme } from 'styled-components';
 
+const GENDER_LABELS = { [-1]: 'Masculino', [-2]: 'Feminino', [-3]: 'Não informar' };
+
 const Infos = props => {
   // Variavel para usar o hook
   const colorUseTheme = useTheme();
@@ -312,58 +314,62 @@ const Infos = props => {
                   {renderImage}
                   <InfoContainer>
                     <InfoTitle>Nome</InfoTitle>
-                    <InfoValue
-                      editable={editMode}
-                      onChangeText={value =>
-                        setUserData({ data: { ...userData.data, nome: value } })
-                      }
-                      value={userData.data.nome || 'Não informado'}
-                    />
+                    {editMode ? (
+                      <InfoValue
+                        editable
+                        onChangeText={value =>
+                          setUserData({ data: { ...userData.data, nome: value } })
+                        }
+                        value={userData.data.nome || 'Não informado'}
+                      />
+                    ) : (
+                      <InfoText>{userData.data.nome || 'Não informado'}</InfoText>
+                    )}
                   </InfoContainer>
                   <InfoContainer>
                     <InfoTitle>Gênero</InfoTitle>
-                    <InfoCustomValue editable={editMode}>
-                      <RNPickerSelect
-                        placeholder={{}}
-                        disabled={!editMode}
-                        doneText="Selecionar"
-                        style={pickerSelectStyles}
-                        value={userData.data.idSexo}
-                        onValueChange={value =>
-                          setUserData({
-                            data: { ...userData.data, idSexo: value },
-                          })
-                        }
-                        useNativeAndroidPickerStyle={false}
-                        items={[
-                          {
-                            label: 'Masculino',
-                            value: -1,
-                          },
-                          {
-                            label: 'Feminino',
-                            value: -2,
-                          },
-                          {
-                            label: 'Não informar',
-                            value: -3,
-                          },
-                        ]}
-                      />
-                    </InfoCustomValue>
+                    {editMode ? (
+                      <InfoCustomValue editable>
+                        <RNPickerSelect
+                          placeholder={{}}
+                          doneText="Selecionar"
+                          style={pickerSelectStyles}
+                          value={userData.data.idSexo}
+                          onValueChange={value =>
+                            setUserData({
+                              data: { ...userData.data, idSexo: value },
+                            })
+                          }
+                          useNativeAndroidPickerStyle={false}
+                          items={[
+                            { label: 'Masculino', value: -1 },
+                            { label: 'Feminino', value: -2 },
+                            { label: 'Não informar', value: -3 },
+                          ]}
+                        />
+                      </InfoCustomValue>
+                    ) : (
+                      <InfoText>
+                        {GENDER_LABELS[userData.data.idSexo] || 'Não informado'}
+                      </InfoText>
+                    )}
                   </InfoContainer>
                   <InfoContainer>
                     <InfoTitle>Telefone</InfoTitle>
-                    <InfoValue
-                      editable={editMode}
-                      keyboardType="phone-pad"
-                      value={userData.data.fone1 || 'Não informado'}
-                      onChangeText={value =>
-                        setUserData({
-                          data: { ...userData.data, fone1: value },
-                        })
-                      }
-                    />
+                    {editMode ? (
+                      <InfoValue
+                        editable
+                        keyboardType="phone-pad"
+                        value={userData.data.fone1 || 'Não informado'}
+                        onChangeText={value =>
+                          setUserData({
+                            data: { ...userData.data, fone1: value },
+                          })
+                        }
+                      />
+                    ) : (
+                      <InfoText>{userData.data.fone1 || 'Não informado'}</InfoText>
+                    )}
                   </InfoContainer>
                   <InfoContainer>
                     <InfoTitle>Data de nascimento</InfoTitle>
@@ -446,16 +452,20 @@ const Infos = props => {
                   ]}
                   <InfoContainer>
                     <InfoTitle>Email</InfoTitle>
-                    <InfoValue
-                      editable={editMode}
-                      keyboardType="email-address"
-                      value={userData.data.email || 'Não informado'}
-                      onChangeText={value =>
-                        setUserData({
-                          data: { ...userData.data, email: value },
-                        })
-                      }
-                    />
+                    {editMode ? (
+                      <InfoValue
+                        editable
+                        keyboardType="email-address"
+                        value={userData.data.email || 'Não informado'}
+                        onChangeText={value =>
+                          setUserData({
+                            data: { ...userData.data, email: value },
+                          })
+                        }
+                      />
+                    ) : (
+                      <InfoText>{userData.data.email || 'Não informado'}</InfoText>
+                    )}
                   </InfoContainer>
                 </>
               )}

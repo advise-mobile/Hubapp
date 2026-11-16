@@ -2,6 +2,7 @@ const lightTheme = {
   name: 'light',
   colors: {
     white: '#FEFEFE',
+    mainWhite: '#FFFFFF',
     realWhite: '#FFFFFF',
     realWhites: '#000000',
     darkGray: '#666666',
@@ -50,6 +51,7 @@ const lightTheme = {
     during: '#F5F5F5',
 
     bordercolor: '#ABABAB',
+    borderLight: '#E0E0E0',
     tabcolor: '#000000',
     textTab: '#ffff',
     textvalue: '#666666',

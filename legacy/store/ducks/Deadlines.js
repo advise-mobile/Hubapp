@@ -32,36 +32,63 @@ export const INITIAL_STATE = {
   types: [],
   sending: false,
   loading: false,
+  loadingMore: false,
   deleting: false,
   error: undefined,
   processing: false,
   endReached: false,
   loadingTypes: false,
   triggerChange: false,
+  totalRegistros: 0,
+  totalPaginas: 0,
 };
 
-export const deadlinesRequest = state => ({
-  ...state,
-  loading: true,
-  failure: false,
-});
+export const deadlinesRequest = (state, action) => {
+  const page = action.param?.page ?? 1;
 
-export const deadlinesSuccess = (state, action) => ({
-  ...state,
-  data:
-    action.page === 1
-      ? action.data.itens
-      : [...state.data, ...action.data.itens],
-  endReached: action.data.endReached,
-  loading: false,
-  updating: false,
-  failure: false,
-  triggerChange: false,
-});
+  return {
+    ...state,
+    loading: page <= 1,
+    loadingMore: page > 1,
+    failure: false,
+    endReached: page <= 1 ? false : state.endReached,
+  };
+};
+
+export const deadlinesSuccess = (state, action) => {
+  const itens = action.data.itens || [];
+  const existingIdSet = new Set((state.data || []).map(item => item.id));
+  const uniqueNew =
+    action.page === 1 ? itens : itens.filter(item => !existingIdSet.has(item.id));
+  const data = action.page === 1 ? itens : [...state.data, ...uniqueNew];
+  const totalRegistros = action.data.totalRegistros || 0;
+  const totalPaginas = action.data.totalPaginas || 0;
+  const noNewItems = action.page > 1 && uniqueNew.length === 0;
+  const reachedLastPage = totalPaginas > 0 && action.page >= totalPaginas;
+  const endReached =
+    Boolean(action.data.endReached) ||
+    (totalRegistros > 0 && data.length >= totalRegistros) ||
+    reachedLastPage ||
+    (noNewItems && totalPaginas === 0);
+
+  return {
+    ...state,
+    data,
+    totalRegistros,
+    totalPaginas,
+    endReached,
+    loading: false,
+    loadingMore: false,
+    updating: false,
+    failure: false,
+    triggerChange: false,
+  };
+};
 
 export const deadlinesFailure = state => ({
   ...state,
   loading: false,
+  loadingMore: false,
   failure: true,
 });
 
