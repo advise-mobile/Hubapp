@@ -169,7 +169,8 @@ export default function Summons() {
 	const rightActions: HeaderActionConfig[] = useMemo(
 		() => [
 			...headerProps.rightActions,
-			...(summonsListItems.length > 0 || activeFiltersCount > 0
+			...(!showEmptyOnboarding &&
+			(summonsListItems.length > 0 || activeFiltersCount > 0)
 				? [
 						{
 							icon: 'assignment',
@@ -184,6 +185,7 @@ export default function Summons() {
 			colors.black,
 			headerProps.rightActions,
 			navigateCourtsList,
+			showEmptyOnboarding,
 			summonsListItems.length,
 		],
 	);

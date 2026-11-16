@@ -2,6 +2,7 @@ const lightTheme = {
   name: 'light',
   colors: {
     white: '#FEFEFE',
+    mainWhite: '#FFFFFF',
     realWhite: '#FFFFFF',
     realWhites: '#000000',
     darkGray: '#666666',

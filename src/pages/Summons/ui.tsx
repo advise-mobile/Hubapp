@@ -34,9 +34,9 @@ export function SummonsUI({ imageNotFound, onPress }: SummonsUIProps) {
 					iconPosition="start"
 					title="Cadastrar um novo acesso"
 					backgroundColor={colors.green200}
-					titleColor={colors.white}
-					icon="add-circle"
-					iconColor={colors.white}
+					titleColor={colors.mainWhite ?? colors.realWhite ?? '#FFFFFF'}
+					icon="add"
+					iconColor={colors.mainWhite ?? colors.realWhite ?? '#FFFFFF'}
 					onPress={onPress}
 				/>
 			</EmptyState>

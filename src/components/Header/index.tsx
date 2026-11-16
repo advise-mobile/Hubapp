@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from 'styled-components';
 
@@ -56,11 +57,30 @@ export function Header({
               onPress={action.onPress}
               activeOpacity={0.7}
             >
-              <MaterialIcons
-                name={action.icon as any}
-                size={20}
-                color={action.colorIcon ?? iconColor}
-              />
+              {action.iconBackgroundColor != null ? (
+                <View
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: action.iconBackgroundColor,
+                  }}
+                >
+                  <MaterialIcons
+                    name={action.icon as any}
+                    size={14}
+                    color={action.colorIcon ?? iconColor}
+                  />
+                </View>
+              ) : (
+                <MaterialIcons
+                  name={action.icon as any}
+                  size={20}
+                  color={action.colorIcon ?? iconColor}
+                />
+              )}
             </HeaderAction>
           ))
         ) : (

@@ -13,15 +13,18 @@ export function useSummonsHeader(): UseSummonsHeaderReturn {
 
 	const openAddModal = useCallback(() => setAddModalVisible(true), []);
 
+	const addIconColor = colors.mainWhite ?? colors.realWhite ?? '#FFFFFF';
+
 	const rightActions: HeaderActionConfig[] = useMemo(
 		() => [
 			{
-				icon: 'add-circle',
-				colorIcon: colors.green200,
+				icon: 'add',
+				colorIcon: addIconColor,
+				iconBackgroundColor: colors.green200,
 				onPress: openAddModal,
 			},
 		],
-		[colors.green200, openAddModal],
+		[addIconColor, colors.green200, openAddModal],
 	);
 
 	return {
