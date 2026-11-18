@@ -72,8 +72,7 @@ export default MovementsTrash = () => {
       ? require('assets/images/not_found/movements_white.png')
       : require('assets/images/not_found/movements.png');
 
-  const iconColor =
-    colorUseTheme.name === 'dark' ? colors.white : colors.fadedBlack;
+  const iconColor = colors.fadedBlack;
 
   const { isLoadingRecover, recoverMoviment } = useMovementRecover();
   const { isLoadingDelete, deleteMovement } = useMovementDelete();
